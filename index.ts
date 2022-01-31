@@ -24,8 +24,13 @@ client.on('guildMemberAdd', member => {
 
 //basic reply
 client.on("messageCreate", (message) => {
+    //pick a random date between 2 dates
+    function randomDate(start: Date, end: Date) {
+        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    }
     if (message.content.includes("axer") === true) {
-        message.channel.send('CHILDREN!!!!1!!');
+        //message.channel.send('CHILDREN!!!!1!!');
+        message.channel.send((<Message>message).createdTimestamp(randomDate(new Date(2020, 0, 1), TextChannel.lastMessage.createdTimestamp())));
     }
 })
 
