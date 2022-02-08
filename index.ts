@@ -1,32 +1,20 @@
-import DiscordJS, { TextChannel } from 'discord.js';
+import { Client, TextChannel } from 'discord.js';
 import dotenv from 'dotenv';
-dotenv.config();
+import { MessageHandler } from './MessageHandler';
 
-const client = new DiscordJS.Client({
-    intents: [
-        'GUILDS',
-        'GUILD_MESSAGES',
-        'GUILD_MEMBERS',
-    ]
-})
+class Main {
+    private _client: Client;
+    private _messageHandler: MessageHandler;
 
-//bot init
-client.on('ready', () => {
-    console.log('Ready!');
-})
+    constructor() {
+        dotenv.config();
 
-//welcome message
-client.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'arrival');
-    if (!channel) return;
-    (<TextChannel>channel).send(`Hello ${member}, please link your osu! profile, tell us whether you want the Participant or Spectator role, and tell us your favorite FA in order to get access to the channels!`);
-})
+        this._client = new Client({
+            intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES'],
+        });
 
-//basic reply
-client.on("messageCreate", (message) => {
-    if (message.content.includes("axer") === true) {
-        message.channel.send('CHILDREN!!!!1!!');
+        this._messageHandler = new MessageHandler(this._client);
     }
-})
+}
 
-client.login(process.env.TOKEN);
+const main = new Main();
