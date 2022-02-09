@@ -69,4 +69,4 @@ bot.on('messageCreate', async (message) => {
     if (commandfile) commandfile.run(bot, message, args);
 });
 
-bot.login('OTQwOTUwMDUxNTEyMDA0NjU4.YgO2Bg.-eoZ4P6DaCChQXTUfC3CEbxTU-k');
+bot.login(token);
