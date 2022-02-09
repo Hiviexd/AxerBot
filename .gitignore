@@ -1,2 +1,4 @@
-.env
+# Dependency directory
 node_modules
+.env
+addRole.js
