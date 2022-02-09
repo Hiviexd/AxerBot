@@ -1,6 +1,7 @@
-const { prefix, token } = require('./config.json');
+const { prefix } = require('./config.json');
 
 const { Client, Intents, Collection, Message, Channel } = require('discord.js');
+require('dotenv').config();
 const bot = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -65,4 +66,4 @@ bot.on('messageCreate', async (message) => {
     if (commandfile) commandfile.run(bot, message, args);
 });
 
-bot.login(token);
+bot.login(process.env.TOKEN);
