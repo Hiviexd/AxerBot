@@ -1,20 +1,27 @@
-exports.run = async (message, args) => {
-    console.log(typeof message);
-    if (message.member.roles.cache.some(role => role.name !== ('Host')||('Judge'))) return message.channel.send(":x: You don't have the persimmions to use this command!");
-    var amount = parseInt(args)
+exports.run = async (bot, message, args) => {
+    console.log(message.member.roles.cache);
+    if (!message.member.roles.cache.has('940954724138647553')) {
+        return message.channel.send(":x: You don't have the persimmions to use this command!");
+    }
+    var amount = parseInt(args);
 
-        if (!amount) return message.channel.send("Please specify the amount of messages you want me to delete")
-        if (amount > 100 || amount < 1) return message.channel.send("Please select a number *between* 100 and 1")
+    if (!amount)
+        return message.channel.send('Please specify the amount of messages you want me to delete');
+    if (amount > 100 || amount < 1)
+        return message.channel.send('Please select a number *between* 100 and 1');
 
-        message.channel.bulkDelete(amount).catch(err => {
-              message.channel.send(':x: Due to Discord Limitations, I cannot delete messages older than 14 days') })
+    message.channel.bulkDelete(amount).catch((err) => {
+        message.channel.send(
+            ':x: Due to Discord Limitations, I cannot delete messages older than 14 days'
+        );
+    });
 
-        let msg = await message.channel.send(`Deleted \`${amount}\` messages`)
-        setTimeout(() => {
-            msg.delete()
-        }, 2000)
-}
-    /*if (!args) {
+    let msg = await message.channel.send(`Deleted \`${amount}\` messages`);
+    setTimeout(() => {
+        msg.delete();
+    }, 2000);
+};
+/*if (!args) {
         var newamount = 2;
     } else {
         var amount = Number(args);
