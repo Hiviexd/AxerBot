@@ -1,6 +1,7 @@
+const { ownerId } = require('../config.json');
+
 exports.run = async (bot, message, args) => {
-    console.log(message.member.roles.cache);
-    if (!message.member.roles.cache.has('940954724138647553')) {
+    if ((!message.member.roles.cache.has('937645148563709962'))&&(!message.member.roles.cache.has('937644405706354708'))&&(message.author.id !== ownerId)){
         return message.channel.send(":x: You don't have the persimmions to use this command!");
     }
     var amount = parseInt(args);

@@ -1,4 +1,5 @@
-const { prefix, token } = require('./config.json');
+const { prefix } = require('./config.json');
+require('dotenv').config();
 
 const { Client, Intents, Collection, Message, Channel } = require('discord.js');
 const bot = new Client({
@@ -57,10 +58,6 @@ bot.on('messageCreate', async (message) => {
     let cmd = messageArray[0];
     let args = messageArray.slice(1);
 
-    if (message.content.includes('axer') === true) {
-        message.channel.send('CHILDREN!!!!1!!');
-    }
-
     //Check for prefix
     if (!cmd.startsWith(prefix)) return;
 
@@ -69,4 +66,4 @@ bot.on('messageCreate', async (message) => {
     if (commandfile) commandfile.run(bot, message, args);
 });
 
-bot.login(token);
+bot.login(process.env.TOKEN);
