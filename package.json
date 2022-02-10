@@ -32,12 +32,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CappeDiem/Discord.js-bot-template.git"
+    "url": "git+https://github.com/Hiviexd/axer-bot.git"
   },
-  "author": "CappeDiem",
+  "author": "Hiviexd",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CappeDiem/Discord.js-bot-template/issues"
+    "url": "https://github.com/Hiviexd/axer-bot/issues"
   },
-  "homepage": "https://github.com/CappeDiem/Discord.js-bot-template#readme"
+  "homepage": "https://github.com/Hiviexd/axer-bot#readme"
 }
