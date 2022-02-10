@@ -1,5 +1,5 @@
 const { prefix, token } = require('./config.json');
-
+const keepAlive = require('./server');
 const { Client, Intents, Collection, Message, Channel } = require('discord.js');
 
 const bot = new Client({
@@ -66,4 +66,5 @@ bot.on('messageCreate', async (message) => {
     if (commandfile) commandfile.run(bot, message, args);
 });
 
+keepAlive();
 bot.login(token);
