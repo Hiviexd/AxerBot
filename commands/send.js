@@ -2,8 +2,7 @@ const { ownerId } = require('../config.json');
 
 exports.run = async (bot, message, args) => {
     if (
-        !message.member.roles.cache.has('937645148563709962') &&
-        !message.member.roles.cache.has('937644405706354708') &&
+        !message.member.roles.cache.find((role) => role.name === 'Host' || role.name === 'Judge' || role.name === 'Owner') &&
         message.author.id !== ownerId
     ) {
         let msg = await message.channel.send(":x: You don't have the permission to use this command!");
