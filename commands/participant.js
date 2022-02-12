@@ -23,7 +23,7 @@ exports.run = async (bot, message, args) => {
     
 
     if (!nickname) {
-        let msg = await message.channel.send(":exclamation: Please specify a nickname. \nSyntax: ``!spectator @user <nickname>");
+        let msg = await message.channel.send(":exclamation: Please specify a nickname. \nSyntax: ``!spectator @user <nickname>``");
         setTimeout(() => {
             msg.delete();
         }, 2000);
