@@ -23,7 +23,7 @@ exports.run = async (bot, message, args) => {
     
 
     if (!nickname) {
-        let msg = await message.channel.send(":exclamation: Please specify a nickname. \nSyntax: ``!spectator @user <nickname>``");
+        let msg = await message.channel.send(":exclamation: Please specify a nickname. \nSyntax: ``!participant @user <nickname>``");
         setTimeout(() => {
             msg.delete();
         }, 2000);
@@ -31,7 +31,7 @@ exports.run = async (bot, message, args) => {
     }
 
     if (args.length<1) {
-        let msg = await message.channel.send(":exclamation: Can't take less than 2 arguments, \nSyntax: ``!spectator @user <nickname>``");
+        let msg = await message.channel.send(":exclamation: Can't take less than 2 arguments, \nSyntax: ``!participant @user <nickname>``");
         setTimeout(() => {
             msg.delete();
         }, 2000);
