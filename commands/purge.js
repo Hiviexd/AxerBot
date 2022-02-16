@@ -33,7 +33,7 @@ exports.run = async (bot, message, args) => {
     }
 
 
-    message.channel.bulkDelete(amount).catch((err) => {
+    message.channel.bulkDelete(amount+1).catch((err) => {
         message.channel.send(
             ':x: Due to Discord Limitations, I cannot delete messages older than 14 days.'
         );
