@@ -32,7 +32,6 @@ module.exports = {
             processFile().then(function(data) {
                 let quotes = data;
                 let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-                console.log(quotes);
                 message.channel.send(randomQuote);
             });
         }
