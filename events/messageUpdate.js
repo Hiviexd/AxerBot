@@ -2,22 +2,27 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'messageUpdate',
-    execute(message, oldMessage, newMessage) {
-        if (message.author.bot) return;
-        if (message.channel.type === 'dm') return;
+    execute(oldMessage, newMessage) {
+        if (oldMessage.author.bot) return;
+        if (oldMessage.channel.type === 'dm') return;
         if (!oldMessage.author) return;
+
+        const count = 1950;
+        const original = oldMessage.content.slice(0, count) + (oldMessage.content.length > count ? '...' : '');
+        const edited = newMessage.content.slice(0, count) + (newMessage.content.length > count ? '...' : '');
 
         const embed = new MessageEmbed()
             .setColor('#008cff')
-            .setAuthor(`${message.author.username} edited a message in #${message.channel.name}`, message.author.displayAvatarURL())
-            .setFields(
-                { name: 'Old Message', value: oldMessage.cleanContent },
-                { name: 'New Message', value: newMessage.cleanContent }
-            )
+            .setAuthor(`${newMessage.author.username}`, newMessage.author.displayAvatarURL())
+            .setDescription(`:pencil:  edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n\n**After:** \n${edited}\n`)
             .setTimestamp();
-            //TODO: figure out a way to send a message and the embed in the same .send()
-            //client.channels.cache.find(c => c.name === "wasteland-test").send(`:x: Deleted from <#${message.channel.id}>`);
-            console.log(embed);
-            client.channels.cache.find(c => c.name === "wasteland-test").send({ embeds: [embed] });
+        
+        if (newMessage.attachments.size > 0) {
+            embed.setImage(newMessage.attachments.first().url);
+        }
+
+            newMessage.guild.channels.cache.find(c => c.name === "wasteland-test").send({ embeds: [embed] });
+
       }
 }
+
