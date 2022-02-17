@@ -13,6 +13,6 @@ module.exports = {
             .setTimestamp();
 
         console.log('User ' + member.user.tag + ' has left the server!');
-        member.guild.channels.cache.find(c => c.name === "wasteland-test").send({ embeds: [embed] })
+        member.guild.channels.cache.find(c => c.name === "wasteland").send({ embeds: [embed] })
     }
 }
