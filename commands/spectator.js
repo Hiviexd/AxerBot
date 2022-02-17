@@ -23,22 +23,28 @@ exports.run = async (bot, message, args) => {
     
 
     if (!nickname) {
-        let msg = await message.channel.send(":exclamation: Please specify a nickname.\nSyntax: ``!spectator @user <nickname>``");
-        setTimeout(() => {
-            msg.delete();
-        }, 2000);
+        member.roles.add(verified).catch((err) => {
+            message.channel.send(
+                ':x: Error setting verified role.'
+            );
+        });
+        member.roles.add(spectator).catch((err) => {
+            message.channel.send(
+                ':x: Error setting spectator role.'
+            );
+        });
+        message.channel.send(`:white_check_mark: Applied roles!`);
         return ;
     }
 
     if (args.length<1) {
-        let msg = await message.channel.send(":exclamation: Can't take less than 2 arguments, \nSyntax: ``!spectator @user <nickname>``");
+        let msg = await message.channel.send(":exclamation: **Syntax:** ``!spectator @user <nickname>``");
         setTimeout(() => {
             msg.delete();
-        }, 2000);
+        }, 3000);
         return ;
     }
 
-    // super hacky way to assign 2 roles to a user, has room for improvement but cba right now
     member.roles.add(verified).catch((err) => {
         message.channel.send(
             ':x: Error setting verified role.'
@@ -55,7 +61,6 @@ exports.run = async (bot, message, args) => {
             ':x: Error setting nickname.'
         );
     });
-
 
     message.channel.send(`:white_check_mark: Applied role and changed nickname to **${nickname}**!`);
     
