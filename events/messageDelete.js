@@ -8,12 +8,15 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setColor('#ff5050')
-            .setAuthor(`${message.author.username} deleted a message from #${message.channel.name}`, message.author.displayAvatarURL())
-            .setDescription(`**Message:** ${message.cleanContent}`)
+            .setAuthor(`${message.author.username}`, message.author.displayAvatarURL())
+            .setDescription(`:x:  deleted a message from ${message.channel}\n\n**Message:** ${message.cleanContent}`)
             .setTimestamp();
 
-            //TODO: figure out a way to send a message and the embed in the same .send()
-            //client.channels.cache.find(c => c.name === "wasteland-test").send(`:x: Deleted from <#${message.channel.id}>`);
-            client.channels.cache.find(c => c.name === "wasteland").send({ embeds: [embed] });
-      }
+        if (message.attachments.size > 0) {
+            embed.setImage(message.attachments.first().url);
+        }
+
+        client.channels.cache.find(c => c.name === "wasteland-test").send({ embeds: [embed] });
+
+    }
 }
