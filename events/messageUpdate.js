@@ -21,7 +21,7 @@ module.exports = {
             embed.setImage(newMessage.attachments.first().url);
         }
 
-            newMessage.guild.channels.cache.find(c => c.name === "wasteland-test").send({ embeds: [embed] });
+            newMessage.guild.channels.cache.find(c => c.name === "wasteland").send({ embeds: [embed] });
 
       }
 }
