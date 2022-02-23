@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const osu = require('node-osu')
-const osuApi = new osu.Api('a71340852f272df30a33e8514b7d6a3af45bdec9', {
+const { osutoken } = require('./config.json');
+const osuApi = new osu.Api('token', {
 	// baseUrl: sets the base api url (default: https://osu.ppy.sh/api)
 	notFoundAsError: true, // Throw an error on not found instead of returning nothing. (default: true)
 	completeScores: false, // When fetching scores also fetch the beatmap they are for (Allows getting accuracy) (default: false)
