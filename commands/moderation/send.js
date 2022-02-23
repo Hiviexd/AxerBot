@@ -1,4 +1,4 @@
-const { ownerId } = require('../config.json');
+const { ownerId } = require('../../config.json');
 
 exports.run = async (bot, message, args) => {
     if (

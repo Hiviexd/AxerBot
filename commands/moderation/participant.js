@@ -1,4 +1,4 @@
-const { ownerId } = require('../config.json');
+const { ownerId } = require('../../config.json');
 
 exports.run = async (bot, message, args) => {
     //let whitelist = ['Owner', 'Host', 'Judge', 'Moderator', 'Mod'];
@@ -14,7 +14,7 @@ exports.run = async (bot, message, args) => {
         return ;
     }
     
-    let spectator = message.guild.roles.cache.find(r => r.name === "Spectator");
+    let participant = message.guild.roles.cache.find(r => r.name === "Participant");
     let verified = message.guild.roles.cache.find(r => r.name === "Verified");
     let member = message.mentions.members.first();
     args.shift();
@@ -28,9 +28,9 @@ exports.run = async (bot, message, args) => {
                 ':x: Error setting verified role.'
             );
         });
-        member.roles.add(spectator).catch((err) => {
+        member.roles.add(participant).catch((err) => {
             message.channel.send(
-                ':x: Error setting spectator role.'
+                ':x: Error setting participant role.'
             );
         });
         message.channel.send(`:white_check_mark: Applied roles!`);
@@ -38,7 +38,7 @@ exports.run = async (bot, message, args) => {
     }
 
     if (args.length<1) {
-        let msg = await message.channel.send(":exclamation: **Syntax:** ``!spectator @user <nickname>``");
+        let msg = await message.channel.send(":exclamation: **Syntax:** ``!participant @user <nickname>``");
         setTimeout(() => {
             msg.delete();
         }, 3000);
@@ -50,9 +50,9 @@ exports.run = async (bot, message, args) => {
             ':x: Error setting verified role.'
         );
     });
-    member.roles.add(spectator).catch((err) => {
+    member.roles.add(participant).catch((err) => {
         message.channel.send(
-            ':x: Error setting spectator role.'
+            ':x: Error setting participant role.'
         );
     });
 
@@ -62,10 +62,10 @@ exports.run = async (bot, message, args) => {
         );
     });
 
-    message.channel.send(`:white_check_mark: Applied role and changed nickname to **${nickname}**!`);
+    message.channel.send(`:white_check_mark: Applied roles and changed nickname to **${nickname}**!`);
     
 };
 
 exports.help = {
-    name: 'spectator',
+    name: 'participant',
 };
