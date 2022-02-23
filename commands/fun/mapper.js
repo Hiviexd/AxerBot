@@ -26,8 +26,6 @@ exports.run = async (bot, message, args) => {
 	}
 	let username = args.join(" ");
 	beatmaps = osuApi.getBeatmaps({u : username }).then(beatmaps => {
-		let mapperName = beatmaps[0].creator;
-		let mapperId = beatmaps[0].creatorId;
 
 		let beatmapsetsWithDupes =[];
 		for (let bsId of beatmaps) {
@@ -96,6 +94,8 @@ exports.run = async (bot, message, args) => {
 		let latestMapsetTitle = latestMapset.title;
 		let latestMapsetArtist = latestMapset.artist;
 
+		let mapperName = latestMapset.creator;
+		let mapperId = latestMapset.creatorId;
 		let mapperURL = "https://osu.ppy.sh/users/"+mapperId;
 		let latestMapsetURL = "https://osu.ppy.sh/beatmapsets/"+latestMapsetId;
 		let imageCover = "https://assets.ppy.sh/beatmaps/"+latestMapsetId+"/covers/cover.jpg"
@@ -104,7 +104,7 @@ exports.run = async (bot, message, args) => {
 		let embed = new MessageEmbed()
 			.setTitle(mapperName)
 			.setURL(mapperURL)
-			.setColor(0x00AE86)
+			.setColor("#e7792b")
 			.setThumbnail(mapperPFP)
 			.addField("Mapping Age", mappingAge, false)
 			.addField("Mapset Count", '✍ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
