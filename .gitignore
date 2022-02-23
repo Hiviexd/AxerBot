@@ -2,4 +2,3 @@
 node_modules
 config.json
 /commands/fun/mapper-tester.js
-/commands/fun/mapper.js
