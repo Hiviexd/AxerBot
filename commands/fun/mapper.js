@@ -21,15 +21,13 @@ function parseDate(date) {
 }
 exports.run = async (bot, message, args) => {
 	if (args.length<1) {
-		message.channel.send("what am i supposed to search for wtf");
+		message.channel.send("you forgor to put a username :skull:");
 		return;
 	}
 	let username = args.join(" ");
 	beatmaps = osuApi.getBeatmaps({u : username }).then(beatmaps => {
 		let mapperName = beatmaps[0].creator;
 		let mapperId = beatmaps[0].creatorId;
-		console.log("mapper name: "+mapperName);
-		console.log("mapper id: "+mapperId);
 
 		let beatmapsetsWithDupes =[];
 		for (let bsId of beatmaps) {
@@ -40,7 +38,6 @@ exports.run = async (bot, message, args) => {
 		});
 
 		let beatmapsetCount = beatmapsets.length;
-		console.log("total set count: "+beatmapsetCount);
 		let rankedBeatmapsetCount = 0; //ranked, approved, qualified
 		let lovedBeatmapsetCount = 0; //yeah, i know
 		let unrankedBeatmapsetCount = 0; //pending, wip, grave
@@ -55,9 +52,6 @@ exports.run = async (bot, message, args) => {
 				lovedBeatmapsetCount++;
 			}
 		}
-		console.log("ranked beatmapset count: "+rankedBeatmapsetCount);
-		console.log("loved beatmapset count: "+lovedBeatmapsetCount);
-		console.log("unranked beatmapset count: "+unrankedBeatmapsetCount);
 
 		let favoritesCount = 0;
 		for (let bsId of beatmapsets) {
@@ -69,7 +63,6 @@ exports.run = async (bot, message, args) => {
 			}
 		}
 		favoritesCount = favoritesCount.toLocaleString("en-US");
-		console.log("favorites count: "+favoritesCount);
 
 		let totalPlaycount = 0;
 			for (let beatmap of beatmaps) {
@@ -78,7 +71,6 @@ exports.run = async (bot, message, args) => {
 				}
 			}
 		totalPlaycount = totalPlaycount.toLocaleString("en-US");
-		console.log("total playcount: "+totalPlaycount);
 
 		let dateList = [];
 		let rankedDateList = [];
@@ -93,25 +85,16 @@ exports.run = async (bot, message, args) => {
 		
 		let oldestMap =new Date( Math.min(...dateList));
 		let newestMap =new Date( Math.max(...dateList));
+		//might use those for later
 		let oldestRankedMap =new Date( Math.min(...rankedDateList));
 		let newestRankedMap =new Date( Math.max(...rankedDateList));
-		console.log("oldest map: "+oldestMap);
-		console.log("newest map: "+newestMap);
-		console.log("oldest ranked map: "+oldestRankedMap);
-		console.log("newest ranked map: "+newestRankedMap);
 		
 		let mappingAgeUnix = new Date(new Date().getTime() - oldestMap.getTime());
 		let mappingAge = parseDate(mappingAgeUnix);
-		console.log("mapping age: "+mappingAge);
-		console.log("mapset id 0: "+beatmaps[0].beatmapSetId);
-		console.log(typeof beatmaps[0].beatmapSetId);
 		let latestMapsetId = Math.max(...beatmapsets);
-		console.log("latest map id: "+latestMapsetId);
 		let latestMapset = beatmaps.find(beatmap => beatmap.beatmapSetId == latestMapsetId);
 		let latestMapsetTitle = latestMapset.title;
-		console.log("latest map title: "+latestMapsetTitle);
 		let latestMapsetArtist = latestMapset.artist;
-		console.log("latest map artist: "+latestMapsetArtist);
 
 		let mapperURL = "https://osu.ppy.sh/users/"+mapperId;
 		let latestMapsetURL = "https://osu.ppy.sh/beatmapsets/"+latestMapsetId;
