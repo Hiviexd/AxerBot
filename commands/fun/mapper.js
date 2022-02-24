@@ -28,7 +28,6 @@ exports.run = async (bot, message, args) => {
 	}
 	let username = args.join(" ");
 	beatmaps = osuApi.getBeatmaps({u : username }).then(beatmaps => {
-
 		let beatmapsetsWithDupes =[];
 		for (let bsId of beatmaps) {
 			beatmapsetsWithDupes.push(bsId.beatmapSetId);
@@ -111,13 +110,19 @@ exports.run = async (bot, message, args) => {
 			.setThumbnail(mapperPFP)
 			.addField("Mapping Age", mappingAge, false)
 			.addField("Mapset Count", '✍ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
-			.addField("Overall Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
+			.addField("Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
 			.addField("Latest Map", `[${latestMapsetArtist} - ${latestMapsetTitle}](${latestMapsetURL})`, false)
 			.setImage(imageCover)
 			.setTimestamp()
 			.setFooter("mwah");
 		message.channel.send({ embeds: [embed] });
 	});
+	process.on('unhandledRejection', (reason, promise) => { 
+		console.log(reason + "--" + promise); 
+		message.channel.send(`${username} isn't a mapper :skull:`);
+	});
+	process.on('uncaughtException', (err) => { console.error("uncaught exception:" + err + "\n" + err.stack); });
+	process.on('error',(err)=>{ console.log('caught in app error listener: ' + err); });
 }
 
 exports.help = {
