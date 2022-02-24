@@ -2,9 +2,10 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'messageDelete',
-    execute(message, client) {
+    execute(message) {
         if (message.author.bot) return;
         if (message.channel.type === 'dm') return;
+        if (!message.guild.channels.cache.find(c => c.name === "wasteland")) return;
 
         const embed = new MessageEmbed()
             .setColor('#ff5050')
@@ -16,7 +17,7 @@ module.exports = {
             embed.setImage(message.attachments.first().url);
         }
 
-        client.channels.cache.find(c => c.name === "wasteland").send({ embeds: [embed] });
+        message.guild.channels.cache.find(c => c.name === "wasteland").send({ embeds: [embed] });
 
     }
 }

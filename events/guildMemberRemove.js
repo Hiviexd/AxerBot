@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     name: 'guildMemberRemove',
     execute(member) {
+        if (!member.guild.channels.cache.find(c => c.name === "wasteland")) return;
         const memberRoles = member.roles.cache
         .filter((roles) => roles.id !== member.guild.id)
         .map((role) => role.toString());

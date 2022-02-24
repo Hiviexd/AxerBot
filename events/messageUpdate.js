@@ -6,6 +6,7 @@ module.exports = {
         if (oldMessage.author.bot) return;
         if (oldMessage.channel.type === 'dm') return;
         if (!oldMessage.author) return;
+        if (!newMessage.guild.channels.cache.find(c => c.name === "wasteland")) return;
 
         const count = 1950;
         const original = oldMessage.content.slice(0, count) + (oldMessage.content.length > count ? '...' : '');
