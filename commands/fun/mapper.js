@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const osu = require('node-osu')
-const { osutoken } = require('./config.json');
-const osuApi = new osu.Api('token', {
+const { osutoken } = require('../../config.json');
+const osuApi = new osu.Api(osutoken, {
 	// baseUrl: sets the base api url (default: https://osu.ppy.sh/api)
 	notFoundAsError: true, // Throw an error on not found instead of returning nothing. (default: true)
 	completeScores: false, // When fetching scores also fetch the beatmap they are for (Allows getting accuracy) (default: false)
@@ -20,6 +20,7 @@ function parseDate(date) {
 	let dayText = day>1 ? day+" days": day+"day";
 	return yearText+", "+monthText+", "+dayText;
 }
+
 exports.run = async (bot, message, args) => {
 	if (args.length<1) {
 		message.channel.send("you forgor to put a username :skull:");
@@ -38,7 +39,7 @@ exports.run = async (bot, message, args) => {
 
 		let beatmapsetCount = beatmapsets.length;
 		let rankedBeatmapsetCount = 0; //ranked, approved, qualified
-		let lovedBeatmapsetCount = 0; //yeah, i know
+		let lovedBeatmapsetCount = 0; //yeah
 		let unrankedBeatmapsetCount = 0; //pending, wip, grave
 		let rankedTypes = ["Ranked", "Approved", "Qualified"];
 		let unrankedTypes = ["Pending", "WIP", "Graveyard"];
@@ -72,21 +73,22 @@ exports.run = async (bot, message, args) => {
 		totalPlaycount = totalPlaycount.toLocaleString("en-US");
 
 		let dateList = [];
-		let rankedDateList = [];
+		//let rankedDateList = [];
 		for (let beatmap of beatmaps) {
 			if (beatmap.submitDate) {
 				dateList.push(beatmap.submitDate);
 			}
-			if (beatmap.approvedDate) {
+			/*if (beatmap.approvedDate) {
 				rankedDateList.push(beatmap.approvedDate);
-			}
+			}*/
 		}
 		
-		let oldestMap =new Date( Math.min(...dateList));
-		let newestMap =new Date( Math.max(...dateList));
+		let oldestMap = new Date( Math.min(...dateList));
+		let newestMap = new Date( Math.max(...dateList));
+		
 		//might use those for later
-		let oldestRankedMap =new Date( Math.min(...rankedDateList));
-		let newestRankedMap =new Date( Math.max(...rankedDateList));
+		//let oldestRankedMap = new Date( Math.min(...rankedDateList));
+		//let newestRankedMap = new Date( Math.max(...rankedDateList));
 		
 		let mappingAgeUnix = new Date(new Date().getTime() - oldestMap.getTime());
 		let mappingAge = parseDate(mappingAgeUnix);
@@ -109,7 +111,7 @@ exports.run = async (bot, message, args) => {
 			.setThumbnail(mapperPFP)
 			.addField("Mapping Age", mappingAge, false)
 			.addField("Mapset Count", '✍ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
-			.addField("Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
+			.addField("Overall Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
 			.addField("Latest Map", `[${latestMapsetArtist} - ${latestMapsetTitle}](${latestMapsetURL})`, false)
 			.setImage(imageCover)
 			.setTimestamp()
