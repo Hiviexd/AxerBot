@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
-const numeral = require("numeral");
+const osu = require("node-osu");
+const { osutoken } = require("../../config.json");
 const { getUserBeatmaps } = require("../functions/osu/getUserBeatmaps");
 
 exports.run = async (bot, message, args) => {
@@ -33,9 +34,9 @@ exports.run = async (bot, message, args) => {
 			"Playcount & Favorites",
 			(value =
 				"▶ " +
-				numeral(beatmaps.sets_play_count).format("1,0") +
+				beatmaps.user.playcount +
 				"  💖 " +
-				numeral(beatmaps.sets_favourite_count).format("1,0")),
+				beatmaps.user.favourite),
 			true
 		)
 		.addField(
