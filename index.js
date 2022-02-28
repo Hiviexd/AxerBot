@@ -1,6 +1,6 @@
 const { prefix, token } = require("./config.json");
 const keepAlive = require("./server");
-const { Client, Intents, Collection, Message, Channel } = require("discord.js");
+const { Client, Intents, Collection } = require("discord.js");
 
 const bot = new Client({
 	intents: [
