@@ -12,12 +12,12 @@ const osuApi = new osu.Api(osutoken, {
 function parseDate(date) {
 	result = new Date(date)
 	let year = Number(result.getFullYear())-1970;
-	let month = Number(result.getMonth()+1);
+	let month = Number(result.getMonth());
 	let day = Number(result.getDate());
 
-	let yearText = year>1 ? year+" years": year+"year";
-	let monthText = month>1 ? month+" months": month+"month";
-	let dayText = day>1 ? day+" days": day+"day";
+	let yearText = year!==1 ? year+" years": year+" year";
+	let monthText = month!==1 ? month+" months": month+" month";
+	let dayText = day!==1 ? day+" days": day+" day";
 	return yearText+", "+monthText+", "+dayText;
 }
 
@@ -28,6 +28,10 @@ exports.run = async (bot, message, args) => {
 	}
 	let username = args.join(" ");
 	beatmaps = osuApi.getBeatmaps({u : username }).then(beatmaps => {
+		if (beatmaps[0].creatorId == 0){
+			message.channel.send("user not found :skull:");
+			return;
+		}
 		let beatmapsetsWithDupes =[];
 		for (let bsId of beatmaps) {
 			beatmapsetsWithDupes.push(bsId.beatmapSetId);
@@ -109,20 +113,16 @@ exports.run = async (bot, message, args) => {
 			.setColor("#e7792b")
 			.setThumbnail(mapperPFP)
 			.addField("Mapping Age", mappingAge, false)
-			.addField("Mapset Count", '✍ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
+			.addField("Mapset Count", '🗺️ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
 			.addField("Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
 			.addField("Latest Map", `[${latestMapsetArtist} - ${latestMapsetTitle}](${latestMapsetURL})`, false)
 			.setImage(imageCover)
-			.setTimestamp()
-			.setFooter("mwah");
+			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
+	}).catch(err => {
+		console.log(`error: ${username} isn't a mapper`);
+		message.channel.send(`${username} isn't a mapper :sob:`);
 	});
-	process.on('unhandledRejection', (reason, promise) => { 
-		console.log(reason + "--" + promise); 
-		message.channel.send(`${username} isn't a mapper :skull:`);
-	});
-	process.on('uncaughtException', (err) => { console.error("uncaught exception:" + err + "\n" + err.stack); });
-	process.on('error',(err)=>{ console.log('caught in app error listener: ' + err); });
 }
 
 exports.help = {
