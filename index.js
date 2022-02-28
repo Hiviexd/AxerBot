@@ -1,6 +1,7 @@
 const { prefix, token } = require("./config.json");
 const keepAlive = require("./server");
 const { Client, Intents, Collection } = require("discord.js");
+require("./commands/functions/osu/getServerAuthToken");
 
 const bot = new Client({
 	intents: [
