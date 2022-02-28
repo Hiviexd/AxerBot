@@ -83,15 +83,19 @@ exports.getUserBeatmaps = async (user) => {
 			username: u.username,
 			favourite: u.favourite_beatmapset_count,
 			playcount: u.beatmap_playcounts_count,
-			mapping_since: moment(all_beatmaps[0].submitted_date).fromNow(),
+			mapping_since: moment(
+				all_beatmaps.sets[0].submitted_date
+			).fromNow(),
 		},
 		ranked: u.ranked_and_approved_beatmapset_count,
 		pending: u.pending_beatmapset_count,
 		loved: u.loved_beatmapset_count,
+		sets_favourite_count: all_beatmaps.sets_favourites,
+		sets_play_count: all_beatmaps.sets_playcount,
 		graveyard: u.graveyard_beatmapset_count,
-		most_recent: all_beatmaps[all_beatmaps.length - 1],
-		most_old: all_beatmaps[0],
-		beatmapsets: all_beatmaps,
+		most_recent: all_beatmaps.sets[all_beatmaps.sets.length - 1],
+		most_old: all_beatmaps.sets[0],
+		beatmapsets: all_beatmaps.sets,
 		size: getSize(),
 	};
 };
@@ -141,7 +145,30 @@ exports.getUserAllBeatmaps = async (user) => {
 				return a.id - b.id;
 			});
 
-			if (status == "ranked") return resolve(_r);
+			if (status == "ranked") {
+				function getSetsData() {
+					let _d = {
+						plays: 0,
+						favourites: 0,
+					};
+
+					for (let i = 0; i < _r.length; i++) {
+						_d.favourites += Number(_r[i].favourite_count);
+
+						_d.plays += Number(_r[i].play_count);
+					}
+
+					return _d;
+				}
+
+				const sets_data = getSetsData();
+
+				return resolve({
+					sets: _r,
+					sets_playcount: sets_data.plays,
+					sets_favourites: sets_data.favourites,
+				});
+			}
 		});
 	});
 
