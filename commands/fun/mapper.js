@@ -1,6 +1,7 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js")
+//unused for now
 const osu = require("node-osu");
-const { osutoken } = require("../../config.json");
+const { osuv1token } = require("../../config.json");
 const numeral = require("numeral");
 const { getUserBeatmaps } = require("../functions/osu/getUserBeatmaps");
 
