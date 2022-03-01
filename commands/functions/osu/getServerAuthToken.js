@@ -3,13 +3,14 @@
  * ? Get authorization token
  */
 
- require('dotenv').config();
+require('dotenv').config();
 const { default: axios } = require("axios");
 const osu_client_id = process.env.OSU_CLIENT_ID;
 const osu_client_secret = process.env.OSU_CLIENT_SECRET;
 
+
 async function listen() {
-	console.log("[getServerAuthToken] Refreshing server authorization tokens");
+	consoleLog("getServerAuthToken", "Refreshing server authorization token");
 
 	let tokens = {};
 
@@ -27,7 +28,8 @@ async function listen() {
 	});
 
 	tokens = _t.data;
-	console.log("[getServerAuthToken] Server authorizations refreshed");
+
+	consoleCheck("getServerAuthToken", "Server authorization token refreshed");
 
 	// Auto-Refresh token
 	setTimeout(listen, tokens.expires_in);

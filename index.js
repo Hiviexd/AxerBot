@@ -1,6 +1,8 @@
+
 require('dotenv').config();
 const { prefix } = require("./config.json");
 const token = process.env.TOKEN;
+require("colors");
 const keepAlive = require("./server");
 const { Client, Intents, Collection } = require("discord.js");
 require("./commands/functions/osu/getServerAuthToken");
@@ -19,12 +21,15 @@ const bot = new Client({
 });
 
 const fs = require("fs");
+const { consoleLog, consoleCheck } = require("./utils/logger");
 
 bot.commands = new Collection();
 
+consoleLog("index.js", "Starting commands...");
 const commandFiles = fs
 	.readdirSync("./commands/")
 	.filter((f) => f.endsWith(".js"));
+
 for (const file of commandFiles) {
 	const props = require(`./commands/${file}`);
 	console.log(`${file} loaded`);
@@ -34,16 +39,19 @@ for (const file of commandFiles) {
 const commandSubFolders = fs
 	.readdirSync("./commands/")
 	.filter((f) => !f.endsWith(".js"));
+
 commandSubFolders.forEach((folder) => {
 	const commandFiles = fs
 		.readdirSync(`./commands/${folder}/`)
 		.filter((f) => f.endsWith(".js"));
 	for (const file of commandFiles) {
 		const props = require(`./commands/${folder}/${file}`);
-		console.log(`${file} loaded from ${folder}`);
+		consoleCheck("index.js", `${file} loaded from ${folder}`);
 		bot.commands.set(props.help.name, props);
 	}
 });
+
+consoleCheck("index.js", "Commands loaded!");
 
 // Load Event files from events folder
 const eventFiles = fs.readdirSync("./events/").filter((f) => f.endsWith(".js"));
