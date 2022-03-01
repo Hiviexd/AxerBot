@@ -1,130 +1,60 @@
-const { MessageEmbed } = require('discord.js');
-const osu = require('node-osu')
-const { osutoken } = require('../../config.json');
-const osuApi = new osu.Api(osutoken, {
-	// baseUrl: sets the base api url (default: https://osu.ppy.sh/api)
-	notFoundAsError: true, // Throw an error on not found instead of returning nothing. (default: true)
-	completeScores: false, // When fetching scores also fetch the beatmap they are for (Allows getting accuracy) (default: false)
-	parseNumeric: false // Parse numeric values into numbers/floats, excluding ids
-});
-
-
-function parseDate(date) {
-	result = new Date(date)
-	let year = Number(result.getFullYear())-1970;
-	let month = Number(result.getMonth());
-	let day = Number(result.getDate());
-
-	let yearText = year!==1 ? year+" years": year+" year";
-	let monthText = month!==1 ? month+" months": month+" month";
-	let dayText = day!==1 ? day+" days": day+" day";
-	return yearText+", "+monthText+", "+dayText;
-}
+const { MessageEmbed } = require("discord.js");
+const osu = require("node-osu");
+const { osutoken } = require("../../config.json");
+const numeral = require("numeral");
+const { getUserBeatmaps } = require("../functions/osu/getUserBeatmaps");
 
 exports.run = async (bot, message, args) => {
-	if (args.length<1) {
+	if (args.length < 1) {
 		message.channel.send("you forgor to put a username :skull:");
 		return;
 	}
-	let username = args.join(" ");
-	beatmaps = osuApi.getBeatmaps({u : username }).then(beatmaps => {
-		if (beatmaps[0].creatorId == 0){
-			message.channel.send("user not found :skull:");
-			return;
-		}
-		let beatmapsetsWithDupes =[];
-		for (let bsId of beatmaps) {
-			beatmapsetsWithDupes.push(bsId.beatmapSetId);
-		}
-		let beatmapsets = beatmapsetsWithDupes.filter((element, index) => {
-			return beatmapsetsWithDupes.indexOf(element) === index;
+
+	let username = args.join("_");
+	getUserBeatmaps(username)
+		.then((beatmaps) => {
+			let embed = new MessageEmbed()
+				.setTitle(beatmaps.user.username)
+				.setURL(`https://osu.ppy.sh/u/${beatmaps.user.id}`)
+				.setColor("#e7792b")
+				.setThumbnail(`https://a.ppy.sh/${beatmaps.user.id}`)
+				.addField("Mapping Since", beatmaps.user.mapping_since, false)
+				.addField(
+					"Mapset Count",
+					"🗺️ " +
+						beatmaps.size +
+						"  ✅ " +
+						beatmaps.ranked +
+						"  ❤ " +
+						beatmaps.loved +
+						"  ❓" +
+						(Number(beatmaps.pending) + Number(beatmaps.graveyard)),
+					true
+				)
+				.addField(
+					"Playcount & Favorites",
+					(value =
+						"▶ " +
+						numeral(beatmaps.sets_play_count).format("0,0") +
+						"  💖 " +
+						numeral(beatmaps.sets_favourite_count).format("0,0")),
+					true
+				)
+				.addField(
+					"Latest Map",
+					`[${beatmaps.most_recent.artist} - ${beatmaps.most_recent.title}](https://osu.ppy.sh/s/${beatmaps.most_recent.id})`,
+					false
+				)
+				.setImage(beatmaps.most_recent.covers["cover@2x"])
+				.setTimestamp();
+			message.channel.send({ embeds: [embed] });
+		})
+		.catch((e) => {
+			console.log(e);
+			message.channel.send("User not found!");
 		});
-
-		let beatmapsetCount = beatmapsets.length;
-		let rankedBeatmapsetCount = 0; //ranked, approved, qualified
-		let lovedBeatmapsetCount = 0; //yeah
-		let unrankedBeatmapsetCount = 0; //pending, wip, grave
-		let rankedTypes = ["Ranked", "Approved", "Qualified"];
-		let unrankedTypes = ["Pending", "WIP", "Graveyard"];
-		for (let bsId of beatmapsets) {
-			if (beatmaps.some(beatmap => beatmap.beatmapSetId === bsId && rankedTypes.indexOf(beatmap.approvalStatus) !== -1)) { 
-				rankedBeatmapsetCount++;
-			} else if (beatmaps.some(beatmap => beatmap.beatmapSetId === bsId && unrankedTypes.indexOf(beatmap.approvalStatus) !== -1)) {
-				unrankedBeatmapsetCount++;
-			} else if (beatmaps.some(beatmap => beatmap.beatmapSetId === bsId && beatmap.approvalStatus === "Loved")) {
-				lovedBeatmapsetCount++;
-			}
-		}
-
-		let favoritesCount = 0;
-		for (let bsId of beatmapsets) {
-			for (let beatmap of beatmaps) {
-				if (beatmap.beatmapSetId === bsId && beatmap.counts.favorites > 0) {
-					favoritesCount+=Number(beatmap.counts.favorites);
-					break;
-				}
-			}
-		}
-		favoritesCount = favoritesCount.toLocaleString("en-US");
-
-		let totalPlaycount = 0;
-			for (let beatmap of beatmaps) {
-				if (beatmap.counts.plays > 0) {
-					totalPlaycount+=Number(beatmap.counts.plays);
-				}
-			}
-		totalPlaycount = totalPlaycount.toLocaleString("en-US");
-
-		let dateList = [];
-		//let rankedDateList = [];
-		for (let beatmap of beatmaps) {
-			if (beatmap.submitDate) {
-				dateList.push(beatmap.submitDate);
-			}
-			/*if (beatmap.approvedDate) {
-				rankedDateList.push(beatmap.approvedDate);
-			}*/
-		}
-		
-		let oldestMap = new Date( Math.min(...dateList));
-		let newestMap = new Date( Math.max(...dateList));
-		
-		//might use those for later
-		//let oldestRankedMap = new Date( Math.min(...rankedDateList));
-		//let newestRankedMap = new Date( Math.max(...rankedDateList));
-		
-		let mappingAgeUnix = new Date(new Date().getTime() - oldestMap.getTime());
-		let mappingAge = parseDate(mappingAgeUnix);
-		let latestMapsetId = Math.max(...beatmapsets);
-		let latestMapset = beatmaps.find(beatmap => beatmap.beatmapSetId == latestMapsetId);
-		let latestMapsetTitle = latestMapset.title;
-		let latestMapsetArtist = latestMapset.artist;
-
-		let mapperName = latestMapset.creator;
-		let mapperId = latestMapset.creatorId;
-		let mapperURL = "https://osu.ppy.sh/users/"+mapperId;
-		let latestMapsetURL = "https://osu.ppy.sh/beatmapsets/"+latestMapsetId;
-		let imageCover = "https://assets.ppy.sh/beatmaps/"+latestMapsetId+"/covers/cover.jpg"
-		let mapperPFP = "https://a.ppy.sh/"+mapperId;
-
-		let embed = new MessageEmbed()
-			.setTitle(mapperName)
-			.setURL(mapperURL)
-			.setColor("#e7792b")
-			.setThumbnail(mapperPFP)
-			.addField("Mapping Age", mappingAge, false)
-			.addField("Mapset Count", '🗺️ '+beatmapsetCount+'  ✅ '+rankedBeatmapsetCount+'  ❤ '+lovedBeatmapsetCount+'  ❓'+unrankedBeatmapsetCount, true)
-			.addField("Playcount & Favorites",value='▶ '+totalPlaycount+'  💖 '+favoritesCount , true)
-			.addField("Latest Map", `[${latestMapsetArtist} - ${latestMapsetTitle}](${latestMapsetURL})`, false)
-			.setImage(imageCover)
-			.setTimestamp();
-		message.channel.send({ embeds: [embed] });
-	}).catch(err => {
-		console.log(`error: ${username} isn't a mapper`);
-		message.channel.send(`${username} isn't a mapper :sob:`);
-	});
-}
+};
 
 exports.help = {
-    name:"mapper"
-}
+	name: "mapper",
+};
