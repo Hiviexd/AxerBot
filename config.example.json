@@ -1,6 +1,7 @@
 {
     "prefix": "!",
     "token": "",
-    "client_id": "",
-    "client_secret": ""
+    "client_secret": "",
+    "osu_client_id": "",
+    "osu_client_secret": ""
 }

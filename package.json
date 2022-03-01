@@ -7,6 +7,7 @@
     "asynckit": "^0.4.0",
     "axios": "^0.26.0",
     "callsites": "^3.1.0",
+    "colors": "^1.4.0",
     "combined-stream": "^1.0.8",
     "delayed-stream": "^1.0.0",
     "discord-api-types": "^0.22.0",

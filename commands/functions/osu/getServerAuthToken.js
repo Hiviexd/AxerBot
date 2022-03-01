@@ -4,10 +4,11 @@
  */
 
 const { default: axios } = require("axios");
+const { consoleCheck, consoleLog } = require("../../../utils/logger");
 const { osu_client_id, osu_client_secret } = require("./../../../config.json");
 
 async function listen() {
-	console.log("[getServerAuthToken] Refreshing server authorization tokens");
+	consoleLog("getServerAuthToken", "Refreshing server authorization token");
 
 	let tokens = {};
 
@@ -25,7 +26,8 @@ async function listen() {
 	});
 
 	tokens = _t.data;
-	console.log("[getServerAuthToken] Server authorizations refreshed");
+
+	consoleCheck("getServerAuthToken", "Server authorization token refreshed");
 
 	// Auto-Refresh token
 	setTimeout(listen, tokens.expires_in);
