@@ -1,8 +1,5 @@
 {
     "prefix": "!",
-    "token": "",
     "ownerId": "",
-    "osuv1token": "",
-    "osu_client_id": "",
-    "osu_client_secret": ""
+    "osuv1token": ""
 }

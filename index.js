@@ -1,4 +1,6 @@
-const { prefix, token } = require("./config.json");
+require('dotenv').config();
+const { prefix } = require("./config.json");
+const token = process.env.TOKEN;
 const keepAlive = require("./server");
 const { Client, Intents, Collection } = require("discord.js");
 require("./commands/functions/osu/getServerAuthToken");
