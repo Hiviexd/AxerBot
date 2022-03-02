@@ -52,6 +52,7 @@
   },
   "homepage": "https://github.com/Hiviexd/axer-bot#readme",
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/numeral": "^2.0.2"
   }
 }

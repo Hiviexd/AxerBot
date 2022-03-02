@@ -2,11 +2,12 @@ import * as dotenv from "dotenv";
 dotenv.config();
 const token = process.env.TOKEN;
 import "colors";
-// import keepAlive from "./server";
 import { Client, Intents, Message } from "discord.js";
 import commandHandler from "./utils/core/commandHandler";
 import "./utils/osu/osuApiConnetion";
-// require("./commands/functions/osu/getServerAuthToken");
+import keepAlive from "./server";
+import { consoleCheck } from "./utils/core/logger";
+
 const bot = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
@@ -24,6 +25,7 @@ bot.on("messageCreate", async (message: Message) => {
 	commandHandler(bot, message);
 });
 
-// keepAlive();
-bot.login(token);
-console.log("ta indo");
+keepAlive();
+bot.login(token).then(() => {
+	consoleCheck("index.ts", "Running and listening to commands!");
+});
