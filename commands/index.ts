@@ -3,6 +3,8 @@ import mapper from "./user/mapper";
 import choose from "./fun/choose";
 import yesno from "./fun/yesno";
 import participant from "./moderation/participant";
+import purge from "./moderation/purge";
+import send from "./moderation/send";
 
 const commands: any = {
 	ping: ping,
@@ -10,6 +12,8 @@ const commands: any = {
 	choose: choose,
 	yesno: yesno,
 	participant: participant,
+	purge: purge,
+	send: send,
 };
 
 export default commands;
