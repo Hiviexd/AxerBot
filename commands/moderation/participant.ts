@@ -8,12 +8,7 @@ export default {
 		//let whitelist = ['Owner', 'Host', 'Judge', 'Moderator', 'Mod'];
 		//let bool = message.member.roles.cache.some((role) => whitelist.some(wl => role === wl))
 
-		if (
-			!message.member ||
-			!message.guild ||
-			!message.mentions ||
-			!message.mentions.members
-		)
+		if (!message.member || !message.guild || !message.mentions.members)
 			return;
 
 		if (
