@@ -14,15 +14,21 @@ export default function getUserGroup(mapper: any) {
 		groups.sort((a, b) => {
 			return a.id - b.id;
 		});
+
+		let group: any = groups.shift();
+		group["icon"] = icons[group.short_name];
+
+		if (group.is_probationary && group.short_name == "BN") {
+			group.icon = icons["BNP"];
+			group.colour = "#d6c8fc";
+		}
+
+		return group;
+	} else {
+		return {
+			name: "Regular Mapper",
+			icon: "",
+			colour: "#1b89d3",
+		};
 	}
-
-	let group: any = groups.shift();
-	group["icon"] = icons[group.short_name];
-
-	if (group.is_probationary && group.short_name == "BN") {
-		group.icon = icons["BNP"];
-		group.colour = "#d6c8fc";
-	}
-
-	return group;
 }
