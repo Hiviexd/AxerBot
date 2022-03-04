@@ -6,6 +6,7 @@ import participant from "./moderation/participant";
 import spectator from "./moderation/spectator";
 import purge from "./moderation/purge";
 import send from "./moderation/send";
+import osuset from "./user/osuset";
 
 const commands: any = {
 	ping: ping,
@@ -16,6 +17,7 @@ const commands: any = {
 	spectator: spectator,
 	purge: purge,
 	send: send,
+	osuset: osuset,
 };
 
 export default commands;
