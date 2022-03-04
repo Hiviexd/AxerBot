@@ -20,6 +20,6 @@ export default function commandHandler(bot: Client, message: Message) {
 		args.shift(); // Remove command name from arguments
 		requested_command.run(bot, message, args);
 	} catch (e) {
-		message.channel.send("Something is wrong, i cant run this command.");
+		message.channel.send("Something is wrong, I can't run this command.");
 	}
 }
