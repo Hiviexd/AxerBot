@@ -1,36 +1,28 @@
 export default function getUserGroup(mapper: any) {
-	let group: any = {
-		name: "mpr",
-		mapper: true,
-		colour: "#3986ac",
+	const icons: any = {
+		BN: "https://media.discordapp.net/attachments/941102492857557023/948649173199249438/bn2.png",
+		BNP: "https://media.discordapp.net/attachments/941102492857557023/948649173983592548/probo.png",
+		GMT: "https://media.discordapp.net/attachments/941102492857557023/948649173396361226/gmt.png",
+		LVD: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
+		NAT: "https://media.discordapp.net/attachments/941102492857557023/948649173794832414/nat2.png",
+		ALM: "https://media.discordapp.net/attachments/941102492857557023/948649174197489694/alm.png",
 	};
 
 	const groups: Array<any> = mapper.groups;
 
-	groups.forEach((g) => {
-		switch (g.short_name) {
-			case "BN":
-				group = {
-					name: g.short_name,
-					colour: g.colour,
-					icon: "https://cdn.discordapp.com/role-icons/575105878638854154/f278c2b2ab42b051bab99d6e74818d3c.webp?quality=lossless",
-				};
-				break;
-			case "NAT":
-				group = {
-					name: g.short_name,
-					colour: g.colour,
-					icon: "https://cdn.discordapp.com/role-icons/575472166095683584/7e6509ec2a48c0568787ca61eec69a0a.webp?quality=lossless",
-				};
-			case "LVD":
-				group = {
-					name: g.short_name,
-					colour: g.colour,
-					icon: "https://cdn.discordapp.com/role-icons/865023823162507285/b012ae5a2f2a5bb319f02107a73522de.webp?quality=lossless",
-				};
-				break;
-		}
-	});
+	if (groups.length > 1) {
+		groups.sort((a, b) => {
+			return a.id - b.id;
+		});
+	}
+
+	let group: any = groups.shift();
+	group["icon"] = icons[group.short_name];
+
+	if (group.is_probationary && group.short_name == "BN") {
+		group.icon = icons["BNP"];
+		group.colour = "#d6c8fc";
+	}
 
 	return group;
 }

@@ -4,6 +4,7 @@ import osuApi from "../../utils/osu/osuApi";
 import getMappingAge from "./utils/getMappingAge";
 import getUserGroup from "./utils/getUserGroup";
 import numeral from "numeral";
+import UserNotMapper from "../../data/embeds/UserNotMapper";
 
 export default {
 	name: "mapper",
@@ -23,7 +24,9 @@ export default {
 		if (mapper_beatmaps.status != 200) return;
 
 		if (mapper_beatmaps.data.sets.length < 1)
-			return message.channel.send("This guy isnt a mapper");
+			return message.channel.send({
+				embeds: [UserNotMapper],
+			});
 
 		const usergroup = getUserGroup(mapper_user.data);
 
@@ -34,7 +37,7 @@ export default {
 			color: usergroup.colour,
 			fields: [
 				{
-					name: "Mapping since",
+					name: "Mapping for",
 					value: getMappingAge(mapper_beatmaps.data),
 				},
 				{
@@ -63,7 +66,7 @@ export default {
 				},
 			],
 			author: {
-				name: `${mapper_user.data.username}`,
+				name: `${mapper_user.data.username} (${usergroup.name})`,
 				url: `https://osu.ppy.sh/users/${mapper_user.data.id}`,
 				iconURL: usergroup.icon,
 			},
