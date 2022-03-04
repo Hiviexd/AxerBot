@@ -7,6 +7,7 @@ import commandHandler from "./utils/core/commandHandler";
 import "./utils/osu/osuApiConnetion";
 import keepAlive from "./server";
 import { consoleCheck } from "./utils/core/logger";
+import eventHandler from "./utils/core/eventHandler";
 
 const bot = new Client({
 	intents: [
@@ -27,5 +28,6 @@ bot.on("messageCreate", async (message: Message) => {
 
 keepAlive();
 bot.login(token).then(() => {
+	eventHandler(bot);
 	consoleCheck("index.ts", "Running and listening to commands!");
 });
