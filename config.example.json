@@ -1,9 +1,4 @@
 {
     "prefix": "!",
-    "ownerId": "",
-    "osuv1token": "",
-    "token": "",
-    "client_secret": "",
-    "osu_client_id": "",
-    "osu_client_secret": ""
+    "ownerId": ""
 }
