@@ -10,12 +10,13 @@ export default function getUserGroup(mapper: any) {
 
 	const groups: Array<any> = mapper.groups;
 
-	if (groups.length > 1) {
+	if (groups.length > 0) {
 		groups.sort((a, b) => {
 			return a.id - b.id;
 		});
 
 		let group: any = groups.shift();
+		group["name"] = `(${group.name})`;
 		group["icon"] = icons[group.short_name];
 
 		if (group.is_probationary && group.short_name == "BN") {
@@ -26,7 +27,7 @@ export default function getUserGroup(mapper: any) {
 		return group;
 	} else {
 		return {
-			name: "Regular Mapper",
+			name: "",
 			icon: "",
 			colour: "#1b89d3",
 		};
