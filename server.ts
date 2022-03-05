@@ -3,6 +3,7 @@ dotenv.config();
 import express, { Request, Response } from "express";
 const server = express();
 import { consoleCheck } from "./utils/core/logger";
+import "./database";
 
 server.all("/", (req: Request, res: Response) => {
 	res.send("Your bot is alive!");
