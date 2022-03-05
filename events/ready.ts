@@ -9,7 +9,7 @@ export default {
 			const bot_user: any = bot.user;
 
 			consoleCheck(
-				"Ready.js",
+				"Ready.ts",
 				`${bot_user.username} is online on ${bot.guilds.cache.size} servers!`
 			);
 
