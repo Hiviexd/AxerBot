@@ -7,6 +7,7 @@ import spectator from "./moderation/spectator";
 import purge from "./moderation/purge";
 import send from "./moderation/send";
 import osuset from "./user/osuset";
+import mapsetrank from "./user/mapsetrank";
 
 const commands: any = {
 	ping: ping,
@@ -18,6 +19,7 @@ const commands: any = {
 	purge: purge,
 	send: send,
 	osuset: osuset,
+	mapsetrank: mapsetrank,
 };
 
 export default commands;
