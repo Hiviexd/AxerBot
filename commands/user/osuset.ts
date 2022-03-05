@@ -5,7 +5,7 @@ import * as database from "./../../database";
 export default {
 	name: "mapper",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
-		const validOptions = ["username"];
+		const validOptions = ["user"];
 
 		if (args.length < 1)
 			return message.channel.send(
@@ -30,8 +30,8 @@ export default {
 		user = await database.users.findOne({ _id: message.author.id });
 
 		switch (options.category) {
-			case "username": {
-				user.osu[options.category] = options.value;
+			case "user": {
+				user.osu["username"] = options.value;
 				break;
 			}
 		}
@@ -39,11 +39,10 @@ export default {
 		await database.users.findOneAndUpdate({ _id: message.author.id }, user);
 
 		const res = new MessageEmbed()
-			.setTitle("Option updated!")
-			.addField(
-				"Configuration",
-				`**${options.category}**\n\`${options.value}\``
-			);
+			.setTitle("✅ Configuration updated!")
+			.setDescription(`now, your **${options.category}** is \`${options.value}\``
+			)
+			.setColor("#1df27d")
 
 		return message.channel.send({
 			embeds: [res],
