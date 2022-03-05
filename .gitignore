@@ -1,5 +1,5 @@
 # Dependency directory
 node_modules
-config.json
 tests
 .env
+dist

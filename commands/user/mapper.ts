@@ -3,7 +3,6 @@ import UserNotFound from "../../data/embeds/UserNotFound";
 import osuApi from "../../utils/osu/osuApi";
 import getMappingAge from "./utils/getMappingAge";
 import getUserGroup from "./utils/getUserGroup";
-import numeral from "numeral";
 import UserNotMapper from "../../data/embeds/UserNotMapper";
 import * as database from "./../../database";
 
@@ -78,11 +77,11 @@ export default {
 				{
 					name: "Playcount & Favorites",
 					inline: true,
-					value: `▶ ${numeral(
-						mapper_beatmaps.data.sets_playcount
-					).format("0,0")} 💖 ${numeral(
-						mapper_beatmaps.data.sets_favourites
-					).format("0,0")}`,
+					value: `▶ ${
+						mapper_beatmaps.data.sets_playcount.toLocaleString("en-US")
+					} 💖 ${
+						mapper_beatmaps.data.sets_favourites.toLocaleString("en-US")
+					}`,
 				},
 				{
 					name: "Latest Map",
