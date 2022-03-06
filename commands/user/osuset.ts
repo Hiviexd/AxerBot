@@ -6,7 +6,7 @@ export default {
 	name: "osuset",
 	description: "Set your credentials",
 	syntax: "!osuset `field` `value`",
-	example: "!osuset `user` `dick`",
+	example: "!osuset `user` `Hivie\n !osuset `",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		const validOptions = ["user"];
@@ -17,8 +17,8 @@ export default {
 			);
 
 		const options = {
-			category: args[0],
-			value: args[1],
+			category: args.shift(),
+			value: args.join(" "),
 		};
 
 		if (!options.category || !options.value)
