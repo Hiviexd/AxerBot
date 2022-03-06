@@ -1,4 +1,5 @@
 import { Client, Message } from "discord.js";
+import osuTimestamp from "./utils/osuTimestamp";
 
 import fs from "fs";
 import readline from "readline";
@@ -43,6 +44,7 @@ export default {
 					message.channel.send(randomQuote);
 				});
 			}
+			osuTimestamp(message);
 		});
 	},
 };
