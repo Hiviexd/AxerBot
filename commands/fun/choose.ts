@@ -2,6 +2,10 @@ import { Client, Message } from "discord.js";
 
 export default {
 	name: "choose",
+	description: "I will choose for you",
+	syntax: "!choose `option_1` `option_2`",
+	example: "!choose `axer cringe?`",
+	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (args.length < 1) {
 			message.channel.send("what am i supposed to choose from wtf");

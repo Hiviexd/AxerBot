@@ -3,7 +3,11 @@ import createNewUser from "../../database/utils/createNewUser";
 import * as database from "./../../database";
 
 export default {
-	name: "mapper",
+	name: "osuset",
+	description: "Set your credentials",
+	syntax: "!osuset `field` `value`",
+	example: "!osuset `user` `dick`",
+	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		const validOptions = ["user"];
 
@@ -40,9 +44,10 @@ export default {
 
 		const res = new MessageEmbed()
 			.setTitle("✅ Configuration updated!")
-			.setDescription(`now, your **${options.category}** is \`${options.value}\``
+			.setDescription(
+				`now, your **${options.category}** is \`${options.value}\``
 			)
-			.setColor("#1df27d")
+			.setColor("#1df27d");
 
 		return message.channel.send({
 			embeds: [res],

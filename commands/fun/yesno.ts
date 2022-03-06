@@ -4,6 +4,10 @@ import { Client, Message } from "discord.js";
 
 export default {
 	name: "yesno",
+	description: "Yes or no? I can help you.",
+	syntax: "!yesno `option`",
+	example: "!yesno `axer cringe?`",
+	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		async function processFile() {
 			const fileStream = fs.createReadStream("./data/yesno.txt");

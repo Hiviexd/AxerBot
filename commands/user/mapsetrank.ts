@@ -7,6 +7,11 @@ import * as database from "./../../database";
 
 export default {
 	name: "mapsetrank",
+	description: "Display beatmapset statistics from a user",
+	syntax: "!mapsetrank `?user` `?-rank_type`",
+	example:
+		"!mapsetrank `Hivie` `-favourites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		let sort = args[args.length - 1] || "-playcount";
 		let decorator = {
