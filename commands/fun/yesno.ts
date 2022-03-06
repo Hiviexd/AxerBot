@@ -2,6 +2,10 @@ import { Client, Message } from "discord.js";
 import processFile from "../../utils/messages/randomMessage";
 export default {
 	name: "yesno",
+	description: "Yes or no? I can help you.",
+	syntax: "!yesno `option`",
+	example: "!yesno `axer cringe?`",
+	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (args.length < 1) {
 			message.channel.send("waht is your question you dumbass");

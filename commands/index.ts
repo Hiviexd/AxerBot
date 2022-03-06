@@ -8,6 +8,7 @@ import purge from "./moderation/purge";
 import send from "./moderation/send";
 import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
+import help from "./misc/help";
 
 const commands: any = {
 	ping: ping,
@@ -20,6 +21,7 @@ const commands: any = {
 	send: send,
 	osuset: osuset,
 	mapsetrank: mapsetrank,
+	help: help,
 };
 
 export default commands;

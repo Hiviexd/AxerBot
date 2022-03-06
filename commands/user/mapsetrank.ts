@@ -7,6 +7,11 @@ import * as database from "./../../database";
 
 export default {
 	name: "mapsetrank",
+	description: "Displays beatmapset statistics of a user",
+	syntax: "!mapsetrank `<user>` `-rank_type`",
+	example:
+		"!mapsetrank `Hivie` `-favourites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		let sort = args[args.length - 1] || "-playcount";
 		let decorator = {
@@ -57,7 +62,7 @@ export default {
 			}
 		}
 
-		let mapper_name = args.join("_");
+		let mapper_name = args.join(" ");
 
 		if (message.mentions.users.size != 1) {
 			if (args.length < 1) {
@@ -79,7 +84,7 @@ export default {
 		if (mapper_name.trim() == "")
 			return message.channel.send("Provide a valid user.");
 
-		const mapper_user = await osuApi.fetch.user(mapper_name);
+		const mapper_user = await osuApi.fetch.user(encodeURI(mapper_name));
 
 		if (mapper_user.status != 200)
 			return message.channel.send({
