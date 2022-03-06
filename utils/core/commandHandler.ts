@@ -8,6 +8,8 @@ export default function commandHandler(bot: Client, message: Message) {
 	if (!message.content.startsWith(config.prefix)) return;
 	if (message.content.length < 3) return;
 
+	message.channel.sendTyping();
+
 	const args = message.content
 		.slice(config.prefix.length, message.content.length)
 		.split(" ");
