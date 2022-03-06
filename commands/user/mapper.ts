@@ -8,12 +8,12 @@ import * as database from "./../../database";
 
 export default {
 	name: "mapper",
-	description: "Display mapper statistics from a user",
+	description: "Displays mapper statistics of a user",
 	syntax: "!mapper `<user>`",
 	example: "!mapper `Hivie`\n!mapper",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
-		let mapper_name = args.join("_");
+		let mapper_name = args.join(" ");
 
 		if (message.mentions.users.size != 1) {
 			if (args.length < 1) {
@@ -33,7 +33,7 @@ export default {
 		}
 
 		if (mapper_name.trim() == "")
-			return message.channel.send("Provide a valid user.");
+			return message.channel.send("❗ Provide a valid user.");
 
 		const mapper_user = await osuApi.fetch.user(encodeURI(mapper_name));
 
