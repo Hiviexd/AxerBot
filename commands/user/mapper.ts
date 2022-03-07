@@ -43,7 +43,7 @@ export default {
 			});
 
 		const mapper_beatmaps = await osuApi.fetch.userBeatmaps(
-			mapper_user.data.id
+			mapper_user.data.id.toString()
 		);
 
 		if (mapper_beatmaps.status != 200) return;
