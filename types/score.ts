@@ -3,7 +3,7 @@ import type { Timestamp } from "./timestamp"
 import type { User } from "./user"
 
 import { GameMode } from "./game_mode"
-import { Beatmapset } from ".."
+import { Beatmapset } from "./beatmap"
 
 /**
  * https://osu.ppy.sh/docs/index.html#score
