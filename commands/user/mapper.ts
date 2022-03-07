@@ -91,7 +91,7 @@ export default {
 				},
 			],
 			author: {
-				name: `${mapper_user.data.username} ${usergroup.name}`,
+				name: `${mapper_user.data.username}`,
 				url: `https://osu.ppy.sh/users/${mapper_user.data.id}`,
 				iconURL: usergroup.icon,
 			},

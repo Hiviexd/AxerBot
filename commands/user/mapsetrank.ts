@@ -34,7 +34,7 @@ export default {
 				break;
 			}
 			case "-fav": {
-				sort = "favourite_count";
+				sort = "favorite_count";
 				args.pop();
 
 				decorator = {
@@ -153,7 +153,7 @@ export default {
 			color: usergroup.colour,
 			description: beatmaps_string,
 			author: {
-				name: `${mapper_user.data.username} ${usergroup.name} | ${decorator.title}`,
+				name: `${mapper_user.data.username} | ${decorator.title}`,
 				url: `https://osu.ppy.sh/users/${mapper_user.data.id}`,
 				iconURL: usergroup.icon,
 			},
