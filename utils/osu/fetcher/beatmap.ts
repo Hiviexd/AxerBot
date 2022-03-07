@@ -1,7 +1,10 @@
 import axios from "axios";
+import { BeatmapsetResponse } from "../../../types/beatmapset_response";
+import { BeatmapResponse } from "../../../types/beatmap_response";
+import { UserBeatmapetsResponse } from "../../../types/user_beatmapsets_response";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
-export async function beatmap(beatmap_id: string) {
+export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
 	try {
 		consoleLog("beatmap fetcher", `Fetching beatmap ${beatmap_id}`);
 
@@ -22,7 +25,7 @@ export async function beatmap(beatmap_id: string) {
 			status: 200,
 			data: res,
 		};
-	} catch (e) {
+	} catch (e: any) {
 		consoleError("beatmap fetcher", "Wtf an error:");
 		console.error(e);
 
@@ -33,7 +36,9 @@ export async function beatmap(beatmap_id: string) {
 	}
 }
 
-export async function beatmapset(beatmapset_id: string) {
+export async function beatmapset(
+	beatmapset_id: string
+): Promise<BeatmapsetResponse> {
 	try {
 		consoleLog("beatmap fetcher", `Fetching beatmapset ${beatmapset_id}`);
 
@@ -54,7 +59,7 @@ export async function beatmapset(beatmapset_id: string) {
 			status: 200,
 			data: res,
 		};
-	} catch (e) {
+	} catch (e: any) {
 		consoleError("beatmap fetcher", "Wtf an error:");
 		console.error(e);
 
@@ -65,7 +70,9 @@ export async function beatmapset(beatmapset_id: string) {
 	}
 }
 
-export async function userBeatmaps(user_id: string) {
+export async function userBeatmaps(
+	user_id: string
+): Promise<UserBeatmapetsResponse> {
 	try {
 		consoleLog(
 			"beatmap fetcher",
@@ -141,7 +148,7 @@ export async function userBeatmaps(user_id: string) {
 		let data = await awaitBeatmaps;
 
 		return data;
-	} catch (e) {
+	} catch (e: any) {
 		consoleError("beatmap fetcher", "Wtf an error:");
 		console.error(e);
 

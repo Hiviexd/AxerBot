@@ -1,7 +1,8 @@
 import axios from "axios";
+import { UserResponse } from "../../../types/user_response";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
-export async function user(user_id: string) {
+export async function user(user_id: string): Promise<UserResponse> {
 	try {
 		consoleLog("user fetcher", `Fetching user ${user_id}`);
 
@@ -22,7 +23,7 @@ export async function user(user_id: string) {
 			status: 200,
 			data: res,
 		};
-	} catch (e) {
+	} catch (e: any) {
 		consoleError("user fetcher", "Wtf an error:");
 		console.error(e);
 
