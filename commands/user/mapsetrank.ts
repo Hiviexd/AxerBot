@@ -10,7 +10,7 @@ export default {
 	description: "Displays beatmapset statistics of a user",
 	syntax: "!mapsetrank `<user>` `-rank_type`",
 	example:
-		"!mapsetrank `Hivie` `-favourites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+		"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		let sort = args[args.length - 1] || "-playcount";
@@ -22,12 +22,12 @@ export default {
 		message.channel.sendTyping();
 
 		switch (sort.toLowerCase()) {
-			case "-favourites": {
-				sort = "favourite_count";
+			case "-favorites": {
+				sort = "favorite_count";
 				args.pop();
 
 				decorator = {
-					title: "Most favourited beatmaps",
+					title: "Most favorited beatmaps",
 					emoji: "❤",
 				};
 
@@ -38,7 +38,7 @@ export default {
 				args.pop();
 
 				decorator = {
-					title: "Most favourited beatmaps",
+					title: "Most favorited beatmaps",
 					emoji: "❤",
 				};
 
