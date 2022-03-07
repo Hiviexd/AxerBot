@@ -27,6 +27,10 @@ export default {
                     source = "./data/axer.txt";
                     privateState = 0;
                 }
+                console.log("privserver: " + privserver);
+                console.log("privlist: " + privlist);
+                console.log("source: " + source);
+                console.log("privateState: " + privateState);
                 randomMessage(source, privateState).then((randomQuote) => {
                     message.channel.send(randomQuote);
                 });
