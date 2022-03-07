@@ -5,11 +5,11 @@
 
  import fs from "fs";
  import readline from "readline";
- import fetch from "node-fetch";
+ import axios from "axios";
 
  async function processLink(link: string) {
-    let response = await fetch(link);
-    let body = await response.text();
+    let response = await axios(link);
+    let body = response.data;
     let lines = body.split("\n");
     return lines;
  }
