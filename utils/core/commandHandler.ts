@@ -1,17 +1,23 @@
 import { Client, Message } from "discord.js";
 import commands from "../../commands";
+import createNewGuild from "../../database/utils/createNewGuild";
 import * as config from "./../../config.json";
+import * as database from "./../../database";
 
-export default function commandHandler(bot: Client, message: Message) {
+export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;
 	if (message.channel.type == "DM") return;
-	if (!message.content.startsWith(config.prefix)) return;
-	if (message.content.length < 3) return;
+	if (!message.guild) return;
+	let guild = await database.guilds.findOne({ _id: message.guildId });
+
+	if (guild == null) guild = await createNewGuild(message.guild);
+
+	if (!message.content.startsWith(guild.prefix)) return;
 
 	message.channel.sendTyping();
 
 	const args = message.content
-		.slice(config.prefix.length, message.content.length)
+		.slice(guild.prefix.length, message.content.length)
 		.split(" ");
 
 	const requested_command = commands[args[0].toLowerCase()];
