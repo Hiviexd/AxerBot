@@ -20,7 +20,6 @@ export default {
             //check if keyword or bot are mentioned
 			if (message.content.toUpperCase().includes("AXER") || message.mentions.has(bot_user)) {
 				//check if server uses private list
-                //if (bot.guilds.cache.filter(s => s.id === privserver).size > 0)
                 if (message.guildId === privserver) {
                     source = privlist;
                     privateState = 1;
@@ -28,10 +27,6 @@ export default {
                     source = "./data/axer.txt";
                     privateState = 0;
                 }
-                console.log("privserver: " + privserver);
-                console.log("privlist: " + privlist);
-                console.log("source: " + source);
-                console.log("privateState: " + privateState);
                 randomMessage(source, privateState).then((randomQuote) => {
                     message.channel.send(randomQuote);
                 });
