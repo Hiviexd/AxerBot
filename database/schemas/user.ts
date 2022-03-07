@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export const Users = new Schema({
+export default new Schema({
 	_id: {
 		type: String,
 	},
