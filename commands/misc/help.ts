@@ -65,7 +65,7 @@ export default {
 			let requested_command: any = args.pop();
 
 			if (requested_command == undefined)
-				return message.channel.send("Provide a valid command dumb.");
+				return message.channel.send("Provide a valid command.");
 
 			requested_command = commands[requested_command];
 

@@ -10,7 +10,7 @@ export default {
 	description: "Displays beatmapset statistics of a user",
 	syntax: "!mapsetrank `<user>` `-rank_type`",
 	example:
-		"!mapsetrank `Hivie` `-favourites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+		"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		let sort = args[args.length - 1] || "-playcount";
@@ -22,23 +22,23 @@ export default {
 		message.channel.sendTyping();
 
 		switch (sort.toLowerCase()) {
-			case "-favourites": {
+			case "-favorites": {
 				sort = "favourite_count";
 				args.pop();
 
 				decorator = {
-					title: "Most favourited beatmaps",
+					title: "Most favorited beatmaps",
 					emoji: "❤",
 				};
 
 				break;
 			}
 			case "-fav": {
-				sort = "favourite_count";
+				sort = "favorite_count";
 				args.pop();
 
 				decorator = {
-					title: "Most favourited beatmaps",
+					title: "Most favorited beatmaps",
 					emoji: "❤",
 				};
 
@@ -153,7 +153,7 @@ export default {
 			color: usergroup.colour,
 			description: beatmaps_string,
 			author: {
-				name: `${mapper_user.data.username} ${usergroup.name} | ${decorator.title}`,
+				name: `${mapper_user.data.username} | ${decorator.title}`,
 				url: `https://osu.ppy.sh/users/${mapper_user.data.id}`,
 				iconURL: usergroup.icon,
 			},
