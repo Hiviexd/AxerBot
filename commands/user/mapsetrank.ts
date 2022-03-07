@@ -23,7 +23,7 @@ export default {
 
 		switch (sort.toLowerCase()) {
 			case "-favorites": {
-				sort = "favourite_count";
+				sort = "favorite_count";
 				args.pop();
 
 				decorator = {

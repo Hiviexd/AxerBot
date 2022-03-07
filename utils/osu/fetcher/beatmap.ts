@@ -38,7 +38,7 @@ export async function beatmapset(beatmapset_id: string) {
 		consoleLog("beatmap fetcher", `Fetching beatmapset ${beatmapset_id}`);
 
 		const req = await axios(
-			"https://osu.ppy.sh/api/v2/beatmaps/".concat(beatmapset_id),
+			"https://osu.ppy.sh/api/v2/beatmapsets/".concat(beatmapset_id),
 			{
 				headers: {
 					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
