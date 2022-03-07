@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { consoleCheck, consoleError, consoleLog } from "../utils/core/logger";
-import { Users } from "./schemas/user";
+import guild from "./schemas/guild";
+import user from "./schemas/user";
 
 consoleLog("database", "Starting databse connection...");
 
@@ -17,5 +18,5 @@ mongoose.connect(
 	}
 );
 
-export const users = mongoose.model("Users", Users);
-export const guilds = mongoose.model("Guilds", Users);
+export const users = mongoose.model("Users", user);
+export const guilds = mongoose.model("Guilds", guild);

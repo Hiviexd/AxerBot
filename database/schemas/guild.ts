@@ -1,8 +1,12 @@
 import { Schema } from "mongoose";
 
-export const Guilds = new Schema({
+export default new Schema({
 	_id: {
 		type: String,
+	},
+	prefix: {
+		type: String,
+		default: "!",
 	},
 	osu: {
 		type: Object,
