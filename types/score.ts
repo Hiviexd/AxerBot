@@ -1,76 +1,75 @@
-import type { Beatmap } from "./beatmap"
-import type { Timestamp } from "./timestamp"
-import type { User } from "./user"
+import type { Beatmap, Beatmapset } from "./beatmap";
+import type { Timestamp } from "./timestamp";
+import type { User } from "./user";
 
-import { GameMode } from "./game_mode"
-import { Beatmapset } from ".."
+import { GameMode } from "./game_mode";
 
 /**
  * https://osu.ppy.sh/docs/index.html#score
  */
 export interface ScoreStatistics {
-    /** integer */
-    count_50: number
-    /** integer */
-    count_100: number
-    /** integer */
-    count_300: number
-    /** integer */
-    count_geki: number
-    /** integer */
-    count_katu: number
-    /** integer */
-    count_miss: number
+	/** integer */
+	count_50: number;
+	/** integer */
+	count_100: number;
+	/** integer */
+	count_300: number;
+	/** integer */
+	count_geki: number;
+	/** integer */
+	count_katu: number;
+	/** integer */
+	count_miss: number;
 }
 
 /**
  * https://osu.ppy.sh/docs/index.html#score
  */
 export interface Score {
-    /** integer */
-    id: number
-    /** integer */
-    best_id: number
-    /** integer */
-    user_id: number
-    /** float */
-    accuracy: number
-    mods: string[]
-    /** integer */
-    score: number
-    /** integer */
-    max_combo: number
-    perfect: boolean
-    statistics: ScoreStatistics
-    passed: boolean
-    /** float */
-    pp: number
-    rank: string
-    created_at: Timestamp
-    mode: GameMode
-    /** integer */
-    mode_int: number
-    replay: boolean
-    // Optional:
-    beatmap?: Beatmap
-    beatmapset?: Beatmapset
-    //rank_country?: unknown
-    //rank_global?: unknown
-    //weight?: unknown
-    user?: User
-    //match?: unknown
+	/** integer */
+	id: number;
+	/** integer */
+	best_id: number;
+	/** integer */
+	user_id: number;
+	/** float */
+	accuracy: number;
+	mods: string[];
+	/** integer */
+	score: number;
+	/** integer */
+	max_combo: number;
+	perfect: boolean;
+	statistics: ScoreStatistics;
+	passed: boolean;
+	/** float */
+	pp: number;
+	rank: string;
+	created_at: Timestamp;
+	mode: GameMode;
+	/** integer */
+	mode_int: number;
+	replay: boolean;
+	// Optional:
+	beatmap?: Beatmap;
+	beatmapset?: Beatmapset;
+	//rank_country?: unknown
+	//rank_global?: unknown
+	//weight?: unknown
+	user?: User;
+	//match?: unknown
 }
 
 /**
  * https://osu.ppy.sh/docs/index.html#beatmapuserscore
  */
 export interface BeatmapUserScore {
-    /**
-     * The position of the score within the requested beatmap ranking
-     */
-    position: number
-    /**
-     * The details of the score.
-     */
-    score: Score
+	/**
+	 * The position of the score within the requested beatmap ranking
+	 */
+	position: number;
+	/**
+	 * The details of the score.
+	 */
+	score: Score;
 }
