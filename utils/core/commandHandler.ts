@@ -3,6 +3,7 @@ import commands from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as config from "./../../config.json";
 import * as database from "./../../database";
+import { consoleError } from "./logger";
 
 export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;
@@ -14,7 +15,14 @@ export default async function commandHandler(bot: Client, message: Message) {
 
 	if (!message.content.startsWith(guild.prefix)) return;
 
-	message.channel.sendTyping();
+	try {
+		message.channel.sendTyping();
+	} catch (e: any) {
+		consoleError(
+			"commandHandler",
+			"Can't sent typing status on ".concat(message.channel.id)
+		);
+	}
 
 	const args = message.content
 		.slice(guild.prefix.length, message.content.length)
