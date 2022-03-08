@@ -1,7 +1,6 @@
 import type { Beatmap, Beatmapset } from "./beatmap";
 import type { Timestamp } from "./timestamp";
 import type { User } from "./user";
-
 import { GameMode } from "./game_mode";
 
 /**
