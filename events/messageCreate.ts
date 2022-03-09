@@ -2,7 +2,7 @@ import { Client } from "discord.js";
 import randomMessage from "../utils/messages/randomMessage";
 import osuTimestamp from "../utils/messages/osuTimestamp";
 import * as dotenv from "dotenv";
-import osuURL from "../utils/messages/osuURLmanager";
+// import osuURL from "../utils/messages/osuURLmanager";
 dotenv.config();
 const privserver: any = process.env.PRIVATESERVER;
 const privlist: any = process.env.PRIVATELIST;
@@ -35,7 +35,7 @@ export default {
 					message.channel.send(randomQuote);
 				});
 			}
-			osuURL(message);
+			// osuURL(message);
 			osuTimestamp(message);
 		});
 	},
