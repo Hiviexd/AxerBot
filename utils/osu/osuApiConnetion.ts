@@ -30,7 +30,7 @@ async function listen() {
 		tokens = _t.data;
 
 		// Auto-Refresh token
-		setTimeout(listen, tokens.expires_in * 60);
+		setTimeout(listen, Number(tokens.expires_in) * 1000);
 
 		process.env.OSU_API_ACCESS_TOKEN = tokens.access_token;
 
@@ -44,7 +44,7 @@ async function listen() {
 		consoleError("getServerAuthToken", "Error during token refresh:\n");
 		console.error(e);
 
-		listen();
+		setTimeout(listen, 5000);
 		return tokens;
 	}
 }
