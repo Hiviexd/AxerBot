@@ -3,6 +3,7 @@ import randomMessage from "../utils/messages/randomMessage";
 import osuTimestamp from "../utils/messages/osuTimestamp";
 import * as dotenv from "dotenv";
 import * as database from "./../database";
+import createNewGuild from "../database/utils/createNewGuild";
 // import osuURL from "../utils/messages/osuURLmanager";
 dotenv.config();
 const privserver: any = process.env.PRIVATESERVER;
@@ -14,8 +15,11 @@ export default {
 		bot.on("messageCreate", async (message) => {
 			if (message.author === bot.user) return;
 			if (message.channel.type === "DM") return;
+			if (!message.guild) return;
 			const bot_user: any = bot.user;
-			const guild_db = await database.guilds.findById(message.guildId);
+			let guild_db = await database.guilds.findById(message.guildId);
+
+			if (!guild_db) guild_db = await createNewGuild(message.guild);
 
 			if (
 				message.content.toUpperCase().includes("AXER") ||
