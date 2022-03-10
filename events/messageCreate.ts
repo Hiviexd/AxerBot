@@ -19,7 +19,8 @@ export default {
 			const bot_user: any = bot.user;
 			let guild_db = await database.guilds.findById(message.guildId);
 
-			if (!guild_db) guild_db = await createNewGuild(message.guild);
+			if (guild_db == null)
+				guild_db = await createNewGuild(message.guild);
 
 			if (
 				message.content.toUpperCase().includes("AXER") ||
