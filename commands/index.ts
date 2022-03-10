@@ -10,6 +10,7 @@ import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
 import help from "./misc/help";
 import setprefix from "./moderation/setprefix";
+import quotes from "./fun/quotes";
 
 const commands: any = {
 	ping: ping,
@@ -24,6 +25,7 @@ const commands: any = {
 	mapsetrank: mapsetrank,
 	help: help,
 	setprefix: setprefix,
+	quotes: quotes,
 };
 
 export default commands;
