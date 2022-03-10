@@ -45,11 +45,15 @@ export default {
 							(q) =>
 								q.author.id != bot_user.id &&
 								!q.content.toUpperCase().includes("AXER") &&
-								q.mentions.users.size == 0
+								q.mentions.users.size == 0 &&
+								!q.content.startsWith("!") &&
+								!q.content.startsWith(guild_db.prefix)
 						)
-						.random().content;
+						.random();
 
-					message.channel.send(random_quote);
+					if (!random_quote) return;
+
+					message.channel.send(random_quote.content);
 				}
 				// osuURL(message);
 			} else {
