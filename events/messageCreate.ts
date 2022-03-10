@@ -52,7 +52,8 @@ export default {
 								!q.content.toUpperCase().includes("AXER") &&
 								q.mentions.users.size == 0 &&
 								!q.content.startsWith("!") &&
-								!q.content.startsWith(guild_db.prefix)
+								!q.content.startsWith(guild_db.prefix) &&
+								!q.content.trim() != ""
 						)
 						.random();
 
