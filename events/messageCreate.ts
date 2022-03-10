@@ -53,7 +53,7 @@ export default {
 								q.mentions.users.size == 0 &&
 								!q.content.startsWith("!") &&
 								!q.content.startsWith(guild_db.prefix) &&
-								!q.content.trim() != ""
+								q.content.trim() != ""
 						)
 						.random();
 
