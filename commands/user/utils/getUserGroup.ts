@@ -1,4 +1,6 @@
-export default function getUserGroup(mapper: any) {
+import { EmbededUserGroup, User } from "../../../types/user";
+
+export default function getUserGroup(mapper: User): EmbededUserGroup {
 	const icons: any = {
 		BN: "https://media.discordapp.net/attachments/941102492857557023/948649173199249438/bn2.png",
 		BNP: "https://media.discordapp.net/attachments/941102492857557023/948649173983592548/probo.png",
@@ -8,7 +10,13 @@ export default function getUserGroup(mapper: any) {
 		ALM: "https://media.discordapp.net/attachments/941102492857557023/948649174197489694/alm.png",
 	};
 
-	const groups: Array<any> = mapper.groups;
+	const groups = mapper.groups;
+
+	if (!groups)
+		return {
+			icon: "",
+			colour: "#1b89d3",
+		};
 
 	if (groups.length > 0) {
 		groups.sort((a, b) => {
