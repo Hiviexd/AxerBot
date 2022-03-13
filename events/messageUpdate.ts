@@ -54,6 +54,7 @@ export default {
 					.first();
 
 				if (!channel) return;
+
 				channel.send({ embeds: [embed] });
 			});
 		} catch (e: any) {

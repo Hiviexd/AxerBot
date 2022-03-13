@@ -4,6 +4,7 @@ import createNewGuild from "../../database/utils/createNewGuild";
 import * as config from "./../../config.json";
 import * as database from "./../../database";
 import { consoleError } from "./logger";
+import CommandNotFound from "./../../data/embeds/CommandNotFound";
 
 export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;
@@ -28,7 +29,9 @@ export default async function commandHandler(bot: Client, message: Message) {
 
 	const requested_command = commands[args[0].toLowerCase()];
 
-	if (!requested_command) return message.channel.send("Command not found");
+	if (!requested_command) return message.channel.send({
+		embeds: [CommandNotFound]
+	});
 
 	try {
 		args.shift(); // Remove command name from arguments

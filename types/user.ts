@@ -1,5 +1,6 @@
 import type { Timestamp } from "./timestamp";
 import { GameMode } from "./game_mode";
+import { ColorResolvable } from "discord.js";
 
 export interface UserCompactCover {
 	custom_url: null | unknown;
@@ -29,7 +30,26 @@ export interface UserMonthlyPlaycount {
 }
 
 export interface UserGroup {
-	todo?: boolean;
+	colour: string;
+	has_listing: boolean;
+	has_playmodes: boolean;
+	id: number;
+	identifier: string;
+	is_probationary: boolean;
+	name: string;
+	short_name: string;
+}
+
+export interface EmbededUserGroup {
+	colour: ColorResolvable;
+	icon: string;
+	has_listing?: boolean;
+	has_playmodes?: boolean;
+	id?: number;
+	identifier?: string;
+	is_probationary?: boolean;
+	name?: string;
+	short_name?: string;
 }
 
 export interface UserAccountHistory {

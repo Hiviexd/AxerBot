@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 import commands from "./../";
-
+import CommandNotFound from "./../../data/embeds/CommandNotFound";
 export default {
 	name: "help",
 	run: async (bot: Client, message: Message, args: string[]) => {
@@ -13,6 +13,7 @@ export default {
 				syntax: commands[key].syntax,
 				description: commands[key].description,
 				example: commands[key].example,
+				options: commands[key].options,
 				category: commands[key].category,
 			});
 		});
@@ -20,10 +21,10 @@ export default {
 		if (args.length < 1) {
 			function generateEmbed() {
 				const embed: any = {
-					title: "Dumbass, you can't use a simple command?",
+					title: "Commands",
 					color: "#f98692",
 					description:
-						"Use `!help <command>` to see how the command works.",
+						"Use `!help <command>` to see how a specific command works.",
 					fields: [],
 				};
 
@@ -69,8 +70,12 @@ export default {
 
 			requested_command = commands[requested_command];
 
+			if (!requested_command) return message.channel.send({
+				embeds: [CommandNotFound] // import now
+			});
+
 			const embed: any = {
-				title: `How to use __${requested_command.name}__ command:`,
+				title: `!${requested_command.name}`,
 				color: "#1df27d",
 				description:
 					requested_command.description || "No description provided.",
@@ -87,10 +92,19 @@ export default {
 					)
 						return;
 
-					embed.fields.push({
-						name: key.charAt(0).toUpperCase() + key.slice(1),
-						value: requested_command[key],
-					});
+					if (typeof(requested_command[key]) == "object") {
+						embed.fields.push({
+							name: key.charAt(0).toUpperCase() + key.slice(1),
+							value: requested_command[key].join("\n"),
+							inline: true
+						});
+					} else {
+						embed.fields.push({
+							name: key.charAt(0).toUpperCase() + key.slice(1),
+							value: requested_command[key],
+							inline: true
+						});
+					}
 				}
 			});
 

@@ -26,6 +26,22 @@ export default new Schema({
 			logs: undefined,
 		},
 	},
+	fun: {
+		type: Object,
+		default: {
+			enable: true,
+			mode: "default",
+			cooldown: {
+				active: false,
+				ends_at: 0,
+			},
+			blacklist: {
+				channels: [],
+				words: [],
+			},
+			phrases: [],
+		},
+	},
 	messages: {
 		type: Object,
 		default: {
