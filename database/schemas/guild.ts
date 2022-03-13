@@ -31,7 +31,10 @@ export default new Schema({
 		default: {
 			enable: true,
 			mode: "default",
-			cooldown: true,
+			cooldown: {
+				active: false,
+				ends_at: 0,
+			},
 			blacklist: {
 				channels: [],
 				words: [],
