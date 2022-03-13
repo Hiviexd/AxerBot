@@ -53,6 +53,8 @@ export default {
 					.filter((c) => c.name == "wasteland")
 					.first();
 
+				if (!channel) return;
+
 				channel.send({ embeds: [embed] });
 			});
 		} catch (e: any) {
