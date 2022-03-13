@@ -1,6 +1,8 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "./../../database";
+import MissingPermissions from "./../../data/embeds/MissingPermissions";
+import { ownerId } from "../../config.json";
 
 export default {
 	name: "setprefix",
@@ -13,8 +15,7 @@ export default {
 
 		if (!message.guild || !message.member) return;
 
-		if (!message.member.permissions.has("ADMINISTRATOR"))
-			return message.channel.send("Invalid permissions.");
+		if ((!message.member.permissions.has("MANAGE_GUILD", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
 
 		if (guild == null) await createNewGuild(message.guild);
 

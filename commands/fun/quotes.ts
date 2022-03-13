@@ -1,9 +1,11 @@
-import { Client, Message } from "discord.js";
+import { Client, Message } from "discord.js"
 import { quotesSetList } from "./subcommands/quotesSetList"
 import { quotesGetStatus } from "./subcommands/quotesGetStatus"
 import { quotesSetMode } from "./subcommands/quotesSetMode"
-import { quotesToggle } from "./subcommands/quotesToggle";
+import { quotesToggle } from "./subcommands/quotesToggle"
 import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid"
+import MissingPermissions from "./../../data/embeds/MissingPermissions"
+import { ownerId } from "../../config.json"
 
 export default {
 	name: "quotes",
@@ -13,11 +15,10 @@ export default {
 	options: ["`set` `custom`", "`set` `default`", "`set` `disabled`", "`set` `list`", "`status`"],
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
+		if (!message.guild || !message.member) return;
 
-		/**
-		 * TODO: Upload -> Parse -> Save -> Send -> Review
-		 * ?                                        ^^^^
-		 */
+		// ? Only guild managers and admins can use this
+		if ((!message.member.permissions.has("MANAGE_GUILD", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
 
 		const action = args[1]; // !quotes set <argument>
 		const getter = args[0] // !quotes <something>

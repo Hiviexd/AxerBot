@@ -1,28 +1,12 @@
 import { Client, Message } from "discord.js";
-const { ownerId } = require("../../config.json");
+import { ownerId } from "../../config.json";
+import MissingPermissions from "./../../data/embeds/MissingPermissions"
 
 export default {
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member || !message.guild) return;
 
-		if (
-			!message.member.roles.cache.find(
-				(role) =>
-					role.name === "Host" ||
-					role.name === "Judge" ||
-					role.name === "Owner" ||
-					role.name === "Moderator"
-			) &&
-			message.author.id !== ownerId
-		) {
-			let msg = await message.channel.send(
-				":x: You don't have the permission to use this command!"
-			);
-			setTimeout(() => {
-				msg.delete();
-			}, 2000);
-			return;
-		}
+		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
 
 		let lastArg = args[args.length - 1];
 		args.pop();
