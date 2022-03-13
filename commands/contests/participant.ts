@@ -6,7 +6,7 @@ export default {
 	name: "participant",
 	description: "Gives the Verified + Participant role to a user (and sets a new nickname when given)",
 	syntax: "!participant `@user` \n!participant `@user` `<nickname>`",
-	example: "!participant `@Sebola`\n!participant `@Nifty1234` `Nifty`", 
+	example: "!participant `@Sebola`\n!participant `@Nifty1234` `Nifty`",
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member || !message.guild || !message.mentions.members) return;
