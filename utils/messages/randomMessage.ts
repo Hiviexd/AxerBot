@@ -28,6 +28,8 @@ export default async function randomMessage(message: Message, bot: any) {
 			const quotes: string[] = guild.fun.phrases;
 			const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
+			if (!quote) return;
+
 			message.channel.send(quote);
 		}
 	}
