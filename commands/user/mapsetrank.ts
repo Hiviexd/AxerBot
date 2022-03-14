@@ -8,11 +8,11 @@ import * as database from "./../../database";
 export default {
 	name: "mapsetrank",
 	description: "Displays beatmapset statistics of a user",
-	syntax: "!mapsetrank `<user>` `-rank_type`",
-	example:
-		"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+	syntax: "!mapsetrank `<user>` `<option>`",
+	options: ["`-fav` | `-favorites`", "`-plays` | `-playcount`"],
+	example:"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
 	category: "osu",
-	run: async (bot: Client, message: Message, args: Array<string>) => {
+	run: async (bot: Client, message: Message, args: string[]) => {
 		let sort = args[args.length - 1] || "-playcount";
 		let decorator = {
 			title: "Most played beatmaps",
@@ -50,7 +50,7 @@ export default {
 
 				break;
 			}
-			case "-play": {
+			case "-plays": {
 				sort = "play_count";
 				args.pop();
 				break;

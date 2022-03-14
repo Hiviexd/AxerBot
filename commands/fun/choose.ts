@@ -4,7 +4,7 @@ export default {
 	name: "choose",
 	description: "I will choose for you!",
 	syntax: "!choose `<option_1>` or `<option_2>`",
-	example: "!choose `map or mod`",
+	example: "!choose `map a song or mod a map`",
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (args.length < 1) {
@@ -14,9 +14,7 @@ export default {
 			message.channel.send(`and? what's the other choice??`);
 			return;
 		}
-		let choices = args.filter(
-			(choice) => choice.length > 0 && choice !== "or"
-		);
+		let choices = args.join(" ").split("or");
 		let randomChoice = choices[Math.floor(Math.random() * choices.length)];
 		message.channel.send(randomChoice);
 	},

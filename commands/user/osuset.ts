@@ -5,7 +5,7 @@ import * as database from "./../../database";
 export default {
 	name: "osuset",
 	description: "Sets your credentials so the bot recognizes you.",
-	syntax: "!osuset `field` `value`",
+	syntax: "!osuset `<field>` `<value>`",
 	example: "!osuset `user` `Hivie`\n !osuset `user` `HEAVENLY MOON`",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {

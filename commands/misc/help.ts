@@ -82,8 +82,10 @@ export default {
 				fields: [],
 			};
 
+			let field_index = 0;
 			Object.keys(requested_command).forEach((key) => {
 				if (requested_command[key] != undefined) {
+					
 					if (
 						key == "name" ||
 						key == "run" ||
@@ -99,12 +101,16 @@ export default {
 							value: requested_command[key].join("\n"),
 							inline: false,
 						});
+						
+
+						field_index++;
 					} else {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key],
 							inline: false,
 						});
+						field_index++;
 					}
 				}
 			});

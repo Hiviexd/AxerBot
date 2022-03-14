@@ -3,6 +3,11 @@ import MissingPermissions from "./../../data/embeds/MissingPermissions"
 import { ownerId } from "../../config.json";
 
 export default {
+	name: "purge",
+	description: "Deletes x amount of messages from a channel",
+	syntax: "!purge `<count>`",
+	example: "!purge `6`",
+	category: "moderation",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member) return;
 		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
