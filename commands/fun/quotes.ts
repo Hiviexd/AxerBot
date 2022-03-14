@@ -4,6 +4,7 @@ import { quotesGetStatus } from "./subcommands/quotesGetStatus";
 import { quotesSetMode } from "./subcommands/quotesSetMode";
 import { quotesToggle } from "./subcommands/quotesToggle";
 import { quotesSetWord } from "./subcommands/quotesSetWord";
+import { quotesGetList } from "./subcommands/quotesGetList";
 import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
@@ -11,8 +12,8 @@ import { ownerId } from "../../config.json";
 export default {
 	name: "quotes",
 	description: "Configure the random quotes system",
-	syntax: "!quotes set `<option>`\n!quotes status",
-	example: "!quotes `set custom`\n!quotes `status`",
+	syntax: "!quotes `<action>` `<value>`",
+	example: "!quotes `set` `custom`\n!quotes `status`",
 	options: [
 		"`set` `custom`",
 		"`set` `default`",
@@ -20,6 +21,7 @@ export default {
 		"`set` `list`",
 		"`set` `word`",
 		"`status`",
+		"`list`",
 	],
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
@@ -52,6 +54,11 @@ export default {
 			case "status": {
 				// code for returning current mode;
 				quotesGetStatus(message);
+				break;
+			}
+			case "list": {
+				// code for returning current mode;
+				quotesGetList(message);
 				break;
 			}
 			case "set": {
@@ -88,7 +95,6 @@ export default {
 						});
 					}
 				}
-
 				break;
 			}
 
