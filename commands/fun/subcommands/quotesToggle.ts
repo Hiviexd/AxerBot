@@ -2,13 +2,7 @@ import { Message } from "discord.js";
 import * as database from "./../../../database";
 import createNewGuild from "../../../database/utils/createNewGuild";
 
-export const config = {
-	name: "set disabled",
-	description: "Disable quotes system",
-	syntax: "!quotes `set` `disabled`",
-};
-
-export async function run(message: Message, state: boolean) {
+export async function quotesToggle(message: Message, state:boolean) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
@@ -22,9 +16,7 @@ export async function run(message: Message, state: boolean) {
 		{
 			fun: guild.fun,
 		}
-	);
+); 
 
-	message.channel.send(
-		"✅ Switched state to enabled: ".concat(state.toString())
-	);
+	message.channel.send("✅ Switched state to enabled: ".concat(state.toString()));
 }

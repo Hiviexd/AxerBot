@@ -31,7 +31,6 @@ export default new Schema({
 		default: {
 			enable: true,
 			mode: "default",
-			word: "axer",
 			cooldown: {
 				active: false,
 				ends_at: 0,
