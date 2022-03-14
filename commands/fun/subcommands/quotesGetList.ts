@@ -19,7 +19,7 @@ export async function run(message: Message) {
 	const attachment = new MessageAttachment(buffer, "List.txt");
 
 	message.channel.send({
-		content: "Current word list:",
+		content: "Current list:",
 		files: [attachment],
 	});
 }
