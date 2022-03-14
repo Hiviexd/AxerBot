@@ -1,14 +1,8 @@
 import { Message } from "discord.js";
-import * as database from "../../../database";
+import * as database from "./../../../database";
 import createNewGuild from "../../../database/utils/createNewGuild";
 
-export const config = {
-	name: "set default",
-	description: "Change quotes system list to default list",
-	syntax: "!quotes `set` `default`",
-};
-
-export async function run(message: Message) {
+export async function quotesSetMode(message: Message, mode:string) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
@@ -16,14 +10,14 @@ export async function run(message: Message) {
 	if (!guild) guild = await createNewGuild(message.guild);
 
 	guild.fun.enable = true;
-	guild.fun.mode = "default";
+	guild.fun.mode = mode;
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
 			fun: guild.fun,
 		}
-	);
+); 
 
-	message.channel.send(`✅ Switched mode to default`);
+	message.channel.send(`✅ Switched mode to \`${mode}\``);
 }
