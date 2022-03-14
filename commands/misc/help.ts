@@ -70,9 +70,10 @@ export default {
 
 			requested_command = commands[requested_command];
 
-			if (!requested_command) return message.channel.send({
-				embeds: [CommandNotFound] // import now
-			});
+			if (!requested_command)
+				return message.channel.send({
+					embeds: [CommandNotFound], // import now
+				});
 
 			const embed: any = {
 				title: `!${requested_command.name}`,
@@ -92,17 +93,17 @@ export default {
 					)
 						return;
 
-					if (typeof(requested_command[key]) == "object") {
+					if (typeof requested_command[key] == "object") {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key].join("\n"),
-							inline: true
+							inline: false,
 						});
 					} else {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key],
-							inline: true
+							inline: false,
 						});
 					}
 				}
