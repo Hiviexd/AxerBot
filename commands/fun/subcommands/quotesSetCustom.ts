@@ -1,21 +1,22 @@
 import { Message } from "discord.js";
-import * as database from "./../../../database";
+import * as database from "../../../database";
 import createNewGuild from "../../../database/utils/createNewGuild";
 
 export const config = {
-	name: "set disabled",
-	description: "Disable quotes system",
-	syntax: "!quotes `set` `disabled`",
+	name: "set custom",
+	description: "Change quotes system list to server custom list",
+	syntax: "!quotes `set` `default`",
 };
 
-export async function run(message: Message, state: boolean) {
+export async function run(message: Message) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
 
 	if (!guild) guild = await createNewGuild(message.guild);
 
-	guild.fun.enable = state;
+	guild.fun.enable = true;
+	guild.fun.mode = "default";
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
@@ -24,7 +25,5 @@ export async function run(message: Message, state: boolean) {
 		}
 	);
 
-	message.channel.send(
-		"✅ Switched state to enabled: ".concat(state.toString())
-	);
+	message.channel.send(`✅ Switched mode to default`);
 }

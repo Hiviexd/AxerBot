@@ -2,7 +2,13 @@ import { Message } from "discord.js";
 import * as database from "./../../../database";
 import createNewGuild from "../../../database/utils/createNewGuild";
 
-export async function quotesGetStatus(message: Message) {
+export const config = {
+	name: "status",
+	description: "Check quotes system configuration",
+	syntax: "!quotes `status`",
+};
+
+export async function run(message: Message) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;

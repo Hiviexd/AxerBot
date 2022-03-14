@@ -1,10 +1,11 @@
 import { Client, Message } from "discord.js";
-import { quotesSetList } from "./subcommands/quotesSetList";
-import { quotesGetStatus } from "./subcommands/quotesGetStatus";
-import { quotesSetMode } from "./subcommands/quotesSetMode";
-import { quotesToggle } from "./subcommands/quotesToggle";
-import { quotesSetWord } from "./subcommands/quotesSetWord";
-import { quotesGetList } from "./subcommands/quotesGetList";
+import * as quotesSetList from "./subcommands/quotesSetList";
+import * as quotesGetStatus from "./subcommands/quotesGetStatus";
+import * as quotesSetCustom from "./subcommands/quotesSetCustom";
+import * as quotesSetDefault from "./subcommands/quotesSetDefault";
+import * as quotesToggle from "./subcommands/quotesToggle";
+import * as quotesSetWord from "./subcommands/quotesSetWord";
+import * as quotesGetList from "./subcommands/quotesGetList";
 import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
@@ -14,6 +15,15 @@ export default {
 	description: "Configure the random quotes system",
 	syntax: "!quotes `<action>` `<value>`",
 	example: "!quotes `set` `custom`\n!quotes `status`",
+	subcommands: [
+		quotesSetList,
+		quotesGetList,
+		quotesGetStatus,
+		quotesSetCustom,
+		quotesSetDefault,
+		quotesToggle,
+		quotesSetWord,
+	],
 	options: [
 		"`set` `custom`",
 		"`set` `default`",
@@ -21,7 +31,7 @@ export default {
 		"`set` `list`",
 		"`set` `word`",
 		"`status`",
-		"`list`",
+		"`viewlist`",
 	],
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
@@ -53,38 +63,38 @@ export default {
 		switch (getter) {
 			case "status": {
 				// code for returning current mode;
-				quotesGetStatus(message);
+				quotesGetStatus.run(message);
 				break;
 			}
-			case "list": {
+			case "viewlist": {
 				// code for returning current mode;
-				quotesGetList(message);
+				quotesGetList.run(message);
 				break;
 			}
 			case "set": {
 				switch (action) {
 					case "disabled": {
-						quotesToggle(message, false);
+						quotesToggle.run(message, false);
 						break;
 					}
 
 					case "custom": {
-						quotesSetMode(message, "custom");
+						quotesSetCustom.run(message);
 						break;
 					}
 
 					case "default": {
-						quotesSetMode(message, "default");
+						quotesSetDefault.run(message);
 						break;
 					}
 
 					case "list": {
-						quotesSetList(message);
+						quotesSetList.run(message);
 						break;
 					}
 
 					case "word": {
-						quotesSetWord(message, args[2]);
+						quotesSetWord.run(message, args[2]);
 						break;
 					}
 

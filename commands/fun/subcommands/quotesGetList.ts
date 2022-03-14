@@ -1,9 +1,13 @@
 import { Message, MessageAttachment } from "discord.js";
 import * as database from "../../../database";
-import createNewGuild from "../../../database/utils/createNewGuild";
-import { parseTextFileAttachment } from "../../../utils/messages/processText";
 
-export async function quotesGetList(message: Message) {
+export const config = {
+	name: "viewlist",
+	description: "Download custom list",
+	syntax: "!quotes `viewlist`",
+};
+
+export async function run(message: Message) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;

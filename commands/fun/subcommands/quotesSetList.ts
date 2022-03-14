@@ -3,7 +3,13 @@ import * as database from "./../../../database";
 import createNewGuild from "../../../database/utils/createNewGuild";
 import { parseTextFileAttachment } from "../../../utils/messages/processText";
 
-export async function quotesSetList(message: Message) {
+export const config = {
+	name: "set list",
+	description: "Set quotes custom list",
+	syntax: "!quotes `set` `list` `[Text File Attachment]`",
+};
+
+export async function run(message: Message) {
 	let guild = await database.guilds.findById(message.guildId);
 	const file = message.attachments.first();
 
