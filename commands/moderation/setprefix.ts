@@ -7,8 +7,8 @@ import { ownerId } from "../../config.json";
 export default {
 	name: "setprefix",
 	description: "Define a custom command prefix on this server.",
+	syntax: "!setprefix `<prefix>`",
 	example: "!setprefix `-`",
-	syntax: "!setprefix `new_prefix`",
 	category: "moderation",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });

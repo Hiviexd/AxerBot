@@ -11,8 +11,9 @@ export default {
 	name: "quotes",
 	description: "Configure the random quotes system",
 	syntax: "!quotes set `<option>`\n!quotes status",
+	configuration: ["`custom`", "`default`", "`disabled`", "`list`"],
+	readonly: ["`Status`"],
 	example: "!quotes `set custom`\n!quotes `status`",
-	options: ["`set` `custom`", "`set` `default`", "`set` `disabled`", "`set` `list`", "`status`"],
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (!message.guild || !message.member) return;

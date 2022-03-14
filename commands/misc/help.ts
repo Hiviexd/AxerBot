@@ -15,6 +15,7 @@ export default {
 				example: commands[key].example,
 				options: commands[key].options,
 				category: commands[key].category,
+				fields_config: commands[key].fields_config,
 			});
 		});
 
@@ -71,7 +72,7 @@ export default {
 			requested_command = commands[requested_command];
 
 			if (!requested_command) return message.channel.send({
-				embeds: [CommandNotFound] // import now
+				embeds: [CommandNotFound]
 			});
 
 			const embed: any = {
@@ -82,13 +83,16 @@ export default {
 				fields: [],
 			};
 
+			let field_index = 0;
 			Object.keys(requested_command).forEach((key) => {
 				if (requested_command[key] != undefined) {
+					
 					if (
 						key == "name" ||
 						key == "run" ||
 						key == "description" ||
-						key == "category"
+						key == "category" || 
+						key == "fields_config"
 					)
 						return;
 
@@ -96,14 +100,18 @@ export default {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key].join("\n"),
-							inline: true
+							inline: requested_command["fields_config"] ? requested_command["fields_config"][field_index] : false
 						});
+						
+
+						field_index++;
 					} else {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key],
-							inline: true
+							inline: requested_command["fields_config"] ? requested_command["fields_config"][field_index] : false
 						});
+						field_index++;
 					}
 				}
 			});
