@@ -6,6 +6,9 @@ export default {
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const options: any[] = [];
 		const categories: string[] = [];
+		let requested_command: any = args[0];
+		requested_command = commands[requested_command];
+		let subcommand: any = args.slice(1, args.length);
 
 		Object.keys(commands).forEach((key) => {
 			options.push({
@@ -15,11 +18,11 @@ export default {
 				example: commands[key].example,
 				options: commands[key].options,
 				category: commands[key].category,
-				fields_config: commands[key].fields_config,
+				subcommands: commands[key].subcommands,
 			});
 		});
 
-		if (args.length < 1) {
+		if (args.length == 0) {
 			function generateEmbed() {
 				const embed: any = {
 					title: "Commands",
@@ -63,17 +66,13 @@ export default {
 			message.channel.send({
 				embeds: [generateEmbed()],
 			});
-		} else {
-			let requested_command: any = args.pop();
+		}
 
-			if (requested_command == undefined)
-				return message.channel.send("Provide a valid command.");
-
-			requested_command = commands[requested_command];
-
-			if (!requested_command) return message.channel.send({
-				embeds: [CommandNotFound]
-			});
+		if (args.length == 1) {
+			if (!requested_command)
+				return message.channel.send({
+					embeds: [CommandNotFound], // import now
+				});
 
 			const embed: any = {
 				title: `!${requested_command.name}`,
@@ -91,16 +90,16 @@ export default {
 						key == "name" ||
 						key == "run" ||
 						key == "description" ||
-						key == "category" || 
-						key == "fields_config"
+						key == "category" ||
+						key == "subcommands"
 					)
 						return;
 
-					if (typeof(requested_command[key]) == "object") {
+					if (typeof requested_command[key] == "object") {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key].join("\n"),
-							inline: requested_command["fields_config"] ? requested_command["fields_config"][field_index] : false
+							inline: false,
 						});
 						
 
@@ -109,15 +108,71 @@ export default {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
 							value: requested_command[key],
-							inline: requested_command["fields_config"] ? requested_command["fields_config"][field_index] : false
+							inline: false,
 						});
 						field_index++;
 					}
 				}
 			});
 
-			message.channel.send({
+			return message.channel.send({
 				embeds: [embed],
+			});
+		}
+
+		if (subcommand.length > 0) {
+			subcommand = subcommand.join(" ");
+
+			if (!requested_command)
+				return message.channel.send({
+					embeds: [CommandNotFound], // import now
+				});
+
+			const subcommands_list = requested_command.subcommands;
+
+			if (!subcommands_list)
+				return message.channel.send({
+					embeds: [
+						{
+							title: "No, you can't do this.",
+							description: `This command does not have sub-commands.`,
+							color: "#ea6112",
+						},
+					],
+				});
+
+			let requested_subcommand = subcommands_list.filter(
+				(c: { name: string; config: any }) =>
+					c.config.name == subcommand
+			)[0];
+
+			if (!requested_subcommand || !requested_command)
+				return message.channel.send({
+					embeds: [
+						{
+							title: "What is this?",
+							description: `Provide a valid sub-command! Use \`!help ${requested_command.name}\` for more info.`,
+							color: "#ea6112",
+						},
+					],
+				});
+
+			requested_subcommand = requested_subcommand.config;
+
+			message.channel.send({
+				embeds: [
+					{
+						title: `!${requested_command.name} ${requested_subcommand.name}`,
+						description: requested_subcommand.description,
+						color: "#1df27d",
+						fields: [
+							{
+								name: "Syntax",
+								value: requested_subcommand.syntax,
+							},
+						],
+					},
+				],
 			});
 		}
 	},
