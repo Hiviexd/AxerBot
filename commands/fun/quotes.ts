@@ -6,6 +6,7 @@ import * as quotesSetDefault from "./subcommands/quotesSetDefault";
 import * as quotesToggle from "./subcommands/quotesToggle";
 import * as quotesSetWord from "./subcommands/quotesSetWord";
 import * as quotesGetList from "./subcommands/quotesGetList";
+import * as quotesAddWord from "./subcommands/quotesAddWord";
 import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
@@ -23,6 +24,7 @@ export default {
 		quotesSetDefault,
 		quotesToggle,
 		quotesSetWord,
+		quotesAddWord
 	],
 	options: [
 		"`set` `custom`",
@@ -30,6 +32,7 @@ export default {
 		"`set` `disabled`",
 		"`set` `list`",
 		"`set` `word`",
+		"`add`",
 		"`status`",
 		"`viewlist`",
 	],
@@ -69,6 +72,10 @@ export default {
 			case "viewlist": {
 				// code for returning current mode;
 				quotesGetList.run(message);
+				break;
+			}
+			case "add": {
+				quotesAddWord.run(message)
 				break;
 			}
 			case "set": {
