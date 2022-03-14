@@ -5,7 +5,7 @@ import { parseTextFileAttachment } from "../../../utils/messages/processText";
 
 export const config = {
 	name: "set list",
-	description: "Set quotes custom list",
+	description: "Sets a custom list for the server quotes",
 	syntax: "!quotes `set` `list` `[Text File Attachment]`",
 };
 

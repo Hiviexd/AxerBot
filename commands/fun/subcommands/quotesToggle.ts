@@ -4,7 +4,7 @@ import createNewGuild from "../../../database/utils/createNewGuild";
 
 export const config = {
 	name: "set disabled",
-	description: "Disable quotes system",
+	description: "Disables the quotes system",
 	syntax: "!quotes `set` `disabled`",
 };
 

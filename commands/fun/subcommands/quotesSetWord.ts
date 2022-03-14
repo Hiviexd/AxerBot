@@ -4,7 +4,7 @@ import createNewGuild from "../../../database/utils/createNewGuild";
 
 export const config = {
 	name: "set word",
-	description: "Set quotes custom trigger word",
+	description: "Sets a trigger word for the quotes system",
 	syntax: "!quotes `set` `word` `<new word>`",
 };
 

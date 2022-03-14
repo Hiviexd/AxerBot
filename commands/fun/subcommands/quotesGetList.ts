@@ -3,7 +3,7 @@ import * as database from "../../../database";
 
 export const config = {
 	name: "viewlist",
-	description: "Download custom list",
+	description: "Shows the current custom list",
 	syntax: "!quotes `viewlist`",
 };
 

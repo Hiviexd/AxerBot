@@ -5,7 +5,7 @@ import createNewGuild from "../../../database/utils/createNewGuild";
 export const config = {
 	name: "set custom",
 	description: "Change quotes system list to server custom list",
-	syntax: "!quotes `set` `default`",
+	syntax: "!quotes `set` `custom`",
 };
 
 export async function run(message: Message) {
@@ -16,7 +16,7 @@ export async function run(message: Message) {
 	if (!guild) guild = await createNewGuild(message.guild);
 
 	guild.fun.enable = true;
-	guild.fun.mode = "default";
+	guild.fun.mode = "custom";
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
@@ -25,5 +25,5 @@ export async function run(message: Message) {
 		}
 	);
 
-	message.channel.send(`✅ Switched mode to default`);
+	message.channel.send(`✅ Switched mode to custom`);
 }
