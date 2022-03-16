@@ -26,6 +26,10 @@ export default new Schema({
 			logs: undefined,
 		},
 	},
+	cooldown: {
+		type: Object,
+		default: [] // ? Yes
+	},
 	fun: {
 		type: Object,
 		default: {
