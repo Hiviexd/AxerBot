@@ -4,6 +4,7 @@
   "description": "general-purpose bot that doubles down as a retard",
   "main": "index.ts",
   "dependencies": {
+    "@discordjs/rest": "^0.3.0",
     "@types/express": "^4.17.13",
     "@types/mongoose": "^5.11.97",
     "@types/numeral": "^2.0.2",
@@ -14,7 +15,7 @@
     "combined-stream": "^1.0.8",
     "delayed-stream": "^1.0.0",
     "discord-api-types": "^0.22.0",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.6.0",
     "discord.js-pagination": "^1.0.3",
     "dot-prop": "^6.0.1",
     "dotenv": "^16.0.0",

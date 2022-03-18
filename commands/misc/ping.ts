@@ -1,11 +1,17 @@
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 
 export default {
-	name: "ping",
-	description: "Pong?",
 	example: "!ping",
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		return message.channel.send("`" + bot.ws.ping + " ms`");
+	slash: {
+		name: "ping",
+		description: "Pong?",
+	},
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: string[]
+	) => {
+		return interaction.reply("`" + bot.ws.ping + " ms`");
 	},
 };

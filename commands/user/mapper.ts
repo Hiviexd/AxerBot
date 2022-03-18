@@ -1,10 +1,11 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, CommandInteraction, MessageEmbed } from "discord.js";
 import UserNotFound from "../../data/embeds/UserNotFound";
 import osuApi from "../../utils/osu/osuApi";
 import getMappingAge from "./utils/getMappingAge";
 import getUserGroup from "./utils/getUserGroup";
 import UserNotMapper from "../../data/embeds/UserNotMapper";
 import * as database from "./../../database";
+import createNewUser from "../../database/utils/createNewUser";
 
 export default {
 	name: "mapper",
@@ -12,33 +13,62 @@ export default {
 	syntax: "!mapper `<user>`",
 	example: "!mapper `Hivie`\n!mapper",
 	category: "osu",
-	run: async (bot: Client, message: Message, args: Array<string>) => {
-		let mapper_name = args.join(" ");
+	slash: {
+		name: "mapper",
+		description: "Displays mapper statistics of a user",
+		options: [
+			{
+				name: "username",
+				description: "Type the username to get info",
+				required: false,
+				type: "STRING",
+			},
+			{
+				name: "mention",
+				description: "Mention a server member to get info",
+				required: false,
+				type: "USER",
+			},
+		],
+	},
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: Array<string>
+	) => {
+		let mapper_name = "";
+		const mention_field = interaction.options.getUser("mention");
+		const username_field = interaction.options.getString("username");
 
-		if (message.mentions.users.size != 1) {
-			if (args.length < 1) {
-				const u = await database.users.findOne({
-					_id: message.author.id,
-				});
-
-				if (u != null) mapper_name = u.osu.username;
-			}
-		} else {
-			const user = message.mentions.users.first();
+		if (mention_field != null) {
 			const u = await database.users.findOne({
-				_id: user?.id,
+				_id: mention_field.id,
 			});
 
 			if (u != null) mapper_name = u.osu.username;
 		}
 
-		if (mapper_name.trim() == "")
-			return message.channel.send("❗ Provide a valid user.");
+		if (username_field != null) mapper_name = username_field;
+
+		if (!mention_field && !username_field) {
+			let author = await database.users.findOne({
+				_id: interaction.user.id,
+			});
+
+			if (!author) author = await createNewUser(interaction.user);
+
+			mapper_name = author.osu.username;
+		}
+
+		if (mapper_name == undefined || !mapper_name)
+			return interaction.reply({
+				embeds: [UserNotFound],
+			});
 
 		const mapper_user = await osuApi.fetch.user(encodeURI(mapper_name));
 
 		if (mapper_user.status != 200)
-			return message.channel.send({
+			return interaction.reply({
 				embeds: [UserNotFound],
 			});
 
@@ -49,7 +79,7 @@ export default {
 		if (mapper_beatmaps.status != 200) return;
 
 		if (mapper_beatmaps.data.sets.length < 1)
-			return message.channel.send({
+			return interaction.reply({
 				embeds: [UserNotMapper],
 			});
 
@@ -100,7 +130,7 @@ export default {
 			},
 		});
 
-		message.channel.send({
+		interaction.reply({
 			embeds: [e],
 		});
 	},

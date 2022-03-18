@@ -3,7 +3,11 @@ dotenv.config();
 const token = process.env.TOKEN;
 import "colors";
 import { Client, Intents, Message } from "discord.js";
-import commandHandler from "./utils/core/commandHandler";
+import commands from "./commands";
+import commandHandler, {
+	interactionHandler,
+	startCommands,
+} from "./utils/core/commandHandler";
 import "./utils/osu/osuApiConnetion";
 import keepAlive from "./server";
 import { consoleCheck } from "./utils/core/logger";
@@ -26,8 +30,15 @@ bot.on("messageCreate", async (message: Message) => {
 	commandHandler(bot, message);
 });
 
+bot.on("interaction", (interaction) => {
+	if (!interaction.isCommand()) return;
+
+	interactionHandler(interaction, bot);
+});
+
 keepAlive();
-bot.login(token).then(() => {
+bot.login(token).then(async () => {
+	startCommands(bot);
 	eventHandler(bot);
 	consoleCheck("index.ts", "Running and listening to commands!");
 });
