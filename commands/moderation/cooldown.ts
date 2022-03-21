@@ -6,8 +6,8 @@ import path from "path";
 import * as database from "./../../database";
 
 export default {
-	name: "purge",
-	description: "Deletes x amount of messages from a channel",
+	name: "cooldown",
+	description: "applies a cooldown to a command category",
 	syntax: "!cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
 	example: "!purge `6`",
 	category: "moderation",
@@ -33,7 +33,7 @@ export default {
 
 			if (params.channels.length < 1 || params.categories.length < 1)
 				return message.channel.send(
-					"Provide a channel/category fucking dumbass"
+					"❗ Provide a channel/category"
 				);
 
 			// ? Support array to save requested channels
@@ -68,9 +68,9 @@ export default {
 
 			console.log(guild.cooldown);
 
-			message.channel.send("its working, i think");
+			message.channel.send("✅ Done ");
 		} else {
-			return message.channel.send("Fuck dumbass");
+			return message.channel.send(":x: Missing Arguments");
 		}
 	},
 };
