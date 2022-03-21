@@ -28,7 +28,43 @@ export default new Schema({
 	},
 	cooldown: {
 		type: Object,
-		default: [] // ? Yes
+		default: {
+			contests: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
+			fun: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
+			misc: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
+			moderation: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
+			osu: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
+		},
 	},
 	fun: {
 		type: Object,
@@ -36,10 +72,6 @@ export default new Schema({
 			enable: true,
 			mode: "default",
 			word: "axer",
-			cooldown: {
-				active: false,
-				ends_at: 0,
-			},
 			blacklist: {
 				channels: [],
 				words: [],
