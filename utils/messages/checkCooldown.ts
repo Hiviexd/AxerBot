@@ -1,11 +1,19 @@
+import { GuildMember, Message } from "discord.js";
 import * as database from "./../../database";
 
 /**
  * ? RETURN TRUE: Allow command to run
  * ? RETURN FALSE: Don't allow the command to run
  */
-export default async (guild: any, name: any, channel: string) => {
+export default async (
+	guild: any,
+	name: any,
+	channel: string,
+	message: Message
+) => {
 	const now = new Date();
+
+	if (message.member?.permissions.has("ADMINISTRATOR")) return true; // ? Allow admins to bypass the cooldown
 
 	if (!guild.cooldown[name].channels.includes(channel)) return true;
 

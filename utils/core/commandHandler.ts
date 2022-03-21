@@ -41,7 +41,8 @@ export default async function commandHandler(bot: Client, message: Message) {
 			!(await checkCooldown(
 				guild,
 				requested_command.category,
-				message.channelId
+				message.channelId,
+				message
 			))
 		)
 			return;
