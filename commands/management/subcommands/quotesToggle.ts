@@ -13,8 +13,6 @@ export async function run(message: Message, state: boolean) {
 
 	if (!message.guild) return;
 
-	if (!guild) guild = await createNewGuild(message.guild);
-
 	guild.fun.enable = state;
 
 	await database.guilds.updateOne(

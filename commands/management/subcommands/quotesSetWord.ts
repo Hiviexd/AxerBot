@@ -15,8 +15,6 @@ export async function run(message: Message, word: string) {
 
 	if (!message.guild) return;
 
-	if (!guild) guild = await createNewGuild(message.guild);
-
 	guild.fun.enable = true;
 	guild.fun.word = word.toUpperCase();
 

@@ -22,8 +22,6 @@ export async function run(message: Message) {
 	
 	if (!message.guild) return;
 
-	if (!guild) guild = await createNewGuild(message.guild);
-
 	guild.fun.phrases.push(args.join(" "))
 
 	await database.guilds.updateOne(

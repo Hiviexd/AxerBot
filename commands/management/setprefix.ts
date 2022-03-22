@@ -17,8 +17,6 @@ export default {
 
 		if ((!message.member.permissions.has("MANAGE_GUILD", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
 
-		if (guild == null) await createNewGuild(message.guild);
-
 		guild = await database.guilds.findOne({ _id: message.guildId });
 
 		if (args.length < 1)
