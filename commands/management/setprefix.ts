@@ -9,7 +9,7 @@ export default {
 	description: "Define a custom command prefix on this server.",
 	syntax: "!setprefix `<prefix>`",
 	example: "!setprefix `-`",
-	category: "moderation",
+	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 

@@ -10,7 +10,7 @@ export const config = {
 };
 
 export async function run(message: Message, args: string[]) {
-	const categories = ["contests", "fun", "misc", "moderation", "osu"];
+	const categories = ["contests", "fun", "misc", "management", "osu"];
 	let guild = await database.guilds.findOne({ _id: message.guildId });
 
 	if (!message.member?.permissions.has("ADMINISTRATOR"))
@@ -66,7 +66,7 @@ export async function run(message: Message, args: string[]) {
 				increments: 0,
 				channels: [],
 			},
-			moderation: {
+			management: {
 				size: 0,
 				ends_at: {},
 				current_increments: 0,

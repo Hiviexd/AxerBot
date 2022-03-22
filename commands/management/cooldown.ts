@@ -10,11 +10,11 @@ export default {
 	description: "applies a cooldown to a command category",
 	syntax: "!cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
 	example: "!cooldown `general,offtopic` `fun,osu` `10` `5`",
-	category: "moderation",
+	category: "management",
 	subcommands: [cooldownClear, cooldownRemove],
 	options: ["`?clear`", "`?remove`"],
 	run: async (bot: Client, message: Message, args: string[]) => {
-		const categories = ["contests", "fun", "misc", "moderation", "osu"]; // Get categories
+		const categories = ["contests", "fun", "misc", "management", "osu"]; // Get categories
 
 		// !cooldown <channels> <categories> <cooldown> <increments>
 
@@ -38,7 +38,7 @@ export default {
 			if (
 				isNaN(params.size) ||
 				isNaN(params.increments) ||
-				params.size < 1
+				params.size == 0
 			)
 				return message.channel.send(
 					"❗ Invalid cooldown/increments size value. Provide a valid number."

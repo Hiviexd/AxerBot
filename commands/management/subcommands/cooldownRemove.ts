@@ -11,7 +11,7 @@ export const config = {
 
 export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findOne({ _id: message.guildId });
-	const categories = ["contests", "fun", "misc", "moderation", "osu"];
+	const categories = ["contests", "fun", "misc", "management", "osu"];
 
 	if (!message.member?.permissions.has("ADMINISTRATOR"))
 		return message.channel.send({ embeds: [MissingPermissions] });
@@ -61,6 +61,16 @@ export async function run(message: Message, args: string[]) {
 				},
 			],
 		});
+
+	if (guild.cooldown[category].channels.length < 2) return message.channel.send({ 
+		embeds: [
+			{
+			title: "Wait...",
+			description: `The category \`${category}\` have 1 channel configured, use \`${guild.prefix}cooldown clear ${category}\` instead!`,
+			color: "#ff5050",
+		}
+		]	
+	})
 
 	// ? Remove channel from "Channels" array
 	const index = guild.cooldown[category].channels.findIndex(

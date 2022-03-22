@@ -36,7 +36,7 @@ export default {
 		"`status`",
 		"`viewlist`",
 	],
-	category: "fun",
+	category: "management",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (!message.guild || !message.member) return;
 
