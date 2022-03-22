@@ -17,13 +17,6 @@ export default async function commandHandler(bot: Client, message: Message) {
 
 	if (!message.content.startsWith(guild.prefix)) return;
 
-	message.channel.sendTyping().catch((e) => {
-		consoleError(
-			"commandHandler",
-			"Can't sent typing status on ".concat(message.channel.id)
-		);
-	});
-
 	const args = message.content
 		.slice(guild.prefix.length, message.content.length)
 		.split(" ");
