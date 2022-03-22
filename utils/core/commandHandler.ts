@@ -5,6 +5,7 @@ import * as config from "./../../config.json";
 import * as database from "./../../database";
 import { consoleError } from "./logger";
 import CommandNotFound from "./../../data/embeds/CommandNotFound";
+import checkCooldown from "./../messages/checkCooldown";
 
 export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;
@@ -16,25 +17,28 @@ export default async function commandHandler(bot: Client, message: Message) {
 
 	if (!message.content.startsWith(guild.prefix)) return;
 
-	message.channel.sendTyping().catch((e) => {
-		consoleError(
-			"commandHandler",
-			"Can't sent typing status on ".concat(message.channel.id)
-		);
-	});
-
 	const args = message.content
 		.slice(guild.prefix.length, message.content.length)
 		.split(" ");
 
 	const requested_command = commands[args[0].toLowerCase()];
 
-	if (!requested_command) return message.channel.send({
-		embeds: [CommandNotFound]
-	});
+	if (!requested_command)
+		return message.channel.send({
+			embeds: [CommandNotFound],
+		});
 
 	try {
 		args.shift(); // Remove command name from arguments
+		if (
+			!(await checkCooldown(
+				guild,
+				requested_command.category,
+				message.channelId,
+				message
+			))
+		)
+			return;
 		requested_command.run(bot, message, args);
 	} catch (e) {
 		message.channel.send("Something is wrong, I can't run this command.");

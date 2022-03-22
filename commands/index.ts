@@ -10,6 +10,7 @@ import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
 import help from "./misc/help";
 import setprefix from "./moderation/setprefix";
+import cooldown from "./moderation/cooldown";
 import quotes from "./fun/quotes";
 
 const commands: any = {
@@ -26,6 +27,7 @@ const commands: any = {
 	help: help,
 	setprefix: setprefix,
 	quotes: quotes,
+	cooldown: cooldown
 };
 
 export default commands;

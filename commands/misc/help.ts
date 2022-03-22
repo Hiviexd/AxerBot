@@ -3,6 +3,7 @@ import commands from "./../";
 import CommandNotFound from "./../../data/embeds/CommandNotFound";
 export default {
 	name: "help",
+	category: "misc",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const options: any[] = [];
 		const categories: string[] = [];
@@ -85,7 +86,6 @@ export default {
 			let field_index = 0;
 			Object.keys(requested_command).forEach((key) => {
 				if (requested_command[key] != undefined) {
-					
 					if (
 						key == "name" ||
 						key == "run" ||
@@ -101,7 +101,6 @@ export default {
 							value: requested_command[key].join("\n"),
 							inline: false,
 						});
-						
 
 						field_index++;
 					} else {
