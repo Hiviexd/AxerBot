@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import prefix from "../../config.json";
 
 export default new Schema({
 	_id: {
@@ -6,7 +7,7 @@ export default new Schema({
 	},
 	prefix: {
 		type: String,
-		default: "!",
+		default: prefix,
 	},
 	osu: {
 		type: Object,
@@ -50,7 +51,7 @@ export default new Schema({
 				increments: 0,
 				channels: [],
 			},
-			moderation: {
+			management: {
 				size: 0,
 				ends_at: {},
 				current_increments: 0,

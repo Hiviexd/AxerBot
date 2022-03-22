@@ -4,14 +4,14 @@ import choose from "./fun/choose";
 import yesno from "./fun/yesno";
 import participant from "./contests/participant";
 import spectator from "./contests/spectator";
-import purge from "./moderation/purge";
-import send from "./moderation/send";
+import purge from "./management/purge";
+import send from "./management/send";
 import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
 import help from "./misc/help";
-import setprefix from "./moderation/setprefix";
-import cooldown from "./moderation/cooldown";
-import quotes from "./fun/quotes";
+import setprefix from "./management/setprefix";
+import cooldown from "./management/cooldown";
+import quotes from "./management/quotes";
 
 const commands: any = {
 	ping: ping,
