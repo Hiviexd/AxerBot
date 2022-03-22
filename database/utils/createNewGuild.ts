@@ -7,7 +7,6 @@ export default async function createNewGuild(guild_data: Guild) {
 
 	const g = new database.guilds({
 		_id: guild_data.id,
-		prefix: "!",
 	});
 
 	await g.save();
