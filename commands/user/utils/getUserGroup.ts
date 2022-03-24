@@ -47,6 +47,12 @@ export default function getUserGroup(mapper: User): EmbededUserGroup {
 			name: "Project Loved",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
 		},
+		BOT: {
+			index: 8,
+			name: "BOT",
+			colour: "#ffffff",
+			icon: "https://media.discordapp.net/attachments/865037717590245436/955965426964258906/bot.png",
+		},
 	};
 
 	const usergroups = mapper.groups;

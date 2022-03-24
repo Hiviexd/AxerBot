@@ -16,6 +16,7 @@ export default {
 		}
 		let choices = args.join(" ").split("or");
 		let randomChoice = choices[Math.floor(Math.random() * choices.length)];
+		if (randomChoice.trim() === "") return;
 		message.channel.send(randomChoice);
 	},
 };

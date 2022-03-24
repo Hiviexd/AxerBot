@@ -16,7 +16,7 @@ export default {
 				//Find a channel named welcome and send a Welcome message
 
 				const channel: any = member.guild.channels.cache.find(
-					(c) => c.name === "arrival"
+					(c) => c.name === "verification"
 				);
 
 				if (!channel) return;

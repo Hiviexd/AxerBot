@@ -22,8 +22,6 @@ export async function run(message: Message) {
 	if (file.size > 200000)
 		return message.channel.send(":x: File too big. (Max 200kb)");
 
-	if (guild == null) guild = await createNewGuild(message.guild);
-
 	const list = await parseTextFileAttachment(file.url);
 
 	if (list.length < 1) return message.channel.send(":x: Invalid list size");

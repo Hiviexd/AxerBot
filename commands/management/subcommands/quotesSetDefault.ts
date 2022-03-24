@@ -13,8 +13,6 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
-	if (!guild) guild = await createNewGuild(message.guild);
-
 	guild.fun.enable = true;
 	guild.fun.mode = "default";
 

@@ -9,8 +9,6 @@ export default async function randomMessage(message: Message, bot: any) {
 
 	let guild = await database.guilds.findById(message.guildId);
 
-	if (guild == null) guild = await createNewGuild(message.guild);
-
 	if (
 		(guild.fun.enable == true &&
 			message.content.toUpperCase().includes(guild.fun.word)) ||
