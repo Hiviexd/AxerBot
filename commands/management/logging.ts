@@ -7,7 +7,7 @@ export default {
     name: "logging",
     description: "Configure the logging system",
     syntax: "!logging `<action>` `<value>`",
-    example: "!logging `channel` `wasteland`\n!logging disable`",
+    example: "!logging `channel` `wasteland`\n!logging `disable`",
     subcommands: [],
     category: "management",
     options: ["`channel`", "`disable`"],
