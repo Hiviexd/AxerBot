@@ -8,7 +8,6 @@ export default {
     description: "Configure the logging system",
     syntax: "!logging `<action>` `<value>`",
     example: "!logging `channel` `wasteland`\n!logging `disable`",
-    subcommands: [],
     category: "management",
     options: ["`channel`", "`disable`"],
     run: async (bot: Client, message: Message, args: string[]) => {
@@ -57,7 +56,7 @@ export default {
 
                 await database.guilds.updateOne(
                     { _id: message.guildId },
-                    { $set: { logging: guild.logging } }
+                    { logging: guild.logging }
                 );
 
                 return message.channel.send(
