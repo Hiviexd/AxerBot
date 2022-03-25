@@ -115,4 +115,11 @@ export default new Schema({
 		users: [],
 		bot: [],
 	},
+	logging: {
+		type: Object,
+		default: {
+			enable: false,
+			channel: "",
+		},
+	}
 });
