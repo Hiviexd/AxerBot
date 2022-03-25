@@ -1,7 +1,7 @@
 import { Message, ReactionCollector } from "discord.js";
-import MissingPermissions from "../../../data/embeds/MissingPermissions";
-import * as database from "../../../database";
-import CommandOptionInvalid from "../../../data/embeds/CommandOptionInvalid";
+import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import * as database from "../../../../database";
+import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
 
 export const config = {
 	name: "remove",

@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import * as database from "../../../database";
-import createNewGuild from "../../../database/utils/createNewGuild";
+import * as database from "../../../../database";
+import createNewGuild from "../../../../database/utils/createNewGuild";
 
 export const config = {
 	name: "add",

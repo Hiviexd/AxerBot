@@ -2,8 +2,8 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import * as database from "./../../database";
-import * as cooldownClear from "./subcommands/cooldownClear";
-import * as cooldownRemove from "./subcommands/cooldownRemove";
+import * as cooldownClear from "./subcommands/cooldown/cooldownClear";
+import * as cooldownRemove from "./subcommands/cooldown/cooldownRemove";
 
 export default {
 	name: "cooldown",
