@@ -8,13 +8,16 @@ export default async function randomMessage(message: Message, bot: any) {
 	if (!message.guild) return;
 
 	let guild = await database.guilds.findById(message.guildId);
+	if (guild.quotes.blacklist.channels.includes(message.channelId)) return;
 
 	if (
-		(guild.fun.enable == true &&
-			message.content.toUpperCase().includes(guild.fun.word)) ||
+		(guild.quotes.enable == true &&
+			message.content
+				.toUpperCase()
+				.includes(guild.quotes.word.toUpperCase())) ||
 		message.mentions.users.has(bot.user)
 	) {
-		if (guild.fun.mode == "default") {
+		if (guild.quotes.mode == "default") {
 			const quotes = await parseTextFile(
 				path.resolve(__dirname + "/../../data/axer.txt")
 			);
@@ -23,7 +26,7 @@ export default async function randomMessage(message: Message, bot: any) {
 
 			message.channel.send(quote);
 		} else {
-			const quotes: string[] = guild.fun.phrases;
+			const quotes: string[] = guild.quotes.phrases;
 			const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
 			if (!quote) return;

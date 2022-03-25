@@ -13,28 +13,39 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
-	if (!guild.fun.word) guild.fun.word = "axer";
+	if (!guild.quotes.word) guild.quotes.word = "axer";
 
 	message.channel.send({
 		embeds: [
 			{
 				title: "Current quotes system configuration",
-				color: guild.fun.enable ? "#1df27d" : "#e5243b",
+				color: guild.quotes.enable ? "#1df27d" : "#e5243b",
 				fields: [
 					{
 						name: "Status",
-						value: guild.fun.enable ? "`Enabled`" : "`Disabled`",
+						value: guild.quotes.enable ? "`Enabled`" : "`Disabled`",
 					},
 					{
 						name: "List mode",
-						value: `\`${guild.fun.mode
+						value: `\`${guild.quotes.mode
 							.charAt(0)
 							.toUpperCase()
-							.concat(guild.fun.mode.slice(1))}\``, // Captalize the first character
+							.concat(guild.quotes.mode.slice(1))}\``, // Captalize the first character
 					},
 					{
 						name: "Trigger word",
-						value: `\`${guild.fun.word.toLowerCase()}\``,
+						value: `\`${guild.quotes.word.toLowerCase()}\``,
+					},
+					{
+						name: "Blocked channels",
+						value:
+							guild.quotes.blacklist.channels.length > 0
+								? `${guild.quotes.blacklist.channels.map(
+										(c: any) => {
+											return `<#${c}>`;
+										}
+								  )}`
+								: "@hivie can be a nice block",
 					},
 				],
 			},

@@ -67,7 +67,7 @@ export default new Schema({
 			},
 		},
 	},
-	fun: {
+	quotes: {
 		type: Object,
 		default: {
 			enable: true,
@@ -77,7 +77,6 @@ export default new Schema({
 				channels: [],
 				words: [],
 			},
-			phrases: [],
 		},
 	},
 	messages: {

@@ -11,10 +11,10 @@ export async function run(message: Message) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
-	if (guild.fun.mode != "custom")
+	if (guild.quotes.mode != "custom")
 		return message.channel.send("❗ You are using the default list!");
 
-	const text = guild.fun.phrases.join("\n");
+	const text = guild.quotes.phrases.join("\n");
 	const buffer = Buffer.from(text, "utf-8");
 	const attachment = new MessageAttachment(buffer, "List.txt");
 

@@ -13,12 +13,12 @@ export async function run(message: Message, state: boolean) {
 
 	if (!message.guild) return;
 
-	guild.fun.enable = state;
+	guild.quotes.enable = state;
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			fun: guild.fun,
+			quotes: guild.quotes,
 		}
 	);
 
