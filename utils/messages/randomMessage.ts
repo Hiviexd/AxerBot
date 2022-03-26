@@ -7,12 +7,15 @@ export default async function randomMessage(message: Message, bot: any) {
 	if (!message.guild) return;
 
 	let guild = await database.guilds.findById(message.guildId);
+	if (guild.fun.blacklist.channels.includes(message.channelId)) return;
 
 	if (!guild || guild == null) return;
 
 	if (
 		(guild.fun.enable == true &&
-			message.content.toUpperCase().includes(guild.fun.word.toUpperCase())) ||
+			message.content
+				.toUpperCase()
+				.includes(guild.fun.word.toUpperCase())) ||
 		message.mentions.users.has(bot.user)
 	) {
 		if (guild.fun.mode == "default") {

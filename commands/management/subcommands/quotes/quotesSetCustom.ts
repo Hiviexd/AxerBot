@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
 import * as database from "../../../../database";
-import createNewGuild from "../../../../database/utils/createNewGuild";
 
 export const config = {
 	name: "set custom",
@@ -19,7 +18,7 @@ export async function run(message: Message) {
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			fun: guild.fun,
+			quotes: guild.fun,
 		}
 	);
 

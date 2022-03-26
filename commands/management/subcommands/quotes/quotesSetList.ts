@@ -1,6 +1,5 @@
 import { Message, MessageAttachment } from "discord.js";
-import * as database from "./../../../../database";
-import createNewGuild from "../../../../database/utils/createNewGuild";
+import * as database from "../../../../database";
 import { parseTextFileAttachment } from "../../../../utils/messages/processText";
 
 export const config = {
@@ -32,7 +31,7 @@ export async function run(message: Message) {
 	await database.guilds.findOneAndUpdate(
 		{ _id: message.guildId },
 		{
-			fun: guild.fun,
+			quotes: guild.fun,
 		}
 	);
 

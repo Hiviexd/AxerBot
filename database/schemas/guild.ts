@@ -27,6 +27,18 @@ export default new Schema({
 			logs: undefined,
 		},
 	},
+	fun: {
+		type: Object,
+		default: {
+			enable: true,
+			mode: "default",
+			word: "axer",
+			blacklist: {
+				channels: [],
+				words: [],
+			},
+		},
+	},
 	cooldown: {
 		type: Object,
 		default: {
@@ -65,19 +77,6 @@ export default new Schema({
 				increments: 0,
 				channels: [],
 			},
-		},
-	},
-	fun: {
-		type: Object,
-		default: {
-			enable: true,
-			mode: "default",
-			word: "axer",
-			blacklist: {
-				channels: [],
-				words: [],
-			},
-			phrases: [],
 		},
 	},
 	messages: {
@@ -121,5 +120,5 @@ export default new Schema({
 			enable: false,
 			channel: "",
 		},
-	}
+	},
 });

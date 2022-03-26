@@ -7,6 +7,8 @@ import * as quotesToggle from "./subcommands/quotes/quotesToggle";
 import * as quotesSetWord from "./subcommands/quotes/quotesSetWord";
 import * as quotesGetList from "./subcommands/quotes/quotesGetList";
 import * as quotesAddWord from "./subcommands/quotes/quotesAddWord";
+import * as quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
+import * as quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
 import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
@@ -24,14 +26,18 @@ export default {
 		quotesSetDefault,
 		quotesToggle,
 		quotesSetWord,
-		quotesAddWord
+		quotesAddWord,
+		quotesBlockChannels,
+		quotesAllowChannels,
 	],
 	options: [
 		"`set` `custom`",
 		"`set` `default`",
 		"`set` `disabled`",
 		"`set` `list`",
-		"`set` `word`",
+		"`set` `<word>`",
+		"`block` `<#channels>...`",
+		"`allow` `<#channels>...`",
 		"`add`",
 		"`status`",
 		"`viewlist`",
@@ -75,7 +81,15 @@ export default {
 				break;
 			}
 			case "add": {
-				quotesAddWord.run(message)
+				quotesAddWord.run(message);
+				break;
+			}
+			case "block": {
+				quotesBlockChannels.run(message, args);
+				break;
+			}
+			case "allow": {
+				quotesAllowChannels.run(message, args);
 				break;
 			}
 			case "set": {
