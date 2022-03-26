@@ -34,9 +34,13 @@ export async function run(message: Message, args: string[]) {
 	guild.fun.blacklist.channels = blacklist;
 
 	if (added_channels.length < 1)
-		return message.channel.send("Provide valid channels mf");
+		return message.channel.send(
+			"Please, provide valid channels. You only can block allowed **TEXT CHANNELS**"
+		);
 
 	await database.guilds.findOneAndUpdate({ _id: message.guildId }, guild);
 
-	message.channel.send("I fucked ur mom");
+	message.channel.send(
+		`✅ Done! Use \`${guild.prefix}quotes status\` to check`
+	);
 }
