@@ -20,7 +20,7 @@ export async function run(message: Message, word: string) {
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.fun,
+			fun: guild.fun,
 		}
 	);
 

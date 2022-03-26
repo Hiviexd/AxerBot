@@ -31,7 +31,7 @@ export async function run(message: Message) {
 	await database.guilds.findOneAndUpdate(
 		{ _id: message.guildId },
 		{
-			quotes: guild.fun,
+			fun: guild.fun,
 		}
 	);
 

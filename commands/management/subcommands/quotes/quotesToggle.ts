@@ -17,7 +17,7 @@ export async function run(message: Message, state: boolean) {
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.fun,
+			fun: guild.fun,
 		}
 	);
 

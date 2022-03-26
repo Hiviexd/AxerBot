@@ -12,13 +12,15 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
+	console.log(guild.fun);
+
 	guild.fun.enable = true;
 	guild.fun.mode = "default";
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.fun,
+			fun: guild.fun,
 		}
 	);
 
