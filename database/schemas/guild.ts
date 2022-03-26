@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import prefix from "../../config.json";
+import config from "../../config.json";
 
 export default new Schema({
 	_id: {
@@ -7,7 +7,7 @@ export default new Schema({
 	},
 	prefix: {
 		type: String,
-		default: prefix,
+		default: config.prefix,
 	},
 	osu: {
 		type: Object,

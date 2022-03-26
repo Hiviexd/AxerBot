@@ -60,7 +60,7 @@ export default {
                 );
 
                 return message.channel.send(
-                    `✅ Logging channel set to <#${guild.logging.channel}>.`
+                    `✅ Logging channel set to <#${guild.logging.channel}>`
                 );
             }
         }
@@ -90,12 +90,15 @@ export default {
                 
         }
         function sendCurrentConfiguration() {
+            let ch: string = ""
+            if (guild.logging.channel == "") ch = "None"; 
+            else ch = `<#${guild.logging.channel}>`
             const embed = new MessageEmbed()
                 .setTitle("Logging Configuration")
                 .setColor(guild.logging.enabled ? "#1df27d" : "#e5243b")
                 .setDescription(
                     `**Status:** ${guild.logging.enabled ? "Enabled" : "Disabled"}
-                    **Channel:** <#${guild.logging.channel}>`
+                    **Channel:** ${ch}`
                 );
 
             message.channel.send({ embeds: [embed] });
