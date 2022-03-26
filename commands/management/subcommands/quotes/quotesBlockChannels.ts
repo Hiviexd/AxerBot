@@ -18,7 +18,7 @@ export async function run(message: Message, args: string[]) {
 
 	if (channels.size < 1) return;
 
-	const blacklist = guild.quotes.blacklist.channels;
+	const blacklist = guild.fun.blacklist.channels;
 
 	const added_channels: string[] = [];
 	channels.forEach((channel) => {
@@ -31,7 +31,7 @@ export async function run(message: Message, args: string[]) {
 		}
 	});
 
-	guild.quotes.blacklist.channels = blacklist;
+	guild.fun.blacklist.channels = blacklist;
 
 	if (added_channels.length < 1)
 		return message.channel.send("Provide valid channels mf");

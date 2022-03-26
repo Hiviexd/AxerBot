@@ -12,34 +12,34 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
-	if (!guild.quotes.word) guild.quotes.word = "axer";
+	if (!guild.fun.word) guild.fun.word = "axer";
 
 	message.channel.send({
 		embeds: [
 			{
 				title: "Current quotes system configuration",
-				color: guild.quotes.enable ? "#1df27d" : "#e5243b",
+				color: guild.fun.enable ? "#1df27d" : "#e5243b",
 				fields: [
 					{
 						name: "Status",
-						value: guild.quotes.enable ? "`Enabled`" : "`Disabled`",
+						value: guild.fun.enable ? "`Enabled`" : "`Disabled`",
 					},
 					{
 						name: "List mode",
-						value: `\`${guild.quotes.mode
+						value: `\`${guild.fun.mode
 							.charAt(0)
 							.toUpperCase()
-							.concat(guild.quotes.mode.slice(1))}\``, // Captalize the first character
+							.concat(guild.fun.mode.slice(1))}\``, // Captalize the first character
 					},
 					{
 						name: "Trigger word",
-						value: `\`${guild.quotes.word.toLowerCase()}\``,
+						value: `\`${guild.fun.word.toLowerCase()}\``,
 					},
 					{
 						name: "Blocked channels",
 						value:
-							guild.quotes.blacklist.channels.length > 0
-								? `${guild.quotes.blacklist.channels.map(
+							guild.fun.blacklist.channels.length > 0
+								? `${guild.fun.blacklist.channels.map(
 										(c: any) => {
 											return `<#${c}>`;
 										}

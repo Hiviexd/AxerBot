@@ -12,13 +12,13 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
-	guild.quotes.enable = true;
-	guild.quotes.mode = "custom";
+	guild.fun.enable = true;
+	guild.fun.mode = "custom";
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.quotes,
+			quotes: guild.fun,
 		}
 	);
 

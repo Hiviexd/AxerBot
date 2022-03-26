@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
-import * as database from "../../../database";
-import createNewGuild from "../../../database/utils/createNewGuild";
+import * as database from "../../../../database";
 
 export const config = {
 	name: "add",
@@ -14,7 +13,7 @@ export async function run(message: Message) {
 	const args = message.content.split(" ");
 	args.splice(0, 2); // ? Clear the shit
 
-	if (guild.quotes.mode != "custom")
+	if (guild.fun.mode != "custom")
 		return message.channel.send(
 			":x: Switch to custom list mode to add a new phrase."
 		);
@@ -27,12 +26,12 @@ export async function run(message: Message) {
 
 	if (!message.guild) return;
 
-	guild.quotes.phrases.push(args.join(" "));
+	guild.fun.phrases.push(args.join(" "));
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.quotes,
+			quotes: guild.fun,
 		}
 	);
 

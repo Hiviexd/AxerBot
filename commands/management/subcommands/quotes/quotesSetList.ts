@@ -25,13 +25,13 @@ export async function run(message: Message) {
 
 	if (list.length < 1) return message.channel.send(":x: Invalid list size");
 
-	guild.quotes.enable = true;
-	guild.quotes.phrases = list;
+	guild.fun.enable = true;
+	guild.fun.phrases = list;
 
 	await database.guilds.findOneAndUpdate(
 		{ _id: message.guildId },
 		{
-			quotes: guild.quotes,
+			quotes: guild.fun,
 		}
 	);
 

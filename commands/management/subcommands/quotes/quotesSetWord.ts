@@ -14,13 +14,13 @@ export async function run(message: Message, word: string) {
 
 	if (!message.guild) return;
 
-	guild.quotes.enable = true;
-	guild.quotes.word = word.toUpperCase();
+	guild.fun.enable = true;
+	guild.fun.word = word.toUpperCase();
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
 		{
-			quotes: guild.quotes,
+			quotes: guild.fun,
 		}
 	);
 
