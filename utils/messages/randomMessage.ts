@@ -1,7 +1,6 @@
 import { parseTextFile } from "./processText";
 import { Message } from "discord.js";
 import * as database from "./../../database";
-import createNewGuild from "./../../database/utils/createNewGuild";
 import path from "path";
 
 export default async function randomMessage(message: Message, bot: any) {
@@ -9,9 +8,11 @@ export default async function randomMessage(message: Message, bot: any) {
 
 	let guild = await database.guilds.findById(message.guildId);
 
+	if (!guild || guild == null) return;
+
 	if (
 		(guild.fun.enable == true &&
-			message.content.toUpperCase().includes(guild.fun.word)) ||
+			message.content.toUpperCase().includes(guild.fun.word.toUpperCase())) ||
 		message.mentions.users.has(bot.user)
 	) {
 		if (guild.fun.mode == "default") {
