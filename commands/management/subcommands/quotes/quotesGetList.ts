@@ -1,5 +1,5 @@
 import { Message, MessageAttachment } from "discord.js";
-import * as database from "../../../database";
+import * as database from "../../../../database";
 
 export const config = {
 	name: "viewlist",

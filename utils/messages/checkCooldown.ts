@@ -13,6 +13,9 @@ export default async (
 	message: Message
 ) => {
 	try {
+
+		if (!guild) return true;
+
 		let now = new Date();
 
 		if (message.member?.permissions.has("ADMINISTRATOR")) return true; // ? Allow admins to bypass the cooldown

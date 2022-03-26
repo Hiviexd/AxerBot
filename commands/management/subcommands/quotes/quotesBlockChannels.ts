@@ -1,10 +1,10 @@
 import { Message } from "discord.js";
-import * as database from "../../../database";
+import * as database from "../../../../database";
 
 export const config = {
-	name: "allow",
-	description: "Remove a channel from blacklist.",
-	syntax: "!quotes `allow` `<#channels>`",
+	name: "block",
+	description: "Set channels that quotes can't run.",
+	syntax: "!quotes `block` `<#channels>`",
 };
 
 export async function run(message: Message, args: string[]) {
@@ -18,15 +18,15 @@ export async function run(message: Message, args: string[]) {
 
 	if (channels.size < 1) return;
 
-	let blacklist = guild.quotes.blacklist.channels;
+	const blacklist = guild.quotes.blacklist.channels;
 
 	const added_channels: string[] = [];
 	channels.forEach((channel) => {
 		if (!message.guild?.channels.cache.find((c) => c.id == channel.id))
 			return;
 
-		if (blacklist.includes(channel.id) && channel.type == "GUILD_TEXT") {
-			blacklist = blacklist.filter((c: any) => c != channel.id);
+		if (!blacklist.includes(channel.id) && channel.type == "GUILD_TEXT") {
+			blacklist.push(channel.id);
 			added_channels.push(channel.id);
 		}
 	});

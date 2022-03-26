@@ -1,19 +1,16 @@
 import { MessageEmbed, GuildMember, Client } from "discord.js";
 import { consoleLog } from "../utils/core/logger";
+import * as database from "../database";
 
 export default {
 	name: "guildMemberRemove",
 	execute(bot: Client) {
 		try {
-			bot.on("guildMemberRemove", (member) => {
-				if (
-					!member.guild.channels.cache.find(
-						(c) => c.name === "wasteland"
-					)
-				)
-					return;
-
+			bot.on("guildMemberRemove", async (member) => {
 				if (!member.user) return;
+				const guild = await database.guilds.findOne({ _id: member.guild.id });
+				if (guild.logging.enabled === false) return;
+				if (!member.guild.channels.cache.get(guild.logging.channel)) return;
 
 				const memberRoles = member.roles.cache
 					.filter((roles) => roles.id !== member.guild.id)
@@ -34,10 +31,7 @@ export default {
 					`User ${member.user.tag} has left the server!`
 				);
 
-				const channel: any = member.guild.channels.cache
-					.filter((c) => c.name === "wasteland")
-					.first();
-
+				const channel: any = member.guild.channels.cache.get(guild.logging.channel);
 				if (!channel) return;
 
 				channel.send({ embeds: [embed] });

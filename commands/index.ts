@@ -12,6 +12,7 @@ import help from "./misc/help";
 import setprefix from "./management/setprefix";
 import cooldown from "./management/cooldown";
 import quotes from "./management/quotes";
+import logging from "./management/logging";
 
 const commands: any = {
 	ping: ping,
@@ -27,7 +28,8 @@ const commands: any = {
 	help: help,
 	setprefix: setprefix,
 	quotes: quotes,
-	cooldown: cooldown
+	cooldown: cooldown,
+	logging: logging
 };
 
 export default commands;

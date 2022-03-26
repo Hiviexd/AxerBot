@@ -1,14 +1,18 @@
 import { Client, Message, MessageEmbed } from "discord.js";
+import * as database from "../database";
 
 export default {
 	name: "messageDelete",
 	execute(bot: Client) {
 		try {
-			bot.on("messageDelete", (message) => {
+			bot.on("messageDelete", async (message) => {
 				if (!message.author) return;
 				if (message.author.bot) return;
 				if (message.channel.type === "DM") return;
 				if (!message.guild || !message.guild.channels) return;
+				const guild = await database.guilds.findOne({ _id: message.guild.id });
+				if (guild.logging.enabled === false) return;
+				if (!message.guild.channels.cache.get(guild.logging.channel)) return;
 
 				const embed = new MessageEmbed()
 					.setColor("#ff5050")
@@ -29,10 +33,7 @@ export default {
 					}
 				}
 
-				const channel: any = message.guild.channels.cache
-					.filter((c) => c.name === "wasteland")
-					.first();
-
+				const channel: any = message.guild.channels.cache.get(guild.logging.channel);
 				if (!channel) return;
 
 				channel.send({ embeds: [embed] });

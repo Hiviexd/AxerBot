@@ -37,8 +37,8 @@ export default {
 		);
 
 		const res = new MessageEmbed()
-			.setTitle("✅ Configuration updated!")
-			.setDescription(`Now, my prefix here is \`${new_prefix}\``)
+			.setTitle("✅ Prefix updated!")
+			.setDescription(`New prefix on this server is \`${new_prefix}\``)
 			.setColor("#1df27d");
 
 		message.channel.send({

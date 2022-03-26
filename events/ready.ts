@@ -15,7 +15,7 @@ export default {
 
 			// Set the Presence of the bot user
 			bot_user.setPresence({
-				activities: [{ name: "ax!help | ax!setprefix" }],
+				activities: [{ name: "-help | -setprefix" }],
 			});
 		});
 	},

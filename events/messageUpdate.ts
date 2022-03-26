@@ -1,10 +1,11 @@
 import { Client, GuildChannel, Message, MessageEmbed } from "discord.js";
+import * as database from "../database";
 
 export default {
 	name: "messageUpdate",
 	execute(bot: Client) {
 		try {
-			bot.on("messageUpdate", (oldMessage, newMessage) => {
+			bot.on("messageUpdate", async (oldMessage, newMessage) => {
 				if (
 					!oldMessage.author ||
 					!oldMessage.content ||
@@ -16,13 +17,10 @@ export default {
 				if (oldMessage.channel.type === "DM") return;
 				if (!oldMessage.author) return;
 				if (!newMessage.guild || !oldMessage.guild) return;
+				const guild = await database.guilds.findOne({ _id: oldMessage.guild.id });
+				if (guild.logging.enabled === false) return;
 
-				if (
-					!newMessage.guild.channels.cache.find(
-						(c) => c.name === "wasteland"
-					)
-				)
-					return;
+				if (!newMessage.guild.channels.cache.get(guild.logging.channel)) return;
 				if (oldMessage.content === newMessage.content) return;
 
 				const count = 1950;
@@ -49,9 +47,7 @@ export default {
 					embed.setImage(img.url);
 				}
 
-				let channel: any = newMessage.guild.channels.cache
-					.filter((c) => c.name == "wasteland")
-					.first();
+				let channel: any = newMessage.guild.channels.cache.get(guild.logging.channel);
 
 				if (!channel) return;
 

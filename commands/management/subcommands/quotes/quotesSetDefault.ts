@@ -1,11 +1,10 @@
 import { Message } from "discord.js";
-import * as database from "../../../database";
-import createNewGuild from "../../../database/utils/createNewGuild";
+import * as database from "../../../../database";
 
 export const config = {
-	name: "set custom",
-	description: "Change quotes system list to server custom list",
-	syntax: "!quotes `set` `custom`",
+	name: "set default",
+	description: "Change quotes system list to default list",
+	syntax: "!quotes `set` `default`",
 };
 
 export async function run(message: Message) {
@@ -14,7 +13,7 @@ export async function run(message: Message) {
 	if (!message.guild) return;
 
 	guild.quotes.enable = true;
-	guild.quotes.mode = "custom";
+	guild.quotes.mode = "default";
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
@@ -23,5 +22,5 @@ export async function run(message: Message) {
 		}
 	);
 
-	message.channel.send(`✅ Switched mode to custom`);
+	message.channel.send(`✅ Switched mode to default`);
 }

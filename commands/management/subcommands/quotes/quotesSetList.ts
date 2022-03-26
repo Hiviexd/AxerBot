@@ -1,7 +1,6 @@
 import { Message, MessageAttachment } from "discord.js";
-import * as database from "./../../../database";
-import createNewGuild from "../../../database/utils/createNewGuild";
-import { parseTextFileAttachment } from "../../../utils/messages/processText";
+import * as database from "../../../../database";
+import { parseTextFileAttachment } from "../../../../utils/messages/processText";
 
 export const config = {
 	name: "set list",
