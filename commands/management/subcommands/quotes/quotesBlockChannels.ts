@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import * as database from "../../../../database";
+import MissingPermissions from "./../../../../data/embeds/MissingPermissions";
 
 export const config = {
 	name: "block",
@@ -16,7 +17,11 @@ export async function run(message: Message, args: string[]) {
 
 	const channels = message.mentions.channels;
 
-	if (channels.size < 1) return;
+	if (!message.member?.permissions.has("MANAGE_CHANNELS", true))
+		return message.channel.send({ embeds: [MissingPermissions] });
+
+	if (channels.size < 1)
+		return message.channel.send(":x: Please, mention a text channel.");
 
 	const blacklist = guild.fun.blacklist.channels;
 
