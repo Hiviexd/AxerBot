@@ -1,7 +1,7 @@
 import { RankedStatus } from "./ranked_status";
 import type { Failtimes } from "./failtimes";
 import type { Timestamp } from "./timestamp";
-import type { User } from "./user";
+import type { User, UserCompact } from "./user";
 
 export interface Covers {
 	cover: string;
@@ -39,15 +39,84 @@ export interface BeatmapsetCompactBase {
 	converts?: unknown;
 	current_user_attributes?: unknown;
 	description?: unknown;
-	discussions?: unknown;
+	discussions?: BeatmapsetDiscussion;
 	events?: unknown;
-	genre?: unknown;
-	language?: unknown;
+	genre?: string;
+	language?: string;
 	nominations?: unknown;
 	ratings?: number[];
 	recent_favourites?: unknown;
 	related_users?: unknown;
 	user?: User;
+}
+
+export interface BeatmapsetDiscussionCompact {
+	beatmap?: BeatmapCompact;
+	beatmap_id: number;
+	beatmapset: BeatmapsetCompact;
+	beatmapset_id: number;
+	can_grant_kudosu: boolean;
+	created_at: Timestamp;
+	current_user_attributes: unknown;
+	deleted_at: Timestamp;
+	deleted_by_id: number;
+	id: number;
+	kudosu_denied: boolean;
+	last_post_at: Timestamp;
+	message_type: string;
+	parent_id: number;
+	posts: BeatmapsetDiscussionPost[];
+	resolved: boolean;
+	starting_post: BeatmapsetDiscussionPost;
+	timestamp: number;
+	updated_at: Timestamp;
+	user_id: number;
+}
+
+export interface BeatmapsetDiscussion {
+	beatmaps: Beatmap[];
+	cursor_string: string;
+	discussions: BeatmapsetDiscussionCompact[];
+	included_discussions: BeatmapsetDiscussionCompact[];
+	users: UserCompact[];
+}
+
+export interface BeatmapsetDiscussionResponse {
+	status: number;
+	data: BeatmapsetDiscussion;
+}
+
+export interface BeatmapsetDiscussionPost {
+	beatmapsets: BeatmapsetCompact[];
+	discussions: [BeatmapsetDiscussionCompact];
+	posts: [BeatmapsetDiscussionPostCompact];
+}
+
+export interface BeatmapsetDiscussionPostResponse {
+	status: number;
+	data: BeatmapsetDiscussionPost;
+}
+
+export interface BeatmapsetDiscussionPostCompact {
+	beatmapset_discussion_id: number;
+	created_at: Timestamp;
+	deleted_at: Timestamp;
+	deleted_by_id: number;
+	id: number;
+	last_editor_id: number;
+	message: string;
+	system: boolean;
+	updated_at: Timestamp;
+	user_id: number;
+}
+
+export interface BeatmapsetDiscussionVote {
+	beatmapset_discussion_id: number;
+	created_at: Timestamp;
+	id: number;
+	score: number;
+	updated_at: Timestamp;
+	user_id: number;
 }
 
 /**

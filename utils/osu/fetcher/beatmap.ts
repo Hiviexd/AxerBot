@@ -3,6 +3,7 @@ import {
 	BeatmapsetResponse,
 	BeatmapResponse,
 	UserBeatmapetsResponse,
+	BeatmapsetDiscussionPostResponse,
 } from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
@@ -56,6 +57,47 @@ export async function beatmapset(
 		const res = req.data;
 
 		consoleCheck("beatmap fetcher", `Beatmapset ${beatmapset_id} found!`);
+
+		return {
+			status: 200,
+			data: res,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
+export async function beatmapsetDiscussionPost(
+	post_id: string,
+	type: string
+): Promise<BeatmapsetDiscussionPostResponse> {
+	try {
+		consoleLog(
+			"beatmap fetcher",
+			`Fetching beatmapset discussion post ${post_id}`
+		);
+
+		const req = await axios(
+			`https://osu.ppy.sh/api/v2/beatmapsets/discussions/posts?beatmapset_discussion_id=${post_id}&types[]=${type}&limit=500`,
+			{
+				headers: {
+					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+				},
+			}
+		);
+
+		const res = req.data;
+
+		consoleCheck(
+			"beatmap fetcher",
+			`Beatmapset discussion post ${post_id} found!`
+		);
 
 		return {
 			status: 200,

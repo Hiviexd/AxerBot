@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import parseUser from "./url/parseUser";
 import * as database from "./.../../../../database";
 import checkCooldown from "../messages/checkCooldown";
+import parseDiscussionPost from "./url/parseDiscussionPost";
 
 export default async (message: Message) => {
 	const links: string[] = [];
@@ -18,6 +19,8 @@ export default async (message: Message) => {
 	});
 
 	links.forEach((link) => {
-		if (link.split("/").includes("users")) parseUser(link, message);
+		if (link.split("/").includes("users")) return parseUser(link, message);
+		if (link.split("/").includes("discussion") && !link.includes("reviews"))
+			return parseDiscussionPost(link, message);
 	});
 };
