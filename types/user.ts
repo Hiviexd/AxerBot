@@ -1,6 +1,7 @@
 import type { Timestamp } from "./timestamp";
 import { GameMode } from "./game_mode";
 import { ColorResolvable } from "discord.js";
+import { Beatmapset } from "./beatmap";
 
 export interface UserCompactCover {
 	custom_url: null | unknown;
@@ -19,6 +20,11 @@ export interface ProfilePage {
 	kudosu: unknown;
 	top_ranks: unknown;
 	medals: unknown;
+}
+
+export interface UserResponse {
+	status: number;
+	data: User;
 }
 
 export interface UserStatisticsRulesets {
@@ -181,7 +187,9 @@ export interface UserCompactBase {
 	page?: unknown;
 	pending_beatmapset_count?: unknown;
 	previous_usernames?: unknown;
-	rank_history?: unknown;
+	rank_history?: {
+		data?: number[];
+	};
 	ranked_beatmapset_count?: unknown;
 	replays_watched_counts?: unknown;
 	scores_best_count?: number;

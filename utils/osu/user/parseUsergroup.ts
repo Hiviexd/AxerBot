@@ -1,6 +1,6 @@
 import { EmbededUserGroup, User } from "../../../types/user";
 
-export default function getUserGroup(mapper: User): EmbededUserGroup {
+export default function parseUsergroup(mapper: User): EmbededUserGroup {
 	const userGroupInfo: any = {
 		PPY: {
 			index: 0,

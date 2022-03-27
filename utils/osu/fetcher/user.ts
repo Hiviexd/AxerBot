@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserResponse } from "../../../types/user_response";
+import { UserResponse } from "../../../types/user";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
 export async function user(user_id: string): Promise<UserResponse> {

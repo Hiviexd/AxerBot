@@ -1,7 +1,9 @@
 import axios from "axios";
-import { BeatmapsetResponse } from "../../../types/beatmapset_response";
-import { BeatmapResponse } from "../../../types/beatmap_response";
-import { UserBeatmapetsResponse } from "../../../types/user_beatmapsets_response";
+import {
+	BeatmapsetResponse,
+	BeatmapResponse,
+	UserBeatmapetsResponse,
+} from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
