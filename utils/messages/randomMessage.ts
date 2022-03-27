@@ -1,9 +1,10 @@
 import { parseTextFile } from "./processText";
+import { Client } from "discord.js";
 import { Message } from "discord.js";
 import * as database from "./../../database";
 import path from "path";
 
-export default async function randomMessage(message: Message, bot: any) {
+export default async function randomMessage(message: Message, bot: Client) {
 	if (!message.guild) return;
 
 	let guild = await database.guilds.findById(message.guildId);
@@ -16,7 +17,8 @@ export default async function randomMessage(message: Message, bot: any) {
 			message.content
 				.toUpperCase()
 				.includes(guild.fun.word.toUpperCase())) ||
-		message.mentions.users.has(bot.user)
+		message.mentions.users.filter((u) => u.id == bot.application?.id).size >
+			0
 	) {
 		if (guild.fun.mode == "default") {
 			const quotes = await parseTextFile(
