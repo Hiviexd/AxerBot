@@ -10,15 +10,15 @@ export default async (
 	guild: any,
 	name: any,
 	channel: string,
-	message: Message
+	message: Message,
+	ignoreError?: boolean
 ) => {
 	try {
-
 		if (!guild) return true;
 
 		let now = new Date();
 
-		if (message.member?.permissions.has("ADMINISTRATOR")) return true; // ? Allow admins to bypass the cooldown
+		//if (message.member?.permissions.has("ADMINISTRATOR")) return true; // ? Allow admins to bypass the cooldown
 
 		if (!guild.cooldown[name].channels.includes(channel)) return true;
 
@@ -60,6 +60,8 @@ export default async (
 
 		function sendWarn() {
 			const current_cooldown = guild.cooldown[name].ends_at[channel];
+
+			if (ignoreError) return false;
 
 			message.channel
 				.send({
