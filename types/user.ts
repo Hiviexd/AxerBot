@@ -157,7 +157,7 @@ export interface UserCompactBase {
 	/**
 	 * last access time. null if the user hides online presence
 	 */
-	last_visit?: null | Timestamp;
+	last_visit?: Timestamp;
 	/**
 	 * whether or not the user allows PM from other than friends
 	 */

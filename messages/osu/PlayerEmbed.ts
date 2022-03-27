@@ -3,6 +3,7 @@ import { Message, MessageAttachment } from "discord.js";
 import parseUsergroup from "../../utils/osu/user/parseUsergroup";
 import generatePlayerRankChart from "../../utils/images/generatePlayerRankChart";
 import parsePlayTime from "../../utils/osu/strings/parsePlayTime";
+import moment from "moment";
 
 export default {
 	send: async (user: UserResponse, message: Message) => {
@@ -85,7 +86,14 @@ export default {
 						text: `${
 							user.data.is_online
 								? "🟢 Currently online"
-								: "🔴 Offline"
+								: `🔴 Offline${
+										user.data.last_visit
+											? " • " +
+											  moment(
+													user.data.last_visit
+											  ).fromNow()
+											: ""
+								  }`
 						}`,
 					},
 				},
