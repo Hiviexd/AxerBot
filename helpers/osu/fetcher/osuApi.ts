@@ -3,8 +3,8 @@ import {
 	beatmapset,
 	beatmapsetDiscussionPost,
 	userBeatmaps,
-} from "./fetcher/beatmap";
-import { user } from "./fetcher/user";
+} from "./beatmap";
+import { user } from "./user";
 
 export default {
 	fetch: {

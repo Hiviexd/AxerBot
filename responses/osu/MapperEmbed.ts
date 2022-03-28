@@ -1,8 +1,8 @@
-import { UserResponse } from "./../../types/user";
-import { UserBeatmapetsResponse } from "./../../types/beatmap";
+import { UserResponse } from "../../types/user";
+import { UserBeatmapetsResponse } from "../../types/beatmap";
 import { Message, MessageEmbed } from "discord.js";
-import parseUsergroup from "../../utils/osu/user/parseUsergroup";
-import getMappingAge from "../../utils/osu/user/getMappingAge";
+import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
+import getMappingAge from "../../helpers/osu/player/getMappingAge";
 
 export default {
 	send: (

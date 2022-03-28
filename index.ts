@@ -3,11 +3,11 @@ dotenv.config();
 const token = process.env.TOKEN;
 import "colors";
 import { Client, Intents, Message } from "discord.js";
-import commandHandler from "./utils/core/commandHandler";
-import "./utils/osu/osuApiConnetion";
+import commandHandler from "./helpers/core/commandHandler";
+import "./helpers/osu/fetcher/startConnection";
 import keepAlive from "./server";
-import { consoleCheck } from "./utils/core/logger";
-import eventHandler from "./utils/core/eventHandler";
+import { consoleCheck } from "./helpers/core/logger";
+import eventHandler from "./helpers/core/eventHandler";
 
 const bot = new Client({
 	intents: [

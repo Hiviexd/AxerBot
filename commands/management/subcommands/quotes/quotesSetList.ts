@@ -1,6 +1,6 @@
 import { Message, MessageAttachment } from "discord.js";
 import * as database from "../../../../database";
-import { parseTextFileAttachment } from "../../../../utils/messages/processText";
+import { parseTextFileAttachment } from "../../../../helpers/text/processText";
 
 export const config = {
 	name: "set list",

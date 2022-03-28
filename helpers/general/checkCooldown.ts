@@ -1,6 +1,6 @@
 import { GuildMember, Message } from "discord.js";
 import moment from "moment";
-import * as database from "./../../database";
+import * as database from "../../database";
 
 /**
  * ? RETURN TRUE: Allow command to run

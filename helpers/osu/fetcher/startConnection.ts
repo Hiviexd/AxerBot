@@ -1,9 +1,9 @@
 /**
- * * ======================== getServerAuthToken
+ * * ======================== startConnection
  * ? Get authorization token
  */
 
-import { consoleCheck, consoleError, consoleLog } from "../core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 import axios from "axios";
 const osu_client_id = process.env.OSU_CLIENT_ID;
 const osu_client_secret = process.env.OSU_CLIENT_SECRET;

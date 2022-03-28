@@ -1,10 +1,11 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message } from "discord.js";
 import UserNotFound from "../../data/embeds/UserNotFound";
-import osuApi from "../../utils/osu/osuApi";
+import osuApi from "../../helpers/osu/fetcher/osuApi";
 import UserNotMapper from "../../data/embeds/UserNotMapper";
-import * as database from "./../../database";
 import { Beatmapset } from "../../types/beatmap";
-import MapsetRankEmbed from "../../messages/osu/MapsetRankEmbed";
+import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";
+import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
+import getTraceParams from "../../helpers/commands/getTraceParams";
 
 export default {
 	name: "mapsetrank",
@@ -15,7 +16,13 @@ export default {
 		"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: string[]) => {
-		let sort = args[args.length - 1] || "-playcount";
+		let sort = getTraceParams(args, "-playcount", 1, [
+			"-favorites",
+			"-fav",
+			"-plays",
+			"-playcount",
+		])[0];
+
 		let decorator = {
 			title: "Most played beatmaps", // ? {username} | Most played beatmaps
 			emoji: "▶", // ? {position} . {beatmap_link} | ▶
@@ -63,60 +70,30 @@ export default {
 			}
 		}
 
-		let mapper_name = args.join(" "); // ? First, will we try to use the passed argument as the username
+		let { playerName, status } = await checkMessagePlayers(message, args);
 
-		// ? If mentions, try to use the author username saved in the db
-		if (message.mentions.users.size != 1) {
-			// ? Only use the message author if no arguments
-			if (args.length < 1) {
-				const u = await database.users.findOne({
-					_id: message.author.id,
-				});
+		if (status != 200) return;
 
-				// ? If exists, overwrite the passed argument to the mentioned user name
-				if (u != null) mapper_name = u.osu.username;
-			}
-		} else {
-			// ? Else, try to use the mention
-			const user = message.mentions.users.first();
-			const u = await database.users.findOne({
-				_id: user?.id,
-			});
+		const mapper = await osuApi.fetch.user(encodeURI(playerName));
 
-			// ? If exists, overwrite too
-			if (u != null) mapper_name = u.osu.username;
-		}
-
-		// ? If all the arguments failed, and the passed argument text is null (!mapsetrank {username}), send a error embed
-
-		if (mapper_name.trim() == "")
-			return message.channel.send("Provide a valid user.");
-
-		// ? Oh everything works, fetch the user
-		const mapper_user = await osuApi.fetch.user(encodeURI(mapper_name));
-
-		// ? that shit isnt a user response?
-		if (mapper_user.status != 200)
+		if (mapper.status != 200)
 			return message.channel.send({
 				embeds: [UserNotFound],
 			});
 
-		// ? Oh yeah fetch beatmaps
-		const mapper_beatmaps = await osuApi.fetch.userBeatmaps(
-			mapper_user.data.id.toString()
+		const beatmaps = await osuApi.fetch.userBeatmaps(
+			mapper.data.id.toString()
 		);
 
-		// ? If error, return.
-		if (mapper_beatmaps.status != 200) return;
+		if (beatmaps.status != 200) return;
 
-		// ? This user doesnt have any beatmap bro
-		if (mapper_beatmaps.data.sets.length < 1)
+		if (beatmaps.data.sets.length < 1)
 			return message.channel.send({
 				embeds: [UserNotMapper],
 			});
 
 		// ? Sort beatmaps
-		const sorted_beatmaps: Beatmapset[] = mapper_beatmaps.data.sets;
+		const sorted_beatmaps: Beatmapset[] = beatmaps.data.sets;
 		switch (sort) {
 			case "favourite_count": {
 				sorted_beatmaps.sort((a, b) => {
@@ -137,6 +114,6 @@ export default {
 		}
 
 		// ? Lesgoooo send the embed
-		MapsetRankEmbed.send(mapper_user, sorted_beatmaps, message, decorator);
+		MapsetRankEmbed.send(mapper, sorted_beatmaps, message, decorator);
 	},
 };

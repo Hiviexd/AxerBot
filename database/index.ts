@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { consoleCheck, consoleError, consoleLog } from "../utils/core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../helpers/core/logger";
 import guild from "./schemas/guild";
 import user from "./schemas/user";
 

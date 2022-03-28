@@ -1,6 +1,6 @@
 import { createCanvas } from "canvas";
 import { Chart } from "chart.js";
-import { User } from "../../types/user";
+import { User } from "../../../types/user";
 
 export default (user: User): any => {
 	const canvas = createCanvas(1280, 300);

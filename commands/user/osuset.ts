@@ -9,7 +9,7 @@ export default {
 	example: "!osuset `user` `Hivie`\n !osuset `user` `HEAVENLY MOON`",
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
-		const validOptions = ["user"];
+		const validOptions = ["user", "embed"];
 
 		if (args.length < 1)
 			return message.channel.send(
@@ -35,7 +35,19 @@ export default {
 
 		switch (options.category) {
 			case "user": {
-				user.osu["username"] = options.value;
+				user.osu["username"] = options.value.toLowerCase();
+				break;
+			}
+
+			case "embed": {
+				const validEmbeds = ["mapper", "player"];
+
+				if (!validEmbeds.includes(options.value))
+					return message.channel.send(
+						"❌ Invalid embed! Valid options: `player` `mapper`"
+					);
+
+				user.osu["embed"] = options.value;
 				break;
 			}
 		}

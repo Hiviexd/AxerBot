@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
-import osuTimestamp from "../utils/messages/osuTimestamp";
-import randomMessage from "../utils/messages/randomMessage";
-import osuURL from "../utils/osu/osuURL";
+import osuTimestamp from "../helpers/text/osuTimestamp";
+import sendQuotes from "../helpers/general/sendQuotes";
+import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 // import osuURL from "../utils/messages/osuURLmanager";
 
 export default {
@@ -12,9 +12,9 @@ export default {
 			if (message.channel.type === "DM") return;
 			if (!message.guild) return;
 
-			randomMessage(message, bot);
+			sendQuotes(message, bot);
 			osuTimestamp(message);
-			osuURL(message);
+			checkOsuURL(message);
 		});
 	},
 };

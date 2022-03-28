@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
-import parseUser from "./url/parseUser";
-import * as database from "./.../../../../database";
-import checkCooldown from "../messages/checkCooldown";
-import parseDiscussionPost from "./url/parseDiscussionPost";
+import parseUser from "./parseUser";
+import * as database from "../../../database";
+import checkCooldown from "../../general/checkCooldown";
+import parseDiscussionPost from "./parseDiscussionPost";
 
 export default async (message: Message) => {
 	const links: string[] = [];

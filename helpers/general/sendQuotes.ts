@@ -1,10 +1,10 @@
-import { parseTextFile } from "./processText";
+import { parseTextFile } from "../text/processText";
 import { Client } from "discord.js";
 import { Message } from "discord.js";
-import * as database from "./../../database";
+import * as database from "../../database";
 import path from "path";
 
-export default async function randomMessage(message: Message, bot: Client) {
+export default async (message: Message, bot: Client) => {
 	if (!message.guild) return;
 
 	let guild = await database.guilds.findById(message.guildId);
@@ -37,4 +37,4 @@ export default async function randomMessage(message: Message, bot: Client) {
 			message.channel.send(quote);
 		}
 	}
-}
+};

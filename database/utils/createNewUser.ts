@@ -1,4 +1,4 @@
-import { consoleCheck, consoleLog } from "../../utils/core/logger";
+import { consoleCheck, consoleLog } from "../../helpers/core/logger";
 import * as database from "./../";
 
 export default async function createNewUser(user_data: any) {

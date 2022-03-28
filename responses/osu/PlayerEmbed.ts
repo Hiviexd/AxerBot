@@ -1,8 +1,8 @@
-import { UserResponse } from "./../../types/user";
+import { UserResponse } from "../../types/user";
 import { Message, MessageAttachment } from "discord.js";
-import parseUsergroup from "../../utils/osu/user/parseUsergroup";
-import generatePlayerRankChart from "../../utils/images/generatePlayerRankChart";
-import parsePlayTime from "../../utils/osu/strings/parsePlayTime";
+import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
+import generatePlayerRankChart from "../../helpers/osu/player/generatePlayerRankChart";
+import parsePlayTime from "../../helpers/osu/player/parsePlayTime";
 import moment from "moment";
 
 export default {

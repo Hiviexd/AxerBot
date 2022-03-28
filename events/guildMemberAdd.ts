@@ -1,6 +1,6 @@
 import { Client, GuildMember } from "discord.js";
 
-import { consoleLog } from "../utils/core/logger";
+import { consoleLog } from "../helpers/core/logger";
 
 export default {
 	name: "guildMemberAdd",

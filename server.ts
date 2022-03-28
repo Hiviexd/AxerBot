@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import express, { Request, Response } from "express";
 const server = express();
-import { consoleCheck } from "./utils/core/logger";
+import { consoleCheck } from "./helpers/core/logger";
 import "./database";
 
 server.all("/", (req: Request, res: Response) => {

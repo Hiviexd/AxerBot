@@ -1,11 +1,9 @@
 import { Client, Message } from "discord.js";
 import commands from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
-import * as config from "./../../config.json";
-import * as database from "./../../database";
-import { consoleError } from "./logger";
-import CommandNotFound from "./../../data/embeds/CommandNotFound";
-import checkCooldown from "./../messages/checkCooldown";
+import * as database from "../../database";
+import CommandNotFound from "../../data/embeds/CommandNotFound";
+import checkCooldown from "../general/checkCooldown";
 
 export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;

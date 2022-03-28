@@ -1,5 +1,5 @@
 import { UserBeatmapetsResponse } from "../../../types/beatmap";
-import parseDate from "../../../utils/messages/parseDate";
+import parseDate from "../../text/parseDate";
 
 export default function getMappingAge(beatmaps: UserBeatmapetsResponse) {
 	if (!beatmaps.data.first.submitted_date) return "0";

@@ -1,7 +1,7 @@
-import { UserResponse } from "./../../types/user";
-import { Beatmapset } from "./../../types/beatmap";
+import { UserResponse } from "../../types/user";
+import { Beatmapset } from "../../types/beatmap";
 import { Message, MessageEmbed } from "discord.js";
-import parseUsergroup from "../../utils/osu/user/parseUsergroup";
+import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 
 export default {
 	send: (

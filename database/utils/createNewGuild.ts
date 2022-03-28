@@ -1,5 +1,5 @@
 import { Guild } from "discord.js";
-import { consoleCheck, consoleLog } from "../../utils/core/logger";
+import { consoleCheck, consoleLog } from "../../helpers/core/logger";
 import * as database from "..";
 
 export default async function createNewGuild(guild_data: Guild) {

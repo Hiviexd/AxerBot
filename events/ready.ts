@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { consoleCheck } from "../utils/core/logger";
+import { consoleCheck } from "../helpers/core/logger";
 
 export default {
 	name: "ready",
