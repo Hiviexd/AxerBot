@@ -7,15 +7,19 @@ import { ownerId } from "../../config.json";
 export default {
 	name: "setprefix",
 	description: "Define a custom command prefix on this server.",
-	syntax: "!setprefix `<prefix>`",
-	example: "!setprefix `-`",
+	syntax: "{prefix}setprefix `<prefix>`",
+	example: "{prefix}setprefix `-`",
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 
 		if (!message.guild || !message.member) return;
 
-		if ((!message.member.permissions.has("MANAGE_GUILD", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
+		if (
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
+			return message.channel.send({ embeds: [MissingPermissions] });
 
 		guild = await database.guilds.findOne({ _id: message.guildId });
 

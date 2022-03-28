@@ -4,9 +4,10 @@ import MissingPermissions from "../../../../data/embeds/MissingPermissions";
 import * as database from "../../../../database";
 
 export const config = {
-	name: "clear",
+	name: "cooldown clear",
 	description: "Clear cooldown configuration for the system or a category.",
-	syntax: "!cooldown `clear` `category (optional)`",
+	syntax: "{prefix}cooldown `clear` `category (optional)`",
+	trigger: ["clear"],
 };
 
 export async function run(message: Message, args: string[]) {

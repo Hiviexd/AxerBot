@@ -5,7 +5,8 @@ import {
 
 export default (
 	raw_posts: BeatmapsetDiscussionPost,
-	post: BeatmapsetDiscussionPost
+	post: BeatmapsetDiscussionPost,
+	post_filter_types: string
 ) => {
 	const post_types: any = {
 		praise: {
@@ -34,7 +35,10 @@ export default (
 		},
 	};
 
-	if (raw_posts.posts.length > 1)
+	if (
+		raw_posts.posts.length > 1 ||
+		(raw_posts.posts.length == 1 && post_filter_types == "reply")
+	)
 		return {
 			color: "#ffffff",
 			title: `${post_types["reply"].emoji}  ${post_types["reply"].name}`,

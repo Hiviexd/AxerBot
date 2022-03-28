@@ -37,8 +37,27 @@ export default async function commandHandler(bot: Client, message: Message) {
 			))
 		)
 			return;
+
+		// * ================== Subcommands
+		if (requested_command.subcommands) {
+			let subcommand: any = {};
+
+			subcommand = requested_command.subcommands.filter(
+				(c: any) =>
+					c.config.trigger.toString() ==
+					args.slice(0, c.config.trigger.length).toString()
+			)[0];
+
+			if (subcommand) {
+				args.splice(0, subcommand.config.trigger.length);
+
+				return subcommand.run(message, args);
+			}
+		}
+
 		requested_command.run(bot, message, args);
 	} catch (e) {
+		console.error(e);
 		message.channel.send("Something is wrong, I can't run this command.");
 	}
 }

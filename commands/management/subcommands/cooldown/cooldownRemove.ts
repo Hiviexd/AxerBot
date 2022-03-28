@@ -4,9 +4,10 @@ import * as database from "../../../../database";
 import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
 
 export const config = {
-	name: "remove",
+	name: "cooldown remove",
 	description: "Remove a channel from a category.",
-	syntax: "!cooldown `remove` `<channel>` `<category>`",
+	syntax: "{prefix}cooldown `remove` `<channel>` `<category>`",
+	trigger: ["remove"],
 };
 
 export async function run(message: Message, args: string[]) {
@@ -15,8 +16,6 @@ export async function run(message: Message, args: string[]) {
 
 	if (!message.member?.permissions.has("ADMINISTRATOR"))
 		return message.channel.send({ embeds: [MissingPermissions] });
-
-	args.shift();
 
 	if (!args[0] || !args[1])
 		return message.channel.send({ embeds: [CommandOptionInvalid] });
@@ -62,15 +61,16 @@ export async function run(message: Message, args: string[]) {
 			],
 		});
 
-	if (guild.cooldown[category].channels.length < 2) return message.channel.send({ 
-		embeds: [
-			{
-			title: "Wait...",
-			description: `The category \`${category}\` have 1 channel configured, use \`${guild.prefix}cooldown clear ${category}\` instead!`,
-			color: "#ff5050",
-		}
-		]	
-	})
+	if (guild.cooldown[category].channels.length < 2)
+		return message.channel.send({
+			embeds: [
+				{
+					title: "Wait...",
+					description: `The category \`${category}\` have 1 channel configured, use \`${guild.prefix}cooldown clear ${category}\` instead!`,
+					color: "#ff5050",
+				},
+			],
+		});
 
 	// ? Remove channel from "Channels" array
 	const index = guild.cooldown[category].channels.findIndex(

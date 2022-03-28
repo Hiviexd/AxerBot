@@ -18,5 +18,10 @@ export default async (url: string, message: Message) => {
 
 	const targetPost = getTargetDiscussionPost(postInfo, post);
 
-	BeatmapsetDiscussionEmbed.send(targetPost, post.data, message);
+	BeatmapsetDiscussionEmbed.send(
+		targetPost,
+		post.data,
+		postInfo.type,
+		message
+	);
 };

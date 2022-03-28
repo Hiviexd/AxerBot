@@ -1,17 +1,21 @@
 import { Client, Message } from "discord.js";
 import { ownerId } from "../../config.json";
-import MissingPermissions from "./../../data/embeds/MissingPermissions"
+import MissingPermissions from "./../../data/embeds/MissingPermissions";
 
 export default {
 	name: "send",
 	description: "Sends a message to a specified channel",
-	syntax: "!send `<message>` `<channelName>`",
-	example: "!send `i live in your walls` `general`",
+	syntax: "{prefix}send `<message>` `<channelName>`",
+	example: "{prefix}send `i live in your walls` `general`",
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member || !message.guild) return;
 
-		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
+		if (
+			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
+			message.author.id !== ownerId
+		)
+			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let lastArg = args[args.length - 1];
 		args.pop();

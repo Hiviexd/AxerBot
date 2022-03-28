@@ -4,10 +4,11 @@ import * as database from "../../../../database";
 export const config = {
 	name: "status",
 	description: "Check quotes system configuration",
-	syntax: "!quotes `status`",
+	syntax: "{prefix}quotes `status`",
+	trigger: ["status"],
 };
 
-export async function run(message: Message) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;

@@ -5,7 +5,8 @@ import MissingPermissions from "./../../../../data/embeds/MissingPermissions";
 export const config = {
 	name: "allow",
 	description: "Remove a channel from blacklist.",
-	syntax: "!quotes `allow` `<#channels>`",
+	syntax: "{prefix}quotes `allow` `<#channels>`",
+	trigger: ["allow"],
 };
 
 export async function run(message: Message, args: string[]) {

@@ -8,13 +8,18 @@ export default {
 	send: async (
 		post: BeatmapsetDiscussionPost,
 		raw_posts: BeatmapsetDiscussionPost,
+		type: string,
 		message: Message
 	) => {
 		if (post.posts.length < 1) return;
 		const author = await osuApi.fetch.user(String(post.posts[0].user_id));
 		const usergroup = getHighestUsergroup(author.data); // ? Get the highest usergroup
 
-		const embedDecoration = generatePostEmbedDecoration(raw_posts, post);
+		const embedDecoration = generatePostEmbedDecoration(
+			raw_posts,
+			post,
+			type
+		);
 
 		let e = new MessageEmbed({
 			description: checkContent(),

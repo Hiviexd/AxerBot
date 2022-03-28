@@ -22,10 +22,6 @@ const bot = new Client({
 	],
 });
 
-bot.on("messageCreate", async (message: Message) => {
-	commandHandler(bot, message);
-});
-
 keepAlive();
 bot.login(token).then(() => {
 	eventHandler(bot);

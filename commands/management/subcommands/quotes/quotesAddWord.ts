@@ -4,14 +4,12 @@ import * as database from "../../../../database";
 export const config = {
 	name: "add",
 	description: "Adds a new phrase to the server custom quotes list",
-	syntax: "!quotes `add` `<phrase>`",
+	syntax: "{prefix}quotes `add` `<phrase>`",
+	trigger: ["add"],
 };
 
-export async function run(message: Message) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
-
-	const args = message.content.split(" ");
-	args.splice(0, 2); // ? Clear the shit
 
 	if (guild.fun.mode != "custom")
 		return message.channel.send(

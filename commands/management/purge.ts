@@ -1,16 +1,20 @@
 import { Client, Message } from "discord.js";
-import MissingPermissions from "./../../data/embeds/MissingPermissions"
+import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {
 	name: "purge",
 	description: "Deletes x amount of messages from a channel",
-	syntax: "!purge `<count>`",
-	example: "!purge `6`",
+	syntax: "{prefix}purge `<count>`",
+	example: "{prefix}purge `6`",
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member) return;
-		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
+		if (
+			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
+			message.author.id !== ownerId
+		)
+			return message.channel.send({ embeds: [MissingPermissions] });
 
 		var amount = parseInt(args[0]);
 

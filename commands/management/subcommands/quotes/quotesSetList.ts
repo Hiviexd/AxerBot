@@ -5,10 +5,11 @@ import { parseTextFileAttachment } from "../../../../helpers/text/processText";
 export const config = {
 	name: "set list",
 	description: "Sets a custom list for the server quotes",
-	syntax: "!quotes `set` `list` `[Text File Attachment]`",
+	syntax: "{prefix}quotes `set` `list` `[Text File Attachment]`",
+	trigger: ["set", "list"],
 };
 
-export async function run(message: Message) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
 	const file = message.attachments.first();
 

@@ -4,15 +4,16 @@ import * as database from "../../../../database";
 export const config = {
 	name: "set disabled",
 	description: "Disables the quotes system",
-	syntax: "!quotes `set` `disabled`",
+	syntax: "{prefix}quotes `set` `disabled`",
+	trigger: ["set", "disabled"],
 };
 
-export async function run(message: Message, state: boolean) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
 
-	guild.fun.enable = state;
+	guild.fun.enable = false;
 
 	await database.guilds.updateOne(
 		{ _id: message.guildId },
@@ -21,7 +22,5 @@ export async function run(message: Message, state: boolean) {
 		}
 	);
 
-	message.channel.send(
-		"✅ Switched state to enabled: ".concat(state.toString())
-	);
+	message.channel.send("✅ System disabled");
 }

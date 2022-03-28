@@ -2,6 +2,7 @@ import { Client } from "discord.js";
 import osuTimestamp from "../helpers/text/osuTimestamp";
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
+import commandHandler from "../helpers/core/commandHandler";
 // import osuURL from "../utils/messages/osuURLmanager";
 
 export default {
@@ -12,6 +13,7 @@ export default {
 			if (message.channel.type === "DM") return;
 			if (!message.guild) return;
 
+			commandHandler(bot, message);
 			sendQuotes(message, bot);
 			osuTimestamp(message);
 			checkOsuURL(message);

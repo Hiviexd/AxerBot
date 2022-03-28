@@ -4,7 +4,8 @@ import * as database from "../../../../database";
 export const config = {
 	name: "set word",
 	description: "Sets a trigger word for the quotes system",
-	syntax: "!quotes `set` `word` `<new word>`",
+	syntax: "{prefix}quotes `set` `word` `<new word>`",
+	trigger: ["set", "word"],
 };
 
 export async function run(message: Message, word: string) {

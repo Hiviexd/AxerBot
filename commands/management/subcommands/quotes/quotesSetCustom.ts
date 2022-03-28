@@ -4,10 +4,11 @@ import * as database from "../../../../database";
 export const config = {
 	name: "set custom",
 	description: "Change quotes system list to server custom list",
-	syntax: "!quotes `set` `custom`",
+	syntax: "{prefix}quotes `set` `custom`",
+	trigger: ["set", "custom"],
 };
 
-export async function run(message: Message) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;

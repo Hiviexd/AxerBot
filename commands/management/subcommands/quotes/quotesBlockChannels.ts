@@ -5,7 +5,8 @@ import MissingPermissions from "./../../../../data/embeds/MissingPermissions";
 export const config = {
 	name: "block",
 	description: "Set channels that quotes can't run.",
-	syntax: "!quotes `block` `<#channels>`",
+	syntax: "{prefix}quotes `block` `<#channels>`",
+	trigger: ["block"],
 };
 
 export async function run(message: Message, args: string[]) {

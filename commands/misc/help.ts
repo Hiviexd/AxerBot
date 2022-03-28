@@ -1,4 +1,5 @@
 import { Client, Message } from "discord.js";
+import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 import commands from "./../";
 import CommandNotFound from "./../../data/embeds/CommandNotFound";
 export default {
@@ -24,12 +25,14 @@ export default {
 		});
 
 		if (args.length == 0) {
-			function generateEmbed() {
+			async function generateEmbed() {
 				const embed: any = {
 					title: "Commands",
 					color: "#f98692",
-					description:
-						"Use `!help <command>` to see how a specific command works.",
+					description: await parseMessagePlaceholderFromString(
+						message,
+						"Use `{prefix}help <command>` to see how a specific command works."
+					),
 					fields: [],
 				};
 
@@ -65,7 +68,7 @@ export default {
 			}
 
 			message.channel.send({
-				embeds: [generateEmbed()],
+				embeds: [await generateEmbed()],
 			});
 		}
 
@@ -76,7 +79,10 @@ export default {
 				});
 
 			const embed: any = {
-				title: `!${requested_command.name}`,
+				title: await parseMessagePlaceholderFromString(
+					message,
+					`{prefix}${requested_command.name}`
+				),
 				color: "#1df27d",
 				description:
 					requested_command.description || "No description provided.",
@@ -84,7 +90,7 @@ export default {
 			};
 
 			let field_index = 0;
-			Object.keys(requested_command).forEach((key) => {
+			Object.keys(requested_command).forEach(async (key) => {
 				if (requested_command[key] != undefined) {
 					if (
 						key == "name" ||
@@ -106,7 +112,10 @@ export default {
 					} else {
 						embed.fields.push({
 							name: key.charAt(0).toUpperCase() + key.slice(1),
-							value: requested_command[key],
+							value: await parseMessagePlaceholderFromString(
+								message,
+								requested_command[key]
+							),
 							inline: false,
 						});
 						field_index++;
@@ -150,7 +159,11 @@ export default {
 					embeds: [
 						{
 							title: "What is this?",
-							description: `Provide a valid sub-command! Use \`!help ${requested_command.name}\` for more info.`,
+							description:
+								await parseMessagePlaceholderFromString(
+									message,
+									`Provide a valid sub-command! Use \`{prefix}help ${requested_command.name}\` for more info.`
+								),
 							color: "#ea6112",
 						},
 					],
@@ -161,13 +174,22 @@ export default {
 			message.channel.send({
 				embeds: [
 					{
-						title: `!${requested_command.name} ${requested_subcommand.name}`,
-						description: requested_subcommand.description,
+						title: await parseMessagePlaceholderFromString(
+							message,
+							`{prefix}${requested_command.name} ${requested_subcommand.name}`
+						),
+						description: await parseMessagePlaceholderFromString(
+							message,
+							requested_subcommand.description
+						),
 						color: "#1df27d",
 						fields: [
 							{
 								name: "Syntax",
-								value: requested_subcommand.syntax,
+								value: await parseMessagePlaceholderFromString(
+									message,
+									requested_subcommand.syntax
+								),
 							},
 						],
 					},

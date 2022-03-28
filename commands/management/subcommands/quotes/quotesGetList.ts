@@ -4,10 +4,11 @@ import * as database from "../../../../database";
 export const config = {
 	name: "viewlist",
 	description: "Shows the current custom list",
-	syntax: "!quotes `viewlist`",
+	syntax: "{prefix}quotes `viewlist`",
+	trigger: ["viewlist"],
 };
 
-export async function run(message: Message) {
+export async function run(message: Message, args: string[]) {
 	let guild = await database.guilds.findById(message.guildId);
 
 	if (!message.guild) return;
