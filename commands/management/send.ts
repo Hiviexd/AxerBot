@@ -4,9 +4,11 @@ import MissingPermissions from "./../../data/embeds/MissingPermissions";
 
 export default {
 	name: "send",
-	description: "Sends a message to a specified channel",
-	syntax: "{prefix}send `<message>` `<channelName>`",
-	example: "{prefix}send `i live in your walls` `general`",
+	help: {
+		description: "Sends a message to a specified channel",
+		syntax: "{prefix}send `<message>` `<channelName>`",
+		example: "{prefix}send `i live in your walls` `general`",
+	},
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member || !message.guild) return;

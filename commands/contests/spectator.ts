@@ -1,16 +1,25 @@
 import { Client, Message } from "discord.js";
-import MissingPermissions from "./../../data/embeds/MissingPermissions"
+import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {
 	name: "spectator",
-	description: "Gives the Verified + Spectator role to a user (and sets a new nickname when given)",
-	syntax: "!spectator `@user` \n!spectator `@user` `<nickname>`",
-	example: "!spectator `@Sebola`\n!spectator `@Nifty1234` `Nifty`",
+	help: {
+		description:
+			"Gives the Verified + Spectator role to a user (and sets a new nickname when given)",
+		syntax: "{prefix}spectator `@user` \n{prefix}spectator `@user` `<nickname>`",
+		example:
+			"{prefix}spectator `@Sebola`\n{prefix}spectator `@Nifty1234` `Nifty`",
+	},
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {
-		if (!message.member || !message.guild || !message.mentions.members) return;
-		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
+		if (!message.member || !message.guild || !message.mentions.members)
+			return;
+		if (
+			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
+			message.author.id !== ownerId
+		)
+			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let spectator = message.guild.roles.cache.find(
 			(r) => r.name === "Spectator"

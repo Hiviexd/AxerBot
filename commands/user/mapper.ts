@@ -7,10 +7,12 @@ import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 
 export default {
 	name: "mapper",
+	mapper: {
+		description: "Displays mapper statistics of a user",
+		syntax: "{prefix}mapper `<user>`",
+		example: "{prefix}mapper `Hivie`\n!mapper",
+	},
 	category: "osu",
-	description: "Displays mapper statistics of a user",
-	syntax: "!mapper `<user>`",
-	example: "!mapper `Hivie`\n!mapper",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
 		let { playerName, status } = await checkMessagePlayers(message, args);
 

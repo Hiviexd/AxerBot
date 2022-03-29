@@ -1,14 +1,15 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "./../../database";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {
 	name: "setprefix",
-	description: "Define a custom command prefix on this server.",
-	syntax: "{prefix}setprefix `<prefix>`",
-	example: "{prefix}setprefix `-`",
+	help: {
+		description: "Define a custom command prefix on this server.",
+		syntax: "{prefix}setprefix `<prefix>`",
+		example: "{prefix}setprefix `hivie!`",
+	},
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });

@@ -1,199 +1,97 @@
-import { Client, Message } from "discord.js";
-import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
+import { Client, Message, MessageEmbed } from "discord.js";
+import sendCommandHelp from "../../helpers/core/sendCommandHelp";
 import commands from "./../";
 import CommandNotFound from "./../../data/embeds/CommandNotFound";
+import * as database from "./../../database";
+
 export default {
 	name: "help",
 	category: "misc",
 	run: async (bot: Client, message: Message, args: string[]) => {
-		const options: any[] = [];
-		const categories: string[] = [];
-		let requested_command: any = args[0];
-		requested_command = commands[requested_command];
-		let subcommand: any = args.slice(1, args.length);
+		if (args.length != 0) {
+			const requested_command = commands[args[0].toLowerCase()];
 
-		Object.keys(commands).forEach((key) => {
-			options.push({
-				name: commands[key].name,
-				syntax: commands[key].syntax,
-				description: commands[key].description,
-				example: commands[key].example,
-				options: commands[key].options,
-				category: commands[key].category,
-				subcommands: commands[key].subcommands,
-			});
-		});
-
-		if (args.length == 0) {
-			async function generateEmbed() {
-				const embed: any = {
-					title: "Commands",
-					color: "#f98692",
-					description: await parseMessagePlaceholderFromString(
-						message,
-						"Use `{prefix}help <command>` to see how a specific command works."
-					),
-					fields: [],
-				};
-
-				// ? Parse Categories
-				options.forEach((c) => {
-					if (
-						!categories.includes(c.category) &&
-						c.category != undefined
-					) {
-						categories.push(c.category);
-					}
-
-					return void {};
+			if (!requested_command)
+				return message.channel.send({
+					embeds: [CommandNotFound],
 				});
 
-				for (let i = 0; i < categories.length; i++) {
-					let field = {
-						name: "",
-						value: "",
-					};
+			try {
+				// * ================== Subcommands
+				if (requested_command.subcommands) {
+					let subcommand: any = {};
+					args.shift();
 
-					options
-						.filter((c) => c.category == categories[i])
-						.forEach((c) => {
-							field.name = categories[i];
-							field.value = field.value.concat(` \`${c.name}\` `);
-						});
+					subcommand = requested_command.subcommands.filter(
+						(c: any) =>
+							c.trigger.toString() ==
+							args.slice(0, c.trigger.length).toString()
+					)[0];
 
-					embed.fields.push(field);
+					if (subcommand) {
+						args.splice(0, subcommand.trigger.length);
+
+						return sendCommandHelp(subcommand, message);
+					}
 				}
 
-				return embed;
+				sendCommandHelp(requested_command, message);
+			} catch (e) {
+				console.error(e);
+			}
+		} else {
+			const categories: string[] = [];
+			const fields: any = [];
+			const commands_array: any = [];
+			const guild = await database.guilds.findOne({
+				_id: message.guildId,
+			});
+
+			// ? Transform Object object to Array object
+			Object.keys(commands).forEach((command: any) => {
+				commands_array.push(commands[command]);
+				return;
+			});
+
+			commands_array.forEach((command: any) => {
+				if (!categories.includes(command.category))
+					return categories.push(command.category);
+
+				return;
+			});
+
+			// ? Parse category commands
+			categories.forEach((category) => {
+				console.log(category);
+				fields.push({
+					name: category,
+					value: getCategoryCommands(category),
+				});
+			});
+
+			function getCategoryCommands(category: string) {
+				const c: string[] = [];
+
+				commands_array.forEach((command: any) => {
+					if (command.category == category)
+						return c.push(`\`${command.name}\``);
+				});
+
+				return c.join(",");
 			}
 
-			message.channel.send({
-				embeds: [await generateEmbed()],
-			});
-		}
-
-		if (args.length == 1) {
-			if (!requested_command)
-				return message.channel.send({
-					embeds: [CommandNotFound], // import now
-				});
-
-			const embed: any = {
-				title: await parseMessagePlaceholderFromString(
-					message,
-					`{prefix}${requested_command.name}`
-				),
-				color: "#1df27d",
-				description:
-					requested_command.description || "No description provided.",
-				fields: [],
-			};
-
-			let field_index = 0;
-			Object.keys(requested_command).forEach(async (key) => {
-				if (requested_command[key] != undefined) {
-					if (
-						key == "name" ||
-						key == "run" ||
-						key == "description" ||
-						key == "category" ||
-						key == "subcommands"
-					)
-						return;
-
-					if (typeof requested_command[key] == "object") {
-						embed.fields.push({
-							name: key.charAt(0).toUpperCase() + key.slice(1),
-							value: requested_command[key].join("\n"),
-							inline: false,
-						});
-
-						field_index++;
-					} else {
-						embed.fields.push({
-							name: key.charAt(0).toUpperCase() + key.slice(1),
-							value: await parseMessagePlaceholderFromString(
-								message,
-								requested_command[key]
-							),
-							inline: false,
-						});
-						field_index++;
-					}
-				}
+			const embed = new MessageEmbed({
+				title: "List of avaliable commands",
+				description: `Use \`${guild.prefix}help <command>\` to see how a specific command works.`,
+				color: "#f45592",
+				fields: fields,
 			});
 
-			return message.channel.send({
+			message.reply({
 				embeds: [embed],
-			});
-		}
-
-		if (subcommand.length > 0) {
-			subcommand = subcommand.join(" ");
-
-			if (!requested_command)
-				return message.channel.send({
-					embeds: [CommandNotFound], // import now
-				});
-
-			const subcommands_list = requested_command.subcommands;
-
-			if (!subcommands_list)
-				return message.channel.send({
-					embeds: [
-						{
-							title: "No, you can't do this.",
-							description: `This command does not have sub-commands.`,
-							color: "#ea6112",
-						},
-					],
-				});
-
-			let requested_subcommand = subcommands_list.filter(
-				(c: { name: string; config: any }) =>
-					c.config.name == subcommand
-			)[0];
-
-			if (!requested_subcommand || !requested_command)
-				return message.channel.send({
-					embeds: [
-						{
-							title: "What is this?",
-							description:
-								await parseMessagePlaceholderFromString(
-									message,
-									`Provide a valid sub-command! Use \`{prefix}help ${requested_command.name}\` for more info.`
-								),
-							color: "#ea6112",
-						},
-					],
-				});
-
-			requested_subcommand = requested_subcommand.config;
-
-			message.channel.send({
-				embeds: [
-					{
-						title: await parseMessagePlaceholderFromString(
-							message,
-							`{prefix}${requested_command.name} ${requested_subcommand.name}`
-						),
-						description: await parseMessagePlaceholderFromString(
-							message,
-							requested_subcommand.description
-						),
-						color: "#1df27d",
-						fields: [
-							{
-								name: "Syntax",
-								value: await parseMessagePlaceholderFromString(
-									message,
-									requested_subcommand.syntax
-								),
-							},
-						],
-					},
-				],
+				allowedMentions: {
+					repliedUser: false,
+				},
 			});
 		}
 	},

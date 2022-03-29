@@ -3,9 +3,11 @@ import { parseTextFile } from "../../helpers/text/processText";
 
 export default {
 	name: "yesno",
-	description: "Yes or no? I can help you decide!",
-	syntax: "!yesno `option`",
-	example: "!yesno `axer cringe?`",
+	help: {
+		description: "Yes or no? I can help you decide!",
+		syntax: "{prefix}yesno `option`",
+		example: "{prefix}yesno `axer cringe?`",
+	},
 	category: "fun",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const phrases = await parseTextFile(

@@ -2,16 +2,18 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import * as database from "./../../database";
-import * as cooldownClear from "./subcommands/cooldown/cooldownClear";
-import * as cooldownRemove from "./subcommands/cooldown/cooldownRemove";
+import cooldownClear from "./subcommands/cooldown/cooldownClear";
+import cooldownRemove from "./subcommands/cooldown/cooldownRemove";
 
 export default {
 	name: "cooldown",
-	description: "applies a cooldown to a command category",
-	syntax: "{prefix}cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
-	example: "{prefix}cooldown `general,offtopic` `fun,osu` `10` `5`",
-	category: "management",
+	help: {
+		description: "applies a cooldown to a command category",
+		syntax: "{prefix}cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
+		example: "{prefix}cooldown `general,offtopic` `fun,osu` `10` `5`",
+	},
 	subcommands: [cooldownClear, cooldownRemove],
+	category: "management",
 	options: ["`?clear`", "`?remove`"],
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const categories = ["contests", "fun", "misc", "management", "osu"]; // Get categories

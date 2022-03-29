@@ -1,14 +1,17 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import createNewUser from "../../database/utils/createNewUser";
 import * as database from "./../../database";
-import * as osusetEmbed from "./subcommands/osuset/osusetEmbed";
-import * as osusetUsername from "./subcommands/osuset/osusetUsername";
+import osusetEmbed from "./subcommands/osuset/osusetEmbed";
+import osusetUsername from "./subcommands/osuset/osusetUsername";
 
 export default {
 	name: "osuset",
-	description: "Sets your credentials so the bot recognizes you.",
-	syntax: "!osuset `<field>` `<value>`",
-	example: "!osuset `user` `Hivie`\n !osuset `user` `HEAVENLY MOON`",
+	help: {
+		description: "Sets your credentials so the bot recognizes you.",
+		syntax: "{prefix}osuset `<field>` `<value>`",
+		example:
+			"{prefix}osuset `user` `Hivie`\n {prefix}osuset `user` `HEAVENLY MOON`",
+	},
 	category: "osu",
 	subcommands: [osusetEmbed, osusetUsername],
 	run: async (bot: Client, message: Message, args: Array<string>) => {

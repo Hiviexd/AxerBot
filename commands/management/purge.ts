@@ -4,9 +4,11 @@ import { ownerId } from "../../config.json";
 
 export default {
 	name: "purge",
-	description: "Deletes x amount of messages from a channel",
-	syntax: "{prefix}purge `<count>`",
-	example: "{prefix}purge `6`",
+	help: {
+		description: "Deletes x amount of messages from a channel",
+		syntax: "{prefix}purge `<count>`",
+		example: "{prefix}purge `6`",
+	},
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member) return;

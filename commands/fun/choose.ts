@@ -2,9 +2,11 @@ import { Client, Message } from "discord.js";
 
 export default {
 	name: "choose",
-	description: "I will choose for you!",
-	syntax: "!choose `<option_1>` or `<option_2>`",
-	example: "!choose `map a song or mod a map`",
+	help: {
+		description: "I will choose for you!",
+		syntax: "{prefix}choose `<option_1>` or `<option_2>`",
+		example: "{prefix}choose `map a song or mod a map`",
+	},
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (args.length < 1) {

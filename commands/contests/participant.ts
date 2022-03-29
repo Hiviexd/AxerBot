@@ -1,16 +1,25 @@
 import { Client, Message } from "discord.js";
-import MissingPermissions from "./../../data/embeds/MissingPermissions"
+import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {
 	name: "participant",
-	description: "Gives the Verified + Participant role to a user (and sets a new nickname when given)",
-	syntax: "!participant `@user` \n!participant `@user` `<nickname>`",
-	example: "!participant `@Sebola`\n!participant `@Nifty1234` `Nifty`",
+	help: {
+		description:
+			"Gives the Verified + Participant role to a user (and sets a new nickname when given)",
+		syntax: "{prefix}participant `@user` \n{prefix}participant `@user` `<nickname>`",
+		example:
+			"{prefix}participant `@Sebola`\n{prefix}participant `@Nifty1234` `Nifty`",
+	},
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {
-		if (!message.member || !message.guild || !message.mentions.members) return;
-		if ((!message.member.permissions.has("MANAGE_MESSAGES", true)) && (message.author.id !== ownerId)) return message.channel.send({embeds: [MissingPermissions]});
+		if (!message.member || !message.guild || !message.mentions.members)
+			return;
+		if (
+			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
+			message.author.id !== ownerId
+		)
+			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let participant = message.guild.roles.cache.find(
 			(r) => r.name === "Participant"

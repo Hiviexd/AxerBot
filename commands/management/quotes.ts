@@ -1,23 +1,36 @@
 import { Client, Message } from "discord.js";
-import * as quotesSetList from "./subcommands/quotes/quotesSetList";
-import * as quotesGetStatus from "./subcommands/quotes/quotesGetStatus";
-import * as quotesSetCustom from "./subcommands/quotes/quotesSetCustom";
-import * as quotesSetDefault from "./subcommands/quotes/quotesSetDefault";
-import * as quotesSetDisabled from "./subcommands/quotes/quotesSetDisabled";
-import * as quotesSetWord from "./subcommands/quotes/quotesSetWord";
-import * as quotesGetList from "./subcommands/quotes/quotesGetList";
-import * as quotesAddWord from "./subcommands/quotes/quotesAddWord";
-import * as quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
-import * as quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
-import CommandOptionInvalid from "./../../data/embeds/CommandOptionInvalid";
+import quotesSetList from "./subcommands/quotes/quotesSetList";
+import quotesGetStatus from "./subcommands/quotes/quotesGetStatus";
+import quotesSetCustom from "./subcommands/quotes/quotesSetCustom";
+import quotesSetDefault from "./subcommands/quotes/quotesSetDefault";
+import quotesSetDisabled from "./subcommands/quotes/quotesSetDisabled";
+import quotesSetWord from "./subcommands/quotes/quotesSetWord";
+import quotesGetList from "./subcommands/quotes/quotesGetList";
+import quotesAddWord from "./subcommands/quotes/quotesAddWord";
+import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
+import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {
 	name: "quotes",
-	description: "Configure the random quotes system",
-	syntax: "{prefix}quotes `<action>` `<value>`",
-	example: "{prefix}quotes `set` `custom`\n{prefix}quotes `status`",
+	help: {
+		description: "Configure the random quotes system",
+		syntax: "{prefix}quotes `<action>` `<value>`",
+		example: "{prefix}quotes `set` `custom`\n {prefix}quotes `status`",
+		options: [
+			"`set` `custom`",
+			"`set` `default`",
+			"`set` `disabled`",
+			"`set` `list`",
+			"`set` `<word>`",
+			"`block` `<#channels>...`",
+			"`allow` `<#channels>...`",
+			"`add`",
+			"`status`",
+			"`viewlist`",
+		],
+	},
 	subcommands: [
 		quotesSetList,
 		quotesGetList,
@@ -29,18 +42,6 @@ export default {
 		quotesAddWord,
 		quotesBlockChannels,
 		quotesAllowChannels,
-	],
-	options: [
-		"`set` `custom`",
-		"`set` `default`",
-		"`set` `disabled`",
-		"`set` `list`",
-		"`set` `<word>`",
-		"`block` `<#channels>...`",
-		"`allow` `<#channels>...`",
-		"`add`",
-		"`status`",
-		"`viewlist`",
 	],
 	category: "management",
 	run: (bot: Client, message: Message, args: string[]) => {

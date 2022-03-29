@@ -42,14 +42,16 @@ export default async function commandHandler(bot: Client, message: Message) {
 		if (requested_command.subcommands) {
 			let subcommand: any = {};
 
+			console.log(args);
+
 			subcommand = requested_command.subcommands.filter(
 				(c: any) =>
-					c.config.trigger.toString() ==
-					args.slice(0, c.config.trigger.length).toString()
+					c.trigger.toString() ==
+					args.slice(0, c.trigger.length).toString()
 			)[0];
 
 			if (subcommand) {
-				args.splice(0, subcommand.config.trigger.length);
+				args.splice(0, subcommand.trigger.length);
 
 				return subcommand.run(message, args);
 			}

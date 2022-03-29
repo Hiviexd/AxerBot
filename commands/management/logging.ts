@@ -5,11 +5,14 @@ import * as database from "./../../database";
 
 export default {
 	name: "logging",
-	description: "Configure the logging system",
-	syntax: "{prefix}logging `<action>` `<value>`",
-	example: "{prefix}logging `channel` `wasteland`\n{prefix}logging `disable`",
+	help: {
+		description: "Configure the logging system",
+		syntax: "{prefix}logging `<action>` `<value>`",
+		example:
+			"{prefix}logging `channel` `wasteland`\n{prefix}logging `disable`",
+		options: ["`channel`", "`disable`"],
+	},
 	category: "management",
-	options: ["`channel`", "`disable`"],
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const actions = ["disable", "channel"];
 

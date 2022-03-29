@@ -9,11 +9,13 @@ import getTraceParams from "../../helpers/commands/getTraceParams";
 
 export default {
 	name: "mapsetrank",
-	description: "Displays beatmapset statistics of a user",
-	syntax: "!mapsetrank `<user>` `<option>`",
-	options: ["`-fav` | `-favorites`", "`-plays` | `-playcount`"],
-	example:
-		"!mapsetrank `Hivie` `-favorites`\n!mapsetrank `@Sebola`\n!mapsetrank",
+	help: {
+		description: "Displays beatmapset statistics of a user",
+		syntax: "{prefix}mapsetrank `<user>` `<option>`",
+		options: ["`-fav` | `-favorites`", "`-plays` | `-playcount`"],
+		example:
+			"{prefix}mapsetrank `Hivie` `-favorites`\n{prefix}mapsetrank `@Sebola`\n{prefix}mapsetrank",
+	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let sort = getTraceParams(args, "-playcount", 1, [
