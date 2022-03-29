@@ -23,8 +23,6 @@ export default async (command: any, message: Message) => {
 		if (typeof command.help[option] == "string") {
 			let field_content;
 
-			console.log(command.help[option]);
-
 			field_content = parseMessagePlaceholderFromString(
 				message,
 				guild,
