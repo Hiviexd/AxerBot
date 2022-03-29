@@ -29,7 +29,7 @@ export default {
 
 		user.osu.embed = args[0].toLowerCase();
 
-		await user.save();
+		await database.users.findOneAndUpdate({ _id: message.author.id }, user);
 
 		const res = new MessageEmbed()
 			.setTitle("✅ Configuration updated!")
