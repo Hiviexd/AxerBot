@@ -12,10 +12,14 @@ export default async (url: string, message: Message) => {
 
 	// console.log(user_config);
 
-	user_config = user_config.filter(
-		(u: any) =>
-			u.osu.username == user.data.username
-	)[0];
+	user_config = user_config
+		.filter((u: any) => {
+			u.osu.username != undefined;
+		})
+		.filter(
+			(u: any) =>
+				u.osu.username.toLowerCase() == user.data.username.toLowerCase()
+		)[0];
 
 	if (user.status != 200) return;
 	if (user.data.statistics?.global_rank == null) return;
