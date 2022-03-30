@@ -48,7 +48,7 @@ export default {
 				},
 			],
 			author: {
-				name: `${user.data.username}`,
+				name: `${user.data.username} • mapper info`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
 				iconURL: usergroup.icon,
 			},
