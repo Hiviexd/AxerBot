@@ -6,7 +6,7 @@ import { ownerId } from "./../../../../config.json";
 
 export default {
 	name: "quotes set list",
-	trigger: ["set", "list"],
+	trigger: ["setlist"],
 	help: {
 		description: "Sets a custom list for the server quotes",
 		syntax: "{prefix}quotes `set` `list` `[Text File Attachment]`",
@@ -14,7 +14,9 @@ export default {
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);

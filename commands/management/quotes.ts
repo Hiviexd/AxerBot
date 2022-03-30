@@ -19,11 +19,11 @@ export default {
 		syntax: "{prefix}quotes `<action>` `<value>`",
 		example: "{prefix}quotes `set` `custom`\n {prefix}quotes `status`",
 		options: [
-			"`set` `custom`",
-			"`set` `default`",
-			"`set` `disabled`",
-			"`set` `list`",
-			"`set` `<word>`",
+			"`setcustom`",
+			"`setdefault`",
+			"`setdisabled`",
+			"`setlist`",
+			"`setword` <word>`",
 			"`block` `<#channels>...`",
 			"`allow` `<#channels>...`",
 			"`add`",
@@ -49,7 +49,9 @@ export default {
 
 		// ? Only guild managers and admins can use this
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		// const action = args[1]; // {prefix}quotes set <argument>

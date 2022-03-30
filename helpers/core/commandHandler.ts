@@ -46,8 +46,6 @@ export default async function commandHandler(bot: Client, message: Message) {
 		if (requested_command.subcommands) {
 			let subcommand: any = {};
 
-			console.log(args);
-
 			subcommand = requested_command.subcommands.filter(
 				(c: any) =>
 					c.trigger.toString() ==

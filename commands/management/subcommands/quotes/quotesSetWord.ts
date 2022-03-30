@@ -5,7 +5,7 @@ import { ownerId } from "./../../../../config.json";
 
 export default {
 	name: "quotes set word",
-	trigger: ["set", "word"],
+	trigger: ["setword"],
 	help: {
 		description: "Sets a trigger word for the quotes system",
 		syntax: "{prefix}quotes `set` `word` `<new word>`",
@@ -16,7 +16,9 @@ export default {
 		if (!message.member) return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (word == "")
