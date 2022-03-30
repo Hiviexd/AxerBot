@@ -23,6 +23,7 @@ const bot = new Client({
 });
 
 keepAlive();
+
 bot.login(token).then(() => {
 	eventHandler(bot);
 	consoleCheck("index.ts", "Running and listening to commands!");

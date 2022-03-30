@@ -2,6 +2,7 @@ import { parseTextFile } from "../text/processText";
 import { Client } from "discord.js";
 import { Message } from "discord.js";
 import * as database from "../../database";
+import { Chance } from "chance";
 import path from "path";
 
 export default async (message: Message, bot: Client) => {
@@ -9,6 +10,8 @@ export default async (message: Message, bot: Client) => {
 
 	let guild = await database.guilds.findById(message.guildId);
 	if (guild.fun.blacklist.channels.includes(message.channelId)) return;
+
+	const chance = new Chance();
 
 	if (!guild || guild == null) return;
 
@@ -20,12 +23,16 @@ export default async (message: Message, bot: Client) => {
 		message.mentions.users.filter((u) => u.id == bot.application?.id).size >
 			0
 	) {
+		if (!guild.fun.chance) guild.fun.chance = 100; // ? fallback chance to 100 if its undefined
+
 		if (guild.fun.mode == "default") {
 			const quotes = await parseTextFile(
 				path.resolve(__dirname + "/../../data/axer.txt")
 			);
 
 			const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+			if (!chance.bool({ likelihood: guild.fun.chance })) return;
 
 			message.channel.send(quote);
 		} else {
@@ -34,6 +41,7 @@ export default async (message: Message, bot: Client) => {
 
 			if (!quote) return;
 
+			if (!chance.bool({ likelihood: guild.fun.chance })) return;
 			message.channel.send(quote);
 		}
 	}

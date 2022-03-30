@@ -14,7 +14,9 @@ export default {
 		if (!message.member) return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);
@@ -45,6 +47,14 @@ export default {
 						{
 							name: "Trigger word",
 							value: `\`${guild.fun.word.toLowerCase()}\``,
+						},
+						{
+							name: "Reply chance",
+							value: `\`${
+								guild.fun.chance
+									? `${guild.fun.chance}%`
+									: "100%"
+							}\``,
 						},
 						{
 							name: "Blocked channels",

@@ -11,6 +11,7 @@ import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
 import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
 import MissingPermissions from "./../../data/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
+import quotesSetChance from "./subcommands/quotes/quotesSetChance";
 
 export default {
 	name: "quotes",
@@ -24,6 +25,7 @@ export default {
 			"`setdisabled`",
 			"`setlist`",
 			"`setword` `<word>`",
+			"`chance` `<size>`",
 			"`block` `<#channels>...`",
 			"`allow` `<#channels>...`",
 			"`add`",
@@ -42,6 +44,7 @@ export default {
 		quotesAddWord,
 		quotesBlockChannels,
 		quotesAllowChannels,
+		quotesSetChance,
 	],
 	category: "management",
 	run: (bot: Client, message: Message, args: string[]) => {

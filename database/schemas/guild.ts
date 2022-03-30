@@ -33,6 +33,7 @@ export default new Schema({
 			enable: true,
 			mode: "default",
 			word: "axer",
+			chance: 100,
 			blacklist: {
 				channels: [],
 				words: [],
