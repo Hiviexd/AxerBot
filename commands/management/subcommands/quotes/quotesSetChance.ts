@@ -30,6 +30,11 @@ export default {
 		if (isNaN(chance))
 			return message.channel.send(":x: Invalid number provided.");
 
+		if (chance > 100 || chance < 1)
+			return message.channel.send(
+				":x: Provide a valid number between 1->100."
+			);
+
 		if (!message.guild) return;
 
 		guild.fun.chance = chance;
