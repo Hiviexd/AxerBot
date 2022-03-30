@@ -17,9 +17,7 @@ export default {
 		if (!message.guild || !message.member) return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
+			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		guild = await database.guilds.findOne({ _id: message.guildId });

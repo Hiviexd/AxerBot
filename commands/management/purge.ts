@@ -13,9 +13,7 @@ export default {
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!message.member) return;
 		if (
-			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
-			message.author.id !== ownerId
-		)
+			!message.member.permissions.has("MANAGE_MESSAGES", true) && message.author.id !== ownerId)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		var amount = parseInt(args[0]);

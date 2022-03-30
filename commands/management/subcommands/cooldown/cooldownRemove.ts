@@ -2,6 +2,7 @@ import { Message, ReactionCollector } from "discord.js";
 import MissingPermissions from "../../../../data/embeds/MissingPermissions";
 import * as database from "../../../../database";
 import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
+import { ownerId } from "../../../../config.json";
 
 export default {
 	name: "cooldown remove",
@@ -14,7 +15,7 @@ export default {
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 		const categories = ["contests", "fun", "misc", "management", "osu"];
 
-		if (!message.member?.permissions.has("ADMINISTRATOR"))
+		if (!message.member?.permissions.has("ADMINISTRATOR") && message.author.id !== ownerId)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (!args[0] || !args[1])

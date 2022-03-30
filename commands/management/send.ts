@@ -14,9 +14,7 @@ export default {
 		if (!message.member || !message.guild) return;
 
 		if (
-			!message.member.permissions.has("MANAGE_MESSAGES", true) &&
-			message.author.id !== ownerId
-		)
+			!message.member.permissions.has("MANAGE_MESSAGES", true) && message.author.id !== ownerId)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let lastArg = args[args.length - 1];
