@@ -2,7 +2,7 @@ import { createCanvas } from "canvas";
 import { Chart } from "chart.js";
 import { User } from "../../../types/user";
 
-export default (user: User): any => {
+export default async (user: User): Promise<any> => {
 	const canvas = createCanvas(1280, 300);
 	const ctx = canvas.getContext("2d");
 

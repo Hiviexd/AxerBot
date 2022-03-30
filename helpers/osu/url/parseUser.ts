@@ -42,8 +42,6 @@ export default async (url: string, message: Message) => {
 		return `${data.id}/${data.mode}`;
 	}
 
-	console.log(user_config);
-
 	if (user_config != undefined) {
 		if (user_config.osu.embed == "player")
 			return PlayerEmbed.send(user, message);

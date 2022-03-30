@@ -2,22 +2,32 @@ import axios from "axios";
 import { UserResponse } from "../../../types/user";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
-export async function user(user_id: string): Promise<UserResponse> {
+export async function user(
+	user_id: string,
+	mode?: string
+): Promise<UserResponse> {
 	try {
 		consoleLog("user fetcher", `Fetching user ${user_id}`);
 
-		const req = await axios(
-			"https://osu.ppy.sh/api/v2/users/".concat(user_id),
-			{
-				headers: {
-					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
-				},
-			}
-		);
+		const req = await axios(parseMode(), {
+			headers: {
+				authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+			},
+		});
 
 		const res = req.data;
 
 		consoleCheck("user fetcher", `user ${user_id} found!`);
+
+		function parseMode() {
+			let link = "https://osu.ppy.sh/api/v2/users/".concat(user_id);
+
+			if (mode) {
+				link.concat(mode);
+			}
+
+			return link;
+		}
 
 		return {
 			status: 200,

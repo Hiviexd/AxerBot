@@ -6,7 +6,7 @@ import parsePlayTime from "../../helpers/osu/player/parsePlayTime";
 import moment from "moment";
 
 export default {
-	send: async (user: UserResponse, message: Message) => {
+	send: async (user: UserResponse, message: Message, mode?: string) => {
 		const attachment = new MessageAttachment(
 			await generatePlayerRankChart(user.data),
 			"rank.png"
@@ -14,12 +14,21 @@ export default {
 
 		const usergroup = parseUsergroup(user.data);
 
+		const modesList: any = {
+			osu: "standard",
+			taiko: "taiko",
+			catch: "catch",
+			mania: "mania",
+		};
+
 		message.channel.send({
 			embeds: [
 				{
 					author: {
 						url: `https://osu.ppy.sh/u/${user.data.id}`,
-						name: `${user.data.username} • player info`,
+						name: `${user.data.username} • osu!${
+							mode ? modesList[mode] : user.data.playmode
+						} player info`,
 						iconURL: usergroup.icon,
 					},
 					thumbnail: {
