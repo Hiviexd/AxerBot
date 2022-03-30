@@ -23,7 +23,7 @@ export default {
 			"`setdefault`",
 			"`setdisabled`",
 			"`setlist`",
-			"`setword` <word>`",
+			"`setword` `<word>`",
 			"`block` `<#channels>...`",
 			"`allow` `<#channels>...`",
 			"`add`",
