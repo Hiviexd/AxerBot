@@ -4,6 +4,7 @@ import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
 import CommandNotFound from "../../data/embeds/CommandNotFound";
 import checkCooldown from "../general/checkCooldown";
+import createNewUser from "../../database/utils/createNewUser";
 
 export default async function commandHandler(bot: Client, message: Message) {
 	if (message.author.bot) return;
@@ -11,7 +12,10 @@ export default async function commandHandler(bot: Client, message: Message) {
 	if (!message.guild) return;
 	let guild = await database.guilds.findOne({ _id: message.guildId });
 
+	const user = await database.users.findById(message.author.id);
+
 	if (guild == null) guild = await createNewGuild(message.guild);
+	if (user == null) await createNewUser(message.author);
 
 	if (!message.content.startsWith(guild.prefix)) return;
 
