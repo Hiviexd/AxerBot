@@ -17,7 +17,7 @@ export default {
 	help: {
 		description: "Configure the random quotes system",
 		syntax: "{prefix}quotes `<action>` `<value>`",
-		example: "{prefix}quotes `set` `custom`\n {prefix}quotes `status`",
+		example: "{prefix}quotes `setcustom`\n {prefix}quotes `status`",
 		options: [
 			"`setcustom`",
 			"`setdefault`",
