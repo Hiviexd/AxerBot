@@ -14,7 +14,7 @@ export default async (url: string, message: Message) => {
 
 	user_config = user_config.filter(
 		(u: any) =>
-			u.osu.username.toLowerCase() == user.data.username.toLowerCase()
+			u.osu.username == user.data.username
 	)[0];
 
 	if (user.status != 200) return;
@@ -40,7 +40,7 @@ export default async (url: string, message: Message) => {
 		return `${data.id}/${data.mode}`;
 	}
 
-	console.log(user_config);
+	// console.log(user_config);
 
 	if (user_config != undefined) {
 		if (user_config.osu.embed == "player")
