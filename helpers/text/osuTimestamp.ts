@@ -15,5 +15,11 @@ export default function osuTimestamp(m: Message) {
 		if (res[4]) message += `-${res[4]}`;
 		message += ">\n";
 	}
-	m.channel.send(message);
+
+	m.reply({
+		content: message,
+		allowedMentions: {
+			repliedUser: false,
+		},
+	});
 }
