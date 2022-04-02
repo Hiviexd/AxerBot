@@ -7,7 +7,7 @@ import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 
 export default {
 	name: "mapper",
-	mapper: {
+	help: {
 		description: "Displays mapper statistics of a user",
 		syntax: "{prefix}mapper `<user>`",
 		example: "{prefix}mapper `Hivie`\n!mapper",
