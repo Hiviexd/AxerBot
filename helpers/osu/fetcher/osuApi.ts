@@ -2,6 +2,7 @@ import {
 	beatmap,
 	beatmapset,
 	beatmapsetDiscussionPost,
+	download,
 	userBeatmaps,
 } from "./beatmap";
 import { user } from "./user";
@@ -13,5 +14,8 @@ export default {
 		beatmapsetDiscussionPost: beatmapsetDiscussionPost,
 		user: user,
 		userBeatmaps: userBeatmaps,
+	},
+	download: {
+		beatmapset: download,
 	},
 };

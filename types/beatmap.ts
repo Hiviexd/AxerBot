@@ -188,7 +188,7 @@ export interface BeatmapCompact {
 	difficulty_rating: number;
 	/** integer */
 	id: number;
-	mode: string;
+	mode: "osu" | "taiko" | "mania" | "fruits";
 	/**
 	 * See Rank status for list of possible values.
 	 */
@@ -221,6 +221,7 @@ export interface Beatmap extends BeatmapCompact {
 	ar: number;
 	/** integer */
 	beatmapset_id: number;
+	user_id: number;
 	/** float */
 	bpm: number;
 	convert: boolean;

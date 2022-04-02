@@ -1,8 +1,15 @@
 import { BeatmapsetDiscussionPost } from "../../types/beatmap";
-import { Message, MessageEmbed } from "discord.js";
+import {
+	Message,
+	MessageActionRow,
+	MessageAttachment,
+	MessageButton,
+	MessageEmbed,
+} from "discord.js";
 import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
+import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 
 export default {
 	send: async (
@@ -36,19 +43,52 @@ export default {
 			},
 		});
 
+		const buttons = new MessageActionRow();
+		buttons.addComponents([
+			new MessageButton({
+				type: "BUTTON",
+				style: "LINK",
+				url: `https://osu.ppy.sh/s/${post.beatmapsets[0].id}`,
+				label: "Beatmap Page",
+			}),
+			new MessageButton({
+				type: "BUTTON",
+				style: "LINK",
+				url: `https://osu.ppy.sh/users/${post.beatmapsets[0].user_id}`,
+				label: "Mapper Profile",
+			}),
+		]);
+
+		const beatmap_file = await osuApi.download.beatmapset(
+			post.beatmapsets[0].id.toString()
+		);
+
+		const stored_file = await storeBeatmap(
+			beatmap_file,
+			post.beatmapsets[0],
+			message
+		);
+
+		if (!stored_file.big) {
+			buttons.addComponents([
+				new MessageButton({
+					type: "BUTTON",
+					style: "LINK",
+					url: stored_file.url,
+					label: "Download Beatmap",
+				}),
+			]);
+		}
+
 		message.reply({
 			embeds: [e],
+			components: [buttons],
 			allowedMentions: {
 				repliedUser: false,
 			},
 		});
 
 		function checkContent() {
-			post.posts[0].message =
-				`[Beatmap Page](https://osu.ppy.sh/s/${post.beatmapsets[0].id}) **|** [Mapper Profile](https://osu.ppy.sh/u/${post.beatmapsets[0].user_id})\n\n`.concat(
-					post.posts[0].message
-				);
-
 			if (post.posts[0].message.length <= 2000)
 				return post.posts[0].message;
 

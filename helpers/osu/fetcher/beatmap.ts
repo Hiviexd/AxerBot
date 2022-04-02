@@ -6,6 +6,11 @@ import {
 	BeatmapsetDiscussionPostResponse,
 } from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
+import {
+	FetchDownloadClient,
+	OsuAuthenticator,
+	OsuOfficialDownloader,
+} from "./downloader/beatmap";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
 	try {
@@ -40,13 +45,16 @@ export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
 }
 
 export async function beatmapset(
-	beatmapset_id: string
+	beatmapset_id: string,
+	mode?: "osu" | "taiko" | "mania" | "fruits"
 ): Promise<BeatmapsetResponse> {
 	try {
 		consoleLog("beatmap fetcher", `Fetching beatmapset ${beatmapset_id}`);
 
 		const req = await axios(
-			"https://osu.ppy.sh/api/v2/beatmapsets/".concat(beatmapset_id),
+			"https://osu.ppy.sh/api/v2/beatmapsets/"
+				.concat(beatmapset_id)
+				.concat(mode ? `/${mode}` : ""),
 			{
 				headers: {
 					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
@@ -61,6 +69,55 @@ export async function beatmapset(
 		return {
 			status: 200,
 			data: res,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
+export async function download(beatmapset_id: string): Promise<any> {
+	try {
+		consoleLog(
+			"beatmap fetcher",
+			`Downloading beatmapset ${beatmapset_id}`
+		);
+
+		const account = {
+			username: process.env.OSU_USERNAME ?? "username",
+			password: process.env.OSU_PASSWORD ?? "password",
+		};
+		// get session from username and password
+		const session = await OsuAuthenticator.login(account);
+		// construct new OsuOfficialDownloader
+		const bmsDownloader = new OsuOfficialDownloader(
+			new FetchDownloadClient(),
+			session
+		);
+		// download beatmapset with id 1220040
+		const downloader = await bmsDownloader.download({
+			beatmapsetId: beatmapset_id,
+			noVideo: true,
+		});
+		const filename = await downloader.name();
+		const data = await downloader.buffer();
+
+		consoleCheck(
+			"beatmap fetcher",
+			`Beatmapset ${beatmapset_id} downloaded!`
+		);
+
+		return {
+			status: 200,
+			data: {
+				name: filename,
+				buffer: data,
+			},
 		};
 	} catch (e: any) {
 		consoleError("beatmap fetcher", "Wtf an error:");
