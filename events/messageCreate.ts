@@ -1,5 +1,4 @@
 import { Client } from "discord.js";
-import osuTimestamp from "../helpers/text/osuTimestamp";
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 import commandHandler from "../helpers/core/commandHandler";
