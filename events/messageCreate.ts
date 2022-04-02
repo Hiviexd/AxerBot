@@ -15,7 +15,6 @@ export default {
 
 			commandHandler(bot, message);
 			sendQuotes(message, bot);
-			osuTimestamp(message);
 			checkOsuURL(message);
 		});
 	},
