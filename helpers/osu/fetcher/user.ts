@@ -23,7 +23,7 @@ export async function user(
 			let link = "https://osu.ppy.sh/api/v2/users/".concat(user_id);
 
 			if (mode) {
-				link.concat(mode);
+				link = `https://osu.ppy.sh/api/v2/users/${user_id}/${mode}`;
 			}
 
 			return link;

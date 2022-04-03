@@ -6,7 +6,7 @@ import * as database from "./../../../database";
 
 export default async (url: string, message: Message) => {
 	const user_params = getUserParams(url);
-	const user = await osuApi.fetch.user(user_params.id);
+	const user = await osuApi.fetch.user(user_params.id, user_params.mode);
 
 	let user_config: any = await database.users.find();
 

@@ -41,9 +41,13 @@ export default {
 							name: "Ranking",
 							value: `:earth_americas: \`#${
 								user.data.statistics?.global_rank
+									? user.data.statistics?.global_rank
+									: "-"
 							}\`
                             :flag_${user.data.country_code.toLowerCase()}: \`#${
 								user.data.statistics?.country_rank
+									? user.data.statistics?.country_rank
+									: "-"
 							}\``,
 							inline: true,
 						},
