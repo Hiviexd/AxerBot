@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import * as database from "./../../../database";
 
 export default async (message: Message, args: string[]) => {
-	let playerName = args.join(" ") || "";
+	let playerName = args.length > 0 ? args.join(" ") : "";
 
 	if (message.mentions.users.size != 1) {
 		if (args.length < 1) {
@@ -10,7 +10,8 @@ export default async (message: Message, args: string[]) => {
 				_id: message.author.id,
 			});
 
-			if (u != null) playerName = u.osu.username;
+			if (u != null)
+				playerName = u.osu.username != undefined ? u.osu.username : "";
 		}
 	} else {
 		const user = message.mentions.users.first();
@@ -18,7 +19,8 @@ export default async (message: Message, args: string[]) => {
 			_id: user?.id,
 		});
 
-		if (u != null) playerName = u.osu.username;
+		if (u != null)
+			playerName = u.osu.username != undefined ? u.osu.username : "";
 	}
 
 	if (playerName.trim() == "") {
