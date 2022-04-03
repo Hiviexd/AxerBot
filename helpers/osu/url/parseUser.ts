@@ -5,8 +5,8 @@ import osuApi from "../fetcher/osuApi";
 import * as database from "./../../../database";
 
 export default async (url: string, message: Message) => {
-	const user_id = getUserId(url);
-	const user = await osuApi.fetch.user(user_id);
+	const user_params = getUserParams(url);
+	const user = await osuApi.fetch.user(user_params.id);
 
 	let user_config: any = await database.users.find();
 
@@ -22,7 +22,7 @@ export default async (url: string, message: Message) => {
 	if (user.status != 200) return;
 	if (user.data.statistics?.global_rank == null) return;
 
-	function getUserId(url: string) {
+	function getUserParams(url: string) {
 		const playmodes = ["osu", "taiko", "fruits", "mania"];
 		let url_object = url.split("/");
 
@@ -39,7 +39,7 @@ export default async (url: string, message: Message) => {
 			data.id = url_object[url_object.length - 1]; // ? ID
 		}
 
-		return `${data.id}/${data.mode}`;
+		return data;
 	}
 
 	if (user_config != undefined) {
@@ -54,8 +54,8 @@ export default async (url: string, message: Message) => {
 			return MapperEmbed.send(user, maps, message);
 		}
 
-		return PlayerEmbed.send(user, message);
+		return PlayerEmbed.send(user, message, user_params.mode);
 	} else {
-		return PlayerEmbed.send(user, message);
+		return PlayerEmbed.send(user, message, user_params.mode);
 	}
 };

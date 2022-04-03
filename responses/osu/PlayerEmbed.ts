@@ -21,14 +21,14 @@ export default {
 			mania: "mania",
 		};
 
+		mode ? (mode = mode) : (mode = user.data.playmode.toString());
+
 		message.channel.send({
 			embeds: [
 				{
 					author: {
 						url: `https://osu.ppy.sh/u/${user.data.id}`,
-						name: `${user.data.username} • osu!${
-							mode ? modesList[mode] : user.data.playmode
-						} player info`,
+						name: `${user.data.username} • osu!${modesList[mode]} player info`,
 						iconURL: usergroup.icon,
 					},
 					thumbnail: {
