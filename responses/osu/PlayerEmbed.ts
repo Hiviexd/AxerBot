@@ -15,7 +15,7 @@ export default {
 		const usergroup = parseUsergroup(user.data);
 
 		const modesList: any = {
-			osu: "standard",
+			osu: "",
 			taiko: "taiko",
 			catch: "catch",
 			mania: "mania",
