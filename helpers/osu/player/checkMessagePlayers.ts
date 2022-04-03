@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import * as database from "./../../../database";
 
 export default async (message: Message, args: string[]) => {
-	let playerName = args.join(" ");
+	let playerName = args.join(" ") || "";
 
 	if (message.mentions.users.size != 1) {
 		if (args.length < 1) {
