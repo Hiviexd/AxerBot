@@ -7,6 +7,10 @@ export default {
 	execute(bot: Client) {
 		try {
 			bot.on("guildMemberRemove", async (member) => {
+				const bot_user: any = bot.user;
+
+				if (member.id == bot_user.id) return;
+
 				if (!member.user) return;
 				const guild = await database.guilds.findOne({
 					_id: member.guild.id,
