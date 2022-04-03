@@ -14,6 +14,7 @@ import cooldown from "./management/cooldown";
 import quotes from "./management/quotes";
 import logging from "./management/logging";
 import player from "./user/player";
+import eval from "./management/eval";
 
 const commands: any = {
 	ping: ping,
@@ -32,6 +33,7 @@ const commands: any = {
 	cooldown: cooldown,
 	logging: logging,
 	player: player,
+	eval: eval,
 };
 
 export default commands;
