@@ -59,25 +59,29 @@ export default {
 			}),
 		]);
 
-		const beatmap_file = await osuApi.download.beatmapset(
-			post.beatmapsets[0].id.toString()
-		);
+		try {
+			const beatmap_file = await osuApi.download.beatmapset(
+				post.beatmapsets[0].id.toString()
+			);
 
-		const stored_file = await storeBeatmap(
-			beatmap_file,
-			post.beatmapsets[0],
-			message
-		);
+			const stored_file = await storeBeatmap(
+				beatmap_file,
+				post.beatmapsets[0],
+				message
+			);
 
-		if (!stored_file.big) {
-			buttons.addComponents([
-				new MessageButton({
-					type: "BUTTON",
-					style: "LINK",
-					url: stored_file.url,
-					label: "Download Beatmap",
-				}),
-			]);
+			if (!stored_file.big) {
+				buttons.addComponents([
+					new MessageButton({
+						type: "BUTTON",
+						style: "LINK",
+						url: stored_file.url,
+						label: "Download Beatmap",
+					}),
+				]);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
 		message.reply({
