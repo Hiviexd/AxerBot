@@ -1,9 +1,9 @@
 import { Message, MessageAttachment } from "discord.js";
-import { BeatmapsetCompact } from "../../../../types/beatmap";
+import { Beatmapset, BeatmapsetCompact } from "../../../../types/beatmap";
 
 export default async (
 	beatmap_file: any,
-	beatmapset: BeatmapsetCompact,
+	beatmapset: BeatmapsetCompact | Beatmapset,
 	message: Message
 ) => {
 	let big = false;
@@ -12,12 +12,12 @@ export default async (
 		`${beatmapset.id} ${beatmapset.artist} - ${beatmapset.title}.osz`
 	);
 
-	if (beatmap_attachment.size > 8000000) {
+	if (beatmap_file.data.size > 8000000) {
 		big = true;
 
 		return {
 			big,
-			url: "",
+			url: "https://osu.ppy.sh/",
 		};
 	}
 

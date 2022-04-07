@@ -106,6 +106,7 @@ export async function download(beatmapset_id: string): Promise<any> {
 		});
 		const filename = await downloader.name();
 		const data = await downloader.buffer();
+		const size = await downloader.size();
 
 		consoleCheck(
 			"beatmap fetcher",
@@ -116,6 +117,7 @@ export async function download(beatmapset_id: string): Promise<any> {
 			status: 200,
 			data: {
 				name: filename,
+				size: size,
 				buffer: data,
 			},
 		};

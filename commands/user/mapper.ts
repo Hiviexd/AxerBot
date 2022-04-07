@@ -10,7 +10,7 @@ export default {
 	help: {
 		description: "Displays mapper statistics of a user",
 		syntax: "{prefix}mapper `<user>`",
-		example: "{prefix}mapper `Hivie`\n!mapper",
+		example: "{prefix}mapper `Hivie`\n {prefix}mapper",
 	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
