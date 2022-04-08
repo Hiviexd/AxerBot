@@ -33,6 +33,8 @@ export default async (
 		);
 
 		const m = await cache_channel.send({
+			content: `Requested by ${message.author.tag} (${message.author.id})
+			Guild: ${message.guild?.name}`,
 			files: [beatmap_attachment],
 		});
 
