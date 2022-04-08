@@ -85,16 +85,20 @@ export default {
 			});
 
 			const status_icons: any = {
-				ranked: "https://media.discordapp.net/attachments/959908232736952420/961628150398337105/ranked.png",
-				loved: "https://cdn.discordapp.com/attachments/959908232736952420/961628149874053240/loved.png",
+				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
+				loved: "https://media.discordapp.net/attachments/959908232736952420/961745251096199209/loved.png",
 				approved:
-					"https://cdn.discordapp.com/attachments/959908232736952420/961628149555273808/qualified.png",
+					"https://media.discordapp.net/attachments/959908232736952420/961745250878099456/qualified.png",
+				qualified:
+					"https://media.discordapp.net/attachments/959908232736952420/961745250878099456/qualified.png",
 				pending:
-					"https://media.discordapp.net/attachments/959908232736952420/961628150608044082/pending.png",
-				wip: "https://media.discordapp.net/attachments/959908232736952420/961628150608044082/pending.png",
+					"https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
+				wip: "https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
 				graveyard:
-					"https://media.discordapp.net/attachments/959908232736952420/961628150608044082/pending.png",
+					"https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
 			};
+
+			const pending_status = ["wip", "pending", "graveyard"];
 
 			const embed = new MessageEmbed({
 				title: `${beatmapset.artist} - ${beatmapset.title}`,
@@ -124,7 +128,13 @@ export default {
 				},
 				color: "#f45592",
 				footer: {
-					text: `Mapped by ${mapper.data.username} | ${beatmapset.status}`,
+					text: `Mapped by ${mapper.data.username} | ${
+						pending_status.includes(beatmapset.status)
+							? `${beatmapset.status} beatmap`
+							: `${beatmapset.status} at ${new Date(
+									beatmapset.ranked_date || ""
+							  ).toLocaleString("en-US")}`
+					}`,
 					iconURL: mapper.data.avatar_url,
 				},
 			});

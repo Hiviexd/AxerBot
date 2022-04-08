@@ -7,6 +7,7 @@ import parseBeatmap from "./parseBeatmap";
 import osuTimestamp from "../../text/osuTimestamp";
 
 export default async (message: Message) => {
+	if (message.author.bot) return;
 	const links: string[] = [];
 	const args = message.content.toLowerCase().trim().split(" ");
 	const guild = await database.guilds.findOne({ _id: message.guildId });

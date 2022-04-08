@@ -7,7 +7,13 @@ import { Beatmap } from "../../../types/beatmap";
 import { GameModeName } from "../../../types/game_mode";
 import timeString from "../timeString";
 
-export default (beatmap: Beatmap, mode: GameModeName, beatmap_file: string) => {
+export default (
+	beatmap: Beatmap,
+	mode: GameModeName,
+	beatmap_file: string,
+	mods?: string
+) => {
+	mods ? mods : (mods = "NM");
 	let description = "";
 
 	switch (mode) {
@@ -17,11 +23,13 @@ export default (beatmap: Beatmap, mode: GameModeName, beatmap_file: string) => {
 			const ruleset = new StandardRuleset();
 			const difficultyCalculator =
 				ruleset.createDifficultyCalculator(parsed);
-			const attributes = difficultyCalculator.calculate();
+			const attributes = difficultyCalculator.calculateWithMods(
+				ruleset.createModCombination(mods)
+			);
 
 			description = `SR: \`${beatmap.difficulty_rating.toFixed(
 				2
-			)}\` Combo: \`${beatmap.max_combo}\` Length: \`${timeString(
+			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
 			)}\` 
             OD: \`${attributes.overallDifficulty.toFixed(
@@ -43,11 +51,12 @@ export default (beatmap: Beatmap, mode: GameModeName, beatmap_file: string) => {
 			const ruleset = new TaikoRuleset();
 			const difficultyCalculator =
 				ruleset.createDifficultyCalculator(parsed);
-			const attributes = difficultyCalculator.calculate();
-
+			const attributes = difficultyCalculator.calculateWithMods(
+				ruleset.createModCombination(mods)
+			);
 			description = `SR: \`${beatmap.difficulty_rating.toFixed(
 				2
-			)}\` Combo: \`${beatmap.max_combo}\` Length: \`${timeString(
+			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
 			)}\` 
             OD: \`${beatmap.accuracy}\` HP: \`${
@@ -66,11 +75,13 @@ export default (beatmap: Beatmap, mode: GameModeName, beatmap_file: string) => {
 			const ruleset = new CatchRuleset();
 			const difficultyCalculator =
 				ruleset.createDifficultyCalculator(parsed);
-			const attributes = difficultyCalculator.calculate();
+			const attributes = difficultyCalculator.calculateWithMods(
+				ruleset.createModCombination(mods)
+			);
 
 			description = `SR: \`${beatmap.difficulty_rating.toFixed(
 				2
-			)}\` Combo: \`${beatmap.max_combo}\` Length: \`${timeString(
+			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
 			)}\` 
             OD: \`${beatmap.accuracy}\` HP: \`${
@@ -88,7 +99,9 @@ export default (beatmap: Beatmap, mode: GameModeName, beatmap_file: string) => {
 			const ruleset = new ManiaRuleset();
 			const difficultyCalculator =
 				ruleset.createDifficultyCalculator(parsed);
-			const attributes = difficultyCalculator.calculate();
+			const attributes = difficultyCalculator.calculateWithMods(
+				ruleset.createModCombination(mods)
+			);
 
 			description = `SR: \`${beatmap.difficulty_rating.toFixed(
 				2
