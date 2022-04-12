@@ -7,7 +7,7 @@ export default {
 	trigger: ["user"],
 	help: {
 		description: "Set username to send after your profile url is detected.",
-		syntax: "{prefix}osuset `user` `type`",
+		syntax: "{prefix}osuset `user` `<username>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (args.length < 1)

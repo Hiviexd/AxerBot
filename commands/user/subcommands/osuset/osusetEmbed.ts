@@ -7,7 +7,7 @@ export default {
 	trigger: ["embed"],
 	help: {
 		description: "Set embed to send after your profile url is detected.",
-		syntax: "{prefix}osuset `embed` `type`",
+		syntax: "{prefix}osuset `embed` `<type>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (args.length != 1)

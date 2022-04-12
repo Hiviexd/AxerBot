@@ -11,7 +11,7 @@ export default {
 		description: "Sets your credentials so the bot recognizes you.",
 		syntax: "{prefix}osuset `<field>` `<value>`",
 		example:
-			"{prefix}osuset `user` `Hivie`\n {prefix}osuset `user` `HEAVENLY MOON`",
+			"{prefix}osuset `user` `Hivie`\n {prefix}osuset `user` `HEAVENLY MOON`\n {prefix}osuset `embed` `mapper`\n {prefix}osuset `embed` `player`",
 	},
 	category: "osu",
 	subcommands: [osusetEmbed, osusetUsername],

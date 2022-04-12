@@ -20,7 +20,7 @@ export default {
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let sort = getTraceParams(args, "-playcount", 1, [
 			"-favorites",
-			"-fav",
+			"-favs",
 			"-plays",
 			"-playcount",
 		])[0];
@@ -43,7 +43,7 @@ export default {
 
 				break;
 			}
-			case "-fav": {
+			case "-favs": {
 				sort = "favourite_count";
 				args.pop();
 
