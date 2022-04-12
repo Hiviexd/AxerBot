@@ -2,7 +2,7 @@ import { Client, Message } from "discord.js";
 import commands from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
-import CommandNotFound from "../../data/embeds/CommandNotFound";
+//import CommandNotFound from "../../data/embeds/CommandNotFound";
 import checkCooldown from "../general/checkCooldown";
 import createNewUser from "../../database/utils/createNewUser";
 
@@ -26,9 +26,12 @@ export default async function commandHandler(bot: Client, message: Message) {
 	const requested_command = commands[args[0].toLowerCase()];
 
 	if (!requested_command)
+		return;
+		/*
 		return message.channel.send({
 			embeds: [CommandNotFound],
 		});
+		*/
 
 	try {
 		args.shift(); // Remove command name from arguments
