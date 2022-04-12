@@ -12,9 +12,9 @@ export default {
 	help: {
 		description: "Displays beatmapset statistics of a user",
 		syntax: "{prefix}mapsetrank `<user>` `<option>`",
-		options: ["`-fav` | `-favorites`", "`-plays` | `-playcount`"],
+		options: ["`-favs` | `-favorites`", "`-plays` | `-playcount`"],
 		example:
-			"{prefix}mapsetrank `Hivie` `-favorites`\n{prefix}mapsetrank `@Sebola`\n{prefix}mapsetrank",
+			"{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank `@Sebola`\n{prefix}mapsetrank",
 	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: string[]) => {
