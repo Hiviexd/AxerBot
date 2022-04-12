@@ -38,7 +38,9 @@ export default async (
 			files: [beatmap_attachment],
 		});
 
-		beatmap_url = m.attachments.first().url;
+		beatmap_url = m.attachments.first()
+			? m.attachments.first().url
+			: "https://osu.ppy.sh/";
 	}
 
 	return {
