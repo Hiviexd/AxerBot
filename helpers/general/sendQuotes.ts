@@ -15,34 +15,37 @@ export default async (message: Message, bot: Client) => {
 
 	if (!guild || guild == null) return;
 
-	if (
-		(guild.fun.enable == true &&
+	if (guild.fun.enable == true) {
+		if (
 			message.content
 				.toUpperCase()
-				.includes(guild.fun.word.toUpperCase())) ||
-		message.mentions.users.filter((u) => u.id == bot.application?.id).size >
-			0
-	) {
-		if (!guild.fun.chance) guild.fun.chance = 100; // ? fallback chance to 100 if its undefined
+				.includes(guild.fun.word.toUpperCase()) ||
+			message.mentions.users.filter((u) => u.id == bot.application?.id)
+				.size > 0
+		) {
+			if (!guild.fun.chance) guild.fun.chance = 100; // ? fallback chance to 100 if its undefined
 
-		if (guild.fun.mode == "default") {
-			const quotes = await parseTextFile(
-				path.resolve(__dirname + "/../../data/axer.txt")
-			);
+			if (guild.fun.mode == "default") {
+				const quotes = await parseTextFile(
+					path.resolve(__dirname + "/../../data/axer.txt")
+				);
 
-			const quote = quotes[Math.floor(Math.random() * quotes.length)];
+				const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
-			if (!chance.bool({ likelihood: guild.fun.chance })) return;
+				if (!chance.bool({ likelihood: guild.fun.chance })) return;
 
-			message.channel.send(quote);
-		} else {
-			const quotes: string[] = guild.fun.phrases;
-			const quote = quotes[Math.floor(Math.random() * quotes.length)];
+				message.channel.send(quote);
+			} else {
+				const quotes: string[] = guild.fun.phrases;
+				const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
-			if (!quote) return;
+				if (!quote) return;
 
-			if (!chance.bool({ likelihood: guild.fun.chance })) return;
-			message.channel.send(quote);
+				if (!chance.bool({ likelihood: guild.fun.chance })) return;
+				message.channel.send(quote);
+			}
+		} else if (message.content.includes("💀")) {
+			message.channel.send("💀");
 		}
 	}
 };
