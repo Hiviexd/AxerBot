@@ -46,6 +46,8 @@ export default async (message: Message, bot: Client) => {
 			}
 		} else if (message.content.includes("💀")) {
 			message.channel.send("💀");
+		} else if (message.content.toUpperCase().includes("UPVOTE")) {
+			message.react("⬆️")
 		}
 	}
 };
