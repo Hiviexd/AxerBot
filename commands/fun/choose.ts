@@ -12,7 +12,7 @@ export default {
 		if (args.length < 1) {
 			message.channel.send("what am i supposed to choose from wtf");
 			return;
-		} else if (args.length == 1) {
+		} else if (!args.includes("or")) {
 			message.channel.send(`and? what's the other choice??`);
 			return;
 		}
