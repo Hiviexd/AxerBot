@@ -15,6 +15,7 @@ import quotes from "./management/quotes";
 import logging from "./management/logging";
 import player from "./user/player";
 import eval from "./management/eval";
+import avatar from "./misc/avatar";
 
 const commands: any = {
 	ping: ping,
@@ -34,6 +35,7 @@ const commands: any = {
 	logging: logging,
 	player: player,
 	eval: eval,
+	avatar: avatar,
 };
 
 export default commands;
