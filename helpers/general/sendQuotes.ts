@@ -34,7 +34,9 @@ export default async (message: Message, bot: Client) => {
 
 				if (!chance.bool({ likelihood: guild.fun.chance })) return;
 
-				message.channel.send(quote);
+				message.channel.send(quote).catch((e) => {
+					console.error(e);
+				});
 			} else {
 				const quotes: string[] = guild.fun.phrases;
 				const quote = quotes[Math.floor(Math.random() * quotes.length)];
@@ -42,12 +44,18 @@ export default async (message: Message, bot: Client) => {
 				if (!quote) return;
 
 				if (!chance.bool({ likelihood: guild.fun.chance })) return;
-				message.channel.send(quote);
+				message.channel.send(quote).catch((e) => {
+					console.error(e);
+				});
 			}
 		} else if (message.content.includes("💀")) {
-			message.channel.send("💀");
+			message.channel.send("💀").catch((e) => {
+				console.error(e);
+			});
 		} else if (message.content.toUpperCase().includes("UPVOTE")) {
-			message.react("⬆️")
+			message.react("⬆️").catch((e) => {
+				console.error(e);
+			});
 		}
 	}
 };
