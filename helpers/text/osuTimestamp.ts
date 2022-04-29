@@ -21,5 +21,7 @@ export default function osuTimestamp(m: Message) {
 		allowedMentions: {
 			repliedUser: false,
 		},
+	}).catch((e) => {
+		console.error(e);
 	});
 }

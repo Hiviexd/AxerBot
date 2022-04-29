@@ -25,9 +25,8 @@ export default async function commandHandler(bot: Client, message: Message) {
 
 	const requested_command = commands[args[0].toLowerCase()];
 
-	if (!requested_command)
-		return;
-		/*
+	if (!requested_command) return;
+	/*
 		return message.channel.send({
 			embeds: [CommandNotFound],
 		});
@@ -65,6 +64,10 @@ export default async function commandHandler(bot: Client, message: Message) {
 		requested_command.run(bot, message, args);
 	} catch (e) {
 		console.error(e);
-		message.channel.send("Something is wrong, I can't run this command.");
+		message.channel
+			.send("Something is wrong, I can't run this command.")
+			.catch((e) => {
+				console.error(e);
+			});
 	}
 }
