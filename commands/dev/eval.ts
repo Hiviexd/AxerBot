@@ -1,16 +1,16 @@
 import { Client, Message } from "discord.js";
-import { owners } from "./../../config.json";
+import { owners } from "../../config.json";
 
 import util from "util";
 
 export default {
 	name: "eval",
 	help: {
-		description: "no",
-		syntax: "",
-		example: "",
+		description: "Developer-exclusive command that allows you to execute arbitrary code.\n Usually used for debugging purposes.",
+		syntax: "{prefix}eval `<code>`",
+		example: "{prefix}eval `message.channel.send(\"Hello World!\")`",
 	},
-	category: "management",
+	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (!args.join(" ")) return;
 		if (owners.includes(message.author.id)) {
@@ -22,15 +22,15 @@ export default {
 				message.channel.send({
 					embeds: [
 						{
-							title: "EVAL",
+							title: "Eval",
 							color: "WHITE",
 							fields: [
 								{
-									name: "▶️Input:",
+									name: "▶️ Input:",
 									value: "`" + argjoin + "`",
 								},
 								{
-									name: "◀️Result:",
+									name: "◀️ Result:",
 									value: "`" + evaled + "`",
 								},
 							],
@@ -49,7 +49,7 @@ export default {
 				});
 			}
 		} else {
-			message.reply("❌|**You can't use this!**");
+			message.reply("❌ | **You can't use this!**");
 		}
 	},
 };

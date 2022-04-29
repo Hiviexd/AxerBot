@@ -14,7 +14,8 @@ import cooldown from "./management/cooldown";
 import quotes from "./management/quotes";
 import logging from "./management/logging";
 import player from "./user/player";
-import eval from "./management/eval";
+import eval from "./dev/eval";
+import serverlist from "./dev/serverlist";
 import avatar from "./misc/avatar";
 
 const commands: any = {
@@ -36,6 +37,7 @@ const commands: any = {
 	player: player,
 	eval: eval,
 	avatar: avatar,
+	serverlist: serverlist,
 };
 
 export default commands;
