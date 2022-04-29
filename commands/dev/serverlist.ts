@@ -21,12 +21,11 @@ export default {
                     icon: guild.iconURL({ format: "png", dynamic: true }),
                     members: guild.memberCount,
                     created: guild.createdAt.toDateString(),
-                    boost: guild.premiumSubscriptionCount,
                     memberCount: guild.memberCount}});
             embed.addFields(guilds.map(guild => {
                 return {
                     name: `**Name:** \`${guild.name}\``,
-                    value: `**Member Count:** \`${guild.members}\`\n**Created at:** \`${guild.created}\`\n**Boosts:** \`${guild.boost}\``,
+                    value: `**Member Count:** \`${guild.members}\`\n**Created at:** \`${guild.created}\``,
                 }
             }));
             message.channel.send({embeds: [embed]});
