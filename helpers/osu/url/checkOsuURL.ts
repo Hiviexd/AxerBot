@@ -30,8 +30,8 @@ export default async (message: Message) => {
 			link.split("/").includes("beatmapsets") &&
 			!link.includes("discussion")
 		)
-			return parseBeatmap(link, message);
-
+			return /*parseBeatmap(link, message)*/;
+			//? temporarily disabling map embeds until i figure out a way to toggle on each embed on its own
 		if (link.split("/").includes("discussion") && !link.includes("reviews"))
 			return parseDiscussionPost(link, message);
 	});
