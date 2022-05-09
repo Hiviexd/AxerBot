@@ -2,6 +2,7 @@ import ping from "./misc/ping";
 import mapper from "./user/mapper";
 import choose from "./fun/choose";
 import yesno from "./fun/yesno";
+import coinflip from "./fun/coinflip";
 import participant from "./contests/participant";
 import spectator from "./contests/spectator";
 import purge from "./management/purge";
@@ -38,6 +39,7 @@ const commands: any = {
 	eval: eval,
 	avatar: avatar,
 	serverlist: serverlist,
+	coinflip: coinflip,
 };
 
 export default commands;
