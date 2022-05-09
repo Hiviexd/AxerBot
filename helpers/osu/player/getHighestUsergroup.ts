@@ -4,13 +4,13 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 	const userGroupInfo: any = {
 		PPY: {
 			index: 0,
-			name: "Dumbass",
+			name: "Bald",
 			icon: "https://media.discordapp.net/attachments/950107895754784908/953774037790769182/dev.png",
 		},
 		SPT: {
 			index: 1,
 			name: "Support Team",
-			icon: "https://media.discordapp.net/attachments/950107895754784908/953775607395807242/spt.png?width=229&height=229",
+			icon: "https://media.discordapp.net/attachments/950107895754784908/953775607395807242/spt.png",
 		},
 		DEV: {
 			index: 2,
