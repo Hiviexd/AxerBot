@@ -5,6 +5,7 @@ import checkCooldown from "../../general/checkCooldown";
 import parseDiscussionPost from "./parseDiscussionPost";
 import parseBeatmap from "./parseBeatmap";
 import osuTimestamp from "../../text/osuTimestamp";
+import parseComment from "./parseComment";
 
 export default async (message: Message) => {
 	if (message.author.bot) return;
@@ -31,8 +32,11 @@ export default async (message: Message) => {
 			!link.includes("discussion")
 		)
 			return /*parseBeatmap(link, message)*/;
-			//? temporarily disabling map embeds until i figure out a way to toggle on each embed on its own
+		//? temporarily disabling map embeds until i figure out a way to toggle on each embed on its own
 		if (link.split("/").includes("discussion") && !link.includes("reviews"))
 			return parseDiscussionPost(link, message);
+
+		if (link.split("/").includes("comments"))
+			return parseComment(link, message);
 	});
 };
