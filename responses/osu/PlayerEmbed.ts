@@ -7,10 +7,12 @@ import moment from "moment";
 
 export default {
 	send: async (user: UserResponse, message: Message, mode?: string) => {
-		const attachment = new MessageAttachment(
-			await generatePlayerRankChart(user.data),
-			"rank.png"
-		);
+		const attachment = user.data.statistics?.global_rank
+			? new MessageAttachment(
+					await generatePlayerRankChart(user.data),
+					"rank.png"
+			  )
+			: undefined;
 
 		const usergroup = parseUsergroup(user.data);
 
@@ -21,7 +23,7 @@ export default {
 			mania: "mania",
 		};
 
-		mode ? (mode = mode) : (mode = user.data.playmode.toString());
+		mode = mode ? mode : user.data.playmode.toString();
 
 		message.channel.send({
 			embeds: [
@@ -34,7 +36,17 @@ export default {
 					thumbnail: {
 						url: `https://a.ppy.sh/${user.data.id}`,
 					},
-					description: `<:SSH:957381956981641267> \`${user.data.statistics?.grade_counts.ssh}\` **|** <:SH:957381935775236166> \`${user.data.statistics?.grade_counts.sh}\` **|** <:SS:957381945883508736> \`${user.data.statistics?.grade_counts.ss}\` **|** <:S:957381925113311273> \`${user.data.statistics?.grade_counts.s}\` **|** <:A:957381904137613351> \`${user.data.statistics?.grade_counts.a}\``,
+					description: `<:SSH:957381956981641267> \`${
+						user.data.statistics?.grade_counts.ssh || 0
+					}\` **|** <:SH:957381935775236166> \`${
+						user.data.statistics?.grade_counts.sh || 0
+					}\` **|** <:SS:957381945883508736> \`${
+						user.data.statistics?.grade_counts.ss || 0
+					}\` **|** <:S:957381925113311273> \`${
+						user.data.statistics?.grade_counts.s || 0
+					}\` **|** <:A:957381904137613351> \`${
+						user.data.statistics?.grade_counts.a || 0
+					}\``,
 					color: usergroup.colour,
 					fields: [
 						{
@@ -111,7 +123,7 @@ export default {
 					},
 				},
 			],
-			files: [attachment],
+			files: attachment ? [attachment] : [],
 		});
 	},
 };
