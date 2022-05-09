@@ -6,6 +6,7 @@ import {
 	userBeatmaps,
 } from "./beatmap";
 import { user } from "./user";
+import { comment } from "./comment";
 
 export default {
 	fetch: {
@@ -14,6 +15,7 @@ export default {
 		beatmapsetDiscussionPost: beatmapsetDiscussionPost,
 		user: user,
 		userBeatmaps: userBeatmaps,
+		comment: comment,
 	},
 	download: {
 		beatmapset: download,

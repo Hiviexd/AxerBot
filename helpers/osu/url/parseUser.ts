@@ -10,7 +10,7 @@ export default async (url: string, message: Message) => {
 
 	let user_config: any = await database.users.find();
 
-	// console.log(user_config);
+	if (user.status != 200) return;
 
 	user_config = user_config
 		.filter((u: any) => u.osu.username != undefined)
@@ -19,16 +19,16 @@ export default async (url: string, message: Message) => {
 				u.osu.username.toLowerCase() == user.data.username.toLowerCase()
 		)[0];
 
-	if (user.status != 200) return;
-	if (user.data.statistics?.global_rank == null) return;
-
 	function getUserParams(url: string) {
 		const playmodes = ["osu", "taiko", "fruits", "mania"];
 		let url_object = url.split("/");
 
-		let data = {
+		let data: {
+			id: string;
+			mode: string | undefined;
+		} = {
 			id: "",
-			mode: "",
+			mode: undefined,
 		};
 
 		// ? Remove playmode from url (users/{id}/{mode})
@@ -44,7 +44,7 @@ export default async (url: string, message: Message) => {
 
 	if (user_config != undefined) {
 		if (user_config.osu.embed == "player")
-			return PlayerEmbed.send(user, message);
+			return PlayerEmbed.send(user, message, user_params.mode);
 
 		if (user_config.osu.embed == "mapper") {
 			const maps = await osuApi.fetch.userBeatmaps(
@@ -55,7 +55,7 @@ export default async (url: string, message: Message) => {
 		}
 
 		return PlayerEmbed.send(user, message, user_params.mode);
-	} else {
-		return PlayerEmbed.send(user, message, user_params.mode);
 	}
+
+	return PlayerEmbed.send(user, message, user_params.mode);
 };
