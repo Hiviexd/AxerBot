@@ -10,6 +10,7 @@ import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
 import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
+import truncateString from "../../helpers/text/truncateString";
 
 export default {
 	send: async (
@@ -29,15 +30,16 @@ export default {
 		);
 
 		let e = new MessageEmbed({
-			description: checkContent(),
+			description: truncateString(post.posts[0].message, 4096),
 			color: embedDecoration.color,
 			title: embedDecoration.title,
 			thumbnail: {
 				url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
 			},
-			footer: {
+			author: {
 				iconURL: `https://a.ppy.sh/${post.posts[0].user_id}`,
-				text: `${author.data.username} ${
+				url: `https://osu.ppy.sh/users/${post.posts[0].user_id}`,
+				name: `${author.data.username} ${
 					usergroup.name ? `(${usergroup.name})` : ""
 				}`,
 			},
@@ -91,12 +93,5 @@ export default {
 				repliedUser: false,
 			},
 		});
-
-		function checkContent() {
-			if (post.posts[0].message.length <= 2000)
-				return post.posts[0].message;
-
-			return post.posts[0].message.slice(0, 2000) + " **[truncated]**";
-		}
 	},
 };
