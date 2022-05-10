@@ -6,6 +6,7 @@ import coinflip from "./fun/coinflip";
 import roll from "./fun/roll";
 import revolver from "./fun/revolver";
 import owoify from "./fun/owoify";
+import pun from "./fun/pun";
 import participant from "./contests/participant";
 import spectator from "./contests/spectator";
 import purge from "./management/purge";
@@ -46,6 +47,7 @@ const commands: any = {
 	roll: roll,
 	revolver: revolver,
 	owoify: owoify,
+	pun: pun,
 };
 
 export default commands;
