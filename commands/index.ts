@@ -21,6 +21,7 @@ import logging from "./management/logging";
 import player from "./user/player";
 import eval from "./dev/eval";
 import serverlist from "./dev/serverlist";
+import repeat from "./dev/repeat";
 import avatar from "./misc/avatar";
 
 const commands: any = {
@@ -48,6 +49,7 @@ const commands: any = {
 	revolver: revolver,
 	owoify: owoify,
 	pun: pun,
+	repeat: repeat,
 };
 
 export default commands;

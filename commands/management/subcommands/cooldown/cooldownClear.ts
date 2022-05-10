@@ -3,6 +3,7 @@ import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
 import MissingPermissions from "../../../../data/embeds/MissingPermissions";
 import * as database from "../../../../database";
 import { ownerId } from "../../../../config.json";
+import generateConfirmationEmbed from "./../../../../helpers/text/embeds/generateConfirmationEmbed";
 
 export default {
 	name: "cooldown clear",
@@ -13,6 +14,14 @@ export default {
 		syntax: "{prefix}cooldown `clear` `category (optional)`",
 	},
 	run: async (message: Message, args: string[]) => {
+
+		let updateDB = async () => {
+			await database.guilds.findOneAndUpdate(
+				{ _id: guild._id },
+				guild
+			);
+		}
+		
 		const categories = ["contests", "fun", "misc", "management", "osu"];
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 
@@ -85,58 +94,7 @@ export default {
 				},
 			};
 
-			message.channel
-				.send({
-					embeds: [
-						{
-							title: "⚠ Are you sure?",
-							description:
-								"This will clear the current configuration for **ALL CHANNELS**. React with :white_check_mark: to continue",
-							color: "#edcd02",
-						},
-					],
-				})
-				.then((m) => {
-					m.react("✅");
-
-					const collector = new ReactionCollector(m, {
-						time: 10000,
-						max: 50,
-						maxUsers: 100,
-					});
-
-					collector.on("collect", async (r, u) => {
-						if (r.emoji.name != "✅" || u.id != message.author.id)
-							return false;
-
-						await database.guilds.findOneAndUpdate(
-							{ _id: guild._id },
-							guild
-						);
-
-						collector.stop("done");
-
-						m.delete();
-
-						return message.channel.send(":white_check_mark: Done!");
-					});
-
-					collector.on("end", (c, r) => {
-						if (r != "done") {
-							message.channel
-								.send(
-									":x: You kept me waiting too long! Try again."
-								)
-								.then((msg) => {
-									setTimeout(() => {
-										msg.delete();
-									}, 5000);
-								});
-
-							return m.delete();
-						}
-					});
-				});
+			generateConfirmationEmbed(message, updateDB, "This will clear the current configuration for __**ALL CHANNELS**__ which **cannot** be undone.");
 		} else {
 			const requested = args[1].toLowerCase();
 
@@ -161,62 +119,7 @@ export default {
 					channels: [],
 				};
 
-				message.channel
-					.send({
-						embeds: [
-							{
-								title: "⚠ Are you sure?",
-								description: `This will remove the category \`${requested}\` from the cooldown list. React with :white_check_mark: to continue`,
-								color: "#edcd02",
-							},
-						],
-					})
-					.then((m) => {
-						m.react("✅");
-
-						const collector = new ReactionCollector(m, {
-							time: 10000,
-							max: 50,
-							maxUsers: 100,
-						});
-
-						collector.on("collect", async (r, u) => {
-							if (
-								r.emoji.name != "✅" ||
-								u.id != message.author.id
-							)
-								return false;
-
-							await database.guilds.findOneAndUpdate(
-								{ _id: guild._id },
-								guild
-							);
-
-							collector.stop("done");
-
-							m.delete();
-
-							return message.channel.send(
-								":white_check_mark: Done!"
-							);
-						});
-
-						collector.on("end", (c, r) => {
-							if (r != "done") {
-								message.channel
-									.send(
-										":x: You kept me waiting too long! Try again."
-									)
-									.then((msg) => {
-										setTimeout(() => {
-											msg.delete();
-										}, 5000);
-									});
-
-								return m.delete();
-							}
-						});
-					});
+				generateConfirmationEmbed(message, updateDB, `This will remove the category \`${requested}\` from the cooldown list.`);
 			} else {
 				return message.channel.send({ embeds: [CommandOptionInvalid] });
 			}

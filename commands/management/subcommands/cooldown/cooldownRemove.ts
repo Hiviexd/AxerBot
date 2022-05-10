@@ -3,6 +3,7 @@ import MissingPermissions from "../../../../data/embeds/MissingPermissions";
 import * as database from "../../../../database";
 import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
 import { ownerId } from "../../../../config.json";
+import generateConfirmationEmbed from "./../../../../helpers/text/embeds/generateConfirmationEmbed";
 
 export default {
 	name: "cooldown remove",
@@ -12,6 +13,14 @@ export default {
 		syntax: "{prefix}cooldown `remove` `<channel>` `<category>`",
 	},
 	run: async (message: Message, args: string[]) => {
+
+		let updateDB = async () => {
+			await database.guilds.findOneAndUpdate(
+				{ _id: guild._id },
+				guild
+			);
+		}
+		
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 		const categories = ["contests", "fun", "misc", "management", "osu"];
 
@@ -89,51 +98,6 @@ export default {
 		// ? Remove channel from "current_increments" object
 		delete guild.cooldown[category].current_increments[channel.id];
 
-		message.channel
-			.send({
-				embeds: [
-					{
-						title: "⚠ Are you sure?",
-						description:
-							"React with :white_check_mark: to continue",
-						color: "#edcd02",
-					},
-				],
-			})
-			.then((m) => {
-				m.react("✅");
-
-				const collector = new ReactionCollector(m, {
-					time: 10000,
-					max: 50,
-					maxUsers: 100,
-				});
-
-				collector.on("collect", async (r, u) => {
-					if (r.emoji.name != "✅" || u.id != message.author.id)
-						return false;
-
-					await database.guilds.findOneAndUpdate(
-						{ _id: guild._id },
-						guild
-					);
-
-					collector.stop("done");
-
-					m.delete();
-
-					return message.channel.send(":white_check_mark: Done!");
-				});
-
-				collector.on("end", (c, r) => {
-					if (r != "done") {
-						message.channel.send(
-							":x: You kept me waiting too long! Try again."
-						);
-
-						return m.delete();
-					}
-				});
-			});
+		generateConfirmationEmbed(message, updateDB);
 	},
 };
