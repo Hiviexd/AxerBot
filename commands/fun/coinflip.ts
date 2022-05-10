@@ -4,7 +4,7 @@ export default {
 	name: "coinflip",
 	help: {
 		description: "Feeling lucky? Flip a coin!",
-		syntax: "{prefix}coinflip`",
+		syntax: "{prefix}coinflip",
 
 	},
 	category: "fun",

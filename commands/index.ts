@@ -4,6 +4,7 @@ import choose from "./fun/choose";
 import yesno from "./fun/yesno";
 import coinflip from "./fun/coinflip";
 import roll from "./fun/roll";
+import revolver from "./fun/revolver";
 import participant from "./contests/participant";
 import spectator from "./contests/spectator";
 import purge from "./management/purge";
@@ -42,6 +43,7 @@ const commands: any = {
 	serverlist: serverlist,
 	coinflip: coinflip,
 	roll: roll,
+	revolver: revolver,
 };
 
 export default commands;
