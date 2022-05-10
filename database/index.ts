@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { consoleCheck, consoleError, consoleLog } from "../helpers/core/logger";
+import addRevolverToGuildObject from "./migrations/addRevolverToGuildObject";
 import guild from "./schemas/guild";
 import user from "./schemas/user";
 
@@ -15,6 +16,8 @@ mongoose.connect(
 			);
 
 		consoleCheck("database", "Database connected!");
+
+		addRevolverToGuildObject()
 	}
 );
 
