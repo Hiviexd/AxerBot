@@ -42,6 +42,7 @@
     "osu-standard-stable": "^2.2.4",
     "osu-taiko-stable": "^2.1.2",
     "ow": "^0.27.0",
+    "owoify-js": "^1.0.7",
     "patch-package": "^6.4.7",
     "tr46": "^0.0.3",
     "ts-mixer": "^6.0.0",
