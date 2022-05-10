@@ -13,7 +13,7 @@ export default {
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		
-	let purge: Function = () => {
+	let purge = () => {
 		channel.bulkDelete(amount + 2).catch(() => {
 			channel.send(
 				":x: Due to Discord Limitations, I cannot delete more than 98 messages, or messages older than 14 days."
