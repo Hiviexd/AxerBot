@@ -77,7 +77,7 @@ export default {
 						return c.push(`\`${command.name}\``);
 				});
 
-				return c.join(",");
+				return c.join(", ");
 			}
 
 			const embed = new MessageEmbed({
