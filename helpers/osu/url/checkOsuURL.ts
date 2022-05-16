@@ -25,18 +25,45 @@ export default async (message: Message) => {
 	});
 
 	links.forEach((link) => {
-		if (link.split("/").includes("users")) return parseUser(link, message);
+		if (link.split("/").includes("users")) {
+			if (
+				(guild.embeds && guild.embeds.player.all) ||
+				guild.embeds.player.channels.includes(message.channelId)
+			) {
+				return parseUser(link, message);
+			}
+		}
 
 		if (
 			link.split("/").includes("beatmapsets") &&
 			!link.includes("discussion")
-		)
-			return /*parseBeatmap(link, message)*/;
-		//? temporarily disabling map embeds until i figure out a way to toggle on each embed on its own
-		if (link.split("/").includes("discussion") && !link.includes("reviews"))
-			return parseDiscussionPost(link, message);
+		) {
+			if (
+				(guild.embeds && guild.embeds.beatmap.all) ||
+				guild.embeds.beatmap.channels.includes(message.channelId)
+			) {
+				return parseBeatmap(link, message);
+			}
+		}
+		if (
+			link.split("/").includes("discussion") &&
+			!link.includes("reviews")
+		) {
+			if (
+				(guild.embeds && guild.embeds.discussion.all) ||
+				guild.embeds.discussion.channels.includes(message.channelId)
+			) {
+				return parseDiscussionPost(link, message);
+			}
+		}
 
-		if (link.split("/").includes("comments"))
-			return parseComment(link, message);
+		if (link.split("/").includes("comments")) {
+			if (
+				(guild.embeds && guild.embeds.comment.all) ||
+				guild.embeds.comment.channels.includes(message.channelId)
+			) {
+				return parseComment(link, message);
+			}
+		}
 	});
 };
