@@ -12,6 +12,15 @@ export default (emoji: string) => {
 		taiko: "<:taiko:950459762229788733>",
 		catch: "<:catch:950459762590486568>",
 		fruits: "<:catch:950459762590486568>",
+		S: "<:rankingS:975788645271339048>",
+		SS: "<:rankingSS:975787604605808710>",
+		SSH: "<:rankingSSH:975787604601610270> ",
+		SH: "<:rankingSH:975787843072958584>",
+		A: "<:rankingA:975787604610007060>",
+		B: "<:rankingB:975787604610019368>",
+		C: "<:rankingC:975787604584849448>",
+		D: "<:rankingD:975787604815536138>",
+		F: "<:rankingD:975787604815536138>",
 	};
 
 	const request = emojis[emoji];

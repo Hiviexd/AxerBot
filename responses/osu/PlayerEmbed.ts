@@ -4,6 +4,7 @@ import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import generatePlayerRankChart from "../../helpers/osu/player/generatePlayerRankChart";
 import parsePlayTime from "../../helpers/osu/player/parsePlayTime";
 import moment from "moment";
+import getEmoji from "../../helpers/text/getEmoji";
 
 export default {
 	send: async (user: UserResponse, message: Message, mode?: string) => {
@@ -36,15 +37,15 @@ export default {
 					thumbnail: {
 						url: `https://a.ppy.sh/${user.data.id}`,
 					},
-					description: `<:SSH:957381956981641267> \`${
+					description: `${getEmoji("SSH")} \`${
 						user.data.statistics?.grade_counts.ssh || 0
-					}\` **|** <:SH:957381935775236166> \`${
+					}\` **|** ${getEmoji("SH")} \`${
 						user.data.statistics?.grade_counts.sh || 0
-					}\` **|** <:SS:957381945883508736> \`${
+					}\` **|** ${getEmoji("SS")} \`${
 						user.data.statistics?.grade_counts.ss || 0
-					}\` **|** <:S:957381925113311273> \`${
+					}\` **|** ${getEmoji("S")} \`${
 						user.data.statistics?.grade_counts.s || 0
-					}\` **|** <:A:957381904137613351> \`${
+					}\` **|** ${getEmoji("A")} \`${
 						user.data.statistics?.grade_counts.a || 0
 					}\``,
 					color: usergroup.colour,

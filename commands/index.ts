@@ -24,6 +24,7 @@ import serverlist from "./dev/serverlist";
 import repeat from "./dev/repeat";
 import avatar from "./misc/avatar";
 import embeds from "./management/embeds";
+import recent from "./user/recent";
 
 const commands: any = {
 	ping: ping,
@@ -52,6 +53,7 @@ const commands: any = {
 	pun: pun,
 	repeat: repeat,
 	embeds: embeds,
+	rs: recent,
 };
 
 export default commands;
