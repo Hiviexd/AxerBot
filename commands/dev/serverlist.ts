@@ -1,7 +1,5 @@
-import { index } from "d3";
 import { Client, Message, MessageEmbed, ReactionCollector } from "discord.js";
 import { owners } from "../../config.json";
-import { beatmapset } from "../../helpers/osu/fetcher/beatmap";
 import { Paginator } from "array-paginator";
 
 export default {
