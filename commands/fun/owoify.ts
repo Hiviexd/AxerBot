@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import owoify from "owoify-js";
+const { default: owoify } = require("owoify-js");
 
 export default {
 	name: "owoify",
