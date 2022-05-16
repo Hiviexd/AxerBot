@@ -2,10 +2,11 @@ import {
 	BeatmapsetDiscussionPost,
 	BeatmapsetDiscussionPostCompact,
 } from "../../../types/beatmap";
+import { DiscussionAttributtes } from "../../osu/url/getTargetDiscussionPost";
 
 export default (
 	raw_posts: BeatmapsetDiscussionPost,
-	post: BeatmapsetDiscussionPost,
+	post: DiscussionAttributtes,
 	post_filter_types: string
 ) => {
 	const post_types: any = {

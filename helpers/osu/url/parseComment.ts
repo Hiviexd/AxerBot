@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import osuApi from "../fetcher/osuApi";
 import CommentEmbed from "../../../responses/osu/CommentEmbed";
 import { CommentUser, User } from "../../../types/user";
+import { Timestamp } from "../../../types/timestamp";
 
 export interface ParsedComment {
 	type: "Comment" | "Reply";
@@ -12,6 +13,7 @@ export interface ParsedComment {
 	postType: "build" | "news_post" | "beatmapset";
 	content: string;
 	votes: number;
+	created_at: Timestamp;
 }
 
 export default async (url: string, message: Message) => {
@@ -24,6 +26,7 @@ export default async (url: string, message: Message) => {
 		title: "Anonymous",
 		postType: "news_post",
 		votes: 0,
+		created_at: new Date().toISOString(),
 		user: {
 			avatar_url: "",
 			country_code: "",
@@ -64,6 +67,7 @@ export default async (url: string, message: Message) => {
 	comment_data.content = targetComment.data.comments[0].message;
 	comment_data.title = targetComment.data.commentable_meta[0].title;
 	comment_data.url = targetComment.data.commentable_meta[0].url;
+	comment_data.created_at = targetComment.data.comments[0].created_at;
 
 	if (comment_data.type == "Reply") {
 		const repliedCommentObject = targetComment.data.included_comments.find(
