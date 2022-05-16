@@ -16,8 +16,6 @@ mongoose.connect(
 			);
 
 		consoleCheck("database", "Database connected!");
-
-		addRevolverToGuildObject()
 	}
 );
 

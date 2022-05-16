@@ -19,6 +19,27 @@ export default new Schema({
 			},
 		},
 	},
+	embeds: {
+		type: Object,
+		default: {
+			beatmap: {
+				all: true,
+				channels: [],
+			},
+			player: {
+				all: true,
+				channels: [],
+			},
+			discussion: {
+				all: true,
+				channels: [],
+			},
+			comment: {
+				all: true,
+				channels: [],
+			},
+		},
+	},
 	channels: {
 		type: Object,
 		default: {

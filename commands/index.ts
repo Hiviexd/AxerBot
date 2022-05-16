@@ -23,6 +23,7 @@ import eval from "./dev/eval";
 import serverlist from "./dev/serverlist";
 import repeat from "./dev/repeat";
 import avatar from "./misc/avatar";
+import embeds from "./management/embeds";
 
 const commands: any = {
 	ping: ping,
@@ -50,6 +51,7 @@ const commands: any = {
 	owoify: owoify,
 	pun: pun,
 	repeat: repeat,
+	embeds: embeds,
 };
 
 export default commands;
