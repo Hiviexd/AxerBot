@@ -156,12 +156,6 @@ export default {
 			new MessageButton({
 				type: "BUTTON",
 				style: "LINK",
-				url: `https://osu.ppy.sh/s/${beatmapset.id}`,
-				label: "Beatmap Page",
-			}),
-			new MessageButton({
-				type: "BUTTON",
-				style: "LINK",
 				url: `https://osu.ppy.sh/users/${beatmapset.user_id}`,
 				label: "Mapper Profile",
 			}),
@@ -189,6 +183,15 @@ export default {
 		}
 
 		const elements = await generateFor(beatmapset.beatmaps[index]);
+
+		buttons.addComponents([
+			new MessageButton({
+				type: "BUTTON",
+				style: "LINK",
+				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
+				label: "osu!direct",
+			}),
+		]);
 
 		message
 			.reply({

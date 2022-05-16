@@ -31,7 +31,13 @@ export default (
 				2
 			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
-			)}\` 
+			)}\` BPM: \`${
+				parsed.bpmMin == parsed.bpmMax
+					? parsed.bpmMin.toFixed(0)
+					: `(Min: ${parsed.bpmMin.toFixed(0)} / Max: ${Number(
+							parsed.bpmMax
+					  ).toFixed(0)})`
+			}\`
             OD: \`${attributes.overallDifficulty.toFixed(
 				0
 			)}\` HP: \`${attributes.drainRate.toFixed(
@@ -58,7 +64,13 @@ export default (
 				2
 			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
-			)}\` 
+			)}\` BPM: \`${
+				parsed.bpmMin == parsed.bpmMax
+					? parsed.bpmMin.toFixed(0)
+					: `(Min: ${parsed.bpmMin.toFixed(0)} / Max: ${Number(
+							parsed.bpmMax
+					  ).toFixed(0)})`
+			}\`
             OD: \`${beatmap.accuracy}\` HP: \`${
 				beatmap.drain
 			}\` Stamina Strain: \`${attributes.staminaStrain.toFixed(2)}\` 
@@ -83,7 +95,13 @@ export default (
 				2
 			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
-			)}\` 
+			)}\` BPM: \`${
+				parsed.bpmMin == parsed.bpmMax
+					? parsed.bpmMin.toFixed(0)
+					: `(Min: ${parsed.bpmMin.toFixed(0)} / Max: ${Number(
+							parsed.bpmMax
+					  ).toFixed(0)})`
+			}\`
             OD: \`${beatmap.accuracy}\` HP: \`${
 				beatmap.drain
 			}\` AR: \`${attributes.approachRate.toFixed(0)}\` CS: \`${
@@ -107,7 +125,13 @@ export default (
 				2
 			)}\` Combo: \`${attributes.maxCombo}\` Length: \`${timeString(
 				beatmap.total_length
-			)}\` 
+			)}\` BPM: \`${
+				parsed.bpmMin == parsed.bpmMax
+					? parsed.bpmMin.toFixed(0)
+					: `(Min: ${parsed.bpmMin.toFixed(0)} / Max: ${Number(
+							parsed.bpmMax
+					  ).toFixed(0)})`
+			}\`
             OD: \`${beatmap.accuracy}\` HP: \`${beatmap.drain}\``;
 
 			break;
