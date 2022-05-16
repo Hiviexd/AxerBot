@@ -12,6 +12,7 @@ import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostE
 import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import truncateString from "../../helpers/text/truncateString";
 import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
+import replaceOsuTimestampsToURL from "../../helpers/text/replaceOsuTimestampsToURL";
 
 export default {
 	send: async (
@@ -31,7 +32,9 @@ export default {
 		);
 
 		let e = new MessageEmbed({
-			description: truncateString(post.posts[0].message, 4096),
+			description: replaceOsuTimestampsToURL(
+				truncateString(post.posts[0].message, 4096)
+			),
 			color: embedDecoration.color,
 			title: embedDecoration.title,
 			thumbnail: {
@@ -48,18 +51,13 @@ export default {
 		});
 
 		const buttons = new MessageActionRow();
+
 		buttons.addComponents([
 			new MessageButton({
 				type: "BUTTON",
 				style: "LINK",
 				url: `https://osu.ppy.sh/s/${post.beatmapsets[0].id}`,
 				label: "Beatmap Page",
-			}),
-			new MessageButton({
-				type: "BUTTON",
-				style: "LINK",
-				url: `https://osu.ppy.sh/users/${post.beatmapsets[0].user_id}`,
-				label: "Mapper Profile",
 			}),
 		]);
 
@@ -86,6 +84,21 @@ export default {
 			}
 		} catch (e) {
 			console.error(e);
+		}
+
+		const beatmap = await osuApi.fetch.beatmapset(
+			post.beatmapsets[0].id.toString()
+		);
+
+		if (beatmap.status == 200 && beatmap.data.beatmaps) {
+			buttons.addComponents([
+				new MessageButton({
+					type: "BUTTON",
+					style: "LINK",
+					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
+					label: "osu!direct",
+				}),
+			]);
 		}
 
 		message.reply({
