@@ -24,18 +24,22 @@ export default new Schema({
 		default: {
 			beatmap: {
 				all: true,
+				none: false,
 				channels: [],
 			},
 			player: {
 				all: true,
+				none: false,
 				channels: [],
 			},
 			discussion: {
 				all: true,
+				none: false,
 				channels: [],
 			},
 			comment: {
 				all: true,
+				none: false,
 				channels: [],
 			},
 		},

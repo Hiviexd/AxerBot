@@ -27,7 +27,9 @@ export default async (message: Message) => {
 	links.forEach((link) => {
 		if (link.split("/").includes("users")) {
 			if (
-				(guild.embeds && guild.embeds.player.all) ||
+				(guild.embeds &&
+					guild.embeds.player.all &&
+					!guild.embeds.player.none) ||
 				guild.embeds.player.channels.includes(message.channelId)
 			) {
 				return parseUser(link, message);
@@ -39,7 +41,9 @@ export default async (message: Message) => {
 			!link.includes("discussion")
 		) {
 			if (
-				(guild.embeds && guild.embeds.beatmap.all) ||
+				(guild.embeds &&
+					guild.embeds.beatmap.all &&
+					!guild.embeds.beatmap.none) ||
 				guild.embeds.beatmap.channels.includes(message.channelId)
 			) {
 				return parseBeatmap(link, message);
@@ -50,7 +54,9 @@ export default async (message: Message) => {
 			!link.includes("reviews")
 		) {
 			if (
-				(guild.embeds && guild.embeds.discussion.all) ||
+				(guild.embeds &&
+					guild.embeds.discussion.all &&
+					!guild.embeds.discussion.none) ||
 				guild.embeds.discussion.channels.includes(message.channelId)
 			) {
 				return parseDiscussionPost(link, message);
@@ -59,7 +65,9 @@ export default async (message: Message) => {
 
 		if (link.split("/").includes("comments")) {
 			if (
-				(guild.embeds && guild.embeds.comment.all) ||
+				(guild.embeds &&
+					guild.embeds.comment.all &&
+					!guild.embeds.comment.none) ||
 				guild.embeds.comment.channels.includes(message.channelId)
 			) {
 				return parseComment(link, message);

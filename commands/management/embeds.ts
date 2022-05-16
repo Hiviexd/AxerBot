@@ -9,8 +9,10 @@ export default {
 		description:
 			"configure where and which embed will be allowed in X channels",
 		syntax: "{prefix}embeds `<categories> <#channels>`",
-		example: "{prefix}embeds `player,discussion,beatmap #osu #commands`",
+		example:
+			"{prefix}embeds `player,discussion,beatmap #osu #commands` \n{prefix}embeds `player,discussion,beatmap all` \n {prefix}embeds `player,discussion,beatmap none`",
 		categories: ["`player`", "`comment`", "`beatmap`", "`discussion`"],
+		extra: "You can use `all` or `none` to select all channels, or none",
 	},
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
@@ -42,7 +44,10 @@ export default {
 
 		const channels = message.mentions.channels;
 
-		if (channels.size < 1 && args[1].toLowerCase() != "all")
+		if (
+			channels.size < 1 &&
+			!["all", "none"].includes(args[1].toLowerCase())
+		)
 			return message.channel.send(
 				`Invalid channels provided! Use \`${guild.prefix}help embeds\` to see how to use this command`
 			);
@@ -51,11 +56,19 @@ export default {
 			if (args[1].toLowerCase() == "all") {
 				guild.embeds[cat] = {
 					all: true,
+					none: false,
+					channels: [],
+				};
+			} else if (args[1].toLowerCase() == "none") {
+				guild.embeds[cat] = {
+					all: false,
+					none: true,
 					channels: [],
 				};
 			} else {
 				guild.embeds[cat] = {
 					all: false,
+					none: false,
 					channels: channels.map((m) => m.id.toString()),
 				};
 			}
@@ -91,7 +104,9 @@ export default {
 				if (!embedCategories.includes(category)) return;
 
 				if (guild.embeds[category].all) {
-					embed.addField(category, `All Channels`);
+					embed.addField(category, `Allowed in All Channels`);
+				} else if (guild.embeds[category].none) {
+					embed.addField(category, `Disabled in All Channels`);
 				} else {
 					embed.addField(
 						category,
