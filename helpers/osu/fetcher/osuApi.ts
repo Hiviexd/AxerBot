@@ -7,7 +7,7 @@ import {
 	featuredBeatmapsets,
 	userBeatmaps,
 } from "./beatmap";
-import { user } from "./user";
+import { user, userRecent } from "./user";
 import { comment } from "./comment";
 
 export default {
@@ -19,6 +19,7 @@ export default {
 		beatmapsetDiscussionVotes: beatmapsetDiscussionVotes,
 		user: user,
 		userBeatmaps: userBeatmaps,
+		userRecent: userRecent,
 		comment: comment,
 	},
 	download: {

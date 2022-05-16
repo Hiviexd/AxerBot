@@ -1,7 +1,7 @@
 import type { Beatmap, Beatmapset } from "./beatmap";
 import type { Timestamp } from "./timestamp";
 import type { User } from "./user";
-import { GameMode } from "./game_mode";
+import { GameModeName } from "./game_mode";
 
 /**
  * https://osu.ppy.sh/docs/index.html#score
@@ -34,6 +34,7 @@ export interface Score {
 	/** float */
 	accuracy: number;
 	mods: string[];
+	mods_int: number;
 	/** integer */
 	score: number;
 	/** integer */
@@ -45,7 +46,7 @@ export interface Score {
 	pp: number;
 	rank: string;
 	created_at: Timestamp;
-	mode: GameMode;
+	mode: GameModeName;
 	/** integer */
 	mode_int: number;
 	replay: boolean;
@@ -57,6 +58,11 @@ export interface Score {
 	//weight?: unknown
 	user?: User;
 	//match?: unknown
+}
+
+export interface UserScoreResponse {
+	status: number;
+	data: Score[];
 }
 
 /**
