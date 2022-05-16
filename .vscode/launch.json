@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "args": [
-                "${relativeFile}"
+                "."
             ],
             "runtimeArgs": [
                 "-r",
