@@ -119,6 +119,15 @@ export interface BeatmapsetDiscussionVote {
 	user_id: number;
 }
 
+export interface BeatmapsetDiscussionVoteResponse {
+	status: number;
+	data: {
+		discussions: BeatmapsetDiscussion[];
+		users: UserCompact[];
+		votes: BeatmapsetDiscussionVote[];
+	};
+}
+
 /**
  * Represents a beatmapset
  *

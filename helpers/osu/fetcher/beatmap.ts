@@ -4,6 +4,9 @@ import {
 	BeatmapResponse,
 	UserBeatmapetsResponse,
 	BeatmapsetDiscussionPostResponse,
+	Beatmapset,
+	BeatmapsetDiscussionVote,
+	BeatmapsetDiscussionVoteResponse,
 } from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 import {
@@ -132,6 +135,45 @@ export async function download(beatmapset_id: string): Promise<any> {
 	}
 }
 
+export async function featuredBeatmapsets(page?: number): Promise<{
+	status: number;
+	data: {
+		beatmapsets: Beatmapset[];
+	};
+}> {
+	try {
+		consoleLog("beatmap fetcher", `Fetching featured beatmapsets`);
+
+		page = page ? page : 0;
+
+		const req = await axios(
+			`https://osu.ppy.sh/api/v2/beatmapsets/search?sort=plays_desc&page=${page}`,
+			{
+				headers: {
+					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+				},
+			}
+		);
+
+		const res = req.data;
+
+		consoleCheck("beatmap fetcher", `Featured beatmapsets found!`);
+
+		return {
+			status: 200,
+			data: res,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
 export async function beatmapsetDiscussionPost(
 	post_id: string,
 	type: string
@@ -156,6 +198,86 @@ export async function beatmapsetDiscussionPost(
 		consoleCheck(
 			"beatmap fetcher",
 			`Beatmapset discussion post ${post_id} found!`
+		);
+
+		return {
+			status: 200,
+			data: res,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
+export async function beatmapsetDiscussionVotes(
+	post_id: string,
+	type: string
+): Promise<BeatmapsetDiscussionVoteResponse> {
+	try {
+		consoleLog(
+			"beatmap fetcher",
+			`Fetching beatmapset discussion votes ${post_id}`
+		);
+
+		const req = await axios(
+			`https://osu.ppy.sh/api/v2/beatmapsets/discussions/votes?beatmapset_discussion_id=${post_id}&types[]=${type}&limit=500`,
+			{
+				headers: {
+					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+				},
+			}
+		);
+
+		consoleCheck(
+			"beatmap fetcher",
+			`Beatmapset discussion votes ${post_id} found!`
+		);
+
+		return {
+			status: 200,
+			data: req.data,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
+export async function BeatmapPreview(
+	beatmapset_id: string
+): Promise<{ status: number; data: string }> {
+	try {
+		consoleLog(
+			"beatmap fetcher",
+			`Fetching beatmapset preview ${beatmapset_id}`
+		);
+
+		const req = await axios(
+			`https://b.ppy.sh/preview/${beatmapset_id}.mp3`,
+			{
+				headers: {
+					authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+					accept: "audio/mp3",
+				},
+			}
+		);
+
+		const res = req.data;
+
+		consoleCheck(
+			"beatmap fetcher",
+			`Beatmapset preview ${beatmapset_id} found!`
 		);
 
 		return {

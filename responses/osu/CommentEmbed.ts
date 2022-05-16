@@ -36,6 +36,7 @@ export default {
 			footer: {
 				text: getFooter(),
 			},
+			timestamp: new Date(comment.created_at),
 		});
 
 		message.reply({

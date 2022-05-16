@@ -11,10 +11,11 @@ import osuApi from "../../helpers/osu/fetcher/osuApi";
 import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
 import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import truncateString from "../../helpers/text/truncateString";
+import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
 
 export default {
 	send: async (
-		post: BeatmapsetDiscussionPost,
+		post: DiscussionAttributtes,
 		raw_posts: BeatmapsetDiscussionPost,
 		type: string,
 		message: Message
@@ -43,6 +44,7 @@ export default {
 					usergroup.name ? `(${usergroup.name})` : ""
 				}`,
 			},
+			timestamp: new Date(post.posts[0].created_at),
 		});
 
 		const buttons = new MessageActionRow();
