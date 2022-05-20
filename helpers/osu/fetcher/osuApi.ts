@@ -9,6 +9,7 @@ import {
 } from "./beatmap";
 import { user, userRecent } from "./user";
 import { comment } from "./comment";
+import { fetchBeatmapEvents } from "./qat";
 
 export default {
 	fetch: {
@@ -17,6 +18,7 @@ export default {
 		featuredBeatmapsets: featuredBeatmapsets,
 		beatmapsetDiscussionPost: beatmapsetDiscussionPost,
 		beatmapsetDiscussionVotes: beatmapsetDiscussionVotes,
+		discussionEvents: fetchBeatmapEvents,
 		user: user,
 		userBeatmaps: userBeatmaps,
 		userRecent: userRecent,

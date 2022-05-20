@@ -9,11 +9,12 @@ export default async (message: Message, bot: Client) => {
 	if (!message.guild) return;
 
 	let guild = await database.guilds.findById(message.guildId);
+
+	if (guild == null) return;
+
 	if (guild.fun.blacklist.channels.includes(message.channelId)) return;
 
 	const chance = new Chance();
-
-	if (!guild || guild == null) return;
 
 	if (guild.fun.enable == true) {
 		if (

@@ -20,7 +20,7 @@ export default (emoji: string) => {
 		B: "<:rankingB:975787604610019368>",
 		C: "<:rankingC:975787604584849448>",
 		D: "<:rankingD:975787604815536138>",
-		F: "<:rankingD:975787604815536138>",
+		F: "<:f_:977204450865332274>",
 	};
 
 	const request = emojis[emoji];

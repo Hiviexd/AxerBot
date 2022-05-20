@@ -34,6 +34,8 @@ export default {
 			score
 		);
 
+		const mods = score.mods.length > 0 ? ` +${score.mods.join("")}` : "";
+
 		const embed = new MessageEmbed({
 			author: {
 				iconURL: score.user.avatar_url,
@@ -42,10 +44,13 @@ export default {
 				} score from ${score.user.username}`,
 			},
 			url: `https://osu.ppy.sh/scores/${score.mode}/${score.id}`,
-			title: `${score.beatmapset.artist} - ${score.beatmapset.title} [${score.beatmap.version}]`,
-			description: `${getEmoji(score.rank)} • ${Math.round(
-				att.pp
-			)}pp › ${(score.accuracy * 100).toFixed(2)}% › <${
+			title: `${score.beatmapset.artist} - ${score.beatmapset.title} [${
+				score.beatmap.version
+			}] (${att.starRating.toFixed(2)}★${mods})`,
+			description: `${getEmoji(score.rank)} • ${
+				(score.pp ? score.pp.toFixed(0) : undefined) ||
+				Math.round(att.pp)
+			}pp › ${(score.accuracy * 100).toFixed(2)}% › <${
 				score.max_combo
 			}x/${att.maxCombo}x> › \`[${getHitsFor(score)}]\``,
 			thumbnail: {

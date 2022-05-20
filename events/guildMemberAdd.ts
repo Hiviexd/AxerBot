@@ -1,6 +1,7 @@
 import { Client, GuildMember } from "discord.js";
 
 import { consoleLog } from "../helpers/core/logger";
+import StartVerification from "../modules/verification/client/StartVerification";
 
 export default {
 	name: "guildMemberAdd",
@@ -12,6 +13,8 @@ export default {
 					"guildMemberAdd",
 					`User ${member.user.tag} has joined the server!`
 				);
+
+				StartVerification(member);
 
 				//Find a channel named welcome and send a Welcome message
 
