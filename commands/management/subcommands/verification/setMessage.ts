@@ -8,7 +8,7 @@ export default {
 	trigger: ["message"],
 	help: {
 		description: "Set the message that will be sent on the system channel",
-		syntax: "{prefix}verification `message` `hi welcome to osu!`",
+		syntax: "{prefix}verification `message` `Welcome to the server!`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

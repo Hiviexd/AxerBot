@@ -7,8 +7,8 @@ export default {
 	name: "verification disable",
 	trigger: ["disable"],
 	help: {
-		description: "Well...",
-		syntax: "{prefix}verification `message` `hi welcome to osu!`",
+		description: "Yep, you guessed it",
+		syntax: "{prefix}verification `disable`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

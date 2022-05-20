@@ -34,7 +34,7 @@ export default async (member: GuildMember) => {
 		return member.client.users.cache
 			.get(member.guild.ownerId)
 			?.send(
-				`Bro, your verification system isn't working. Cuz you didn't set any channel or the channel is deleted. ${member.user.tag} is waiting for the verification. Please, verify the user manually and fix the system.`
+				`The verification system isn't working because you didn't set any channel or the channel is deleted. ${member.user.tag} is waiting for the verification. Please, verify the user manually and fix the system.`
 			);
 	}
 
@@ -70,8 +70,8 @@ export default async (member: GuildMember) => {
 				]);
 
 				const embed = new MessageEmbed({
-					title: "Axer Bot Verification",
-					description: `The server **${member.guild.name}** wants to know who you are. You need to authorize the server to get access from your read-only profile data (username, mode, tags)`,
+					title: "osu! OAuth Verification Request",
+					description: `The server **${member.guild.name}** wants to know who you are. You need to authorize with your osu! account to get access from your read-only profile data (username, mode, usergroup, etc).`,
 					thumbnail: {
 						url: member.guild.iconURL() || "",
 					},
@@ -86,7 +86,7 @@ export default async (member: GuildMember) => {
 
 					.then(() => {
 						verification_channel.send(
-							`<@${member.id}> **Check your private messages.** (If you doesn't recived anything, allow private messages from this server.)`
+							`<@${member.id}> **Check your private messages.** (If you haven't recived anything, please allow private messages from this server.)`
 						);
 					})
 					.catch((e) => {

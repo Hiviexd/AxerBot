@@ -12,7 +12,7 @@ export default {
 			"Set which data that will be replaced to the osu! user data.",
 		syntax: "{prefix}verification `flags` `username`",
 		"avaliable flags": [
-			"`username,<true|false>`: Set the user discord nickname to the same osu! username",
+			"`username,<true|false>`: Set the user's discord nickname to match their osu! username",
 		],
 	},
 	run: async (message: Message, args: string[]) => {

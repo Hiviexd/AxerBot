@@ -8,8 +8,8 @@ export default {
 	trigger: ["channel"],
 	help: {
 		description:
-			"Set the channel to the system (this will enable the system)",
-		syntax: "{prefix}verification `channel` `#welcome`",
+			"Sets the channel for the system (this will enable the system)",
+		syntax: "{prefix}verification `channel` `#arrival`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

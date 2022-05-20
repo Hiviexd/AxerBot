@@ -8,7 +8,7 @@ export default {
 	trigger: ["enable"],
 	help: {
 		description:
-			"You need to set the system channel before enable the system",
+			"You need to set the system channel before enabling the system",
 		syntax: "{prefix}verification `enable`",
 	},
 	run: async (message: Message, args: string[]) => {
