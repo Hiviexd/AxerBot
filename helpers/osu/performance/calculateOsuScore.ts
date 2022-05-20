@@ -18,19 +18,12 @@ export default (osu_file: string, score: Score) => {
 	const mapInfo = new BeatmapInfo(osuBeatmap);
 
 	_score.beatmap = mapInfo;
-	_score.statistics.great = score.statistics.count_300;
-	_score.statistics.largeTickHit = score.statistics.count_100;
-	_score.statistics.smallTickHit = score.statistics.count_50;
-	_score.statistics.smallTickMiss = score.statistics.count_katu;
+	_score.maxCombo = score.max_combo;
+	_score.count300 = score.statistics.count_300 + score.statistics.count_geki;
+	_score.count100 = score.statistics.count_100 + score.statistics.count_katu;
+	_score.count50 = score.statistics.count_50;
 	_score.statistics.miss = score.statistics.count_miss;
-	_score.accuracy =
-		(_score.statistics.great +
-			_score.statistics.good / 3 +
-			_score.statistics.meh / 6) /
-		(_score.statistics.great +
-			_score.statistics.good +
-			_score.statistics.meh +
-			_score.statistics.miss);
+	_score.accuracy = score.accuracy;
 
 	const performanceCalculator = ruleset.createPerformanceCalculator(
 		beatmapDifficulty,

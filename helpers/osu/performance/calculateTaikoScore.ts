@@ -22,9 +22,7 @@ export default (osu_file: string, score: Score) => {
 	_score.count300 = score.statistics.count_300 + score.statistics.count_geki;
 	_score.count100 = score.statistics.count_100 + score.statistics.count_katu;
 	_score.statistics.miss = score.statistics.count_miss;
-	_score.accuracy =
-		(_score.count300 + _score.count100 / 2) /
-		(_score.count300 + _score.count100 + _score.countMiss);
+	_score.accuracy = score.accuracy;
 
 	const performanceCalculator = ruleset.createPerformanceCalculator(
 		beatmapDifficulty,

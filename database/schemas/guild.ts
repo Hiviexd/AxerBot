@@ -1,5 +1,4 @@
 import { Schema } from "mongoose";
-import config from "../../config.json";
 
 export default new Schema({
 	_id: {
@@ -7,7 +6,7 @@ export default new Schema({
 	},
 	prefix: {
 		type: String,
-		default: config.prefix,
+		default: "-",
 	},
 	osu: {
 		type: Object,
@@ -16,6 +15,21 @@ export default new Schema({
 				beatmap: true,
 				user: true,
 				discussion: true,
+			},
+		},
+	},
+	verification: {
+		type: Object,
+		default: {
+			enable: false,
+			channel: "",
+			message:
+				"Hi {member}! Welcome to the server, to get access to the channels, react with :white_check_mark:",
+			emoji: "✅",
+			targets: {
+				username: true,
+				default_roles: [],
+				group_roles: [],
 			},
 		},
 	},
