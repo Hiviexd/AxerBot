@@ -8,6 +8,8 @@ import {
 	TextBasedChannels,
 } from "discord.js";
 import { guilds } from "../../../database";
+import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
+import parseMessagePlaceholderFromString from "../../../helpers/text/parseMessagePlaceholderFromString";
 import GenerateAuthToken from "./GenerateAuthToken";
 
 export default async (member: GuildMember) => {
@@ -39,7 +41,13 @@ export default async (member: GuildMember) => {
 	}
 
 	verification_channel
-		.send(guild_db.verification.message)
+		.send(
+			parseMessagePlaceholderFromMember(
+				guild_db.verification.message,
+				member,
+				guild_db
+			)
+		)
 		.then((m: Message) => {
 			m.react(guild_db.verification.emoji);
 
