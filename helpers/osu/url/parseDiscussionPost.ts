@@ -24,6 +24,7 @@ export default async (url: string, message: Message) => {
 		targetPost,
 		post.data,
 		postInfo.type,
-		message
+		message,
+		url
 	);
 };

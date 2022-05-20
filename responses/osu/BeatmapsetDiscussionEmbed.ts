@@ -13,13 +13,15 @@ import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import truncateString from "../../helpers/text/truncateString";
 import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
 import replaceOsuTimestampsToURL from "../../helpers/text/replaceOsuTimestampsToURL";
+import getEmoji from "../../helpers/text/getEmoji";
 
 export default {
 	send: async (
 		post: DiscussionAttributtes,
 		raw_posts: BeatmapsetDiscussionPost,
 		type: string,
-		message: Message
+		message: Message,
+		url: string
 	) => {
 		if (post.posts.length < 1) return;
 		const author = await osuApi.fetch.user(String(post.posts[0].user_id));
@@ -31,9 +33,21 @@ export default {
 			type
 		);
 
+		const beatmap = await osuApi.fetch.beatmapset(
+			post.beatmapsets[0].id.toString()
+		);
+
+		if (!beatmap.data.beatmaps) return;
+
+		const metadata = `
+		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
+		${getEmoji(beatmap.data.beatmaps[0].mode)} Mapped by [**${
+			post.beatmapsets[0].creator
+		}**](https://osu.ppy.sh/users/${post.posts[0].user_id})\n\n`;
+
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
-				truncateString(post.posts[0].message, 4096)
+				truncateString(metadata.concat(post.posts[0].message), 4096)
 			),
 			color: embedDecoration.color,
 			title: embedDecoration.title,
@@ -51,15 +65,6 @@ export default {
 		});
 
 		const buttons = new MessageActionRow();
-
-		buttons.addComponents([
-			new MessageButton({
-				type: "BUTTON",
-				style: "LINK",
-				url: `https://osu.ppy.sh/s/${post.beatmapsets[0].id}`,
-				label: "Beatmap Page",
-			}),
-		]);
 
 		try {
 			const beatmap_file = await osuApi.download.beatmapset(
@@ -85,10 +90,6 @@ export default {
 		} catch (e) {
 			console.error(e);
 		}
-
-		const beatmap = await osuApi.fetch.beatmapset(
-			post.beatmapsets[0].id.toString()
-		);
 
 		if (beatmap.status == 200 && beatmap.data.beatmaps) {
 			buttons.addComponents([
