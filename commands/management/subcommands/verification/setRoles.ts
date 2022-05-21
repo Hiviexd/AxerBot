@@ -79,7 +79,7 @@ export default {
 
 		guild.verification.targets.default_roles = validMentionedRoles;
 
-		await guilds.findOneAndUpdate(guild._id, guild);
+		await guilds.findByIdAndUpdate(guild._id, guild);
 
 		message.channel.send(`✅ Done! Default roles updated.`);
 	},

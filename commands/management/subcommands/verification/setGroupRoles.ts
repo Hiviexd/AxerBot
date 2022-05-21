@@ -113,7 +113,7 @@ export default {
 
 		guild.verification.targets.group_roles = validMentionedRoles;
 
-		await guilds.findOneAndUpdate(guild._id, guild);
+		await guilds.findByIdAndUpdate(guild._id, guild);
 
 		message.channel.send(`✅ Done! Group roles updated.`);
 	},
