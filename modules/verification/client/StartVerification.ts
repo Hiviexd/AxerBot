@@ -23,8 +23,19 @@ export default async (member: GuildMember) => {
 
 	const verification = await GenerateAuthToken(member);
 
-	if (verification.status != 200 || !verification.data)
-		return user_dm.send(verification.message);
+	if (verification.status != 200 || !verification.data) {
+		const error = new MessageEmbed({
+			title: "Wait...",
+			description: verification.message,
+			color: "#ea6112",
+		});
+
+		user_dm.send({
+			embeds: [error],
+		});
+
+		return;
+	}
 
 	const verification_channel: any = member.client.guilds.cache
 		.get(member.guild.id)
