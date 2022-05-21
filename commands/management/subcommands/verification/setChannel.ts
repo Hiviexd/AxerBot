@@ -9,7 +9,8 @@ export default {
 	help: {
 		description:
 			"Sets the channel for the system (this will enable the system)",
-		syntax: "{prefix}verification `channel` `#arrival`",
+		syntax: "{prefix}verification `channel` `#channel`",
+		example: "{prefix}verification `channel` `#arrival`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;
