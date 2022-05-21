@@ -10,7 +10,8 @@ export default {
 	help: {
 		description:
 			"Set which data that will be replaced to the osu! user data.",
-		syntax: "{prefix}verification `flags` `username`",
+		syntax: "{prefix}verification `flags` `<flag>,<value>`",
+		example: "{prefix}verification `flags` `username,true`",
 		"avaliable flags": [
 			"`username,<true|false>`: Set the user's discord nickname to match their osu! username",
 		],
@@ -30,24 +31,51 @@ export default {
 		let guild = await guilds.findById(message.guildId);
 
 		const validFlags = ["username"];
+
 		const flagsValues: any = {
-			username: "booelan",
+			username: "boolean",
 		};
 		const flagsToUpdate: { target: string; value: any }[] = [];
 
 		args.forEach((a) => {
 			const flag = a.split(",");
 
+			if (flag.length != 2) return;
+
 			if (validFlags.includes(flag[0].toLowerCase())) {
-				flagsToUpdate.push();
+				flagsToUpdate.push({
+					target: flag[0].toLowerCase(),
+					value: flag[1].toLowerCase(),
+				});
 			}
 		});
 
+		const clearFlags: any[] = [];
+
 		flagsToUpdate.forEach((flag) => {
-			if (typeof flag.value != flagsValues[flag.target] && flag.value) {
-				guild.verification.targets[flag.target] = flag.value;
+			switch (flagsValues[flag.target]) {
+				case "boolean": {
+					const booleans = ["true", "false"];
+					if (!booleans.includes(flag.value)) return;
+
+					clearFlags.push({
+						target: flag.target,
+						value: Boolean(flag.value),
+					});
+
+					break;
+				}
 			}
 		});
+
+		clearFlags.forEach((flag) => {
+			guild.verification.targets[flag.target] = flag.value;
+		});
+
+		if (clearFlags.length < 1)
+			return message.reply(
+				`:x: Invalid tags! Check if you are using the correct syntax using \`${guild.prefix}help verification fags\``
+			);
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 

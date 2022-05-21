@@ -5,11 +5,9 @@ import {
 	MessageButton,
 	MessageEmbed,
 	ReactionCollector,
-	TextBasedChannels,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
-import parseMessagePlaceholderFromString from "../../../helpers/text/parseMessagePlaceholderFromString";
 import GenerateAuthToken from "./GenerateAuthToken";
 
 export default async (member: GuildMember) => {
