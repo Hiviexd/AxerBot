@@ -19,14 +19,14 @@ export default {
 		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
-		const new_message = args.join();
+		const new_message = args.join(" ");
 
 		if (new_message.trim() == "")
 			return message.reply(":x: Provide a valid message!");
 
 		let guild = await guilds.findById(message.guildId);
 
-		guild.verification.message = message;
+		guild.verification.message = new_message;
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
