@@ -26,6 +26,7 @@ import avatar from "./misc/avatar";
 import embeds from "./management/embeds";
 import recent from "./user/recent";
 import verification from "./management/verification";
+import fact from "./fun/fact";
 
 const commands: any = {
 	ping: ping,
@@ -52,6 +53,7 @@ const commands: any = {
 	revolver: revolver,
 	owoify: owoify,
 	pun: pun,
+	fact: fact,
 	repeat: repeat,
 	embeds: embeds,
 	rs: recent,
