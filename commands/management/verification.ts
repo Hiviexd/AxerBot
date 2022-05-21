@@ -58,7 +58,7 @@ export default {
 					value: guild.verification.enable ? "Enabled" : "Disabled",
 				},
 				{
-					name: "Status",
+					name: "Channel",
 					value:
 						guild.verification.channel == ""
 							? "None"
