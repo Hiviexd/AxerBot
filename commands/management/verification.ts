@@ -16,7 +16,7 @@ export default {
 		description:
 			"Verify new server members automatically with this system!",
 		modules: `\`channel\`: Set the module channel
-        \`tags\`: Set flags to the module (Example: sync nickname)
+        \`fags\`: Set flags to the module (Example: sync nickname)
 		\`roles\`: Set the roles that will be given to all verified users
 		\`grouproles\`: Set the roles that will be given to all verified users with X osu! usergroup (Like BNs)
         \`message\`: Set the message to send on the channel
@@ -58,7 +58,7 @@ export default {
 					value: guild.verification.enable ? "Enabled" : "Disabled",
 				},
 				{
-					name: "Status",
+					name: "Channel",
 					value:
 						guild.verification.channel == ""
 							? "None"

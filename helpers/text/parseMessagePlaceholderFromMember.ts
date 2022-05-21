@@ -12,10 +12,10 @@ export default (text: string, member: GuildMember, guildDbRow: any) => {
 
 	// ? User placeholders
 	content = content
-		.replace(/{author}/gi, `<@${member.user.id}>`)
-		.replace(/{author_id}/gi, `${member.user.id}`)
-		.replace(/{author_username}/gi, member.user.username)
-		.replace(/{author_avatar}/gi, member.user.avatarURL.toString());
+		.replace(/{member}/gi, `<@${member.user.id}>`)
+		.replace(/{member_id}/gi, `${member.user.id}`)
+		.replace(/{member_username}/gi, member.user.username)
+		.replace(/{member_avatar}/gi, member.user.avatarURL.toString());
 
 	return content;
 };
