@@ -1,6 +1,5 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import axios from "axios";
-import embeds from "../management/embeds";
 
 export default {
 	name: "fact",
