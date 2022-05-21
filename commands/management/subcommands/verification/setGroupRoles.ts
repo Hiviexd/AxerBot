@@ -12,14 +12,14 @@ export default {
 		example:
 			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`",
 		groups: [
-			"`DEV`: osu! developer",
-			"`SPT`: osu! support",
-			"`NAT`: batman",
+			"`DEV`: osu!dev",
+			"`SPT`: Support Team",
+			"`NAT`: Nomination Assessment Team",
 			"`BN`: Beatmap Nominators",
-			"`PBN`: (Beatmap Nominator Probationary)",
+			"`PBN`: (Probation BNs)",
 			"`GMT`: Global Moderation Team",
 			"`LVD`: Project Loved",
-			"`ALM`: allumni",
+			"`ALM`: Alumni",
 		],
 	},
 	run: async (message: Message, args: string[]) => {

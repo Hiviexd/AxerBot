@@ -9,7 +9,7 @@ export default {
 	trigger: ["flags"],
 	help: {
 		description:
-			"Set which data that will be replaced to the osu! user data.",
+			"Set which data that will be replaced with the osu! user data.",
 		syntax: "{prefix}verification `flags` `<flag>,<value>`",
 		example: "{prefix}verification `flags` `username,true`",
 		"avaliable flags": [
