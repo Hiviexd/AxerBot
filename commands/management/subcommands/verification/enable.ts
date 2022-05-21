@@ -31,6 +31,6 @@ export default {
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
-		message.channel.send(`✅ Done! System disabled.`);
+		message.channel.send(`✅ Done! System enabled.`);
 	},
 };
