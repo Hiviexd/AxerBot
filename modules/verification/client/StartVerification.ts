@@ -63,8 +63,19 @@ export default async (member: GuildMember) => {
 						`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and react again.**)`
 					);
 
-				if (verification.status != 200 || !verification.data)
-					return user_dm.send(verification.message);
+				if (verification.status != 200 || !verification.data) {
+					const error = new MessageEmbed({
+						title: "Wait...",
+						description: verification.message,
+						color: "#ea6112",
+					});
+
+					user_dm.send({
+						embeds: [error],
+					});
+
+					return;
+				}
 
 				const buttons = new MessageActionRow();
 				buttons.addComponents([
