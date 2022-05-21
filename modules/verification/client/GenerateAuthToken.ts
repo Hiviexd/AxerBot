@@ -35,7 +35,9 @@ export default async (
 	)
 		return {
 			status: 400,
-			message: `You already have a pending verification on this server. Please, use the old link: https://https://axer-auth.herokuapp.com/authorize?code=${
+			message: `You already have a pending verification on **${
+				user.guild.name
+			}**. Please, use the old link: https://axer-auth.herokuapp.com/authorize?code=${
 				user_db.pending_verifications.find(
 					(v: IVerificationObject) => v.guild == user.guild.id
 				).token
