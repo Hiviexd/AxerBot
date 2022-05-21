@@ -26,7 +26,7 @@ export default {
 
 		let guild = await guilds.findById(message.guildId);
 
-		guild.verification.message = new_message;
+		guild.verification.message = `${new_message}\n To get access to the channels, react with :white_check_mark:`;
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 

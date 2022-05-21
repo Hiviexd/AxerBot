@@ -99,7 +99,7 @@ export default async (member: GuildMember) => {
 
 				const embed = new MessageEmbed({
 					title: "osu! OAuth Verification Request",
-					description: `The server **${member.guild.name}** wants to know who you are. You need to authorize with your osu! account to get access from your read-only profile data (username, mode, usergroup, etc).`,
+					description: `The server **${member.guild.name}** wants to know who you are. You need to authorize with your osu! account so we can verify your identity from your read-only profile data (username, mode, usergroup, etc...).`,
 					thumbnail: {
 						url: member.guild.iconURL() || "",
 					},
@@ -114,7 +114,7 @@ export default async (member: GuildMember) => {
 
 					.then(() => {
 						verification_channel.send(
-							`<@${member.id}> **Check your private messages.** (If you haven't recived anything, please allow private messages from this server.)`
+							`<@${member.id}> **Check your private messages.** (If you haven't recived anything, please allow private messages from this server and react again.)`
 						);
 					})
 					.catch((e) => {
