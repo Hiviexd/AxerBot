@@ -10,6 +10,6 @@ export default {
 	category: "fun",
 	run: (bot: Client, message: Message, args: string[]) => {
 		let coin = Math.floor(Math.random() * 2);
-		(coin === 0)? message.channel.send("Heads"): message.channel.send("Tails"); 
+		(coin === 0)? message.channel.send("Heads"): message.channel.send("Tails");
 	},
 };

@@ -24,7 +24,7 @@ export default {
         }catch(e){
             message.channel.send("A server-side error occured, try again later.");
         }
-    },  
+    },
 };
 
 
