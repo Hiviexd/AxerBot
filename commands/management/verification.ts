@@ -7,7 +7,7 @@ import setGroupRoles from "./subcommands/verification/setGroupRoles";
 import setMessage from "./subcommands/verification/setMessage";
 import setRoles from "./subcommands/verification/setRoles";
 import { ownerId } from "../../config.json";
-import MissingPermissions from "../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { guilds } from "../../database";
 
 export default {

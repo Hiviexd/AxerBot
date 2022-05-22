@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import UserNotFound from "../../data/embeds/UserNotFound";
+import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";

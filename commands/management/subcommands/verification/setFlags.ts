@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "./../../../../config.json";
 
