@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Client, Message, MessageEmbed } from "discord.js";
-import UserNotFound from "../../data/embeds/UserNotFound";
+import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import calculateFruitsScore from "../../helpers/osu/performance/calculateFruitsScore";

@@ -9,7 +9,7 @@ import quotesGetList from "./subcommands/quotes/quotesGetList";
 import quotesAddWord from "./subcommands/quotes/quotesAddWord";
 import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
 import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
-import MissingPermissions from "./../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import quotesSetChance from "./subcommands/quotes/quotesSetChance";
 

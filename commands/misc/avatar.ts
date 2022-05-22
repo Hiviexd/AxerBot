@@ -1,5 +1,5 @@
 import { Client, Message, MessageEmbed, User } from "discord.js";
-import UserNotFound from "../../data/embeds/UserNotFound";
+import UserNotFound from "../../responses/embeds/UserNotFound";
 
 export default {
     name: "avatar",

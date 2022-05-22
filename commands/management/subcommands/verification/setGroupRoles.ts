@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { ownerId } from "../../../../config.json";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 
 export default {
