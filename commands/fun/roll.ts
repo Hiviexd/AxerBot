@@ -16,6 +16,6 @@ export default {
 			dice = 100;
 		}
 		let roll = Math.floor(Math.random() * dice) + 1;
-		message.channel.send(`${roll}`);
+		message.channel.send(`**${message.author.username}** rolled **${roll}**!`);
 	},
 };
