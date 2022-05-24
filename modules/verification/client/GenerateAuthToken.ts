@@ -18,9 +18,9 @@ export default async (
 }> => {
 	const token = crypto.randomBytes(30).toString("hex").slice(30);
 
-	const user_db = await users.findById(user.id);
+	let user_db = await users.findById(user.id);
 
-	if (user_db == null) await createNewUser(user.user);
+	if (user_db == null || !user_db) user_db = await createNewUser(user.user);
 
 	const verification_object: IVerificationObject = {
 		guild: user.guild.id,
