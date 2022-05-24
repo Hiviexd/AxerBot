@@ -1,7 +1,7 @@
 import { Message, ReactionCollector } from "discord.js";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import * as database from "../../../../database";
-import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
+import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
 import { ownerId } from "../../../../config.json";
 import generateConfirmationEmbed from "./../../../../helpers/text/embeds/generateConfirmationEmbed";
 

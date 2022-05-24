@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
-import UserNotFound from "../../data/embeds/UserNotFound";
+import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
-import UserNotMapper from "../../data/embeds/UserNotMapper";
+import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapperEmbed from "../../responses/osu/MapperEmbed";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 

@@ -1,7 +1,7 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import sendCommandHelp from "../../helpers/core/sendCommandHelp";
 import commands from "./../";
-import CommandNotFound from "./../../data/embeds/CommandNotFound";
+import CommandNotFound from "../../responses/embeds/CommandNotFound";
 import * as database from "./../../database";
 
 export default {

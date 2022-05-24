@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import CommandOptionInvalid from "../../../../data/embeds/CommandOptionInvalid";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "./../../../../config.json";
 
@@ -9,7 +9,7 @@ export default {
 	trigger: ["flags"],
 	help: {
 		description:
-			"Set which data that will be replaced to the osu! user data.",
+			"Set which data that will be replaced with the osu! user data.",
 		syntax: "{prefix}verification `flags` `<flag>,<value>`",
 		example: "{prefix}verification `flags` `username,true`",
 		"avaliable flags": [

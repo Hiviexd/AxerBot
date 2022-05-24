@@ -11,7 +11,7 @@ export default {
 	category: "fun",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const phrases = await parseTextFile(
-			__dirname.concat("/../../data/yesno.txt")
+			__dirname.concat("/../../responses/text/yesno.txt")
 		);
 
 		if (args.length < 1) {

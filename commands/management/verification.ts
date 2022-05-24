@@ -7,21 +7,21 @@ import setGroupRoles from "./subcommands/verification/setGroupRoles";
 import setMessage from "./subcommands/verification/setMessage";
 import setRoles from "./subcommands/verification/setRoles";
 import { ownerId } from "../../config.json";
-import MissingPermissions from "../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { guilds } from "../../database";
 
 export default {
 	name: "verification",
 	help: {
 		description:
-			"Verify new server members automatically with this system!",
-		modules: `\`channel\`: Set the module channel
-        \`fags\`: Set flags to the module (Example: sync nickname)
+			"Verify new server members automatically using their osu! data!",
+		modules: `\`channel\`: Set the system channel
+        \`flags\`: Set flags to the system (Example: sync nickname)
 		\`roles\`: Set the roles that will be given to all verified users
-		\`grouproles\`: Set the roles that will be given to all verified users with X osu! usergroup (Like BNs)
-        \`message\`: Set the message to send on the channel
-        \`enable\`: Enable the system manually
-        \`disable\`: Yes`,
+		\`grouproles\`: Set the roles that will be given to all verified users with X osu! usergroup (i.e BNs)
+        \`message\`: Set the welcome message to send on the channel
+        \`enable\`: Enable the system manually.
+        \`disable\`: Yep`,
 	},
 	subcommands: [
 		setChannel,

@@ -1,7 +1,7 @@
 import { Message, MessageAttachment } from "discord.js";
 import * as database from "../../../../database";
 import { parseTextFileAttachment } from "../../../../helpers/text/processText";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
 
 export default {

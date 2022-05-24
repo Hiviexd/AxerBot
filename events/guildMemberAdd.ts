@@ -18,7 +18,7 @@ export default {
 
 				//Find a channel named welcome and send a Welcome message
 
-				const channel: any = member.guild.channels.cache.find(
+				/*const channel: any = member.guild.channels.cache.find(
 					(c) => c.name === "verification"
 				);
 
@@ -27,7 +27,7 @@ export default {
 
 				channel.send(
 					`Welcome, <@${member.user.id}>! Please link your osu! profile, and tell us your favorite FA in order to get access to the channels!`
-				);
+				);*/
 			});
 		} catch (e: any) {
 			console.error(e);

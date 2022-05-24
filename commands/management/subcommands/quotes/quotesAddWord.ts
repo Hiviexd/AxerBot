@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
 import * as database from "../../../../database";
 
