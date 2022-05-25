@@ -114,7 +114,7 @@ export default async (member: GuildMember) => {
 
 					.then(() => {
 						verification_channel.send(
-							`<@${member.id}> **Check your private messages.** (If you haven't recieved anything, please allow private messages from this server and react again.)`
+							`<@${member.id}> **Check your private messages.** (If you haven't received anything, please allow private messages from this server and react again.)`
 						);
 					})
 					.catch((e) => {
