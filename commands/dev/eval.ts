@@ -6,50 +6,60 @@ import util from "util";
 export default {
 	name: "eval",
 	help: {
-		description: "Developer-exclusive command that allows you to execute arbitrary code.\n Usually used for debugging purposes.",
+		description:
+			"Developer-exclusive command that allows you to execute arbitrary code.\n Usually used for debugging purposes.",
 		syntax: "{prefix}eval `<code>`",
-		example: "{prefix}eval `message.channel.send(\"Hello World!\")`",
+		example: '{prefix}eval `message.channel.send("Hello World!")`',
 	},
 	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {
-		if (!args.join(" ")) return;
-		if (owners.includes(message.author.id)) {
-			let evaled;
-			try {
-				let argjoin = args.join(" ");
-				evaled = await eval(argjoin);
-				evaled = util.inspect(evaled, { depth: -1 });
-				message.channel.send({
-					embeds: [
-						{
-							title: "Eval",
-							color: "WHITE",
-							fields: [
+		try {
+			if (!args.join(" ")) return;
+			if (owners.includes(message.author.id)) {
+				let evaled;
+				try {
+					let argjoin = args.join(" ");
+					evaled = await eval(argjoin);
+					evaled = util.inspect(evaled, { depth: -1 });
+					message.channel
+						.send({
+							embeds: [
 								{
-									name: "▶️ Input:",
-									value: "`" + argjoin + "`",
-								},
-								{
-									name: "◀️ Result:",
-									value: "`" + evaled + "`",
+									title: "Eval",
+									color: "WHITE",
+									fields: [
+										{
+											name: "▶️ Input:",
+											value: "`" + argjoin + "`",
+										},
+										{
+											name: "◀️ Result:",
+											value: "`" + evaled + "`",
+										},
+									],
 								},
 							],
-						},
-					],
-				});
-			} catch (error) {
-				console.log(error);
-				message.reply({
-					embeds: [
-						{
-							color: "RED",
-							description: "🖨️ - __**Error**__\n`" + error + "`",
-						},
-					],
-				});
+						})
+						.catch(console.error);
+				} catch (error) {
+					console.log(error);
+					message
+						.reply({
+							embeds: [
+								{
+									color: "RED",
+									description:
+										"🖨️ - __**Error**__\n`" + error + "`",
+								},
+							],
+						})
+						.catch(console.error);
+				}
+			} else {
+				message.reply("❌ | **You can't use this!**");
 			}
-		} else {
-			message.reply("❌ | **You can't use this!**");
+		} catch (e) {
+			console.error(e);
 		}
 	},
 };
