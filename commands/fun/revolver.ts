@@ -21,14 +21,14 @@ export default {
 			guild.fun.revolver = 0;
 			await database.guilds.findByIdAndUpdate(
 				message.guildId ,
-				{ fun: guild.fun } 
+				{ fun: guild.fun }
 			);
 			message.channel.send("💥 🔫");
 		} else {
 			guild.fun.revolver++;
 			await database.guilds.findByIdAndUpdate(
 				message.guildId ,
-				{ fun: guild.fun } 
+				{ fun: guild.fun }
 			);
 			message.channel.send(`${numberToEmoji(guild.fun.revolver)} 🔫`);
 		}

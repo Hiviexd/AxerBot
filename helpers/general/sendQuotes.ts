@@ -28,7 +28,7 @@ export default async (message: Message, bot: Client) => {
 
 			if (guild.fun.mode == "default") {
 				const quotes = await parseTextFile(
-					path.resolve(__dirname + "/../../data/axer.txt")
+					path.resolve(__dirname + "/../../responses/text/quotes.txt")
 				);
 
 				const quote = quotes[Math.floor(Math.random() * quotes.length)];

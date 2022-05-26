@@ -1,6 +1,6 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import * as database from "./../../database";
-import MissingPermissions from "./../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 
 export default {

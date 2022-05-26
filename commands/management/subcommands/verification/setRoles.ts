@@ -1,14 +1,14 @@
 import { Message } from "discord.js";
 import { ownerId } from "../../../../config.json";
-import MissingPermissions from "../../../../data/embeds/MissingPermissions";
+import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 
 export default {
 	name: "verification message",
 	trigger: ["roles"],
 	help: {
-		description: "Set the message that will be sent on the system channel",
-		syntax: "{prefix}verification `message` `Welcome to the server!`",
+		description: "Set the verification role",
+		syntax: "{prefix}verification `roles` `@verified,977686698274193521`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;
