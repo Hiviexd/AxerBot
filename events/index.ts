@@ -1,6 +1,7 @@
 import guildCreate from "./guildCreate";
 import guildMemberAdd from "./guildMemberAdd";
 import guildMemberRemove from "./guildMemberRemove";
+import interactionCreate from "./interactionCreate";
 import messageCreate from "./messageCreate";
 import messageDelete from "./messageDelete";
 import messageUpdate from "./messageUpdate";
@@ -13,5 +14,6 @@ export default [
 	messageCreate,
 	messageDelete,
 	messageUpdate,
+	interactionCreate,
 	ready,
 ];
