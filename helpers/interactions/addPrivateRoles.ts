@@ -1,6 +1,6 @@
-import { CacheType, Interaction, Role } from "discord.js";
+import { Interaction, Role } from "discord.js";
 
-export default async (interaction: Interaction<CacheType>) => {
+export default async (interaction: Interaction) => {
 	try {
 		if (!interaction.isSelectMenu()) return;
 
