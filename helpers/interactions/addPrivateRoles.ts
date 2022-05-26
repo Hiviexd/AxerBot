@@ -1,4 +1,4 @@
-import { CacheType, Interaction } from "discord.js";
+import { CacheType, Interaction, Role } from "discord.js";
 
 export default async (interaction: Interaction<CacheType>) => {
 	try {
@@ -9,11 +9,11 @@ export default async (interaction: Interaction<CacheType>) => {
 		const roles: any = {
 			spectator:
 				interaction.guild?.roles.cache.find(
-					(r) => r.name == "Spectator"
+					(r: Role) => r.name == "Spectator"
 				) || interaction.guild?.roles.cache.get("932662937326329916"),
 			participant:
 				interaction.guild?.roles.cache.find(
-					(r) => r.name == "Participant"
+					(r: Role) => r.name == "Participant"
 				) || interaction.guild?.roles.cache.get("932663311529558016"),
 		};
 
