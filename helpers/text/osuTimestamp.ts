@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 export default function osuTimestamp(m: Message) {
-	const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gim;
+	const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d+(\|)?,?)+)\))?/gim;
 
 	const timestamps = m.content.match(timestampRegex);
 	if (!timestamps) return;
