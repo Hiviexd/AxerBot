@@ -1,6 +1,8 @@
 import { Message, MessageEmbed } from "discord.js";
 import createNewUser from "../../../../database/utils/createNewUser";
 import * as database from "./../../../../database";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "osuset embed",
@@ -11,15 +13,15 @@ export default {
 	},
 	run: async (message: Message, args: string[]) => {
 		if (args.length != 1)
-			return message.channel.send(
-				"❗ Please, provide a valid embed option to set! (`player` or `mapper`)"
-			);
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ You need to provide a valid embed option to set! (`player` or `mapper`)")],
+			});
 
 		const validEmbeds = ["mapper", "player"];
 		if (!validEmbeds.includes(args[0]))
-			return message.channel.send(
-				"❗ Please, provide a valid embed option to set! (`player` or `mapper`)"
-			);
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ You need to provide a valid embed option to set! (`player` or `mapper`)")],
+			});
 
 		let user = await database.users.findOne({ _id: message.author.id });
 
@@ -34,7 +36,7 @@ export default {
 		const res = new MessageEmbed()
 			.setTitle("✅ Configuration updated!")
 			.setDescription(
-				`Now, after i detect your osu! profile url i will send your **${args[0]}** info`
+				`Now, after U detect your osu! profile URL, I will send your **${args[0]}** info!`
 			)
 			.setColor("#1df27d");
 

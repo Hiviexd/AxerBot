@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import createNewUser from "../../../../database/utils/createNewUser";
 import * as database from "../../../../database";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "osuset user",
@@ -11,9 +12,9 @@ export default {
 	},
 	run: async (message: Message, args: string[]) => {
 		if (args.length < 1)
-			return message.channel.send(
-				"❗ Please, provide a valid username to set!"
-			);
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ You need to provide a valid username to set!")],
+			});
 
 		let user = await database.users.findOne({ _id: message.author.id });
 
