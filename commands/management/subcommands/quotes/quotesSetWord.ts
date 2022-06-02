@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes set word",
@@ -22,7 +24,9 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (word == "")
-			return message.channel.send(":x: Provide a valid trigger word.");
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ Please specify a word.")],
+			});
 
 		let guild = await database.guilds.findById(message.guildId);
 
@@ -38,6 +42,8 @@ export default {
 			}
 		);
 
-		message.channel.send(`✅ Trigger word changed to \`${word}\``);
+		message.channel.send({
+			embeds: [generateSuccessEmbed(`✅ Trigger word set to \`${word}\`!`)],
+		});
 	},
 };

@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "verification channel",
@@ -24,7 +26,9 @@ export default {
 		const channel = message.mentions.channels.first();
 
 		if (!channel || channel.type != "GUILD_TEXT")
-			return message.reply(":x: Mention a valid text channel!");
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ You need to mention a channel.")],
+			});
 
 		let guild = await guilds.findById(message.guildId);
 
@@ -33,8 +37,8 @@ export default {
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
-		message.channel.send(
-			`✅ Done! Channel updated (The system is enabled now. You can use \`${guild.prefix}verification disable\` to disable).`
-		);
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Set the verification channel.")],
+		});
 	},
 };

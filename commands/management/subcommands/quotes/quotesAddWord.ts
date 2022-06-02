@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
 import * as database from "../../../../database";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes add",
@@ -20,15 +22,23 @@ export default {
 		let guild = await database.guilds.findById(message.guildId);
 
 		if (guild.fun.mode != "custom")
-			return message.channel.send(
-				":x: Switch to custom list mode to add a new phrase."
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ This server is not in custom quotes mode."
+					),
+				],
+			});
 
 		// ? Prevent add blank spaces
 		if (args.length < 1 || args.join(" ").trim() == "")
-			return message.channel.send(
-				":x: what am i supposed to add??? dumbass??"
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Provide a phrase to add."
+					),
+				],
+			});
 
 		if (!message.guild) return;
 
@@ -41,6 +51,12 @@ export default {
 			}
 		);
 
-		message.channel.send(`✅ Phrase added!`);
+		message.channel.send({
+			embeds: [
+				generateSuccessEmbed(
+					`✅ Phrase added!`
+				),
+			],
+		});
 	},
 };

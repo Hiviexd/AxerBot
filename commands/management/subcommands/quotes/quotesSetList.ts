@@ -3,6 +3,8 @@ import * as database from "../../../../database";
 import { parseTextFileAttachment } from "../../../../helpers/text/processText";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes set list",
@@ -25,18 +27,22 @@ export default {
 		if (!message.guild) return;
 
 		if (!file || file.contentType != "text/plain; charset=utf-8")
-			return message.channel.send(
-				":x: Provide a valid text file. (.txt)"
-			);
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ Please attach a text file.")],
+			});
 
 		// ? Prevent big files (It uses bytes)
 		if (file.size > 200000)
-			return message.channel.send(":x: File too big. (Max 200kb)");
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❌ File is too big. Max size is 200KB.")],
+			});
 
 		const list = await parseTextFileAttachment(file.url);
 
 		if (list.length < 1)
-			return message.channel.send(":x: Invalid list size");
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❌ File is empty.")],
+			});
 
 		guild.fun.enable = true;
 		guild.fun.phrases = list;
@@ -48,6 +54,8 @@ export default {
 			}
 		);
 
-		message.channel.send("✅ Loaded list");
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Loaded the list!")],
+		});
 	},
 };

@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes chance",
@@ -23,17 +25,33 @@ export default {
 		let guild = await database.guilds.findById(message.guildId);
 
 		if (!args[0])
-			return message.channel.send(":x: Provide a valid number.");
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Provide a chance between 1->100 to set."
+					),
+				],
+			});
 
 		const chance = Number(args[0].replace("%", ""));
 
 		if (isNaN(chance))
-			return message.channel.send(":x: Invalid number provided.");
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❌ Invalid value provided."
+					),
+				],
+			});
 
 		if (chance > 100 || chance < 1)
-			return message.channel.send(
-				":x: Provide a valid number between 1->100."
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Provide a chance between 1->100 to set."
+					),
+				],
+			});
 
 		if (!message.guild) return;
 
@@ -46,6 +64,12 @@ export default {
 			}
 		);
 
-		message.channel.send(`✅ Quotes chance set to ${chance}%`);
+		message.channel.send({
+			embeds: [
+				generateSuccessEmbed(
+					`✅ Successfully set the chance to ${chance}%`
+				),
+			],
+		});
 	},
 };

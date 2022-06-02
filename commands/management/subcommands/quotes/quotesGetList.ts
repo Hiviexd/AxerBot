@@ -2,6 +2,7 @@ import { Message, MessageAttachment } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes viewlist",
@@ -21,7 +22,13 @@ export default {
 
 		if (!message.guild) return;
 		if (guild.fun.mode != "custom")
-			return message.channel.send("❗ You are using the default list!");
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ This server is not using a custom quote list."
+					),
+				],
+			});
 
 		const text = guild.fun.phrases.join("\n");
 		const buffer = Buffer.from(text, "utf-8");
