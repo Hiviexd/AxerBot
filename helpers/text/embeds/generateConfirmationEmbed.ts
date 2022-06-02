@@ -9,63 +9,68 @@
 
 import { Message, ReactionCollector } from "discord.js";
 
-export default(
-    message: Message,
-    functionToExecute: Function,
-    warning?: string
+export default (
+	message: Message,
+	functionToExecute: Function,
+	warning?: string
 ) => {
-    warning ? (warning = `${warning}\nReact with :white_check_mark: to continue.`) : (warning = "React with :white_check_mark: to continue.");
-    message.channel
-				.send({
-					embeds: [
-						{
-							title: "⚠ Are you sure?",
-							description: warning,
-							color: "#edcd02",
-						},
-					],
-				})
-				.then((m) => {
-					m.react("✅");
+	warning
+		? (warning = `${warning}\nReact with :white_check_mark: to continue.`)
+		: (warning = "React with :white_check_mark: to continue.");
+	message.channel
+		.send({
+			embeds: [
+				{
+					title: "⚠ Are you sure?",
+					description: warning,
+					color: "#edcd02",
+				},
+			],
+		})
+		.then((m) => {
+			m.react("✅");
 
-					const collector = new ReactionCollector(m, {
-						time: 10000,
-						max: 50,
-						maxUsers: 100,
+			const collector = new ReactionCollector(m, {
+				time: 10000,
+				max: 50,
+				maxUsers: 100,
+			});
+
+			collector.on("collect", async (r, u) => {
+				if (r.emoji.name != "✅" || u.id != message.author.id)
+					return false;
+
+				try {
+					functionToExecute();
+				} catch (e) {
+					console.log(e);
+				}
+
+				collector.stop("done");
+
+				m.delete();
+
+				return message.channel
+					.send(":white_check_mark: Done!")
+					.then((msg) => {
+						setTimeout(() => {
+							msg.delete();
+						}, 2000);
 					});
+			});
 
-					collector.on("collect", async (r, u) => {
-						if (r.emoji.name != "✅" || u.id != message.author.id)
-							return false;
+			collector.on("end", (c, r) => {
+				if (r != "done") {
+					message.channel
+						.send(":x: You kept me waiting too long! Try again.")
+						.then((msg) => {
+							setTimeout(() => {
+								msg.delete();
+							}, 2000);
+						});
 
-                        try{functionToExecute();}catch(e){console.log(e);}
-                        
-						collector.stop("done");
-
-						m.delete();
-
-						return message.channel.send(":white_check_mark: Done!")
-                        .then((msg) => {
-                            setTimeout(() => {
-                                msg.delete();
-                            }, 2000);
-                        });;
-					});
-
-					collector.on("end", (c, r) => {
-						if (r != "done") {
-							message.channel
-								.send(
-									":x: You kept me waiting too long! Try again."
-								)
-								.then((msg) => {
-									setTimeout(() => {
-										msg.delete();
-									}, 2000);
-								});
-
-							return m.delete();
-						}
-					});
-				});
+					return m.delete();
+				}
+			});
+		});
 };

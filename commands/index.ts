@@ -9,6 +9,7 @@ import owoify from "./fun/owoify";
 import pun from "./fun/pun";
 import participant from "./contests/participant";
 import spectator from "./contests/spectator";
+import resetRoles from "./contests/resetRoles";
 import purge from "./management/purge";
 import send from "./management/send";
 import osuset from "./user/osuset";
@@ -58,6 +59,7 @@ const commands: any = {
 	embeds: embeds,
 	rs: recent,
 	verification: verification,
+	resetroles: resetRoles,
 };
 
 export default commands;
