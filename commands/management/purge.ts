@@ -2,6 +2,8 @@ import { Client, Message } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import generateConfirmationEmbed from "./../../helpers/text/embeds/generateConfirmationEmbed";
+import generateSuccessEmbed from "./../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "purge",
@@ -15,9 +17,13 @@ export default {
 		
 	let purge = () => {
 		channel.bulkDelete(amount + 2).catch(() => {
-			channel.send(
-				":x: Due to Discord Limitations, I cannot delete more than 98 messages, or messages older than 14 days."
-			);
+			channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❌ Due to Discord Limitations, I cannot delete more than 98 messages, or messages older than 14 days."
+					),
+				],
+			});
 		});
 	}
 
@@ -29,22 +35,24 @@ export default {
 		var amount = parseInt(args[0]);
 
 		if (!amount) {
-			let msg = await message.channel.send(
-				":exclamation: Please specify the amount of messages you want me to delete."
-			);
-			setTimeout(() => {
-				msg.delete();
-			}, 2000);
+			let msg = await message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Please specify the amount of messages you want me to delete."
+					),
+				],
+			});
 			return;
 		}
 
 		if (amount > 98 || amount < 1) {
-			let msg = await message.channel.send(
-				":exclamation: Please specify an amount between 1 and 98."
-			);
-			setTimeout(() => {
-				msg.delete();
-			}, 2000);
+			let msg = await message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Please specify an amount between 1 and 98."
+					),
+				],
+			});
 			return;
 		}
 

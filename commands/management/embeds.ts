@@ -2,6 +2,8 @@ import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
 import * as database from "../../database";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
+import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "embeds",
@@ -38,9 +40,13 @@ export default {
 		});
 
 		if (categories.length < 1)
-			return message.channel.send(
-				`Invalid categories provided! Use \`${guild.prefix}help embeds\` to see how to use this command`
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Invalid categories provided! Use \`${guild.prefix}help embeds\` to see how to use this command`
+					),
+				],
+			});
 
 		const channels = message.mentions.channels;
 
@@ -48,9 +54,13 @@ export default {
 			channels.size < 1 &&
 			!["all", "none"].includes(args[1].toLowerCase())
 		)
-			return message.channel.send(
-				`Invalid channels provided! Use \`${guild.prefix}help embeds\` to see how to use this command`
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Invalid channels provided! Use \`${guild.prefix}help embeds\` to see how to use this command`
+					),
+				],
+			});
 
 		categories.forEach((cat) => {
 			if (args[1].toLowerCase() == "all") {
@@ -79,15 +89,8 @@ export default {
 			guild
 		);
 
-		const res = new MessageEmbed()
-			.setTitle("✅ Done!")
-			.setDescription(
-				`Configuration updated! Use ${guild.prefix}embeds to see the current configuration`
-			)
-			.setColor("#1df27d");
-
 		message.channel.send({
-			embeds: [res],
+			embeds: [generateSuccessEmbed(`✅ Configuration updated! Use \`${guild.prefix}embeds\` to see the current configuration`)],
 		});
 
 		function sendConfiguration() {

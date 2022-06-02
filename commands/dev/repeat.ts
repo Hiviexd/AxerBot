@@ -1,5 +1,6 @@
 import { Client, Message } from "discord.js";
 import { owners } from "../../config.json";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "repeat",
@@ -13,7 +14,7 @@ export default {
 			const amount = parseInt(args[0]);
 			if (!amount) {
 				message.channel.send(
-					":exclamation: Please specify the amount of messages you want me to repeat."
+					"❗ Please specify the amount of messages you want me to repeat."
 				);
 				setTimeout(() => {
 					message.delete();
@@ -22,7 +23,7 @@ export default {
 			}
 			if (amount > 200 || amount < 1) {
 				message.channel.send(
-					":exclamation: Please specify an amount between 1 and 200."
+					"❗ Please specify an amount between 1 and 200."
 				);
 				setTimeout(() => {
 					message.delete();
@@ -36,10 +37,13 @@ export default {
 			
 			}
 		} else {
-			message.reply("❌ **You can't use this!**");
-			setTimeout(() => {
-				message.delete();
-			}, 2000);
+			message.reply({
+				embeds: [
+					generateErrorEmbed(
+						"❌ **Only bot developers allowed to use this!**"
+					),
+				],
+			});
 			return;
 		}
 	},

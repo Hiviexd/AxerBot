@@ -42,7 +42,7 @@ export default {
 							message.channel.send({
 								embeds: [
 									generateErrorEmbed(
-										`:x: Error removing participant role for ${member.user.tag}`
+										`❌ Error removing participant role for ${member.user.tag}`
 									),
 								],
 							});
@@ -51,7 +51,7 @@ export default {
 							message.channel.send({
 								embeds: [
 									generateErrorEmbed(
-										`:x: Error adding spectator role for ${member.user.tag}`
+										`❌ Error adding spectator role for ${member.user.tag}`
 									),
 								],
 							});
@@ -65,7 +65,7 @@ export default {
 					msg.channel.send({
 						embeds: [
 							generateSuccessEmbed(
-								`:white_check_mark: Successfully reset roles for ${participantCount} members.`
+								`✅ Successfully reset roles for ${participantCount} members.`
 							),
 						],
 					});
