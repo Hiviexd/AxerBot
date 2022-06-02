@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 
 export default {
 	name: "verification disable",
@@ -25,6 +26,8 @@ export default {
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
-		message.channel.send(`✅ Done! System disabled.`);
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Disabled verification system.")],
+		});
 	},
 };

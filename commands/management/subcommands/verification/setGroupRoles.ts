@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import { ownerId } from "../../../../config.json";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "verification grouproles",
@@ -107,14 +109,26 @@ export default {
 		}
 
 		if (validMentionedRoles.length == 0)
-			return message.reply(
-				":x: Mention valid roles that are below my roles!"
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❌ Mention valid roles that are below my top role!"
+					),
+				],
+			});
 
 		guild.verification.targets.group_roles = validMentionedRoles;
 
 		await guilds.findByIdAndUpdate(guild._id, guild);
 
-		message.channel.send(`✅ Done! Group roles updated.`);
+		message.channel.send({
+			embeds: [
+				generateSuccessEmbed(
+					`✅ Successfully set the roles for the following groups: ${validMentionedRoles.map(
+						(r) => `\`${r.group}\``
+					).join(", ")}`
+				),
+			],
+		});
 	},
 };

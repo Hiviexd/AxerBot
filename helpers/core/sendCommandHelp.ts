@@ -12,7 +12,7 @@ export default async (command: any, message: Message) => {
 			guild,
 			command.help.description || "No description provided"
 		),
-		color: "#1df27d",
+		color: "#f45592",
 		fields: [],
 	});
 

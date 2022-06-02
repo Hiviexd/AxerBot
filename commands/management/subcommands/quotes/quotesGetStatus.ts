@@ -65,7 +65,7 @@ export default {
 												return `<#${c}>`;
 											}
 									  )}`
-									: "@hivie can be a nice block",
+									: "None.",
 						},
 					],
 				},

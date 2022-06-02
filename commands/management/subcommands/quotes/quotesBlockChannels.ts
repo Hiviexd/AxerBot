@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "quotes block",
@@ -29,7 +31,13 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (channels.size < 1)
-			return message.channel.send(":x: Please, mention a text channel.");
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Provide at least one channel to allow."
+					),
+				],
+			});
 
 		const blacklist = guild.fun.blacklist.channels;
 
@@ -50,14 +58,22 @@ export default {
 		guild.fun.blacklist.channels = blacklist;
 
 		if (added_channels.length < 1)
-			return message.channel.send(
-				"Please, provide valid channels. You only can block allowed **TEXT CHANNELS**"
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ No channels were added to the blacklist."
+					),
+				],
+			});
 
 		await database.guilds.findOneAndUpdate({ _id: message.guildId }, guild);
 
-		message.channel.send(
-			`✅ Done! Use \`${guild.prefix}quotes status\` to check`
-		);
+		message.channel.send({
+			embeds: [
+				generateSuccessEmbed(
+					`✅ Done! Use \`${guild.prefix}quotes status\` to check`
+				),
+			],
+		});
 	},
 };

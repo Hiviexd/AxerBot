@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 
 export default {
 	name: "quotes set default",
@@ -35,6 +36,8 @@ export default {
 			}
 		);
 
-		message.channel.send(`✅ Switched mode to default`);
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Switched mode to default.")],
+		});
 	},
 };

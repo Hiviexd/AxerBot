@@ -4,6 +4,7 @@ import { ownerId } from "../../config.json";
 import * as database from "./../../database";
 import cooldownClear from "./subcommands/cooldown/cooldownClear";
 import cooldownRemove from "./subcommands/cooldown/cooldownRemove";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "cooldown",
@@ -37,12 +38,22 @@ export default {
 		};
 
 		if (isNaN(params.size) || isNaN(params.increments) || params.size == 0)
-			return message.channel.send(
-				"❗ Invalid cooldown/increments size value. Provide a valid number."
-			);
+		message.channel.send({
+			embeds: [
+				generateErrorEmbed(
+					`❗ Invalid cooldown/increments size value. Provide a valid number.`
+				),
+			],
+		});
 
 		if (params.channels.length < 1 || params.categories.length < 1)
-			return message.channel.send("❗ Provide a channel/category");
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Invalid channel/category value. Provide a valid channel or category.`
+					),
+				],
+			});
 
 		// ? Support array to save requested channels
 		let _channels: string[] = [];
@@ -66,9 +77,13 @@ export default {
 		});
 
 		if (_channels.length < 1)
-			return message.channel.send(
-				"❗ Channels not found! Provide valid channels."
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Channels not found! Please provide valid channels.`
+					),
+				],
+			});
 
 		// ? Check the provided categories
 		const _categories: string[] = [];
@@ -77,9 +92,13 @@ export default {
 		});
 
 		if (_categories.length < 1)
-			return message.channel.send(
-				`❗ Invalid provided categories, use \`${guild.prefix}help cooldown\` to all categories.`
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Invalid provided categories, use \`${guild.prefix}help cooldown\` to all categories.`
+					),
+				],
+			});
 
 		params.categories.forEach((c) => {
 			if (categories.includes(c.toLowerCase())) {
@@ -149,14 +168,11 @@ export default {
 			if (configured.length < 1)
 				return message.channel.send({
 					embeds: [
-						{
-							title: "Huh?",
-							description: "Configure a category before.",
-							color: "#ff5050",
-						},
+						generateErrorEmbed(
+							`❗ No cooldowns configured.`
+						),
 					],
 				});
-
 			// ? Generate embed configuration data
 			configured.forEach((option) => {
 				let text = "";

@@ -2,6 +2,8 @@ import { Message } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "verification message",
@@ -22,7 +24,9 @@ export default {
 		const new_message = args.join(" ");
 
 		if (new_message.trim() == "")
-			return message.reply(":x: Provide a valid message!");
+			return message.channel.send({
+				embeds: [generateErrorEmbed("❗ You need to set a message.")],
+			})
 
 		let guild = await guilds.findById(message.guildId);
 
@@ -30,6 +34,8 @@ export default {
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
-		message.channel.send(`✅ Done! Message updated.`);
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Message updated.")],
+		});
 	},
 };

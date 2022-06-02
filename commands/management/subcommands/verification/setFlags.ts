@@ -3,6 +3,8 @@ import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInva
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "./../../../../config.json";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "verification flags",
@@ -73,12 +75,18 @@ export default {
 		});
 
 		if (clearFlags.length < 1)
-			return message.reply(
-				`:x: Invalid tags! Check if you are using the correct syntax using \`${guild.prefix}help verification fags\``
-			);
+			return message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❌ Invalid tags! Check if you're using the correct syntax using \`${guild.prefix}help verification flags\``
+					),
+				],
+			});
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
-		message.channel.send(`✅ Done! Flags updated.`);
+		message.channel.send({
+			embeds: [generateSuccessEmbed("✅ Updated verification flags.")],
+		});
 	},
 };

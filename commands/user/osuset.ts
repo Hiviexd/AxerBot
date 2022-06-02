@@ -4,6 +4,7 @@ import createNewUser from "../../database/utils/createNewUser";
 import * as database from "./../../database";
 import osusetEmbed from "./subcommands/osuset/osusetEmbed";
 import osusetUsername from "./subcommands/osuset/osusetUsername";
+import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 
 export default {
 	name: "osuset",
@@ -20,6 +21,19 @@ export default {
 
 		if (!guild) return;
 
-		message.reply(`Need help? Use \`${guild.prefix}help osuset\``);
+		message.channel.send({
+			embeds: [
+				new MessageEmbed()
+					.setTitle("osuset")
+					.setDescription(
+						parseMessagePlaceholderFromString(
+							message,
+							guild,
+							`Need help? Use \`${guild.prefix}help osuset\``
+						),
+					)
+					.setColor("#f45592"),
+			],
+		});
 	},
 };

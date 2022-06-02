@@ -4,6 +4,7 @@ import * as database from "../../../../database";
 import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
 import { ownerId } from "../../../../config.json";
 import generateConfirmationEmbed from "./../../../../helpers/text/embeds/generateConfirmationEmbed";
+import generateErrorEmbed from "./../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "cooldown remove",
@@ -41,22 +42,18 @@ export default {
 		if (!channel)
 			return message.channel.send({
 				embeds: [
-					{
-						title: "What?",
-						description: `I don't know any channel called \`${args[0].toLowerCase()}\`!`,
-						color: "#ff5050",
-					},
+					generateErrorEmbed(
+						`❗ Channel \`${args[0].toLowerCase()}\` not found.`
+					),
 				],
 			});
 
 		if (!categories.includes(category))
 			return message.channel.send({
 				embeds: [
-					{
-						title: "What?",
-						description: `I don't know any category called \`${category}\`!`,
-						color: "#ff5050",
-					},
+					generateErrorEmbed(
+						`❗ Category \`${category}\` not found.`
+					),
 				],
 			});
 
@@ -67,22 +64,18 @@ export default {
 		)
 			return message.channel.send({
 				embeds: [
-					{
-						title: "Bro",
-						description: `The category \`${category}\` does not have any channel called \`${channel.name}\`!`,
-						color: "#ff5050",
-					},
+					generateErrorEmbed(
+						`❗ The category \`${category}\` does not have any channel called \`${channel.name}\`!` 
+					),
 				],
 			});
 
 		if (guild.cooldown[category].channels.length < 2)
 			return message.channel.send({
 				embeds: [
-					{
-						title: "Wait...",
-						description: `The category \`${category}\` have 1 channel configured, use \`${guild.prefix}cooldown clear ${category}\` instead!`,
-						color: "#ff5050",
-					},
+					generateErrorEmbed(
+						`❗ The category \`${category}\` has only 1 channel configured, use \`${guild.prefix}cooldown clear ${category}\` instead!`
+					),
 				],
 			});
 

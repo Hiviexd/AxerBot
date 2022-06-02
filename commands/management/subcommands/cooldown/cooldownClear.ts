@@ -4,6 +4,7 @@ import MissingPermissions from "../../../../responses/embeds/MissingPermissions"
 import * as database from "../../../../database";
 import { ownerId } from "../../../../config.json";
 import generateConfirmationEmbed from "./../../../../helpers/text/embeds/generateConfirmationEmbed";
+import generateErrorEmbed from "./../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "cooldown clear",
@@ -46,12 +47,9 @@ export default {
 			if (configured.filter((c: any) => c.size != 0).length == 0)
 				return message.channel.send({
 					embeds: [
-						{
-							title: "Huh?",
-							description:
-								"Configure a category before redefining the system.",
-							color: "#ff5050",
-						},
+						generateErrorEmbed(
+							`❗ No cooldowns are configured.`
+						),
 					],
 				});
 
@@ -102,12 +100,9 @@ export default {
 				if (guild.cooldown[requested].size == 0)
 					return message.channel.send({
 						embeds: [
-							{
-								title: "Huh?",
-								description:
-									"Configure this category before redefining it.",
-								color: "#ff5050",
-							},
+							generateErrorEmbed(
+								`❗ No cooldowns are configured for the category **${requested}**.`
+							),
 						],
 					});
 

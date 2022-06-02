@@ -2,6 +2,8 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import * as database from "./../../database";
+import generateSuccessEmbed from "./../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "logging",
@@ -32,13 +34,23 @@ export default {
 			};
 
 			if (!actions.includes(params.action))
-				return message.channel.send(
-					"❗ Invalid action. Provide a valid action."
-				);
+				return message.channel.send({
+					embeds: [
+						generateErrorEmbed(
+							`❗ Invalid action value. Provide a valid action.`
+						),
+					],
+				});
 
 			if (params.action == "channel") {
 				if (params.value == "") {
-					return message.channel.send("❗ Provide a channel name");
+					return message.channel.send({
+						embeds: [
+							generateErrorEmbed(
+								`❗ Invalid channel value. Provide a valid channel.`
+							),
+						],
+					});
 				}
 				const channel = message.guild?.channels.cache.find(
 					(channel) =>
@@ -47,9 +59,13 @@ export default {
 				);
 
 				if (!channel)
-					return message.channel.send(
-						`❗ No channel found with name ${params.value.toLowerCase()}.`
-					);
+					return message.channel.send({
+						embeds: [
+							generateErrorEmbed(
+								`❗ No channel found with name ${params.value.toLowerCase()}.`
+							),
+						],
+					});
 
 				guild.logging.channel = channel.id;
 				guild.logging.enabled = true;
@@ -59,9 +75,13 @@ export default {
 					{ logging: guild.logging }
 				);
 
-				return message.channel.send(
-					`✅ Logging channel set to <#${guild.logging.channel}>`
-				);
+				return message.channel.send({
+					embeds: [
+						generateSuccessEmbed(
+							`✅ Logging channel set to <#${guild.logging.channel}>`
+						),
+					],
+				});
 			}
 		}
 
@@ -71,9 +91,13 @@ export default {
 			};
 
 			if (!actions.includes(params.action))
-				return message.channel.send(
-					"❗ Invalid action. Provide a valid action."
-				);
+				return message.channel.send({
+					embeds: [
+						generateErrorEmbed(
+							`❗ Invalid action value. Provide a valid action.`
+						),
+					],
+				});
 
 			if (params.action == "disable") {
 				guild.logging.enabled = false;
@@ -83,7 +107,13 @@ export default {
 					{ $set: { logging: guild.logging } }
 				);
 
-				return message.channel.send(`✅ Logging disabled.`);
+				return message.channel.send({
+					embeds: [
+						generateSuccessEmbed(
+							`✅ Logging disabled.`
+						),
+					],
+				});
 			}
 		}
 		function sendCurrentConfiguration() {

@@ -2,6 +2,7 @@ import { Client, Message, Role } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import Processing from "../../responses/embeds/Processing";
 
 export default {
@@ -28,7 +29,7 @@ export default {
 			(r: Role) => r.name === "Spectator"
 		);
 
-		const members = await message.guild.members.fetch();
+		const members = await message.guild.members.fetch(); // * https://www.reddit.com/r/Discordjs/comments/twvexn/comment/i3hqaos/?utm_source=share&utm_medium=web2x&context=3
 		let participantCount = 0;
 
 		message.channel
@@ -38,14 +39,22 @@ export default {
 					if (!participant || !spectator) return;
 					if (member.roles.cache.has(participant.id)) {
 						member.roles.remove(participant).catch((err) => {
-							message.channel.send(
-								`:x: Error removing participant role for ${member.user.tag}`
-							);
+							message.channel.send({
+								embeds: [
+									generateErrorEmbed(
+										`❌ Error removing participant role for ${member.user.tag}`
+									),
+								],
+							});
 						});
 						member.roles.add(spectator).catch((err) => {
-							message.channel.send(
-								`:x: Error setting spectator role for ${member.user.tag}`
-							);
+							message.channel.send({
+								embeds: [
+									generateErrorEmbed(
+										`❌ Error adding spectator role for ${member.user.tag}`
+									),
+								],
+							});
 						});
 						participantCount++;
 					}
@@ -56,7 +65,7 @@ export default {
 					msg.channel.send({
 						embeds: [
 							generateSuccessEmbed(
-								`:white_check_mark: Successfully reset roles for ${participantCount} members.`
+								`✅ Successfully reset roles for ${participantCount} members.`
 							),
 						],
 					});

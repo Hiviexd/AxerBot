@@ -1,6 +1,7 @@
 import { Client, Message, MessageEmbed, ReactionCollector } from "discord.js";
 import { owners } from "../../config.json";
 import { Paginator } from "array-paginator";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "serverlist",
@@ -179,7 +180,13 @@ export default {
 				});
 			});
 		} else {
-			message.reply("❌ | **You can't use this!**");
+			message.reply({
+				embeds: [
+					generateErrorEmbed(
+						"❌ **Only bot developers allowed to use this!**"
+					),
+				],
+			});
 		}
 	},
 };

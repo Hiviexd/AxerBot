@@ -66,8 +66,8 @@ export default {
 			return message.reply({
 				embeds: [
 					{
-						title: "Bruh?",
-						description: `This user isn't active on this playmode.`,
+						title: "Umm...",
+						description: `This user isn't active on this gamemode.`,
 						color: "#ea6112",
 					},
 				],

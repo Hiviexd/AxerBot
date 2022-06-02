@@ -1,6 +1,8 @@
 import { Client, Message } from "discord.js";
 import { ownerId } from "../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
+import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "send",
@@ -25,23 +27,24 @@ export default {
 		);
 
 		if (!toSay) {
-			let msg = await message.channel.send(
-				":exclamation: Please specify the message you want to send."
-			);
-			setTimeout(() => {
-				msg.delete();
-			}, 2000);
+			let msg = await message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Please specify the message you want to send."
+					),
+				],
+			});
 			return;
 		}
 
 		if (!destination) {
-			let msg = await message.channel.send(
-				":exclamation: Please specify a valid channel."
-			);
-			setTimeout(() => {
-				msg.delete();
-			}, 2000);
-
+			let msg = await message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❗ Please specify a valid channel."
+					),
+				],
+			});
 			return;
 		}
 
@@ -50,14 +53,21 @@ export default {
 		if (!channel || !channel.isText()) return;
 
 		channel.send(toSay).catch(() => {
-			message.channel.send(":x: Error sending message.");
+			message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						"❌ Error sending message."
+					),
+				],
+			});
 		});
 
-		let msg = await message.channel.send(
-			`:white_check_mark: Message sent!`
-		);
-		setTimeout(() => {
-			msg.delete();
-		}, 2000);
+		let msg = await message.channel.send({
+			embeds: [
+				generateSuccessEmbed(
+					"✅ Message sent!"
+				),
+			],
+		});
 	},
 };

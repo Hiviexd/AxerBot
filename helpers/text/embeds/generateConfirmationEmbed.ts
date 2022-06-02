@@ -8,6 +8,8 @@
 */
 
 import { Message, ReactionCollector } from "discord.js";
+import generateSuccessEmbed from "./generateSuccessEmbed";
+import generateErrorEmbed from "./generateErrorEmbed";
 
 export default (
 	message: Message,
@@ -51,7 +53,7 @@ export default (
 				m.delete();
 
 				return message.channel
-					.send(":white_check_mark: Done!")
+					.send({embeds : [generateSuccessEmbed()]})
 					.then((msg) => {
 						setTimeout(() => {
 							msg.delete();
@@ -62,7 +64,7 @@ export default (
 			collector.on("end", (c, r) => {
 				if (r != "done") {
 					message.channel
-						.send(":x: You kept me waiting too long! Try again.")
+					.send({embeds : [generateErrorEmbed("❌ You've waited for too long! Please try again.")]})
 						.then((msg) => {
 							setTimeout(() => {
 								msg.delete();

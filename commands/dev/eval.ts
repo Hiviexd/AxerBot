@@ -1,5 +1,6 @@
 import { Client, Message } from "discord.js";
 import { owners } from "../../config.json";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 import util from "util";
 
@@ -56,7 +57,13 @@ export default {
 						.catch(console.error);
 				}
 			} else {
-				message.reply("❌ | **You can't use this!**");
+				message.reply({
+					embeds: [
+						generateErrorEmbed(
+							"❌ **Only bot developers allowed to use this!**"
+						),
+					],
+				});
 			}
 		} catch (e) {
 			console.error(e);
