@@ -5,7 +5,7 @@
 
 import fs from "fs";
 import readline from "readline";
-import axios from "axios";    
+import axios from "axios";
  
 export async function parseTextFile(dir: any) {
     const fileStream = fs.createReadStream(dir);
