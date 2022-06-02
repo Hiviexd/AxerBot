@@ -11,7 +11,7 @@ import {MessageEmbed } from "discord.js";
 export default(response?: string): MessageEmbed => {
 	return new MessageEmbed({
 		title: "Success!",
-		description: response || ":white_check_mark: Operation successful.",
+		description: response || "✅ Operation successful.",
 		color: "#1df27d",
 	});
 };
