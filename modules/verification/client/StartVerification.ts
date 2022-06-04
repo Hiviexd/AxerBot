@@ -49,79 +49,64 @@ export default async (member: GuildMember) => {
 			);
 	}
 
-	verification_channel
-		.send(
-			parseMessagePlaceholderFromMember(
-				guild_db.verification.message,
-				member,
-				guild_db
-			)
-		)
-		.then((m: Message) => {
-			m.react(guild_db.verification.emoji);
+	const buttons = new MessageActionRow();
 
-			const collector = new ReactionCollector(m, {
-				time: 30000,
-				filter: (r, u) => u.id == member.id,
-				maxUsers: 1000,
-				idle: 30000,
-				max: 5,
-			});
+	buttons.addComponents([
+		new MessageButton({
+			type: "BUTTON",
+			customId: `verification|${member.id}|${member.guild.id}`,
+			label: "Send verification link",
+			style: "SUCCESS",
+			emoji: "982656610285527114",
+		}),
+	]);
 
-			collector.on("collect", () => {
-				if (!user_dm)
-					return verification_channel.send(
-						`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and react again.**)`
-					);
+	verification_channel.send({
+		content: parseMessagePlaceholderFromMember(
+			guild_db.verification.message,
+			member,
+			guild_db
+		),
+		components: [buttons],
+	});
+	// .then((m: Message) => {
 
-				if (verification.status != 200 || !verification.data) {
-					const error = new MessageEmbed({
-						title: "Wait...",
-						description: verification.message,
-						color: "#ea6112",
-					});
+	// 	collector.on("collect", () => {
+	// 		if (!user_dm)
+	// 			return verification_channel.send(
+	// 				`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and click on the button again.**)`
+	// 			);
 
-					user_dm.send({
-						embeds: [error],
-					});
+	// 		if (verification.status != 200 || !verification.data) {
+	// 			const error = new MessageEmbed({
+	// 				title: "Wait...",
+	// 				description: verification.message,
+	// 				color: "#ea6112",
+	// 			});
 
-					return;
-				}
+	// 			user_dm.send({
+	// 				embeds: [error],
+	// 			});
 
-				const buttons = new MessageActionRow();
-				buttons.addComponents([
-					new MessageButton({
-						style: "LINK",
-						url: `https://axer-auth.herokuapp.com/authorize?code=${verification.data.token}&user=${member.id}`,
-						label: "Verify my account",
-					}),
-				]);
+	// 			return;
+	// 		}
 
-				const embed = new MessageEmbed({
-					title: "osu! OAuth Verification Request",
-					description: `The server **${member.guild.name}** wants to know who you are. You need to authorize with your osu! account so we can verify your identity from your read-only profile data (username, mode, usergroup, etc...).`,
-					thumbnail: {
-						url: member.guild.iconURL() || "",
-					},
-					color: "#f72a59",
-				});
+	// 		member
+	// 			.send({
+	// 				embeds: [embed],
+	// 				components: [buttons],
+	// 			})
 
-				member
-					.send({
-						embeds: [embed],
-						components: [buttons],
-					})
-
-					.then(() => {
-						verification_channel.send(
-							`<@${member.id}> **Check your private messages.** (If you haven't received anything, please allow private messages from this server and react again.)`
-						);
-					})
-					.catch((e) => {
-						verification_channel.send(
-							`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and react again.**)`
-						);
-					});
-			});
-		});
+	// 			.then(() => {
+	// 				verification_channel.send(
+	// 					`<@${member.id}> **Check your private messages.** (If you haven't recieved anything, please allow private messages from this server and click on the button again.)`
+	// 				);
+	// 			})
+	// 			.catch((e) => {
+	// 				verification_channel.send(
+	// 					`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and click on the button again.**)`
+	// 				);
+	// 			});
+	// 	});
+	// });
 };

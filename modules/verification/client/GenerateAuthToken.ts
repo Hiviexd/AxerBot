@@ -32,17 +32,17 @@ export default async (
 		user_db.pending_verifications.find(
 			(v: IVerificationObject) => v.guild == user.guild.id
 		) != undefined
-	)
+	) {
+		const pending = user_db.pending_verifications.find(
+			(v: IVerificationObject) => v.guild == user.guild.id
+		);
+
 		return {
-			status: 400,
-			message: `You already have a pending verification on **${
-				user.guild.name
-			}**. Please, use the old link: https://axer-auth.herokuapp.com/authorize?code=${
-				user_db.pending_verifications.find(
-					(v: IVerificationObject) => v.guild == user.guild.id
-				).token
-			}&user=${user.id}`,
+			status: 200,
+			message: "Token generated!",
+			data: pending,
 		};
+	}
 
 	user_db.pending_verifications.push(verification_object);
 

@@ -26,11 +26,11 @@ export default {
 		if (new_message.trim() == "")
 			return message.channel.send({
 				embeds: [generateErrorEmbed("❗ You need to set a message.")],
-			})
+			});
 
 		let guild = await guilds.findById(message.guildId);
 
-		guild.verification.message = `${new_message}\n To get access to the channels, react with :white_check_mark:`;
+		guild.verification.message = `${new_message}\nTo get access to the channels, click on the button below!`;
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
