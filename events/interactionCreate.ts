@@ -4,6 +4,7 @@ import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 import commandHandler from "../helpers/core/commandHandler";
 import addPrivateRoles from "../helpers/interactions/addPrivateRoles";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
+import osuInteractions from "../helpers/interactions/osuInteractions";
 
 export default {
 	name: "interactionCreate",
@@ -11,6 +12,7 @@ export default {
 		bot.on("interactionCreate", async (interaction) => {
 			addPrivateRoles(interaction);
 			sendVerificationLink(interaction);
+			osuInteractions(interaction);
 		});
 	},
 };

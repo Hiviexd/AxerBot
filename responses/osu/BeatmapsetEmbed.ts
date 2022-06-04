@@ -1,4 +1,5 @@
 import {
+	ContextMenuInteraction,
 	Message,
 	MessageActionRow,
 	MessageButton,
@@ -307,5 +308,170 @@ export default {
 					}
 				});
 			});
+	},
+	sendInteraction: async (
+		beatmapset: Beatmapset,
+		beatmap_id: string,
+		interaction: ContextMenuInteraction,
+		mode: "osu" | "taiko" | "mania" | "fruits" | ""
+	) => {
+		if (!beatmapset.beatmaps) return;
+		let index = 0;
+
+		//? Sort diffs by sr
+		beatmapset.beatmaps.sort((a, b) => {
+			return Number(a.difficulty_rating) - Number(b.difficulty_rating);
+		});
+
+		if (beatmap_id != "") {
+			const b_index = beatmapset.beatmaps.findIndex(
+				(b) => b.id == Number(beatmap_id)
+			);
+
+			if (b_index > -1) index = b_index;
+		}
+
+		async function generateFor(beatmap: Beatmap) {
+			if (!beatmapset.beatmaps)
+				return {
+					embed: new MessageEmbed(),
+					buttons: new MessageActionRow(),
+				};
+
+			const map = await axios(`https://osu.ppy.sh/osu/${beatmap.id}`);
+			const mapper = await osuApi.fetch.user(beatmap.user_id.toString());
+
+			if (mapper.status != 200) mapper.data.username = "---";
+
+			let performance;
+			let pps = "";
+
+			switch (beatmap.mode) {
+				case "taiko": {
+					performance = calculateTaikoBeatmap(map.data);
+
+					break;
+				}
+				case "osu": {
+					performance = calculateOsuBeatmap(map.data);
+
+					break;
+				}
+				case "fruits": {
+					performance = calculateFruitsBeatmap(map.data);
+
+					break;
+				}
+				case "mania": {
+					performance = calculateManiaBeatmap(map.data);
+
+					break;
+				}
+			}
+
+			performance.forEach((p: any) => {
+				pps = pps.concat(
+					`${p.acc ? `${p.acc}%` : p.score} \`${p.pp}pp\` `
+				);
+			});
+
+			const status_icons: any = {
+				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
+				loved: "https://media.discordapp.net/attachments/959908232736952420/961745251096199209/loved.png",
+				approved:
+					"https://media.discordapp.net/attachments/959908232736952420/961745250878099456/qualified.png",
+				qualified:
+					"https://media.discordapp.net/attachments/959908232736952420/961745250878099456/qualified.png",
+				pending:
+					"https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
+				wip: "https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
+				graveyard:
+					"https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
+			};
+
+			const pending_status = ["wip", "pending", "graveyard"];
+
+			const embed = new MessageEmbed({
+				title: `${beatmapset.artist} - ${beatmapset.title}`,
+				url: `https://osu.ppy.sh/s/${beatmapset.id}`,
+				fields: [
+					{
+						name: `${getEmoji(beatmap.mode)} ${beatmap.version}`,
+						value: getBeatmapEmbedFields(
+							beatmap,
+							beatmap.mode,
+							map.data
+						),
+					},
+					{
+						name: "PP Values",
+						value: pps,
+					},
+				],
+				thumbnail: {
+					url: `https://b.ppy.sh/thumb/${beatmapset.id}l.jpg`,
+				},
+				author: {
+					name: `Difficulty ${index + 1} of ${
+						beatmapset.beatmaps.length
+					}`,
+					iconURL: status_icons[beatmap.status],
+				},
+				color: "#f45592",
+				footer: {
+					text: `Mapped by ${mapper.data.username} | ${
+						pending_status.includes(beatmapset.status)
+							? `${beatmapset.status} beatmap`
+							: `${beatmapset.status} at ${new Date(
+									beatmapset.ranked_date || ""
+							  ).toLocaleString("en-US")}`
+					}`,
+					iconURL: mapper.data.avatar_url,
+				},
+			});
+
+			if (!embed.description)
+				return {
+					embed,
+					buttons,
+				};
+
+			return {
+				embed,
+				buttons,
+			};
+		}
+
+		const buttons = new MessageActionRow();
+		buttons.addComponents([
+			new MessageButton({
+				type: "BUTTON",
+				style: "LINK",
+				url: `https://osu.ppy.sh/users/${beatmapset.user_id}`,
+				label: "Mapper Profile",
+			}),
+		]);
+
+		const elements = await generateFor(beatmapset.beatmaps[index]);
+
+		buttons.addComponents([
+			new MessageButton({
+				type: "BUTTON",
+				style: "LINK",
+				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
+				label: "osu!direct",
+			}),
+		]);
+
+		interaction
+			.reply({
+				embeds: [elements.embed],
+				components: [buttons],
+				allowedMentions: {
+					repliedUser: false,
+				},
+				ephemeral: true,
+			})
+			.catch(console.error);
 	},
 };

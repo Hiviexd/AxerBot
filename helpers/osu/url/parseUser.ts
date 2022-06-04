@@ -1,10 +1,14 @@
-import { Message } from "discord.js";
+import { Message, MessageContextMenuInteraction } from "discord.js";
 import MapperEmbed from "../../../responses/osu/MapperEmbed";
 import PlayerEmbed from "../../../responses/osu/PlayerEmbed";
 import osuApi from "../fetcher/osuApi";
 import * as database from "./../../../database";
 
-export default async (url: string, message: Message) => {
+export default async (
+	url: string,
+	message?: Message,
+	interaction?: MessageContextMenuInteraction
+) => {
 	const user_params = getUserParams(url);
 	const user = await osuApi.fetch.user(user_params.id, user_params.mode);
 
@@ -43,19 +47,52 @@ export default async (url: string, message: Message) => {
 	}
 
 	if (user_config != undefined) {
-		if (user_config.osu.embed == "player")
-			return PlayerEmbed.send(user, message, user_params.mode);
+		if (user_config.osu.embed == "player") {
+			if (message) {
+				return PlayerEmbed.send(user, message, user_params.mode);
+			}
+
+			if (interaction) {
+				return PlayerEmbed.sendInteraction(
+					user,
+					interaction,
+					user_params.mode
+				);
+			}
+		}
 
 		if (user_config.osu.embed == "mapper") {
 			const maps = await osuApi.fetch.userBeatmaps(
 				user.data.id.toString()
 			);
 
-			return MapperEmbed.send(user, maps, message);
+			if (message) {
+				return MapperEmbed.send(user, maps, message);
+			}
+
+			if (interaction) {
+				return MapperEmbed.sendInteraction(user, maps, interaction);
+			}
 		}
 
+		if (message) {
+			return PlayerEmbed.send(user, message, user_params.mode);
+		}
+
+		if (interaction) {
+			return PlayerEmbed.sendInteraction(
+				user,
+				interaction,
+				user_params.mode
+			);
+		}
+	}
+
+	if (message) {
 		return PlayerEmbed.send(user, message, user_params.mode);
 	}
 
-	return PlayerEmbed.send(user, message, user_params.mode);
+	if (interaction) {
+		return PlayerEmbed.sendInteraction(user, interaction, user_params.mode);
+	}
 };

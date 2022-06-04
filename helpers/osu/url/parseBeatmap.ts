@@ -1,9 +1,13 @@
-import { Message } from "discord.js";
+import { ContextMenuInteraction, Message } from "discord.js";
 import BeatmapsetEmbed from "../../../responses/osu/BeatmapsetEmbed";
 import { beatmapset } from "../fetcher/beatmap";
 import getTargetBeatmap from "./getTargetBeatmap";
 
-export default async (url: string, message: Message) => {
+export default async (
+	url: string,
+	message?: Message,
+	interaction?: ContextMenuInteraction
+) => {
 	const clear_url = url.split("/").filter((p) => p.trim() != "");
 	if (clear_url.length < 4) return;
 
@@ -39,11 +43,22 @@ export default async (url: string, message: Message) => {
 	const chart = await getTargetBeatmap(data);
 
 	if (chart?.beatmapset) {
-		BeatmapsetEmbed.send(
-			chart.beatmapset.data,
-			data.beatmap_id,
-			data.mode,
-			message
-		);
+		if (message) {
+			BeatmapsetEmbed.send(
+				chart.beatmapset.data,
+				data.beatmap_id,
+				data.mode,
+				message
+			);
+		}
+
+		if (interaction) {
+			BeatmapsetEmbed.sendInteraction(
+				chart.beatmapset.data,
+				data.beatmap_id,
+				interaction,
+				data.mode
+			);
+		}
 	}
 };
