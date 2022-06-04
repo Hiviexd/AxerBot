@@ -30,7 +30,7 @@ export default {
 
 		let guild = await guilds.findById(message.guildId);
 
-		guild.verification.message = `${new_message}\nTo get access to the channels, click on the button below.`;
+		guild.verification.message = `${new_message}\nTo get access to the channels, click on the button below!`;
 
 		await guilds.findByIdAndUpdate(message.guildId, guild);
 
