@@ -4,6 +4,7 @@ import {
 	MessageActionRow,
 	MessageAttachment,
 	MessageButton,
+	MessageContextMenuInteraction,
 	MessageEmbed,
 } from "discord.js";
 import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
@@ -109,5 +110,77 @@ export default {
 				repliedUser: false,
 			},
 		});
+	},
+	sendInteraction: async (
+		post: DiscussionAttributtes,
+		raw_posts: BeatmapsetDiscussionPost,
+		type: string,
+		interaction: MessageContextMenuInteraction,
+		url: string
+	) => {
+		if (post.posts.length < 1) return;
+		const author = await osuApi.fetch.user(String(post.posts[0].user_id));
+		const usergroup = getHighestUsergroup(author.data); // ? Get the highest usergroup
+
+		const embedDecoration = generatePostEmbedDecoration(
+			raw_posts,
+			post,
+			type
+		);
+
+		const beatmap = await osuApi.fetch.beatmapset(
+			post.beatmapsets[0].id.toString()
+		);
+
+		if (!beatmap.data.beatmaps) return;
+
+		const metadata = `
+		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
+		${getEmoji(beatmap.data.beatmaps[0].mode)} Mapped by [**${
+			post.beatmapsets[0].creator
+		}**](https://osu.ppy.sh/users/${post.posts[0].user_id})\n\n`;
+
+		let e = new MessageEmbed({
+			description: replaceOsuTimestampsToURL(
+				truncateString(metadata.concat(post.posts[0].message), 4096)
+			),
+			color: embedDecoration.color,
+			title: embedDecoration.title,
+			thumbnail: {
+				url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
+			},
+			author: {
+				iconURL: `https://a.ppy.sh/${post.posts[0].user_id}`,
+				url: `https://osu.ppy.sh/users/${post.posts[0].user_id}`,
+				name: `${author.data.username} ${
+					usergroup.name ? `(${usergroup.name})` : ""
+				}`,
+			},
+			timestamp: new Date(post.posts[0].created_at),
+		});
+
+		const buttons = new MessageActionRow();
+
+		if (beatmap.status == 200 && beatmap.data.beatmaps) {
+			buttons.addComponents([
+				new MessageButton({
+					type: "BUTTON",
+					style: "LINK",
+					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
+					label: "osu!direct",
+				}),
+			]);
+		}
+
+		interaction
+			.reply({
+				embeds: [e],
+				components: [buttons],
+				allowedMentions: {
+					repliedUser: false,
+				},
+				ephemeral: true,
+			})
+			.catch(console.error);
 	},
 };

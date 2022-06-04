@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageContextMenuInteraction } from "discord.js";
 import osuApi from "../fetcher/osuApi";
 import CommentEmbed from "../../../responses/osu/CommentEmbed";
 import { CommentUser, User } from "../../../types/user";
@@ -16,7 +16,11 @@ export interface ParsedComment {
 	created_at: Timestamp;
 }
 
-export default async (url: string, message: Message) => {
+export default async (
+	url: string,
+	message?: Message,
+	interaction?: MessageContextMenuInteraction
+) => {
 	const comment_id = url.split("/").pop();
 
 	if (!comment_id || isNaN(Number(comment_id))) return;
@@ -74,8 +78,17 @@ export default async (url: string, message: Message) => {
 			(c) => c.id == targetComment.data.comments[0].parent_id
 		);
 
-		if (!repliedCommentObject)
-			return CommentEmbed.send(comment_data, message);
+		if (!repliedCommentObject) {
+			if (message) {
+				return CommentEmbed.send(comment_data, message);
+			}
+
+			if (interaction) {
+				return CommentEmbed.sendInteraction(comment_data, interaction);
+			}
+
+			return;
+		}
 
 		const repliedComment = await osuApi.fetch.comment(
 			String(repliedCommentObject.id)
@@ -86,18 +99,38 @@ export default async (url: string, message: Message) => {
 			repliedComment.status != 200 ||
 			!repliedComment.data.comments[0] ||
 			repliedComment.data.comments[0].message == null
-		)
-			return CommentEmbed.send(comment_data, message);
+		) {
+			if (message) {
+				return CommentEmbed.send(comment_data, message);
+			}
+
+			if (interaction) {
+				return CommentEmbed.sendInteraction(comment_data, interaction);
+			}
+		}
 
 		const repliedUser = await osuApi.fetch.user(
 			repliedComment.data.comments[0].user_id.toString()
 		);
 
-		if (repliedUser.status != 200)
-			return CommentEmbed.send(comment_data, message);
+		if (repliedUser.status != 200) {
+			if (message) {
+				return CommentEmbed.send(comment_data, message);
+			}
+
+			if (interaction) {
+				return CommentEmbed.sendInteraction(comment_data, interaction);
+			}
+		}
 
 		comment_data.repliedAuthor = repliedUser.data;
 	}
 
-	CommentEmbed.send(comment_data, message);
+	if (message) {
+		return CommentEmbed.send(comment_data, message);
+	}
+
+	if (interaction) {
+		return CommentEmbed.sendInteraction(comment_data, interaction);
+	}
 };
