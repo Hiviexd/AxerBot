@@ -22,7 +22,7 @@ export default {
 						const fact = res.data.text;
 						const embed = new MessageEmbed({
 							title: "Fact of the Day",
-							description: fact,
+							description: fact.replace(/`/g, "\'"),
 							color: "#ffac00",
 							footer: {
 								text: parseMessagePlaceholderFromString(
@@ -45,7 +45,7 @@ export default {
 					const fact = res.data.text;
 					const embed = new MessageEmbed({
 						title: "Random Fact",
-						description: fact,
+						description: fact.replace(/`/g, "\'"),
 						color: "#0080ff",
 						footer: {
 							text: parseMessagePlaceholderFromString(
