@@ -15,4 +15,8 @@ export default new Schema({
 			mode: undefined,
 		},
 	},
+	reminders: {
+		type: Array,
+		default: [],
+	},
 });
