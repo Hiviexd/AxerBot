@@ -1,5 +1,6 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
+import timeChecker from "../helpers/reminder/timeChecker";
 
 export default {
 	name: "ready",
@@ -17,6 +18,7 @@ export default {
 			bot_user.setPresence({
 				activities: [{ name: "-help | -setprefix" }],
 			});
+			setInterval(timeChecker, 1000, bot);
 		});
 	},
 };
