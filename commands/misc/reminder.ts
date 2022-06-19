@@ -3,6 +3,7 @@
 import { Client, Message } from "discord.js";
 import * as database from "./../../database";
 import { consoleCheck } from "../../helpers/core/logger";
+import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 
 export default {
 	name: "reminder",
@@ -17,6 +18,8 @@ export default {
 		if (!message.guild) return;
 		const user = await database.users.findOne({ _id: message.author.id });
 		if (!user) return;
+        const guild = await database.guilds.findOne({ _id: message.guild.id });
+        if (!guild) return;
 		if (!user.reminders) user.reminders = [];
 		if (user.reminders.length >= 10)
 			return message.reply({
@@ -36,7 +39,11 @@ export default {
 				embeds: [
                     {
 						title: "❌ Invalid syntax",
-						description: "Use \`{prefix}reminder <time> <message>\` to set a reminder.",
+						description: parseMessagePlaceholderFromString(
+                            message,
+                            guild,
+                            "Use \`{prefix}reminder <time> <message>\` to set a reminder."
+                        ),
                         color: "#ff5050",
 					},
 				],
@@ -51,7 +58,11 @@ export default {
 				embeds: [
 					{
                         title: "❌ Invalid time format",
-                        description: "check \`{prefix}help reminder\` for more info.",
+                        description: parseMessagePlaceholderFromString(
+                            message,
+                            guild,
+                            "check \`{prefix}help reminder\` for more info."
+                        ),
                         color: "#ff5050",
                     },
 				],
