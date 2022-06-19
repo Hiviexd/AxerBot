@@ -28,6 +28,7 @@ import embeds from "./management/embeds";
 import recent from "./user/recent";
 import verification from "./management/verification";
 import fact from "./fun/fact";
+import reminder from "./misc/reminder";
 
 const commands: any = {
 	ping: ping,
@@ -60,6 +61,7 @@ const commands: any = {
 	rs: recent,
 	verification: verification,
 	resetroles: resetRoles,
+	reminder: reminder,
 };
 
 export default commands;
