@@ -1,6 +1,12 @@
+/**
+ * ?description: This function is used to check for each user if a reminder date matches the current date, and sends a message if true.
+ * 
+ */
+
 import moment from 'moment';
-import { Client, Message, MessageOptions, MessagePayload, TextChannel } from 'discord.js';
+import { Client, TextChannel } from 'discord.js';
 import * as database from "../../database";
+import { consoleCheck } from "../../helpers/core/logger";
 
 export default async (bot: Client) => {
     let users = await database.users.find();
@@ -13,6 +19,12 @@ export default async (bot: Client) => {
                         let channel = await bot.channels.fetch(reminder.channel) as TextChannel;
                         if (channel) {
                             channel.send(`<@${user._id}> ${reminder.message}`);
+                            await guild.members.fetch(user._id).then(member => {
+                            consoleCheck(
+                                "remindersChecker.ts",
+                                `Reminder sent to ${member.user.tag} in ${guild? guild.name: "unknown guild"}`
+                            );
+                            });
                         }
                     }
                     user.reminders.splice(user.reminders.indexOf(reminder), 1);
@@ -22,9 +34,3 @@ export default async (bot: Client) => {
         }
     })
 }
-
-            
-   
-
-
-    

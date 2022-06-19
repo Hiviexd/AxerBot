@@ -1,11 +1,15 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+//TODO: add the ability to remove your latest reminder and clear all of your reminders
+
+import { Client, Message } from "discord.js";
 import * as database from "./../../database";
+import { consoleCheck } from "../../helpers/core/logger";
 
 export default {
 	name: "reminder",
 	help: {
 		description: "Sets a reminder",
 		syntax: "{prefix}reminder `<time>` `<message>`",
+        timeFormat: "s: seconds, m: minutes, h: hours, d: days",
 		example: "{prefix}reminder `1d` `Remind me to do something`",
 	},
 	category: "misc",
@@ -18,22 +22,22 @@ export default {
 			return message.reply({
 				embeds: [
 					{
-						title: "Reminder Limit Reached",
+						title: "❗ Reminder limit reached",
 						description: "You can only have 10 reminders at once.",
-						color: 0xff0000,
+                        color: "#ff5050",
 					},
 				],
-                allowedMentions: {
+				allowedMentions: {
 					repliedUser: false,
 				},
 			});
-		if (args.length < 2)
+		if (args.length < 1)
 			return message.reply({
 				embeds: [
-					{
-						title: "Invalid Arguments",
-						description: "You must provide a time and message.",
-						color: 0xff0000,
+                    {
+						title: "❌ Invalid syntax",
+						description: "Use \`{prefix}reminder <time> <message>\` to set a reminder.",
+                        color: "#ff5050",
 					},
 				],
 				allowedMentions: {
@@ -46,17 +50,19 @@ export default {
 			return message.channel.send({
 				embeds: [
 					{
-						title: "Invalid Arguments",
-						description: "You must provide a valid time.",
-						color: 0xff0000,
-					},
+                        title: "❌ Invalid time format",
+                        description: "check \`{prefix}help reminder\` for more info.",
+                        color: "#ff5050",
+                    },
 				],
                 allowedMentions: {
 					repliedUser: false,
 				},
 			});
+
 		const measure = args[0].substring(args[0].length - 1, args[0].length);
 		let time = Number(args[0].substring(0, args[0].length - 1));
+
 		// Based off the delimiter, sets the time
 		switch (measure) {
 			case "s":
@@ -79,16 +85,16 @@ export default {
 				time = time * 1000;
 				break;
 		}
+
 		//set max allowed date to 2 years
 		if (time > 1000 * 60 * 60 * 24 * 365 * 2)
 			return message.reply({
 				embeds: [
 					{
-						title: "Invalid Arguments",
-						description:
-							"You can only set reminders for up to 2 years! (730 days)",
-						color: 0xff0000,
-					},
+                        title: "❌ Invalid time format",
+                        description: "You can only set reminders for up to 2 years. (730 days)",
+                        color: "#ff5050",
+                    },
 				],
                 allowedMentions: {
 					repliedUser: false,
@@ -103,19 +109,31 @@ export default {
 		};
 		user.reminders.push(reminder);
 		await database.users.updateOne({ _id: message.author.id }, { $set: { reminders: user.reminders } });
-		message.channel.send(`timestamp: ${reminder.time}`);
 		message.reply({
 			embeds: [
 				{
-					title: "Reminder Set",
-					description: `Reminder set for: ${Math.trunc(reminder.time / 1000)} / <t:${Math.trunc(reminder.time / 1000)}:R>
-                                \nMessage: ${reminder.message}`,
-					color: 0x00ff00,
+					title: "✅ Reminder Set!",
+					fields: [
+                        {
+                            name: "Time",
+                            value: `<t:${Math.trunc(reminder.time / 1000)}:R>`,
+                        },
+                        {
+                            name: "Message",
+                            value: message_.length > 0 ? message_ : "*No message*",
+                        },
+                    ],
+                    color: "#1df27d",
 				},
 			],
             allowedMentions: {
                 repliedUser: false,
             },
 		});
+
+        consoleCheck(
+            "reminder.ts",
+            `${message.author.tag} set a reminder in ${message.guild.name}`
+            );
 	},
 };
