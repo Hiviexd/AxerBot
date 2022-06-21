@@ -44,7 +44,7 @@ export default {
 		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
 		${getEmoji(beatmap.data.beatmaps[0].mode)} Mapped by [**${
 			post.beatmapsets[0].creator
-		}**](https://osu.ppy.sh/users/${post.posts[0].user_id})\n\n`;
+		}**](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
@@ -138,7 +138,7 @@ export default {
 		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
 		${getEmoji(beatmap.data.beatmaps[0].mode)} Mapped by [**${
 			post.beatmapsets[0].creator
-		}**](https://osu.ppy.sh/users/${post.posts[0].user_id})\n\n`;
+		}**](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
