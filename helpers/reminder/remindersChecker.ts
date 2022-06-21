@@ -19,47 +19,41 @@ export interface IReminder {
 export default async (bot: Client) => {
 	let users = await database.users.find();
 
-	const ReminderQueue: IReminder[] = [];
-	users.forEach((user) => {
-		if (user.reminders.length < 1) return;
+	for (const user of users) {
+		if (user.reminders.length > 0) {
+			const validReminders = user.reminders.filter(
+				(r: IReminder) => moment().diff(moment(r.time), "seconds") >= 0
+			);
 
-		user.reminders.forEach(async (reminder: IReminder) => {
-			if (moment().diff(moment(reminder.time), "seconds") >= 0) {
+			for (const reminder of validReminders) {
 				let guild = bot.guilds.cache.get(reminder.guild);
 
-				if (!guild) return;
+				if (guild) {
+					let channel = (await bot.channels.fetch(
+						reminder.channel
+					)) as TextChannel;
 
-				let channel = (await bot.channels.fetch(
-					reminder.channel
-				)) as TextChannel;
+					if (channel) {
+						const reminderIndex = user.reminders.indexOf(reminder);
 
-				if (!channel) return;
-				const reminderIndex = user.reminders.indexOf(reminder);
+						await channel.send(
+							`<@${user._id}> ${reminder.message}`
+						);
 
-				const currentReminder = ReminderQueue.find(
-					(r) => r == reminder
-				);
+						await guild.members.fetch(user._id).then((member) => {
+							consoleCheck(
+								"remindersChecker.ts",
+								`Reminder sent to ${member.user.tag} in ${
+									guild ? guild.name : "unknown guild"
+								}`
+							);
+						});
 
-				if (currentReminder) return;
-
-				ReminderQueue.push(reminder);
-
-				channel.send(`<@${user._id}> ${reminder.message}`);
-				await guild.members.fetch(user._id).then((member) => {
-					consoleCheck(
-						"remindersChecker.ts",
-						`Reminder sent to ${member.user.tag} in ${
-							guild ? guild.name : "unknown guild"
-						}`
-					);
-				});
-
-				user.reminders.splice(reminderIndex, 1);
-				await database.users.findByIdAndUpdate(user._id, user);
-
-				const reminderQueueIndex = ReminderQueue.indexOf(reminder);
-				ReminderQueue.splice(reminderQueueIndex, 1);
+						user.reminders.splice(reminderIndex, 1);
+						await database.users.findByIdAndUpdate(user._id, user);
+					}
+				}
 			}
-		});
-	});
+		}
+	}
 };
