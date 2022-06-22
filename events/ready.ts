@@ -20,7 +20,7 @@ export default {
 			});
 
 			//? checks for reminders every second
-			setInterval(remindersChecker, 1000, bot);
+			setInterval(remindersChecker, 2000, bot);
 		});
 	},
 };
