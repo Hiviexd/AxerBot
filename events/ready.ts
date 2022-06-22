@@ -19,7 +19,7 @@ export default {
 				activities: [{ name: `-help | -setprefix | ${bot.guilds.cache.size} servers` }],
 			});
 
-			//? checks for reminders every second
+			//? checks for reminders every 2 seconds
 			setInterval(remindersChecker, 2000, bot);
 		});
 	},
