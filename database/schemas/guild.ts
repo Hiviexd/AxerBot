@@ -24,7 +24,7 @@ export default new Schema({
 			enable: false,
 			channel: "",
 			message:
-				"Hi {member}! Welcome to the server, to get access to the channels, react with :white_check_mark:",
+				"Hello {member} and welcome to the server! To get access to the channels, click on the button below!",
 			emoji: "✅",
 			targets: {
 				username: true,
