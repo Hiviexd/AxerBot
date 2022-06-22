@@ -69,6 +69,8 @@ export default async (member: GuildMember) => {
 		),
 		components: [buttons],
 	});
+	
+	//? This is back from when we used PMs and reactions for verification
 	// .then((m: Message) => {
 
 	// 	collector.on("collect", () => {
