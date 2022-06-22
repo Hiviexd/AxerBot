@@ -1,6 +1,5 @@
 /**
  * ?description: This function is used to check for each user if a reminder date matches the current date, and sends a message if true.
- *
  */
 
 import moment from "moment";

@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
-import remindersChecker from "../helpers/reminder/remindersChecker";
+import remindersChecker from "../modules/reminders/remindersChecker";
 
 export default {
 	name: "ready",
