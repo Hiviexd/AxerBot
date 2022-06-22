@@ -33,14 +33,14 @@ export default async (interaction: Interaction) => {
 
 	if (!verification)
 		return interaction.reply({
-			content: `**You don't have any pending verification here... If this is an error, join on the server again!**)`,
+			content: `**You don't have any pending verification here... If this is an error, leave and join the server again!**`,
 			ephemeral: true,
 		});
 
 	// ? Message that will be sent in user dm
 	const embed = new MessageEmbed({
 		title: "osu! OAuth Verification Request",
-		description: `The server **${interaction.guild.name}** wants to know who you are. You need to authorize with your osu! account so we can verify your identity from your read-only profile data (username, mode, usergroup, etc...).`,
+		description: `The server **${interaction.guild.name}** wants to know who you are. You need to authorize with your osu! account so we can verify your identity from your read-only osu! profile data. (username, mode, usergroup, etc...)`,
 		thumbnail: {
 			url: interaction.guild.iconURL() || "",
 		},

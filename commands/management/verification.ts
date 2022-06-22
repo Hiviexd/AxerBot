@@ -9,6 +9,7 @@ import setRoles from "./subcommands/verification/setRoles";
 import { ownerId } from "../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { guilds } from "../../database";
+import parseMessagePlaceholderFromMember from "../../helpers/text/parseMessagePlaceholderFromMember";
 
 export default {
 	name: "verification",
@@ -75,6 +76,18 @@ export default {
 				{
 					name: "Group Roles",
 					value: getGroupRoles(),
+				},
+				{
+					name: "Welcome Message",
+					value: guild.verification.message
+					/**
+					 * use this if you want an actual ping to appear instead of {member} (it will have the command author's ping)
+					 * parseMessagePlaceholderFromMember(
+						guild.verification.message,
+						message.member,
+						guild.verification.message
+					),
+					*/
 				},
 			],
 		});
