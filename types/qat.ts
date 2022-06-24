@@ -44,12 +44,13 @@ export interface Nomination {
 	_id: string;
 	type: EventType;
 	timestamp: Timestamp;
-	betmapsetId: number;
+	beatmapsetId: number;
 	creatorId: number;
 	creatorName: string;
 	modes: GameModeName[];
 	discussionId: number | null;
 	userId: number;
+	artistTitle: string;
 	content: string | null;
 	genre: string;
 	language: string;
@@ -119,17 +120,19 @@ export interface DisqualifiedQACheck {
 	id: string;
 }
 
+export interface UserActivity {
+	uniqueNominations: Nomination[];
+	nominationsDisqualified: NominationReset[]; // ? dqs recieved
+	nominationsPopped: NominationReset[]; // ? pops recieved
+	disqualifications: NominationReset[]; // ? dqs done by user
+	pops: NominationReset[]; // ? pops done by user
+	qualityAssuranceChecks: QACheck[];
+	disqualifiedQualityAssuranceChecks: DisqualifiedQACheck[];
+}
+
 export interface UserActivityResponse {
 	status: number;
-	data: string | {
-		uniqueNominations: Nomination[];
-		NominationsDisqualified: NominationReset[]; // ? dqs recieved
-		nominationsPopped: NominationReset[]; // ? pops recieved
-		disqualifications: NominationReset[]; // ? dqs done by user
-		pops: NominationReset[]; // ? pops done by user
-		qualityAssuranceChecks: QACheck[];
-		disqualifiedQualityAssuranceChecks: DisqualifiedQACheck[];
-	}
+	data: UserActivity;
 }
 
 export interface QatUserModesInfo {
