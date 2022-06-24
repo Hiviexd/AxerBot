@@ -17,7 +17,7 @@ export default {
 	category: "management",
 	options: ["`?clear`", "`?remove`"],
 	run: async (bot: Client, message: Message, args: string[]) => {
-		const categories = ["contests", "fun", "misc", "management", "osu"]; // Get categories
+		const categories = ["contests", "fun", "misc", "management", "osu", "BNsite"]; // Get categories
 
 		// !cooldown <channels> <categories> <cooldown> <increments>
 
