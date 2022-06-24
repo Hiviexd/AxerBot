@@ -29,6 +29,7 @@ import recent from "./user/recent";
 import verification from "./management/verification";
 import fact from "./fun/fact";
 import reminder from "./misc/reminder";
+import bn from "./BNsite/bn";
 
 const commands: any = {
 	ping: ping,
@@ -62,6 +63,7 @@ const commands: any = {
 	verification: verification,
 	resetroles: resetRoles,
 	reminder: reminder,
+	bn: bn,
 };
 
 export default commands;
