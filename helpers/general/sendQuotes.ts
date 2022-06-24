@@ -54,7 +54,7 @@ export default async (message: Message, bot: Client) => {
 			message.react("💀").catch((e) => {
 				console.error(e);
 			});
-		} else if (message.content.toUpperCase().includes("RATIO")) {
+		} else if (message.content.toUpperCase().split(" ").includes("RATIO")) {
 			message.react("⬆️").catch((e) => {
 				console.error(e);
 			});

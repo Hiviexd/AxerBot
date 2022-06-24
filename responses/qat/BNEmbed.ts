@@ -37,9 +37,16 @@ export default {
             
         
         let e = new MessageEmbed()
+            .setAuthor(
+                {
+                    name: `${osuUser.data.username} • BN/NAT info`,
+                    url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
+                    iconURL: usergroup.icon,
+                }
+            )
             .setThumbnail(`https://a.ppy.sh/${osuUser.data.id}`)
             .setColor(usergroup.colour)
-            .setDescription(`showing **[${osuUser.data.username}'s BN site info](https://bn.mappersguild.com/users?id=${qatUser.data.id})** from the last **90** days.`)
+            .setDescription(`showing **[${osuUser.data.username}'s BN website info](https://bn.mappersguild.com/users?id=${qatUser.data.id})** from the last **90** days.`)
             .addField("BN Status", `${reqStatus}`, true)
             .addField("BN For", `${calculateDuration(qatUser.data.bnDuration)}`, true);
 
@@ -67,7 +74,7 @@ export default {
                     inline: true,
                 },
                 {
-                    name: "Resets Recieved",
+                    name: "Resets Received",
                     value: `${activity.data.nominationsDisqualified.length + activity.data.nominationsPopped.length}`,
                     inline: true,
                 },
@@ -111,14 +118,8 @@ export default {
                     value: `${getTop3Languages(activity).toString()}`,
                     inline: true,
                 },
-            )
-            .setAuthor(
-                {
-                    name: `${osuUser.data.username} • BN/NAT info`,
-                    url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
-                    iconURL: usergroup.icon,
-                }
-            )
+            );
+            
             if (latestNom) {
                 let nomMessage = latestNom.content ? latestNom.content.replace(/\r?\n|\r/g," ") : "";
                 //truncate nomMessage
@@ -127,13 +128,18 @@ export default {
                 }
 
                 e.addField("Latest Nomination", `[${latestNom.artistTitle}](https://osu.ppy.sh/beatmapsets/${latestNom.beatmapsetId})`, true)
-                .setImage(`https://assets.ppy.sh/beatmaps/${latestNom.beatmapsetId}/covers/cover.jpg`)
-                .setFooter(
-                    {
-                        text: `${osuUser.data.username} ${latestNom.content ? `"${nomMessage}"` : ""}`,
-                        iconURL: `https://a.ppy.sh/${osuUser.data.id}`,
-                    }
-                )
+                .setImage(`https://assets.ppy.sh/beatmaps/${latestNom.beatmapsetId}/covers/cover.jpg`);
+
+                // only load footer when there's a nom message
+                if (latestNom.content) {
+
+                    e.setFooter(
+                        {
+                            text: `${osuUser.data.username} "${nomMessage}"`,
+                            iconURL: `https://a.ppy.sh/${osuUser.data.id}`,
+                        }
+                    );
+                }
             }
 
             message.channel.send({
