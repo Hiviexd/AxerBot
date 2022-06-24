@@ -17,7 +17,7 @@ mongoose.connect(
 			);
 
 		consoleCheck("database", "Database connected!");
-		addBNsiteToCooldown();
+		// addBNsiteToCooldown();
 	}
 );
 
