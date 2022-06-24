@@ -130,7 +130,7 @@ export default {
                 e.addField("Latest Nomination", `[${latestNom.artistTitle}](https://osu.ppy.sh/beatmapsets/${latestNom.beatmapsetId})`, true)
                 .setImage(`https://assets.ppy.sh/beatmaps/${latestNom.beatmapsetId}/covers/cover.jpg`);
 
-                // only load fotter when there's a nom message
+                // only load footer when there's a nom message
                 if (latestNom.content) {
 
                     e.setFooter(
