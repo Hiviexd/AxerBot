@@ -25,10 +25,11 @@ import serverlist from "./dev/serverlist";
 import repeat from "./dev/repeat";
 import avatar from "./misc/avatar";
 import embeds from "./management/embeds";
-import recent from "./user/recent";
+// import recent from "./user/recent";
 import verification from "./management/verification";
 import fact from "./fun/fact";
 import reminder from "./misc/reminder";
+import bn from "./BNsite/bn";
 
 const commands: any = {
 	ping: ping,
@@ -58,10 +59,11 @@ const commands: any = {
 	fact: fact,
 	repeat: repeat,
 	embeds: embeds,
-	rs: recent,
+	// rs: recent,
 	verification: verification,
 	resetroles: resetRoles,
 	reminder: reminder,
+	bn: bn,
 };
 
 export default commands;

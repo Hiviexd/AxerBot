@@ -1,3 +1,6 @@
+/**
+ * ! Currently not indexed (unusable) until it's fully finished
+ */
 import axios from "axios";
 import { Client, Message, MessageEmbed } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";

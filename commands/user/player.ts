@@ -10,7 +10,8 @@ export default {
 	help: {
 		description: "Check statistics for a player",
 		syntax: "{prefix}player `<name|mention>` `<-?mode>`",
-		example: "{prefix}player `sebola` `-osu`\n {prefix}player `@hivie` ",
+		example: "{prefix}player `Hivie` `-osu`\n {prefix}player <@341321481390784512> ",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: string[]) => {
