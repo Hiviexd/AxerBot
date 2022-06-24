@@ -13,8 +13,8 @@ export default {
 		description: "Displays beatmapset statistics of a user",
 		syntax: "{prefix}mapsetrank `<user>` `<option>`",
 		options: ["`-favs` | `-favorites`", "`-plays` | `-playcount`"],
-		example:
-			"{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank `@Sebola`\n{prefix}mapsetrank",
+		example: "{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank <@341321481390784512>\n{prefix}mapsetrank",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: string[]) => {

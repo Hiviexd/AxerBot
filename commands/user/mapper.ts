@@ -10,7 +10,8 @@ export default {
 	help: {
 		description: "Displays mapper statistics of a user",
 		syntax: "{prefix}mapper `<user>`",
-		example: "{prefix}mapper `Hivie`\n {prefix}mapper",
+		example: "{prefix}mapper `Hivie`\n {prefix}mapper <@341321481390784512>\n {prefix}mapper `HEAVENLY MOON`",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "osu",
 	run: async (bot: Client, message: Message, args: Array<string>) => {
