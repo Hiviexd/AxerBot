@@ -118,6 +118,13 @@ export default new Schema({
 				increments: 0,
 				channels: [],
 			},
+			BNsite: {
+				size: 0,
+				ends_at: {},
+				current_increments: 0,
+				increments: 0,
+				channels: [],
+			},
 		},
 	},
 	messages: {
