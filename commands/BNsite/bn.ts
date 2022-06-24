@@ -4,18 +4,22 @@ import UserNotBNorNAT from "../../responses/qat/UserNotBNorNAT";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
+import BNEmbed from "../../responses/qat/BNEmbed";
 
 export default {
 	name: "bn",
 	help: {
-		description: "Fetches data of a BN/NAT from the last 90 days",
-		example: "{prefix}bn Hivie",
+		description: "Displays nominator data of a BN/NAT from the last 90 days",
+		example: "{prefix}bn\n{prefix}bn `Hivie`\n{prefix}bn <@341321481390784512>\n{prefix}bn `HEAVENLY MOON`",
+        note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "BNsite",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let { playerName, status } = await checkMessagePlayers(message, args);
 
 		if (status != 200) return;
+
+        message.channel.sendTyping();
 
 		// fetch user from osu api to get their id
         const osuUser = await osuApi.fetch.user(encodeURI(playerName));
@@ -40,16 +44,13 @@ export default {
             });
         }
         
-        message.channel.sendTyping();
-       const userActivity = await qatApi.fetch.userActivity(osuUser.data.id, 90); //? 90 days
+       const qatUserActivity = await qatApi.fetch.userActivity(osuUser.data.id, 90); //? 90 days
 
-       if (userActivity.status != 200)
+       if (qatUserActivity.status != 200)
             return message.channel.send({
                 embeds: [UserNotFound],
             });
 
-        const activityRes = userActivity.data;
-        console.log(activityRes);
-        //TODO: do stuff with data
+        BNEmbed.send(osuUser, qatUser, qatUserActivity, message);
 	},
 };
