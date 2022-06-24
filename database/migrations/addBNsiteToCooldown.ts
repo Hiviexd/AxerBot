@@ -6,8 +6,8 @@ export default async () => {
 
     const allGuilds = await guilds.find()
     allGuilds.forEach(async (guild:any) => {
-        if (!guild.cooldowns.BNsite) {
-            guild.cooldowns.BNsite = {
+        if (!guild.cooldown.BNsite) {
+            guild.cooldown.BNsite = {
                 size: 0,
 				ends_at: {},
 				current_increments: 0,
@@ -17,6 +17,6 @@ export default async () => {
             await guilds.findByIdAndUpdate(guild._id, guild)
         }
     });
-    
+
     consoleCheck("addBNsiteToCooldowns", "All guilds updated!")
 }
