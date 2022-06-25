@@ -27,8 +27,8 @@ export default {
 		const mentionedRolesById: string[] = [];
 
 		args.forEach((a) => {
-			if (!isNaN(Number(a))) {
-				mentionedRolesById.push(String(a));
+			if (!isNaN(Number(a.trim()))) {
+				mentionedRolesById.push(String(a).trim());
 			}
 		});
 
@@ -47,7 +47,7 @@ export default {
 		mentionedRoles.forEach((r) => {
 			if (
 				r.position >= clientRoles?.highest.position &&
-				guild.verification.targets.default_roles.includes(r.id)
+				validMentionedRoles.includes(r.id)
 			)
 				return;
 
@@ -61,10 +61,8 @@ export default {
 
 					if (
 						role &&
-						role.position <= clientRoles?.highest.position &&
-						!guild.verification.targets.default_roles.includes(
-							role.id
-						)
+						role.rawPosition <= clientRoles?.highest.rawPosition &&
+						!validMentionedRoles.includes(role.id)
 					) {
 						validMentionedRoles.push(role.id);
 					}
@@ -78,8 +76,8 @@ export default {
 			return message.channel.send({
 				embeds: [
 					generateErrorEmbed(
-						"❌ Mention valid roles that are below my top role!",
-					)
+						"❌ Mention valid roles that are below my top role!"
+					),
 				],
 			});
 
