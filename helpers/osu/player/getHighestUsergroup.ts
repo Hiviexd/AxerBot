@@ -36,6 +36,11 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 				icon: "https://media.discordapp.net/attachments/941102492857557023/948649173983592548/probo.png",
 				colour: "#d6c8fc",
 			},
+			elite: {
+				name: "Elite Nominator",
+				icon: "https://media.discordapp.net/attachments/941102492857557023/991137703288635462/bn22.png",
+				colour: "#ffc05b",
+			}
 		},
 		ALM: {
 			index: 6,
@@ -78,6 +83,12 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			groups[index].colour =
 				userGroupInfo[g.short_name].probationary.colour;
 			groups[index].icon = userGroupInfo[g.short_name].probationary.icon;
+		}
+
+		if ((g.short_name == "BN") && (mapper.title?.includes("Elite Nominator"))) {
+			groups[index].colour =
+				userGroupInfo[g.short_name].elite.colour;
+			groups[index].icon = userGroupInfo[g.short_name].elite.icon;
 		}
 	});
 
