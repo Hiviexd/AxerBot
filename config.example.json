@@ -1,4 +1,5 @@
 {
-    "prefix": "!",
-    "ownerId": ""
+    "prefix": "this sets up the default prefix of the bot",
+    "ownerId": "bot owner's discord id",
+    "owners": ["use this array to give certain people access to the dev commands (this inclues yourself)", "dev2 discord id", "dev3 discord id"]
 }

@@ -29,7 +29,7 @@ import embeds from "./management/embeds";
 import verification from "./management/verification";
 import fact from "./fun/fact";
 import reminder from "./misc/reminder";
-import bn from "./BNsite/bn";
+import bn from "./bnsite/bn";
 
 const commands: any = {
 	ping: ping,
