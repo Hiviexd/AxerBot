@@ -13,7 +13,7 @@ export default {
 		example: "{prefix}bn\n{prefix}bn `Hivie`\n{prefix}bn <@341321481390784512>\n{prefix}bn `HEAVENLY MOON`",
         note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
-	category: "bnsite",
+	category: "BNsite",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let { playerName, status } = await checkMessagePlayers(message, args);
 
