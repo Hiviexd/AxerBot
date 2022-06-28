@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
 import remindersChecker from "../modules/reminders/remindersChecker";
+import serverCountInStatus from "../modules/serverCount/serverCountInStatus";
 
 export default {
 	name: "ready",
@@ -14,13 +15,19 @@ export default {
 				`${bot_user.username} is online on ${bot.guilds.cache.size} servers!`
 			);
 
-			//? Set the Presence of the bot
-			bot_user.setPresence({
-				activities: [{ name: `-help | -setprefix | ${bot.guilds.cache.size} servers` }],
-			});
+			//? Sets and updates the status of the bot every minute
+			serverCountInStatus(bot, bot_user);
+			
+			setInterval(() => {
+				serverCountInStatus(bot, bot_user);
+			}
+			, 60000);
 
 			//? checks for reminders every 2 seconds
-			setInterval(remindersChecker, 2000, bot);
+			setInterval(() => {
+				remindersChecker(bot);
+			}
+			, 2000);
 		});
 	},
 };
