@@ -17,11 +17,15 @@ This bot contains many features that makes your life easier as an osu! Discord s
 - A message logging system
 - A reminder system
 - A bunch of of fun and trivial commands
+- Automatic beatmap discussion and comment embeds.
+<img src ="https://bns.are-la.me/9H5nUmX.png" width="700" />
 
 The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](https://bn.mappersguild.com/)'s interOp routes to provide you with multiple stats and management systems such as:
 
 - An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server.
+<img src ="https://bns.are-la.me/3yBn2uk.png" width="700" />
 - Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website.
+<img src ="https://bns.are-la.me/9HixUXZ.png" width="700" />
 
 # Usage (for regular users)
 
