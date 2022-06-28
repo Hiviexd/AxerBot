@@ -30,6 +30,7 @@ import verification from "./management/verification";
 import fact from "./fun/fact";
 import reminder from "./misc/reminder";
 import bn from "./bnsite/bn";
+import invite from "./misc/invite";
 
 const commands: any = {
 	ping: ping,
@@ -64,6 +65,7 @@ const commands: any = {
 	resetroles: resetRoles,
 	reminder: reminder,
 	bn: bn,
+	invite: invite,
 };
 
 export default commands;

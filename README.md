@@ -4,7 +4,7 @@
 
 A general-purpose and powerful Discord bot with osu! features related to mapping & modding
 
-## [invite link]( https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands)
+## [invite link](https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands) (or run `-invite` on a server the bot is in)
 
 # About
 
