@@ -8,7 +8,9 @@ export default {
 	help: {
 		description:
 			"Displays a list of currently open BNs/NATs based on data from the BN website",
-		example: "{prefix}openbns\n{prefix}openbns -taiko",
+        syntax: "{prefix}openbns\n{prefix}openbns `<gamemode>`",
+        gamemodes: "`osu`, `taiko`, `catch`, `mania`",
+		example: "{prefix}openbns\n{prefix}openbns `taiko`",
 	},
 	category: "BNsite",
 	run: async (bot: Client, message: Message, args: string[]) => {
@@ -38,12 +40,5 @@ export default {
         
         
         OpenBNsEmbed.send(qatAllUsers, args[0], message)
-
-        /*message.channel.send({
-            embeds: [
-                //OpenBNsEmbed(qatAllUsers.data, gamemode.includes(args[0].toLowerCase()) ? args[0].toLowerCase() : "osu"),
-                
-            ],
-        });*/
 	},
 };
