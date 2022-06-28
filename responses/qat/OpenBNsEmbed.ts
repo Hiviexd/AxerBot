@@ -1,12 +1,14 @@
 import { Message, MessageEmbed } from "discord.js";
 import { QatAllUsersResponse, QatUser } from "../../types/qat";
 import getOpenBNsPerMode from "../../helpers/qat/getters/requestStatus/getOpenBNsPerMode";
+import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 
 export default {
 	send: (
 		qatAllUsers: QatAllUsersResponse,
 		gamemode: string,
-		message: Message
+		message: Message,
+		guild: any
 	) => {
 		let openBNs: QatUser[] = [];
 
@@ -24,13 +26,23 @@ export default {
 
 		if (gamemode) {
 			e.setAuthor({
-				name: `${getOpenBNsPerMode(openBNs, gamemode, "link").split("\n").length} open ${gamemode} BNs`,
+				name: `${
+					getOpenBNsPerMode(openBNs, gamemode, "link").split("\n")
+						.length
+				} open ${gamemode} BNs`,
 				url: `https://bn.mappersguild.com/`,
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 			})
-            .setDescription(
-				`${getOpenBNsPerMode(openBNs, gamemode, "status")}`
-			);
+				.setDescription(
+					`${getOpenBNsPerMode(openBNs, gamemode, "status")}`
+				)
+				.setFooter({
+					text: parseMessagePlaceholderFromString(
+						message,
+						guild,
+						`use \"{prefix}openbns\" to view all open BNs.`
+					),
+				});
 		} else {
 			e.setAuthor({
 				name: `${openBNs.length} open BNs`,
@@ -56,7 +68,14 @@ export default {
 					"catch",
 					`${getOpenBNsPerMode(openBNs, "catch", "link")}`,
 					true
-				);
+				)
+                .setFooter({
+					text: parseMessagePlaceholderFromString(
+						message,
+						guild,
+						`use \"{prefix}openbns <gamemode>\" to view more details.`
+					),
+				});
 		}
 		message.channel.send({ embeds: [e] });
 	},

@@ -2,6 +2,7 @@ import { Client, Message } from "discord.js";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import OpenBNsEmbed from "../../responses/qat/OpenBNsEmbed";
+import * as database from "./../../database";
 
 export default {
 	name: "openbns",
@@ -15,6 +16,8 @@ export default {
 	category: "BNsite",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const gamemode = ["osu", "taiko", "catch", "mania"];
+
+        const guild = await database.guilds.findOne({ _id: message.guildId }); //for prefix parsing in footer
 
 		if (args.length > 0) {
 			if (!gamemode.includes(args[0].toLowerCase())) {
@@ -39,6 +42,6 @@ export default {
 			});
         
         
-        OpenBNsEmbed.send(qatAllUsers, args[0], message)
+        OpenBNsEmbed.send(qatAllUsers, args[0], message, guild);
 	},
 };
