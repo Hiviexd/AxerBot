@@ -15,5 +15,3 @@ export default(response?: string): MessageEmbed => {
 		color: "#ff5050",
 	});
 };
-
-				
