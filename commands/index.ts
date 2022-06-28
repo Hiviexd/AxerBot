@@ -31,6 +31,7 @@ import fact from "./fun/fact";
 import reminder from "./misc/reminder";
 import bn from "./BNsite/bn";
 import invite from "./misc/invite";
+import openbns from "./BNsite/openbns";
 
 const commands: any = {
 	ping: ping,
@@ -66,6 +67,7 @@ const commands: any = {
 	reminder: reminder,
 	bn: bn,
 	invite: invite,
+	openbns: openbns,
 };
 
 export default commands;
