@@ -9,9 +9,9 @@ export default {
 	name: "reminder",
 	help: {
 		description: "Sets a reminder",
-		syntax: "{prefix}reminder `<time>` `<message>`",
-        timeFormat: "s: seconds, m: minutes, h: hours, d: days",
-		example: "{prefix}reminder `1d` `Remind me to do something`",
+		syntax: "{prefix}reminder `<time>`\n{prefix}reminder `<time>` `<message>`",
+        "time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",
+		example: "{prefix}reminder `30m` `Remind me to do something`\n{prefix}reminder `1d`",
 	},
 	category: "misc",
 	run: async (bot: Client, message: Message, args: string[]) => {

@@ -27,15 +27,12 @@ export default {
                 reqStatus = "Closed";
             }
             else {
-                reqStatus = `Open (${getRequestStatus(qatUser)})`;
+                reqStatus = `Open (${getRequestStatus(qatUser.data)})`;
             }
         } else {
             reqStatus = "Unknown";
         }
 
-        
-            
-        
         let e = new MessageEmbed()
             .setAuthor(
                 {
