@@ -4,9 +4,9 @@
 
 A general-purpose and powerful Discord bot with osu! features related to mapping & modding
 
-## [invite link](https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands) (or run `-invite` on a server the bot is in)
+**[invite link](https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands)** (or run `-invite` on a server the bot is in)
 
-# About
+## About
 
 This bot contains many features that makes your life easier as an osu! Discord server owner, moderdator or member, including:
 
@@ -31,7 +31,7 @@ The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](ht
 - Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website.
 <img src ="https://bns.are-la.me/9HixUXZ.png" width="700" />
 
-# Usage (for regular users)
+## Usage
 
 - invite the bot.
 - type `-help` to see a list of all available commands; Use `-help <command>` to see how a specific command works.
@@ -44,13 +44,13 @@ from this step onwards, you can set up any of these following systems as a serve
 - The quotes system
 - The command cooldowns system
 
-# Contributing
+## Contributing
 
-## **Before starting to work on things for this project, please open an issue that describes what you're workning on, and wait for approval from one of the main devs!**
+**Before starting to work on things for this project, please open an issue that describes what you're working on, and wait for approval from one of the main devs!**
 
 If you want to contribute to this project, please read the following to learn how to set up a local instance of the bot, and [read this](./commands/README.md) to learn more about the command structure of the bot:
 
-## Prerequisites
+### Prerequisites
 
 - A Discord bot user
 - Node v17
@@ -63,7 +63,7 @@ If you want to contribute to this project, please read the following to learn ho
 - (optional) BN site interOp access
 - sudo access if you're on linux
 
-## Installation
+### Installation
 
 - Clone the repository
 - `npm i`
