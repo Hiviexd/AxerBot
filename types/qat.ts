@@ -206,3 +206,8 @@ export interface QatUserResponse {
 	status: number;
 	data: QatUser;
 }
+
+export interface QatAllUsersResponse {
+	status: number;
+	data: QatUser[];
+}
