@@ -23,11 +23,11 @@ export default {
 			}
 			, 60000);
 
-			//? checks for reminders every 2 seconds
+			//? checks for reminders every 3 seconds
 			setInterval(() => {
 				remindersChecker(bot);
 			}
-			, 2000);
+			, 3000);
 		});
 	},
 };

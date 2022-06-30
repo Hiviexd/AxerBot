@@ -72,27 +72,35 @@ export default {
 			});
 
 		const measure = args[0].substring(args[0].length - 1, args[0].length);
+
 		let time = Number(args[0].substring(0, args[0].length - 1));
+
+		let normalizedTime = "";
 
 		// Based off the delimiter, sets the time
 		switch (measure) {
 			case "s":
+				normalizedTime = time == 1 ? `${time} second` : `${time} seconds`;
 				time = time * 1000;
 				break;
 
 			case "m":
+				normalizedTime = time == 1 ? `${time} minute` : `${time} minutes`;
 				time = time * 1000 * 60;
 				break;
 
 			case "h":
+				normalizedTime = time == 1 ? `${time} hour` : `${time} hours`;
 				time = time * 1000 * 60 * 60;
 				break;
 
 			case "d":
+				normalizedTime = time == 1 ? `${time} day` : `${time} days`;
 				time = time * 1000 * 60 * 60 * 24;
 				break;
 
 			default:
+				normalizedTime = time == 1 ? `${time} second` : `${time} seconds`;
 				time = time * 1000;
 				break;
 		}
@@ -127,7 +135,7 @@ export default {
 					fields: [
                         {
                             name: "Time",
-                            value: `<t:${Math.trunc(reminder.time / 1000)}:R>`,
+                            value: `${normalizedTime} (<t:${Math.trunc(reminder.time / 1000)}:R>)`,
                         },
                         {
                             name: "Message",
