@@ -79,7 +79,7 @@ export default {
 				},
 				{
 					name: "Welcome Message",
-					value: guild.verification.message
+					value: guild.verification.message,
 					/**
 					 * use this if you want an actual ping to appear instead of {member} (it will have the command author's ping)
 					 * parseMessagePlaceholderFromMember(
@@ -118,8 +118,14 @@ export default {
 			let val = "";
 
 			guild.verification.targets.group_roles.forEach(
-				(role: { group: string; id: string }) => {
-					val = val.concat(`\`${role.group}\`: <@&${role.id}>\n`);
+				(role: { group: string; id: string; modes: string[] }) => {
+					val = val.concat(
+						`\`${role.group}\`: <@&${role.id}> [${
+							role.modes.length == 0
+								? "All modes"
+								: role.modes.join(", ")
+						}]\n`
+					);
 				}
 			);
 
