@@ -126,7 +126,13 @@ export default {
 					return `${
 						role.modes.length == 0
 							? "All modes"
-							: role.modes.join(", ")
+							: role.modes
+									.map((m) => {
+										if (m == "none") return "Without Modes";
+
+										return m;
+									})
+									.join(", ")
 					}`;
 				} else {
 					return "All modes";
