@@ -117,14 +117,28 @@ export default {
 		function getGroupRoles() {
 			let val = "";
 
+			function getRoleModeText(role: {
+				group: string;
+				id: string;
+				modes: string[];
+			}) {
+				if (role.modes) {
+					return `${
+						role.modes.length == 0
+							? "All modes"
+							: role.modes.join(", ")
+					}`;
+				} else {
+					return "All modes";
+				}
+			}
+
 			guild.verification.targets.group_roles.forEach(
 				(role: { group: string; id: string; modes: string[] }) => {
 					val = val.concat(
-						`\`${role.group}\`: <@&${role.id}> [${
-							role.modes.length == 0
-								? "All modes"
-								: role.modes.join(", ")
-						}]\n`
+						`\`${role.group}\`: <@&${role.id}> [${getRoleModeText(
+							role
+						)}]\n`
 					);
 				}
 			);

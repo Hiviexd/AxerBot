@@ -28,6 +28,7 @@ export default {
 			"`taiko`: osu!taiko",
 			"`fruits`: osu!catch",
 			"`mania`: osu!mania",
+			"`none`: This is for groups without modes, like LVD",
 		],
 	},
 	run: async (message: Message, args: string[]) => {
@@ -63,7 +64,7 @@ export default {
 			if (tags.length < 2) return;
 
 			if (tags.length == 3) {
-				const validModes = ["osu", "taiko", "fruits", "mania"];
+				const validModes = ["osu", "taiko", "fruits", "mania", "none"];
 				const modes = tags[2].split(".");
 
 				const clearModes: string[] = [];
@@ -167,10 +168,17 @@ export default {
 					`✅ Successfully set the roles for the following groups: ${validMentionedRoles
 						.map(
 							(r) =>
-								`\`${r.group}\` [${
+								`\`${r.group}\` <@&${r.id}> [${
 									r.modes.length == 0
 										? "All modes"
-										: r.modes.join(", ")
+										: r.modes
+												.map((m) => {
+													if (m == "none")
+														return "Without Modes";
+
+													return m;
+												})
+												.join(", ")
 								}]`
 						)
 						.join(", ")}`
