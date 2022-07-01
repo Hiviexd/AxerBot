@@ -10,9 +10,9 @@ export default {
 	trigger: ["grouproles"],
 	help: {
 		description: "Set the roles that accounts with X user tag will recive",
-		syntax: "{prefix}verification `grouproles` `<Group>,<Role Id|Role Mention>`",
+		syntax: "{prefix}verification `grouproles` `<Group>,<Role Id|Role Mention>,<Modes (followed by dots)>`",
 		example:
-			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`",
+			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`\n{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`,taiko.mania",
 		groups: [
 			"`DEV`: osu!dev",
 			"`SPT`: Support Team",
@@ -22,6 +22,12 @@ export default {
 			"`GMT`: Global Moderation Team",
 			"`LVD`: Project Loved",
 			"`ALM`: Alumni",
+		],
+		modes: [
+			"`osu`: osu!standard",
+			"`taiko`: osu!taiko",
+			"`fruits`: osu!catch",
+			"`mania`: osu!mania",
 		],
 	},
 	run: async (message: Message, args: string[]) => {
