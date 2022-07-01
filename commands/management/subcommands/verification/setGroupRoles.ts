@@ -35,7 +35,11 @@ export default {
 
 		let guild = await guilds.findById(message.guildId);
 
-		const mentionedRoles: { group: string; id: string }[] = [];
+		const mentionedRoles: {
+			group: string;
+			id: string;
+			modes?: string[];
+		}[] = [];
 		const usergroups = [
 			"DEV",
 			"SPT",
@@ -48,18 +52,42 @@ export default {
 		];
 
 		args.forEach((a) => {
-			const tag = a.split(",");
+			const tags = a.split(",");
 
-			if (tag.length != 2) return;
+			if (tags.length < 2) return;
 
-			if (
-				!isNaN(Number(removeTextMarkdown(tag[1]))) &&
-				usergroups.includes(tag[0].toUpperCase())
-			) {
-				mentionedRoles.push({
-					group: tag[0].toUpperCase(),
-					id: removeTextMarkdown(tag[1]),
+			if (tags.length == 3) {
+				const validModes = ["osu", "taiko", "fruits", "mania"];
+				const modes = tags[2].split(".");
+
+				const clearModes: string[] = [];
+				modes.forEach((mode) => {
+					if (!validModes.includes(mode.trim())) return;
+					if (clearModes.includes(mode.trim())) return;
+
+					clearModes.push(mode.trim());
 				});
+
+				if (
+					!isNaN(Number(removeTextMarkdown(tags[1]))) &&
+					usergroups.includes(tags[0].toUpperCase())
+				) {
+					mentionedRoles.push({
+						group: tags[0].toUpperCase(),
+						id: removeTextMarkdown(tags[1]),
+						modes: clearModes,
+					});
+				}
+			} else {
+				if (
+					!isNaN(Number(removeTextMarkdown(tags[1]))) &&
+					usergroups.includes(tags[0].toUpperCase())
+				) {
+					mentionedRoles.push({
+						group: tags[0].toUpperCase(),
+						id: removeTextMarkdown(tags[1]),
+					});
+				}
 			}
 		});
 
@@ -72,7 +100,11 @@ export default {
 			return text;
 		}
 
-		const validMentionedRoles: { group: string; id: string }[] = [];
+		const validMentionedRoles: {
+			group: string;
+			id: string;
+			modes: string[];
+		}[] = [];
 
 		if (!message.client.user) return;
 
@@ -95,11 +127,13 @@ export default {
 						!guild.verification.targets.group_roles.includes({
 							group: r.group,
 							id: r.id,
+							modes: r.modes,
 						})
 					) {
 						validMentionedRoles.push({
 							group: r.group,
 							id: role.id,
+							modes: r.modes || [],
 						});
 					}
 				} catch (e) {
@@ -124,9 +158,16 @@ export default {
 		message.channel.send({
 			embeds: [
 				generateSuccessEmbed(
-					`✅ Successfully set the roles for the following groups: ${validMentionedRoles.map(
-						(r) => `\`${r.group}\``
-					).join(", ")}`
+					`✅ Successfully set the roles for the following groups: ${validMentionedRoles
+						.map(
+							(r) =>
+								`\`${r.group}\` [${
+									r.modes.length == 0
+										? "All modes"
+										: r.modes.join(", ")
+								}]`
+						)
+						.join(", ")}`
 				),
 			],
 		});

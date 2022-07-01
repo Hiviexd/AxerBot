@@ -29,13 +29,13 @@ export default {
 						member.user.displayAvatarURL()
 					)
 					.setDescription(
-						`:wave: ${member.user} has left the server!\n\n**Roles:** \n${memberRoles}`
+						`:wave: ${member.user} has left the server ${member.guild.name}!\n\n**Roles:** \n${memberRoles}`
 					)
 					.setTimestamp();
 
 				consoleLog(
 					"guildMemberRemove",
-					`User ${member.user.tag} has left the server!`
+					`User ${member.user.tag} has left the server ${member.guild.name}!`
 				);
 
 				const channel: any = member.guild.channels.cache.get(

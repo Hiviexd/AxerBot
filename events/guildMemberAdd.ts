@@ -1,4 +1,5 @@
 import { Client, GuildMember } from "discord.js";
+import createNewUser from "../database/utils/createNewUser";
 
 import { consoleLog } from "../helpers/core/logger";
 import StartVerification from "../modules/verification/client/StartVerification";
@@ -7,16 +8,19 @@ export default {
 	name: "guildMemberAdd",
 	execute(bot: Client) {
 		try {
-			bot.on("guildMemberAdd", (member) => {
+			bot.on("guildMemberAdd", async (member) => {
 				//Log the newly joined member to console
 				consoleLog(
 					"guildMemberAdd",
-					`User ${member.user.tag} has joined the server!`
+					`User ${member.user.tag} has joined the server ${member.guild.name}!`
 				);
 
+				await createNewUser(member);
 				StartVerification(member);
 
 				//Find a channel named welcome and send a Welcome message
+
+				// ? This is the old system (disabled for now)
 
 				/*const channel: any = member.guild.channels.cache.find(
 					(c) => c.name === "verification"

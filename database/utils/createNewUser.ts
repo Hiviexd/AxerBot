@@ -22,6 +22,11 @@ export default async function createNewUser(user_data: any) {
 		return r;
 	} catch (e: any) {
 		if (e.code == 11000) {
+			consoleLog(
+				"createNewUser",
+				`User ${user_data.id} already exists! Skipping...`
+			);
+
 			const u = await database.users.findOne({ _id: user_data.id });
 
 			return u;
