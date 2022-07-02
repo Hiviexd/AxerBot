@@ -16,7 +16,7 @@ export default {
 		interaction: CommandInteraction,
 		args: string[]
 	) => {
-		interaction.deferReply(); // ? prevent errors
+		await interaction.deferReply(); // ? prevent errors
 
 		return interaction.editReply("`" + bot.ws.ping + " ms`");
 	},

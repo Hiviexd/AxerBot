@@ -140,6 +140,7 @@ export default {
 		interaction: MessageContextMenuInteraction | CommandInteraction,
 		mode?: string
 	) => {
+		console.log(user.data.statistics?.global_rank);
 		const attachment = user.data.statistics?.global_rank
 			? new MessageAttachment(
 					await generatePlayerRankChart(user.data),

@@ -16,7 +16,7 @@ export default {
 		interaction: CommandInteraction,
 		args: string[]
 	) => {
-		interaction.deferReply(); // ? prevent errors
+		await interaction.deferReply(); // ? prevent errors
 
 		const invite =
 			"https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands";
