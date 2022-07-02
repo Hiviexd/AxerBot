@@ -1,62 +1,75 @@
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 import PlayerEmbed from "../../responses/osu/PlayerEmbed";
+import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 
 export default {
 	name: "player",
 	help: {
 		description: "Check statistics for a player",
 		syntax: "{prefix}player `<name|mention>` `<-?mode>`",
-		example: "{prefix}player `Hivie` `-osu`\n {prefix}player <@341321481390784512> ",
+		example:
+			"{prefix}player `Hivie` `-osu`\n {prefix}player <@341321481390784512> ",
 		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "osu",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		const params = getTraceParams(args, "-osu", 1, [
-			"-osu",
-			"-taiko",
-			"-mania",
-			"-catch",
-		])[0];
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "user",
+				description: "By user mention (This doesn't ping the user)",
+				type: 6,
+				max_value: 1,
+			},
+			{
+				name: "username",
+				description: "By username",
+				type: 3,
+				max_value: 1,
+			},
+			{
+				name: "mode",
+				description: "Game mode info to view",
+				type: 3,
+				max_value: 1,
+				choices: [
+					{
+						name: "osu",
+						value: "osu",
+					},
+					{
+						name: "taiko",
+						value: "taiko",
+					},
+					{
+						name: "catch",
+						value: "fruits",
+					},
+					{
+						name: "mania",
+						value: "mania",
+					},
+				],
+			},
+		],
+	},
+	interaction: true,
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
 
-		let mode = "";
+		const modeInput = command.options.get("mode");
+		const mode = modeInput ? modeInput.value?.toString() : undefined;
 
-		switch (params) {
-			case "-osu": {
-				mode = "osu";
-
-				args.pop();
-				break;
-			}
-			case "-taiko": {
-				mode = "taiko";
-
-				args.pop();
-				break;
-			}
-			case "-catch": {
-				mode = "fruits";
-
-				args.pop();
-				break;
-			}
-			case "-mania": {
-				mode = "mania";
-
-				args.pop();
-				break;
-			}
-		}
-
-		let { playerName, status } = await checkMessagePlayers(message, args);
+		let { playerName, status } = await checkCommandPlayers(command);
 
 		const player = await osuApi.fetch.user(playerName, mode);
 
 		if (status != 200)
-			return message.reply({
+			return command.editReply({
 				embeds: [UserNotFound],
 				allowedMentions: {
 					repliedUser: false,
@@ -64,7 +77,7 @@ export default {
 			});
 
 		if (!player.data.is_active)
-			return message.reply({
+			return command.editReply({
 				embeds: [
 					{
 						title: "Umm...",
@@ -77,6 +90,6 @@ export default {
 				},
 			});
 
-		return PlayerEmbed.send(player, message, params.replace("-", ""));
+		return PlayerEmbed.reply(player, command, mode);
 	},
 };

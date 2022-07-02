@@ -14,6 +14,7 @@ export default {
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });
+		if (!guild) return;
 
 		if (!message.guild || !message.member) return;
 

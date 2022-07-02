@@ -22,6 +22,7 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		const mentionedRoles = message.mentions.roles;
 		const mentionedRolesById: string[] = [];

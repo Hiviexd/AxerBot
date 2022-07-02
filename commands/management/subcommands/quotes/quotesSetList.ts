@@ -22,6 +22,7 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);
+		if (!guild) return;
 		const file = message.attachments.first();
 
 		if (!message.guild) return;
@@ -34,7 +35,11 @@ export default {
 		// ? Prevent big files (It uses bytes)
 		if (file.size > 200000)
 			return message.channel.send({
-				embeds: [generateErrorEmbed("❌ File is too big. Max size is 200KB.")],
+				embeds: [
+					generateErrorEmbed(
+						"❌ File is too big. Max size is 200KB."
+					),
+				],
 			});
 
 		const list = await parseTextFileAttachment(file.url);

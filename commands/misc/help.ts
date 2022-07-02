@@ -7,6 +7,7 @@ import * as database from "./../../database";
 export default {
 	name: "help",
 	category: "misc",
+	interaction: true,
 	run: async (bot: Client, message: Message, args: string[]) => {
 		if (args.length != 0) {
 			const requested_command = commands[args[0].toLowerCase()];
@@ -46,6 +47,8 @@ export default {
 			const guild = await database.guilds.findOne({
 				_id: message.guildId,
 			});
+
+			if (!guild) return;
 
 			// ? Transform Object object to Array object
 			Object.keys(commands).forEach((command: any) => {

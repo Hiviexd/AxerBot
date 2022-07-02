@@ -5,6 +5,8 @@ import * as database from "./../../database";
 export default async (command: any, message: Message) => {
 	const guild = await database.guilds.findOne({ _id: message.guildId });
 
+	if (!guild) return;
+
 	const embed = new MessageEmbed({
 		title: `${guild.prefix}${command.name}`,
 		description: parseMessagePlaceholderFromString(

@@ -1,4 +1,9 @@
-import { Client, Message } from "discord.js";
+import {
+	ApplicationCommandManager,
+	Client,
+	CommandInteraction,
+	Message,
+} from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
@@ -6,6 +11,7 @@ import { Beatmapset } from "../../types/beatmap";
 import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 import getTraceParams from "../../helpers/commands/getTraceParams";
+import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 
 export default {
 	name: "mapsetrank",
@@ -13,73 +19,65 @@ export default {
 		description: "Displays beatmapset statistics of a user",
 		syntax: "{prefix}mapsetrank `<user>` `<option>`",
 		options: ["`-favs` | `-favorites`", "`-plays` | `-playcount`"],
-		example: "{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank <@341321481390784512>\n{prefix}mapsetrank",
+		example:
+			"{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank <@341321481390784512>\n{prefix}mapsetrank",
 		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "user",
+				description: "By user mention (This doesn't ping the user)",
+				type: 6,
+				max_value: 1,
+			},
+			{
+				name: "username",
+				description: "By osu! username",
+				type: 3,
+				max_value: 1,
+			},
+			{
+				name: "sort",
+				description: "Sort type",
+				type: 3,
+				max_value: 1,
+				choices: [
+					{
+						name: "favorites",
+						value: "favourite_count",
+					},
+					{
+						name: "plays",
+						value: "play_count",
+					},
+				],
+			},
+		],
+	},
 	category: "osu",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		let sort = getTraceParams(args, "-playcount", 1, [
-			"-favorites",
-			"-favs",
-			"-plays",
-			"-playcount",
-		])[0];
+	interaction: true,
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
+		let sort = command.options.get("sort")
+			? command.options.get("sort")?.value
+			: "play_count";
 
 		let decorator = {
 			title: "Most played beatmaps", // ? {username} | Most played beatmaps
 			emoji: "▶", // ? {position} . {beatmap_link} | ▶
 		};
 
-		// ? Parse sort type
-		switch (sort.toLowerCase()) {
-			case "-favorites": {
-				sort = "favourite_count";
-				args.pop();
-
-				decorator = {
-					title: "Most favorited beatmaps",
-					emoji: "❤",
-				};
-
-				break;
-			}
-			case "-favs": {
-				sort = "favourite_count";
-				args.pop();
-
-				decorator = {
-					title: "Most favorited beatmaps",
-					emoji: "❤",
-				};
-
-				break;
-			}
-			case "-playcount": {
-				sort = "play_count";
-				args.pop();
-
-				break;
-			}
-			case "-plays": {
-				sort = "play_count";
-				args.pop();
-				break;
-			}
-
-			default: {
-				sort = "play_count";
-				break;
-			}
-		}
-
-		let { playerName, status } = await checkMessagePlayers(message, args);
+		let { playerName, status } = await checkCommandPlayers(command);
 
 		if (status != 200) return;
 
 		const mapper = await osuApi.fetch.user(encodeURI(playerName));
 
 		if (mapper.status != 200)
-			return message.channel.send({
+			return command.editReply({
 				embeds: [UserNotFound],
 			});
 
@@ -90,7 +88,7 @@ export default {
 		if (beatmaps.status != 200) return;
 
 		if (beatmaps.data.sets.length < 1)
-			return message.channel.send({
+			return command.editReply({
 				embeds: [UserNotMapper],
 			});
 
@@ -116,6 +114,6 @@ export default {
 		}
 
 		// ? Lesgoooo send the embed
-		MapsetRankEmbed.send(mapper, sorted_beatmaps, message, decorator);
+		MapsetRankEmbed.reply(mapper, sorted_beatmaps, command, decorator);
 	},
 };

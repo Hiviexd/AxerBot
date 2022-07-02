@@ -23,6 +23,7 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (!args[0])
 			return message.channel.send({
@@ -37,11 +38,7 @@ export default {
 
 		if (isNaN(chance))
 			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❌ Invalid value provided."
-					),
-				],
+				embeds: [generateErrorEmbed("❌ Invalid value provided.")],
 			});
 
 		if (chance > 100 || chance < 1)

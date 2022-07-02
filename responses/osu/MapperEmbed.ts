@@ -1,6 +1,12 @@
 import { UserResponse } from "../../types/user";
 import { UserBeatmapetsResponse } from "../../types/beatmap";
-import { ContextMenuInteraction, Message, MessageEmbed } from "discord.js";
+import {
+	CommandInteraction,
+	ContextMenuInteraction,
+	Interaction,
+	Message,
+	MessageEmbed,
+} from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
 
@@ -57,14 +63,15 @@ export default {
 			},
 		});
 
-		message.channel.send({
+		message.reply({
 			embeds: [e],
 		});
 	},
-	sendInteraction: async (
+	reply: async (
 		user: UserResponse,
 		beatmaps: UserBeatmapetsResponse,
-		interaction: ContextMenuInteraction
+		interaction: ContextMenuInteraction | CommandInteraction,
+		ephemeral?: boolean
 	) => {
 		const usergroup = parseUsergroup(user.data); // ? Get the highest usergroup
 
@@ -114,9 +121,8 @@ export default {
 		});
 
 		interaction
-			.reply({
+			.editReply({
 				embeds: [e],
-				ephemeral: true,
 			})
 			.catch(console.error);
 	},

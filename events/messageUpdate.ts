@@ -17,10 +17,16 @@ export default {
 				if (oldMessage.channel.type === "DM") return;
 				if (!oldMessage.author) return;
 				if (!newMessage.guild || !oldMessage.guild) return;
-				const guild = await database.guilds.findOne({ _id: oldMessage.guild.id });
+
+				const guild = await database.guilds.findOne({
+					_id: oldMessage.guild.id,
+				});
+				if (!guild) return;
+
 				if (guild.logging.enabled === false) return;
 
-				if (!newMessage.guild.channels.cache.get(guild.logging.channel)) return;
+				if (!newMessage.guild.channels.cache.get(guild.logging.channel))
+					return;
 				if (oldMessage.content === newMessage.content) return;
 
 				const count = 1950;
@@ -47,7 +53,9 @@ export default {
 					embed.setImage(img.url);
 				}
 
-				let channel: any = newMessage.guild.channels.cache.get(guild.logging.channel);
+				let channel: any = newMessage.guild.channels.cache.get(
+					guild.logging.channel
+				);
 
 				if (!channel) return;
 

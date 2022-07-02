@@ -53,11 +53,7 @@ export default async (
 			}
 
 			if (interaction) {
-				return PlayerEmbed.sendInteraction(
-					user,
-					interaction,
-					user_params.mode
-				);
+				return PlayerEmbed.reply(user, interaction, user_params.mode);
 			}
 		}
 
@@ -71,7 +67,7 @@ export default async (
 			}
 
 			if (interaction) {
-				return MapperEmbed.sendInteraction(user, maps, interaction);
+				return MapperEmbed.reply(user, maps, interaction);
 			}
 		}
 
@@ -80,11 +76,7 @@ export default async (
 		}
 
 		if (interaction) {
-			return PlayerEmbed.sendInteraction(
-				user,
-				interaction,
-				user_params.mode
-			);
+			return PlayerEmbed.reply(user, interaction, user_params.mode);
 		}
 	}
 
@@ -93,6 +85,6 @@ export default async (
 	}
 
 	if (interaction) {
-		return PlayerEmbed.sendInteraction(user, interaction, user_params.mode);
+		return PlayerEmbed.reply(user, interaction, user_params.mode);
 	}
 };

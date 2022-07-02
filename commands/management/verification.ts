@@ -44,6 +44,7 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (!guild.verification)
 			return message.reply(
@@ -97,11 +98,15 @@ export default {
 		});
 
 		function getFlags() {
+			if (!guild) return;
+
 			let val = "";
 
 			const flags = ["username"];
 
 			Object.keys(guild.verification.targets).forEach((flag) => {
+				if (!guild) return;
+
 				if (flags.includes(flag)) {
 					val = val.concat(
 						`\`${flag}\`: ${guild.verification.targets[flag]}\n`
@@ -139,6 +144,8 @@ export default {
 				}
 			}
 
+			if (!guild) return;
+
 			guild.verification.targets.group_roles.forEach(
 				(role: { group: string; id: string; modes: string[] }) => {
 					val = val.concat(
@@ -155,6 +162,8 @@ export default {
 		}
 
 		function getGeneralRoles() {
+			if (!guild) return;
+
 			let val = guild.verification.targets.default_roles
 				.map((r: string) => {
 					return `<@&${r}>`;

@@ -1,5 +1,6 @@
 import { UserResponse } from "../../types/user";
 import {
+	CommandInteraction,
 	ContextMenuInteraction,
 	Message,
 	MessageAttachment,
@@ -134,9 +135,9 @@ export default {
 			files: attachment ? [attachment] : [],
 		});
 	},
-	sendInteraction: async (
+	reply: async (
 		user: UserResponse,
-		interaction: MessageContextMenuInteraction,
+		interaction: MessageContextMenuInteraction | CommandInteraction,
 		mode?: string
 	) => {
 		const attachment = user.data.statistics?.global_rank
@@ -151,11 +152,12 @@ export default {
 		const modesList: any = {
 			osu: "",
 			taiko: "taiko",
-			catch: "catch",
+			fruits: "catch",
 			mania: "mania",
 		};
 
 		mode = mode ? mode : user.data.playmode.toString();
+		console.log(mode, user.data.playmode);
 
 		const embed = {
 			author: {
@@ -243,12 +245,12 @@ export default {
 						  }`
 				}`,
 			},
+			files: attachment ? [attachment] : [],
 		};
 
 		interaction
-			.reply({
+			.editReply({
 				embeds: [embed],
-				ephemeral: true,
 			})
 			.catch(console.error);
 	},

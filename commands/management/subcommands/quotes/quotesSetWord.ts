@@ -29,6 +29,7 @@ export default {
 			});
 
 		let guild = await database.guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (!message.guild) return;
 
@@ -43,7 +44,9 @@ export default {
 		);
 
 		message.channel.send({
-			embeds: [generateSuccessEmbed(`✅ Trigger word set to \`${word}\`!`)],
+			embeds: [
+				generateSuccessEmbed(`✅ Trigger word set to \`${word}\`!`),
+			],
 		});
 	},
 };

@@ -21,6 +21,7 @@ export default {
 		const embedCategories = ["beatmap", "player", "discussion", "comment"];
 
 		let guild = await database.guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (!message.guild || !message.member) return;
 
@@ -63,6 +64,8 @@ export default {
 			});
 
 		categories.forEach((cat) => {
+			if (!guild) return;
+
 			if (args[1].toLowerCase() == "all") {
 				guild.embeds[cat] = {
 					all: true,
@@ -90,10 +93,16 @@ export default {
 		);
 
 		message.channel.send({
-			embeds: [generateSuccessEmbed(`✅ Configuration updated! Use \`${guild.prefix}embeds\` to see the current configuration`)],
+			embeds: [
+				generateSuccessEmbed(
+					`✅ Configuration updated! Use \`${guild.prefix}embeds\` to see the current configuration`
+				),
+			],
 		});
 
 		function sendConfiguration() {
+			if (!guild) return;
+
 			const embed = new MessageEmbed()
 				.setTitle("⚙ Current embeds configuration")
 				.setDescription(
@@ -104,6 +113,8 @@ export default {
 			const staticEmbedCategories = Object.keys(guild.embeds);
 
 			staticEmbedCategories.forEach((category) => {
+				if (!guild) return;
+
 				if (!embedCategories.includes(category)) return;
 
 				if (guild.embeds[category].all) {

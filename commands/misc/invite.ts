@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 
 export default {
 	name: "invite",
@@ -7,10 +7,21 @@ export default {
 		example: "{prefix}invite",
 	},
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
+	interaction: true,
+	config: {
+		type: 1,
+	},
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: string[]
+	) => {
+		interaction.deferReply(); // ? prevent errors
+
 		const invite =
 			"https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands";
-		return message.channel.send({
+
+		return interaction.editReply({
 			embeds: [
 				{
 					title: "Invite Link",

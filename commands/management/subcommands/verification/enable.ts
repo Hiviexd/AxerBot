@@ -23,10 +23,15 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (guild.verification == "")
 			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ You need to set the system channel first.")],
+				embeds: [
+					generateErrorEmbed(
+						"❗ You need to set the system channel first."
+					),
+				],
 			});
 
 		guild.verification.enable = true;

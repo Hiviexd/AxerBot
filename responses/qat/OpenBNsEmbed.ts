@@ -1,16 +1,29 @@
-import { Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, Message, MessageEmbed } from "discord.js";
 import { QatAllUsersResponse, QatUser } from "../../types/qat";
 import getOpenBNsPerMode from "../../helpers/qat/getters/requestStatus/getOpenBNsPerMode";
 import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 
 export default {
-	send: (
+	reply: (
 		qatAllUsers: QatAllUsersResponse,
-		gamemode: string,
-		message: Message,
+		gamemode: string | undefined,
+		command: CommandInteraction,
 		guild: any
 	) => {
 		let openBNs: QatUser[] = [];
+
+		let parseUsergroupFromQatUser = (user: QatUser): string => {
+			let usergroup = "";
+			if (user.groups.includes("nat")) {
+				usergroup = "<:1nat:992500805527674940>";
+			} else if (
+				user.groups.includes("bn") &&
+				user.probationModes.length === 0
+			) {
+				usergroup = "<:2bn:992500782274457702>";
+			} else usergroup = "<:3probo:992500821591867442>";
+			return usergroup;
+		};
 
 		qatAllUsers.data.forEach((user: QatUser) => {
 			if (
@@ -37,11 +50,7 @@ export default {
 					`${getOpenBNsPerMode(openBNs, gamemode, "status")}`
 				)
 				.setFooter({
-					text: parseMessagePlaceholderFromString(
-						message,
-						guild,
-						`use \"{prefix}openbns\" to view all open BNs.`
-					),
+					text: `use \"/openbns\" to view all open BNs.`,
 				});
 		} else {
 			e.setAuthor({
@@ -69,14 +78,10 @@ export default {
 					`${getOpenBNsPerMode(openBNs, "catch", "link")}`,
 					true
 				)
-                .setFooter({
-					text: parseMessagePlaceholderFromString(
-						message,
-						guild,
-						`use \"{prefix}openbns <gamemode>\" to view more details.`
-					),
+				.setFooter({
+					text: `use \"/openbns <gamemode>\" to view more details.`,
 				});
 		}
-		message.channel.send({ embeds: [e] });
+		command.editReply({ embeds: [e] });
 	},
 };

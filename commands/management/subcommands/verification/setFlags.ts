@@ -31,6 +31,7 @@ export default {
 			return message.channel.send({ embeds: [CommandOptionInvalid] });
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		const validFlags = ["username"];
 
@@ -71,6 +72,8 @@ export default {
 		});
 
 		clearFlags.forEach((flag) => {
+			if (!guild) return;
+
 			guild.verification.targets[flag.target] = flag.value;
 		});
 

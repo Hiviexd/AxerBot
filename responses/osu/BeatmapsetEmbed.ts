@@ -1,4 +1,5 @@
 import {
+	CommandInteraction,
 	ContextMenuInteraction,
 	Message,
 	MessageActionRow,
@@ -309,11 +310,12 @@ export default {
 				});
 			});
 	},
-	sendInteraction: async (
+	reply: async (
 		beatmapset: Beatmapset,
 		beatmap_id: string,
-		interaction: ContextMenuInteraction,
-		mode: "osu" | "taiko" | "mania" | "fruits" | ""
+		interaction: ContextMenuInteraction | CommandInteraction,
+		mode: "osu" | "taiko" | "mania" | "fruits" | "",
+		ephemeral?: boolean
 	) => {
 		if (!beatmapset.beatmaps) return;
 		let index = 0;
@@ -470,7 +472,7 @@ export default {
 				allowedMentions: {
 					repliedUser: false,
 				},
-				ephemeral: true,
+				ephemeral: ephemeral || false,
 			})
 			.catch(console.error);
 	},

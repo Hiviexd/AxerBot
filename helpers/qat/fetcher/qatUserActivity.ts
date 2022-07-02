@@ -30,7 +30,7 @@ export async function userActivity(
 		);
 
 		return {
-			status: 200,
+			status: res ? 200 : 404,
 			data: res,
 		};
 	} catch (e: any) {

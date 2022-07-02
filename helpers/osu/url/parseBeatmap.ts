@@ -53,7 +53,7 @@ export default async (
 		}
 
 		if (interaction) {
-			BeatmapsetEmbed.sendInteraction(
+			BeatmapsetEmbed.reply(
 				chart.beatmapset.data,
 				data.beatmap_id,
 				interaction,

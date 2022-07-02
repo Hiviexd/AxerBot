@@ -20,10 +20,14 @@ export default {
 
 		if (!message.guild) return;
 
-		if (!message.member?.permissions.has("MANAGE_CHANNELS", true) && message.author.id !== ownerId)
+		if (
+			!message.member?.permissions.has("MANAGE_CHANNELS", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		const guild = await database.guilds.findOne({ _id: message.guildId });
+		if (!guild) return;
 
 		if (args.length == 0) return sendCurrentConfiguration();
 
@@ -108,15 +112,13 @@ export default {
 				);
 
 				return message.channel.send({
-					embeds: [
-						generateSuccessEmbed(
-							`✅ Logging disabled.`
-						),
-					],
+					embeds: [generateSuccessEmbed(`✅ Logging disabled.`)],
 				});
 			}
 		}
 		function sendCurrentConfiguration() {
+			if (!guild) return;
+
 			let ch: string = "";
 			if (guild.logging.channel == "") ch = "None";
 			else ch = `<#${guild.logging.channel}>`;
