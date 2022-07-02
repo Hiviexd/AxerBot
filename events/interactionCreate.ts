@@ -12,7 +12,11 @@ export default {
 	execute(bot: Client) {
 		bot.on("interactionCreate", async (interaction) => {
 			addPrivateRoles(interaction);
-			sendVerificationLink(interaction);
+
+			if (interaction.isButton()) {
+				await interaction.deferReply({ ephemeral: true });
+				sendVerificationLink(interaction);
+			}
 
 			if (interaction.isMessageContextMenu()) {
 				await interaction.deferReply({ ephemeral: true });
