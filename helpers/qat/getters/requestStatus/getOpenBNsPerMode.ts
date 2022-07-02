@@ -1,6 +1,17 @@
 import { QatUser } from "../../../../types/qat";
 import getRequestStatus from "./getRequestStatus";
 
+let parseUsergroupFromQatUser = (user: QatUser): string => {
+	let usergroup = "";
+	if (user.groups.includes("nat")) {
+		usergroup = "<:1nat:992500805527674940>"; 
+	} else if (user.groups.includes("bn") && user.probationModes.length === 0) {
+		usergroup = "<:2bn:992500782274457702>";
+	} else 
+		usergroup = "<:3probo:992500821591867442>";
+	return usergroup;
+}
+
 export default function getOpenBNsPerMode(
 	openBNs: QatUser[],
 	mode: string,
@@ -26,18 +37,18 @@ export default function getOpenBNsPerMode(
 			switch (type) {
 				case "link":
 					bns.push(
-						`${parseUsergroupFromQatUser(openBN)} [${
-							openBN.username
-						}](https://osu.ppy.sh/users/${openBN.osuId})`
 					);
 					break;
 				case "status":
 					bns.push(
+
 						`${parseUsergroupFromQatUser(openBN)} **[${
 							openBN.username
 						}](https://osu.ppy.sh/users/${
 							openBN.osuId
 						})** (${getRequestStatus(openBN)})`
+=======
+						`**${parseUsergroupFromQatUser(openBN)} [${openBN.username}](https://osu.ppy.sh/users/${openBN.osuId})** (${getRequestStatus(openBN)})`
 					);
 					break;
 				default:
@@ -45,5 +56,6 @@ export default function getOpenBNsPerMode(
 			}
 		}
 	}
+	
 	return bns.sort().join("\n");
 }
