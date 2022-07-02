@@ -15,7 +15,7 @@ export default {
 			sendVerificationLink(interaction);
 
 			if (interaction.isMessageContextMenu()) {
-				interaction.deferReply({ ephemeral: true });
+				await interaction.deferReply({ ephemeral: true });
 				osuInteractions(interaction);
 			}
 

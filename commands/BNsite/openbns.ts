@@ -45,7 +45,7 @@ export default {
 	},
 	category: "BNsite",
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
-		command.deferReply(); // ? prevent errors
+		await command.deferReply(); // ? prevent errors
 
 		let gamemode: string | undefined = undefined;
 
