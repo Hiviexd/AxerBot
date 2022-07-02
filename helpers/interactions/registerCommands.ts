@@ -2,9 +2,10 @@ import { Client } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { consoleLog, consoleCheck } from "../core/logger";
+import commands from "../../commands";
 
 export default (bot: Client) => {
-	const commands = [
+	const _commands: { [key: string]: any } = [
 		{
 			name: "Display player info",
 			type: 3,
@@ -23,7 +24,24 @@ export default (bot: Client) => {
 		},
 	];
 
-	const rest = new REST({ version: "9" }).setToken(process.env.TOKEN || "");
+	Object.keys(commands).forEach((command) => {
+		if (commands[command].config != undefined) {
+			let newCommand = {
+				name: commands[command].name,
+				description: commands[command].help.description,
+			};
+
+			newCommand = Object.assign(newCommand, commands[command].config);
+
+			_commands.push(newCommand);
+			consoleCheck(
+				"registerCommands",
+				`Command ${commands[command].name} queued!`
+			);
+		}
+	});
+
+	const rest = new REST({ version: "10" }).setToken(process.env.TOKEN || "");
 
 	(async () => {
 		try {
@@ -32,12 +50,19 @@ export default (bot: Client) => {
 				"Started refreshing application (/) commands."
 			);
 
-			await rest.put(
+			const commandsResponse: any = await rest.put(
 				Routes.applicationCommands(process.env.CLIENT_ID || ""),
 				{
-					body: commands,
+					body: _commands,
 				}
 			);
+
+			commandsResponse.forEach((command: any) => {
+				consoleCheck(
+					"registerCommands",
+					`Command ${command.name} registered!`
+				);
+			});
 
 			consoleCheck(
 				"ContextMenus",

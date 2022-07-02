@@ -15,18 +15,21 @@ export default {
 		syntax: "{prefix}cooldown `clear` `category (optional)`",
 	},
 	run: async (message: Message, args: string[]) => {
-
-		let updateDB = async () => {
-			await database.guilds.findOneAndUpdate(
-				{ _id: guild._id },
-				guild
-			);
-		}
-		
 		const categories = ["contests", "fun", "misc", "management", "osu"];
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 
-		if (!message.member?.permissions.has("ADMINISTRATOR") && message.author.id !== ownerId)
+		if (!guild) return;
+
+		async function updateDB() {
+			if (!guild) return;
+
+			await database.guilds.findOneAndUpdate({ _id: guild._id }, guild);
+		}
+
+		if (
+			!message.member?.permissions.has("ADMINISTRATOR") &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (args.length < 2) {
@@ -34,6 +37,8 @@ export default {
 
 			// ? Process provided categories
 			Object.keys(guild.cooldown).forEach((option) => {
+				if (!guild) return;
+
 				if (
 					categories.includes(option) &&
 					guild.cooldown[option].size != 0
@@ -47,9 +52,7 @@ export default {
 			if (configured.filter((c: any) => c.size != 0).length == 0)
 				return message.channel.send({
 					embeds: [
-						generateErrorEmbed(
-							`❗ No cooldowns are configured.`
-						),
+						generateErrorEmbed(`❗ No cooldowns are configured.`),
 					],
 				});
 
@@ -92,7 +95,11 @@ export default {
 				},
 			};
 
-			generateConfirmationEmbed(message, updateDB, "This will clear the current configuration for __**ALL CHANNELS**__ which **cannot** be undone.");
+			generateConfirmationEmbed(
+				message,
+				updateDB,
+				"This will clear the current configuration for __**ALL CHANNELS**__ which **cannot** be undone."
+			);
 		} else {
 			const requested = args[1].toLowerCase();
 
@@ -114,7 +121,11 @@ export default {
 					channels: [],
 				};
 
-				generateConfirmationEmbed(message, updateDB, `This will remove the category \`${requested}\` from the cooldown list.`);
+				generateConfirmationEmbed(
+					message,
+					updateDB,
+					`This will remove the category \`${requested}\` from the cooldown list.`
+				);
 			} else {
 				return message.channel.send({ embeds: [CommandOptionInvalid] });
 			}

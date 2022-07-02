@@ -16,10 +16,14 @@ export default {
 		if (!message.member) return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) && message.author.id !== ownerId)
+			!message.member.permissions.has("MANAGE_GUILD", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);
+
+		if (!guild) return;
 
 		if (guild.fun.mode != "custom")
 			return message.channel.send({
@@ -33,11 +37,7 @@ export default {
 		// ? Prevent add blank spaces
 		if (args.length < 1 || args.join(" ").trim() == "")
 			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ Provide a phrase to add."
-					),
-				],
+				embeds: [generateErrorEmbed("❗ Provide a phrase to add.")],
 			});
 
 		if (!message.guild) return;
@@ -52,11 +52,7 @@ export default {
 		);
 
 		message.channel.send({
-			embeds: [
-				generateSuccessEmbed(
-					`✅ Phrase added!`
-				),
-			],
+			embeds: [generateSuccessEmbed(`✅ Phrase added!`)],
 		});
 	},
 };

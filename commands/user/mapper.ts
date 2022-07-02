@@ -1,28 +1,50 @@
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapperEmbed from "../../responses/osu/MapperEmbed";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
+import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 
 export default {
 	name: "mapper",
 	help: {
 		description: "Displays mapper statistics of a user",
 		syntax: "{prefix}mapper `<user>`",
-		example: "{prefix}mapper `Hivie`\n {prefix}mapper <@341321481390784512>\n {prefix}mapper `HEAVENLY MOON`",
+		example:
+			"{prefix}mapper `Hivie`\n {prefix}mapper <@341321481390784512>\n {prefix}mapper `HEAVENLY MOON`",
 		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
 	},
 	category: "osu",
-	run: async (bot: Client, message: Message, args: Array<string>) => {
-		let { playerName, status } = await checkMessagePlayers(message, args);
+	interaction: true,
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "user",
+				description: "By user mention (This doesn't ping the user)",
+				type: 6,
+				max_value: 1,
+			},
+			{
+				name: "username",
+				description: "By osu! username",
+				type: 3,
+				max_value: 1,
+			},
+		],
+	},
+	run: async (bot: Client, command: CommandInteraction) => {
+		await command.deferReply();
+
+		let { playerName, status } = await checkCommandPlayers(command);
 
 		if (status != 200) return;
 
 		const mapper = await osuApi.fetch.user(encodeURI(playerName));
 
 		if (mapper.status != 200)
-			return message.channel.send({
+			return command.editReply({
 				embeds: [UserNotFound],
 			});
 
@@ -33,10 +55,10 @@ export default {
 		if (mapper_beatmaps.status != 200) return;
 
 		if (mapper_beatmaps.data.sets.length < 1)
-			return message.channel.send({
+			return command.editReply({
 				embeds: [UserNotMapper],
 			});
 
-		MapperEmbed.send(mapper, mapper_beatmaps, message);
+		MapperEmbed.reply(mapper, mapper_beatmaps, command);
 	},
 };

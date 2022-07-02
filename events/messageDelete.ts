@@ -10,9 +10,15 @@ export default {
 				if (message.author.bot) return;
 				if (message.channel.type === "DM") return;
 				if (!message.guild || !message.guild.channels) return;
-				const guild = await database.guilds.findOne({ _id: message.guild.id });
+				const guild = await database.guilds.findOne({
+					_id: message.guild.id,
+				});
+
+				if (!guild) return;
+
 				if (guild.logging.enabled === false) return;
-				if (!message.guild.channels.cache.get(guild.logging.channel)) return;
+				if (!message.guild.channels.cache.get(guild.logging.channel))
+					return;
 
 				const embed = new MessageEmbed()
 					.setColor("#ff5050")
@@ -33,7 +39,9 @@ export default {
 					}
 				}
 
-				const channel: any = message.guild.channels.cache.get(guild.logging.channel);
+				const channel: any = message.guild.channels.cache.get(
+					guild.logging.channel
+				);
 				if (!channel) return;
 
 				channel.send({ embeds: [embed] });

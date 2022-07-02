@@ -1,4 +1,10 @@
-import { Client, Message, MessageEmbed, User } from "discord.js";
+import {
+	Client,
+	CommandInteraction,
+	Message,
+	MessageEmbed,
+	User,
+} from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 
 export default {
@@ -9,34 +15,67 @@ export default {
 		example:
 			"{prefix}avatar\n {prefix}avatar @Hivie\n {prefix}avatar <userid>",
 	},
+	interaction: true,
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "user",
+				description: "Get avatar by user mention",
+				type: 6,
+				max_value: 1,
+			},
+			{
+				name: "id",
+				description: "Get avatar by user id",
+				type: 3,
+				max_value: 1,
+			},
+		],
+	},
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		const target = !isNaN(Number(args[0]))
-			? Number(args[0])
-			: message.mentions.users.first() || message.author;
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: string[]
+	) => {
+		interaction.deferReply(); // ? prevent errors
 
-		let user: User;
+		let user: User | undefined = undefined;
+		const idInput = interaction.options.get("id");
+		const userInput = interaction.options.get("user");
 
-		if (typeof target == "number") {
+		if (idInput && idInput.value) {
 			try {
-				user = await bot.users.fetch(target.toString());
+				user = await bot.users.fetch(idInput.value.toString());
 			} catch (e) {
-				return message.channel.send({ embeds: [UserNotFound] });
+				return interaction.editReply({ embeds: [UserNotFound] });
 			}
-		} else {
-			user = target;
 		}
+
+		if (userInput && userInput.value) {
+			try {
+				user = await bot.users.fetch(userInput.value?.toString());
+			} catch (e) {
+				return interaction.editReply({ embeds: [UserNotFound] });
+			}
+		}
+
+		if (!user) {
+			user = interaction.user;
+		}
+
 		const avatarEmbed = new MessageEmbed()
 			.setColor("#0099ff")
 			.setTitle(`${user.tag}'s avatar`)
 			.setImage(user.displayAvatarURL({ format: "png", dynamic: true }))
 			.setFooter(
-				`Requested by ${message.author.tag}`,
-				message.author.displayAvatarURL({
+				`Requested by ${interaction.user.tag}`,
+				interaction.user.displayAvatarURL({
 					format: "png",
 					dynamic: true,
 				})
 			);
-		message.channel.send({ embeds: [avatarEmbed] }).catch(console.error);
+		interaction.editReply({ embeds: [avatarEmbed] }).catch(console.error);
 	},
 };

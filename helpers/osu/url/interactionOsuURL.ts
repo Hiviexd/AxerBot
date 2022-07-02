@@ -22,9 +22,8 @@ export default async (interaction: Interaction, type: string) => {
 	});
 
 	if (links.length < 1)
-		return interaction.reply({
+		return interaction.editReply({
 			content: "This message does not have any osu! website url",
-			ephemeral: true,
 		});
 
 	switch (type) {
@@ -59,9 +58,8 @@ export default async (interaction: Interaction, type: string) => {
 	}
 
 	if (links.length < 1)
-		return interaction.reply({
+		return interaction.editReply({
 			content: `This message does not have any osu! ${type} url`,
-			ephemeral: true,
 		});
 
 	links.splice(1, 9999);

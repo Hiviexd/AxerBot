@@ -20,6 +20,7 @@ export default {
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		let guild = await database.guilds.findById(message.guildId);
+		if (!guild) return;
 
 		if (!message.guild) return;
 

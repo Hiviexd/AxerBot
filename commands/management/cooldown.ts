@@ -17,16 +17,28 @@ export default {
 	category: "management",
 	options: ["`?clear`", "`?remove`"],
 	run: async (bot: Client, message: Message, args: string[]) => {
-		const categories = ["contests", "fun", "misc", "management", "osu", "BNsite"]; // Get categories
+		const categories = [
+			"contests",
+			"fun",
+			"misc",
+			"management",
+			"osu",
+			"BNsite",
+		]; // Get categories
 
 		// !cooldown <channels> <categories> <cooldown> <increments>
 
 		if (!message.guild) return;
 
-		if (!message.member?.permissions.has("MANAGE_CHANNELS", true) && message.author.id !== ownerId)
+		if (
+			!message.member?.permissions.has("MANAGE_CHANNELS", true) &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		const guild = await database.guilds.findOne({ _id: message.guildId });
+
+		if (!guild) return;
 
 		if (args.length == 0) return sendCurrentConfiguration();
 
@@ -38,13 +50,13 @@ export default {
 		};
 
 		if (isNaN(params.size) || isNaN(params.increments) || params.size == 0)
-		message.channel.send({
-			embeds: [
-				generateErrorEmbed(
-					`❗ Invalid cooldown/increments size value. Provide a valid number.`
-				),
-			],
-		});
+			message.channel.send({
+				embeds: [
+					generateErrorEmbed(
+						`❗ Invalid cooldown/increments size value. Provide a valid number.`
+					),
+				],
+			});
 
 		if (params.channels.length < 1 || params.categories.length < 1)
 			return message.channel.send({
@@ -143,6 +155,8 @@ export default {
 				description: "Category | Length | Increments | Channels\n\n",
 			};
 
+			if (!guild) return;
+
 			// ? Support array to save configured categories
 			const configured: any[] = [];
 
@@ -167,11 +181,7 @@ export default {
 
 			if (configured.length < 1)
 				return message.channel.send({
-					embeds: [
-						generateErrorEmbed(
-							`❗ No cooldowns configured.`
-						),
-					],
+					embeds: [generateErrorEmbed(`❗ No cooldowns configured.`)],
 				});
 			// ? Generate embed configuration data
 			configured.forEach((option) => {

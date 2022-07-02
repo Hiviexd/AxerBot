@@ -1,6 +1,6 @@
 //TODO: add the ability to remove your latest reminder and clear all of your reminders
 
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 import * as database from "./../../database";
 import { consoleCheck } from "../../helpers/core/logger";
 import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
@@ -10,82 +10,120 @@ export default {
 	help: {
 		description: "Sets a reminder",
 		syntax: "{prefix}reminder `<time>`\n{prefix}reminder `<time>` `<message>`",
-        "time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",
-		example: "{prefix}reminder `30m` `Remind me to do something`\n{prefix}reminder `1d`",
+		"time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",
+		example:
+			"{prefix}reminder `30m` `Remind me to do something`\n{prefix}reminder `1d`",
+	},
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "time",
+				description: "Set the time for the reminder",
+				type: 3,
+				max_value: 1,
+				required: true,
+			},
+			{
+				name: "content",
+				description: "Reminder content",
+				type: 3,
+				max_value: 1,
+				required: true,
+			},
+		],
 	},
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		if (!message.guild) return;
-		const user = await database.users.findOne({ _id: message.author.id });
+	interaction: true,
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: string[]
+	) => {
+		interaction.deferReply(); // ? prevent errors
+
+		if (!interaction.guild) return;
+
+		const user = await database.users.findOne({ _id: interaction.user.id });
+
 		if (!user) return;
-        const guild = await database.guilds.findOne({ _id: message.guild.id });
-        if (!guild) return;
+		const guild = await database.guilds.findOne({
+			_id: interaction.guild.id,
+		});
+
+		if (!guild) return;
+
 		if (!user.reminders) user.reminders = [];
+
 		if (user.reminders.length >= 10)
-			return message.reply({
+			return interaction.editReply({
 				embeds: [
 					{
 						title: "❗ Reminder limit reached",
 						description: "You can only have 10 reminders at once.",
-                        color: "#ff5050",
+						color: "#ff5050",
 					},
 				],
 				allowedMentions: {
 					repliedUser: false,
 				},
 			});
-		if (args.length < 1)
-			return message.reply({
-				embeds: [
-                    {
-						title: "❌ Invalid syntax",
-						description: parseMessagePlaceholderFromString(
-                            message,
-                            guild,
-                            "Use \`{prefix}reminder <time> <message>\` to set a reminder."
-                        ),
-                        color: "#ff5050",
-					},
-				],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+
+		const timeInput = interaction.options.get("time");
+		const contentInput = interaction.options.get("content");
+
+		// ? This never will break, cuz all fields are required.
+		if (
+			!timeInput ||
+			!timeInput.value ||
+			!contentInput ||
+			!contentInput.value ||
+			!interaction.channel
+		)
+			return;
 
 		const re = /^[0-9]+[smhd]{1}$/g;
-		if (!re.test(args[0]))
-			return message.channel.send({
+
+		if (!re.test(timeInput.value.toString()))
+			return interaction.editReply({
 				embeds: [
 					{
-                        title: "❌ Invalid time format",
-                        description: parseMessagePlaceholderFromString(
-                            message,
-                            guild,
-                            "check \`{prefix}help reminder\` for more info."
-                        ),
-                        color: "#ff5050",
-                    },
+						title: "❌ Invalid time format",
+						description: "Use `/help reminder` to get help",
+						color: "#ff5050",
+					},
 				],
-                allowedMentions: {
+				allowedMentions: {
 					repliedUser: false,
 				},
 			});
 
-		const measure = args[0].substring(args[0].length - 1, args[0].length);
+		const measure = timeInput.value
+			.toString()
+			.substring(
+				timeInput.value.toString().length - 1,
+				timeInput.value.toString().length
+			);
 
-		let time = Number(args[0].substring(0, args[0].length - 1));
+		let time = Number(
+			timeInput.value
+				.toString()
+				.substring(0, timeInput.value.toString().length - 1)
+		);
 
 		let normalizedTime = "";
 
 		// Based off the delimiter, sets the time
 		switch (measure) {
 			case "s":
-				normalizedTime = time == 1 ? `${time} second` : `${time} seconds`;
+				normalizedTime =
+					time == 1 ? `${time} second` : `${time} seconds`;
 				time = time * 1000;
 				break;
 
 			case "m":
-				normalizedTime = time == 1 ? `${time} minute` : `${time} minutes`;
+				normalizedTime =
+					time == 1 ? `${time} minute` : `${time} minutes`;
 				time = time * 1000 * 60;
 				break;
 
@@ -100,59 +138,71 @@ export default {
 				break;
 
 			default:
-				normalizedTime = time == 1 ? `${time} second` : `${time} seconds`;
+				normalizedTime =
+					time == 1 ? `${time} second` : `${time} seconds`;
 				time = time * 1000;
 				break;
 		}
 
 		//set max allowed date to 2 years
 		if (time > 1000 * 60 * 60 * 24 * 365 * 2)
-			return message.reply({
+			return interaction.editReply({
 				embeds: [
 					{
-                        title: "❌ Invalid time format",
-                        description: "You can only set reminders for up to 2 years. (730 days)",
-                        color: "#ff5050",
-                    },
+						title: "❌ Invalid time format",
+						description:
+							"You can only set reminders for up to 2 years. (730 days)",
+						color: "#ff5050",
+					},
 				],
-                allowedMentions: {
+				allowedMentions: {
 					repliedUser: false,
 				},
 			});
-		const message_ = args.slice(1).join(" ");
+
+		const message_ = contentInput.value.toString().trim();
+
 		const reminder = {
 			time: new Date().getTime() + time,
 			message: message_,
-			channel: message.channel.id,
-			guild: message.guild.id,
+			channel: interaction.channel.id,
+			guild: interaction.guild.id,
 		};
 		user.reminders.push(reminder);
-		await database.users.updateOne({ _id: message.author.id }, { $set: { reminders: user.reminders } });
-		message.reply({
+
+		await database.users.updateOne(
+			{ _id: interaction.user.id },
+			{ $set: { reminders: user.reminders } }
+		);
+
+		interaction.editReply({
 			embeds: [
 				{
 					title: "✅ Reminder Set!",
 					fields: [
-                        {
-                            name: "Time",
-                            value: `${normalizedTime} (<t:${Math.trunc(reminder.time / 1000)}:R>)`,
-                        },
-                        {
-                            name: "Message",
-                            value: message_.length > 0 ? message_ : "*No message*",
-                        },
-                    ],
-                    color: "#1df27d",
+						{
+							name: "Time",
+							value: `${normalizedTime} (<t:${Math.trunc(
+								reminder.time / 1000
+							)}:R>)`,
+						},
+						{
+							name: "Message",
+							value:
+								message_.length > 0 ? message_ : "*No message*",
+						},
+					],
+					color: "#1df27d",
 				},
 			],
-            allowedMentions: {
-                repliedUser: false,
-            },
+			allowedMentions: {
+				repliedUser: false,
+			},
 		});
 
-        consoleCheck(
-            "reminder.ts",
-            `${message.author.tag} set a reminder in ${message.guild.name}`
-            );
+		consoleCheck(
+			"reminder.ts",
+			`${interaction.user.tag} set a reminder in ${interaction.guild.name}`
+		);
 	},
 };

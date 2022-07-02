@@ -28,6 +28,12 @@ export default async (
 		token: token,
 	};
 
+	if (!user_db)
+		return {
+			status: 404,
+			message: "user not found!",
+		};
+
 	if (
 		user_db.pending_verifications.find(
 			(v: IVerificationObject) => v.guild == user.guild.id

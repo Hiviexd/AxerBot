@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import commands from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
@@ -17,6 +17,8 @@ export default async function commandHandler(bot: Client, message: Message) {
 	if (guild == null) guild = await createNewGuild(message.guild);
 	if (user == null) await createNewUser(message.author);
 
+	if (!guild || !user) return;
+
 	if (!message.content.startsWith(guild.prefix)) return;
 
 	const args = message.content
@@ -26,6 +28,21 @@ export default async function commandHandler(bot: Client, message: Message) {
 	const requested_command = commands[args[0].toLowerCase()];
 
 	if (!requested_command) return;
+
+	const interactionEmbed = new MessageEmbed()
+		.setTitle("Oh, i forgot to tell you")
+		.setDescription(
+			"This command is avaliable only with slash commands! I'm migrating all commands to slash commands. You can try it now, just type `/` and a popup will be shown."
+		)
+		.setCOlor("#ea6112");
+
+	if (requested_command.interaction)
+		return message.reply({
+			embeds: [interactionEmbed],
+			allowedMentions: {
+				repliedUser: false,
+			},
+		});
 	/*
 		return message.channel.send({
 			embeds: [CommandNotFound],

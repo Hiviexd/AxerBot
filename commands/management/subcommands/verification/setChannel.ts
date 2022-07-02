@@ -27,10 +27,13 @@ export default {
 
 		if (!channel || channel.type != "GUILD_TEXT")
 			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ You need to mention a channel.")],
+				embeds: [
+					generateErrorEmbed("❗ You need to mention a channel."),
+				],
 			});
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		guild.verification.enable = true;
 		guild.verification.channel = channel.id;

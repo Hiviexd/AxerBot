@@ -11,14 +11,17 @@ export default async (interaction: Interaction) => {
 		"Display comment info": "comment",
 	};
 
+	interaction.deferReply({
+		ephemeral: true,
+	});
+
 	try {
 		interactionOsuURL(interaction, types[interaction.commandName]);
 	} catch (e) {
 		console.error(e);
 
-		interaction.reply({
+		interaction.editReply({
 			content: "Sorry something is wrong...",
-			ephemeral: true,
 		});
 	}
 };

@@ -98,7 +98,6 @@ export default {
 				},
 				embeds: [embed],
 				components: [buttons],
-				ephemeral: true,
 			})
 			.catch(console.error);
 	},

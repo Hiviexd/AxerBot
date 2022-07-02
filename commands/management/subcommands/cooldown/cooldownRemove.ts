@@ -14,18 +14,21 @@ export default {
 		syntax: "{prefix}cooldown `remove` `<channel>` `<category>`",
 	},
 	run: async (message: Message, args: string[]) => {
-
-		let updateDB = async () => {
-			await database.guilds.findOneAndUpdate(
-				{ _id: guild._id },
-				guild
-			);
-		}
-		
 		let guild = await database.guilds.findOne({ _id: message.guildId });
 		const categories = ["contests", "fun", "misc", "management", "osu"];
 
-		if (!message.member?.permissions.has("ADMINISTRATOR") && message.author.id !== ownerId)
+		if (!guild) return;
+
+		async function updateDB() {
+			if (!guild) return;
+
+			await database.guilds.findOneAndUpdate({ _id: guild._id }, guild);
+		}
+
+		if (
+			!message.member?.permissions.has("ADMINISTRATOR") &&
+			message.author.id !== ownerId
+		)
 			return message.channel.send({ embeds: [MissingPermissions] });
 
 		if (!args[0] || !args[1])
@@ -65,7 +68,7 @@ export default {
 			return message.channel.send({
 				embeds: [
 					generateErrorEmbed(
-						`❗ The category \`${category}\` does not have any channel called \`${channel.name}\`!` 
+						`❗ The category \`${category}\` does not have any channel called \`${channel.name}\`!`
 					),
 				],
 			});

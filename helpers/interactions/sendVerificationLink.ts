@@ -16,9 +16,8 @@ export default async (interaction: Interaction) => {
 	if (targets[0] != "verification") return;
 
 	if (interaction.user.id != targets[1])
-		return interaction.reply({
+		return interaction.editReply({
 			content: `**You're not allowed to use this!**`,
-			ephemeral: true,
 		});
 
 	if (!interaction.guild) return;
@@ -27,14 +26,15 @@ export default async (interaction: Interaction) => {
 
 	if (!user_db == null) user_db = await createNewUser(interaction.user);
 
+	if (!user_db) return;
+
 	const verification = user_db.pending_verifications.find(
 		(v: IVerificationObject) => v.guild == targets[2]
 	);
 
 	if (!verification)
-		return interaction.reply({
+		return interaction.editReply({
 			content: `**You don't have any pending verification here... If this is an error, leave and join the server again!**`,
-			ephemeral: true,
 		});
 
 	// ? Message that will be sent in user dm
@@ -56,9 +56,8 @@ export default async (interaction: Interaction) => {
 		}),
 	]);
 
-	interaction.reply({
+	interaction.editReply({
 		embeds: [embed],
 		components: [buttons],
-		ephemeral: true,
 	});
 };

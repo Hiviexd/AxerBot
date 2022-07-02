@@ -29,6 +29,7 @@ export default {
 			});
 
 		let guild = await guilds.findById(message.guildId);
+		if (!guild) return;
 
 		guild.verification.message = new_message;
 

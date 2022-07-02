@@ -179,7 +179,6 @@ export default {
 				allowedMentions: {
 					repliedUser: false,
 				},
-				ephemeral: true,
 			})
 			.catch(console.error);
 	},

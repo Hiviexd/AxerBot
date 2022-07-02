@@ -8,7 +8,7 @@ import "./helpers/osu/fetcher/startConnection";
 import keepAlive from "./server";
 import { consoleCheck } from "./helpers/core/logger";
 import eventHandler from "./helpers/core/eventHandler";
-import registerContextMenuInteractions from "./helpers/interactions/registerContextMenuInteractions";
+import registerCommands from "./helpers/interactions/registerCommands";
 
 const bot = new Client({
 	intents: [
@@ -27,6 +27,6 @@ keepAlive();
 
 bot.login(token).then(() => {
 	eventHandler(bot);
-	registerContextMenuInteractions(bot);
+	registerCommands(bot);
 	consoleCheck("index.ts", "Running and listening to commands!");
 });

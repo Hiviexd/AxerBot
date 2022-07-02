@@ -22,9 +22,8 @@ export default async (interaction: Interaction) => {
 		);
 
 		if (!member)
-			return interaction.reply({
+			return interaction.editReply({
 				content: "Sorry, i can't add roles for you rn.",
-				ephemeral: true,
 			});
 
 		member.roles.add(roles[interaction.values[0]]);
@@ -35,20 +34,18 @@ export default async (interaction: Interaction) => {
 				member.roles.remove(roles[role]);
 		});
 
-		return interaction.reply({
+		return interaction.editReply({
 			content: `You're a ${interaction.values[0]} now, ${
 				member.nickname || interaction.user.username
 			}!`,
-			ephemeral: true,
 		});
 	} catch (e) {
 		console.error(e);
 
 		if (!interaction.isSelectMenu()) return;
 
-		return interaction.reply({
+		return interaction.editReply({
 			content: "Sorry, i can't add roles for you rn.",
-			ephemeral: true,
 		});
 	}
 };

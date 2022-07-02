@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 
 export default {
 	name: "ping",
@@ -6,8 +6,18 @@ export default {
 		description: "Pong?",
 		example: "{prefix}ping",
 	},
+	config: {
+		type: 1,
+	},
+	interaction: true,
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		return message.channel.send("`" + bot.ws.ping + " ms`");
+	run: async (
+		bot: Client,
+		interaction: CommandInteraction,
+		args: string[]
+	) => {
+		interaction.deferReply(); // ? prevent errors
+
+		return interaction.editReply("`" + bot.ws.ping + " ms`");
 	},
 };

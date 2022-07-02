@@ -15,6 +15,9 @@ export default {
 				const guild = await database.guilds.findOne({
 					_id: member.guild.id,
 				});
+
+				if (!guild) return;
+
 				if (guild.logging.enabled === false) return;
 				if (!member.guild.channels.cache.get(guild.logging.channel))
 					return;

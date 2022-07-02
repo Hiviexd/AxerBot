@@ -2,7 +2,7 @@
  * ! Currently not indexed (unusable) until it's fully finished
  */
 import axios from "axios";
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, CommandInteraction, Message, MessageEmbed } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -15,6 +15,7 @@ import getEmoji from "../../helpers/text/getEmoji";
 import RecentScoreEmbed from "../../responses/osu/RecentScoreEmbed";
 import { GameModeName } from "../../types/game_mode";
 import { Score } from "../../types/score";
+import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 
 export default {
 	name: "recent",
@@ -24,49 +25,60 @@ export default {
 		example: "{prefix}player `sebola` `-osu`\n {prefix}player `@hivie` ",
 	},
 	category: "osu",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		const params = getTraceParams(args, "-osu", 1, [
-			"-osu",
-			"-taiko",
-			"-mania",
-			"-catch",
-		])[0];
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "user",
+				description: "By user mention (This doesn't ping the user)",
+				type: 6,
+				max_value: 1,
+			},
+			{
+				name: "username",
+				description: "By username",
+				type: 3,
+				max_value: 1,
+			},
+			{
+				name: "mode",
+				description: "Game mode info to view",
+				type: 3,
+				max_value: 1,
+				choices: [
+					{
+						name: "osu",
+						value: "osu",
+					},
+					{
+						name: "taiko",
+						value: "taiko",
+					},
+					{
+						name: "catch",
+						value: "fruits",
+					},
+					{
+						name: "mania",
+						value: "mania",
+					},
+				],
+			},
+		],
+	},
+	interaction: true,
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
 
-		let mode: string | undefined = undefined;
+		const modeInput = command.options.get("mode");
+		const mode = modeInput ? modeInput.value?.toString() : undefined;
 
-		switch (params) {
-			case "-osu": {
-				mode = "osu";
-
-				args.pop();
-				break;
-			}
-			case "-taiko": {
-				mode = "taiko";
-
-				args.pop();
-				break;
-			}
-			case "-catch": {
-				mode = "fruits";
-
-				args.pop();
-				break;
-			}
-			case "-mania": {
-				mode = "mania";
-
-				args.pop();
-				break;
-			}
-		}
-
-		let { playerName, status } = await checkMessagePlayers(message, args);
+		let { playerName, status } = await checkCommandPlayers(command);
 
 		const player = await osuApi.fetch.user(playerName);
 
 		if (player.status != 200)
-			return message.reply({
+			return command.editReply({
 				embeds: [UserNotFound],
 				allowedMentions: {
 					repliedUser: false,
@@ -79,7 +91,7 @@ export default {
 		);
 
 		if (status != 200)
-			return message.reply({
+			return command.editReply({
 				embeds: [UserNotFound],
 				allowedMentions: {
 					repliedUser: false,
@@ -92,13 +104,13 @@ export default {
 			!recent.data[0].beatmapset ||
 			!recent.data[0].beatmap
 		)
-			return message.reply({
+			return command.editReply({
 				content: `**${player.data.username}** doesn't have any recent score`,
 				allowedMentions: {
 					repliedUser: false,
 				},
 			});
 
-		RecentScoreEmbed.send(message, recent.data[0], player.data);
+		RecentScoreEmbed.reply(command, recent.data[0], player.data);
 	},
 };
