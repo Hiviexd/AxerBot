@@ -34,7 +34,7 @@ export default async function commandHandler(bot: Client, message: Message) {
 		.setDescription(
 			"This command is avaliable only with slash commands! I'm migrating all commands to slash commands. You can try it now, just type `/` and a popup will be shown."
 		)
-		.setCOlor("#ea6112");
+		.setColor("#ea6112");
 
 	if (requested_command.interaction)
 		return message.reply({
