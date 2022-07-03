@@ -32,7 +32,7 @@ export default async function commandHandler(bot: Client, message: Message) {
 	const interactionEmbed = new MessageEmbed()
 		.setTitle("Oh, I forgot to tell you")
 		.setDescription(
-			`This command is only available with slash commands! I'm migrating all commands to slash. You can try it now, just type  \`/\` and a popup will be shown.\n\nUse \`${guild.prefix}help\` to see which commands support the old prefix, and which that support slash.`
+			`This command is only available with slash commands! I'm migrating all commands to slash. You can try it now, just type \`/\` and a popup will be shown.\n\nUse \`${guild.prefix}help\` to see which commands support the old prefix, and which that support slash.`
 		)
 		.setColor("#ea6112");
 
