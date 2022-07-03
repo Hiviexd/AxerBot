@@ -22,9 +22,9 @@ export default function getOpenBNsPerMode(
 			switch (type) {
 				case "link":
 					bns.push(
-						`${parseUsergroupFromQatUser(openBN)} [${
+						`${parseUsergroupFromQatUser(openBN)} ${
 							openBN.username
-						}](https://osu.ppy.sh/users/${openBN.osuId})`
+						}`
 					);
 					break;
 				case "status":
