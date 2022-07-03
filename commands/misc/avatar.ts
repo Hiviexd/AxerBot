@@ -21,7 +21,7 @@ export default {
 		options: [
 			{
 				name: "user",
-				description: "Get avatar by user mention",
+				description: "Get avatar by user mention (won't ping the user)",
 				type: 6,
 				max_value: 1,
 			},

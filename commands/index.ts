@@ -32,6 +32,7 @@ import reminder from "./misc/reminder";
 import bn from "./BNsite/bn";
 import invite from "./misc/invite";
 import openbns from "./BNsite/openbns";
+import heardle from "./fun/heardle";
 
 const commands: any = {
 	ping: ping,
@@ -68,6 +69,7 @@ const commands: any = {
 	bn: bn,
 	invite: invite,
 	openbns: openbns,
+	heardle: heardle,
 };
 
 export default commands;

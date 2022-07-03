@@ -64,7 +64,6 @@ export default {
 
 			// ? Parse category commands
 			categories.forEach((category) => {
-				console.log(category);
 				fields.push({
 					name: category,
 					value: getCategoryCommands(category),
@@ -76,7 +75,13 @@ export default {
 
 				commands_array.forEach((command: any) => {
 					if (command.category == category)
-						return c.push(`\`${command.name}\``);
+						return c.push(
+							`\`${
+								command.interaction
+									? "/".concat(command.name)
+									: command.name
+							}\``
+						);
 				});
 
 				return c.join(", ");
@@ -84,7 +89,8 @@ export default {
 
 			const embed = new MessageEmbed({
 				title: "List of avaliable commands",
-				description: `Use \`${guild.prefix}help <command>\` to see how a specific command works.`,
+				description: `Use \`${guild.prefix}help <command>\` to see how a specific command works.
+								If the command has a  \`/\` prefix, that's a slash command, and it cannot be used anymore with the\`${guild.prefix}\` prefix!`,
 				color: "#f45592",
 				fields: fields,
 			});

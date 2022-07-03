@@ -19,4 +19,12 @@ export default new Schema({
 		type: Array,
 		default: [],
 	},
+	heardle: {
+		type: Object,
+		default: {
+			active: false,
+			guild: 0,
+			channel: 0,
+		},
+	},
 });
