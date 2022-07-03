@@ -15,6 +15,7 @@ import osuApi from "../../helpers/osu/fetcher/osuApi";
 import moment from "moment";
 import relativeTime from "../../helpers/general/relativeTime";
 import crypto from "crypto";
+import truncateString from "../../helpers/text/truncateString";
 
 export default {
 	name: "heardle",
@@ -281,7 +282,10 @@ export default {
 				menu.setOptions();
 				sortedMaps.forEach((map) => {
 					menu.addOptions({
-						label: `${map.title} - ${map.artist} `,
+						label: truncateString(
+							`${map.title} - ${map.artist}`,
+							100
+						),
 						value: map.title,
 					});
 				});
