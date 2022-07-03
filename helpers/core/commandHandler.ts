@@ -30,9 +30,9 @@ export default async function commandHandler(bot: Client, message: Message) {
 	if (!requested_command) return;
 
 	const interactionEmbed = new MessageEmbed()
-		.setTitle("Oh, i forgot to tell you")
+		.setTitle("Oh, I forgot to tell you")
 		.setDescription(
-			"This command is avaliable only with slash commands! I'm migrating all commands to slash commands. You can try it now, just type `/` and a popup will be shown."
+			`This command is only available with slash commands! I'm migrating all commands to slash. You can try it now, just type  \`/\` and a popup will be shown.\n\nUse \`${guild.prefix}help\` to see which commands support the old prefix, and which that support slash.`
 		)
 		.setColor("#ea6112");
 

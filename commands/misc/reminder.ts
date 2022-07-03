@@ -40,7 +40,7 @@ export default {
 		interaction: CommandInteraction,
 		args: string[]
 	) => {
-		interaction.deferReply(); // ? prevent errors
+		await interaction.deferReply(); // ? prevent errors
 
 		if (!interaction.guild) return;
 
