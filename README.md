@@ -8,7 +8,7 @@ A general-purpose and powerful Discord bot with osu! features related to mapping
 
 ## About
 
-This bot contains many features that makes your life easier as an osu! Discord server owner, moderdator or member, including:
+This bot contains many features that makes your life easier as an osu! Discord server owner, moderator or member, including:
 
 - Message purging
 - Sending messages as the bot user
@@ -20,15 +20,15 @@ This bot contains many features that makes your life easier as an osu! Discord s
 - Clickable osu! timestamps
 <img src ="https://bns.are-la.me/992SNJv.png" width="488" />
 
-- Automatic beatmap discussion and comment embeds.
+- Automatic beatmap discussion and comment embeds
 <img src ="https://bns.are-la.me/9H5nUmX.png" width="700" />
 
 The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](https://bn.mappersguild.com/)'s interOp routes to provide you with multiple stats and management systems such as:
 
-- An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server.
+- An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server
 <img src ="https://bns.are-la.me/3yBn2uk.png" width="700" />
 
-- Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website.
+- Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website
 <img src ="https://bns.are-la.me/9HixUXZ.png" width="700" />
 
 ## Usage
