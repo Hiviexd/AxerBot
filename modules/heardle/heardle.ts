@@ -19,7 +19,7 @@ export default async (input: SelectMenuInteraction) => {
 		`Processing heardle for ${input.user.tag} (${input.user.id}) on ${input.guild?.name} (${input.guildId}) | ${input.customId}`
 	);
 
-	await input.deferReply();
+	await input.deferUpdate();
 	const heardleId = input.customId;
 
 	const heardle = await heardles.findById(heardleId);
@@ -71,6 +71,7 @@ export default async (input: SelectMenuInteraction) => {
 		await input.editReply({
 			content: `<@${input.user.id}> Loading next map...`,
 			embeds: [embed],
+			components: [],
 			files: [],
 		});
 
@@ -89,16 +90,7 @@ export default async (input: SelectMenuInteraction) => {
 			`heardle`,
 			`Heardle reply for ${input.user.tag} (${input.user.id}) on ${input.guild?.name} (${input.guildId}) | ${input.customId} ||| >> ${answer}`
 		);
-	} else {
-		await input.editReply({
-			content: "Nop, try again.",
-		});
-
-		setTimeout(() => {
-			input.deleteReply();
-		}, 3000);
 	}
-
 	async function updateLevel() {
 		consoleLog(
 			`heardle`,
@@ -106,6 +98,8 @@ export default async (input: SelectMenuInteraction) => {
 		);
 
 		if (!heardle) return;
+
+		input.editReply({ components: [] });
 
 		const level = heardle.difficulty + 1;
 		validIndexes = [
