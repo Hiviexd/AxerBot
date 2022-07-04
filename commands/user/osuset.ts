@@ -75,10 +75,12 @@ export default {
 		user.osu.username = username;
 		user.osu.embed = embed;
 
+		await database.users.findByIdAndUpdate(user._id, user);
+
 		command.editReply({
 			embeds: [
 				generateSuccessEmbed(
-					`Username\`: ${user.osu.username}\n\`Embed\`: ${user.osu.embed}`
+					`\`Username\`: ${user.osu.username}\n\`Embed\`: ${user.osu.embed}`
 				),
 			],
 		});

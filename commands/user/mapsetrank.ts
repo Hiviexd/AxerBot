@@ -102,6 +102,11 @@ export default {
 					);
 				});
 
+				decorator = {
+					title: "Most favorited beatmaps", // ? {username} | Most played beatmaps
+					emoji: "❤", // ? {position} . {beatmap_link} | ▶
+				};
+
 				break;
 			}
 			case "play_count": {
