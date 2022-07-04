@@ -16,6 +16,7 @@ async function listen() {
 	try {
 		let _t = await axios("https://osu.ppy.sh/oauth/token", {
 			method: "post",
+			timeout: 999999,
 			headers: {
 				"Content-Type": "application/json",
 			},

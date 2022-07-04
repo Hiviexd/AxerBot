@@ -6,6 +6,7 @@ import addPrivateRoles from "../helpers/interactions/addPrivateRoles";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
 import osuInteractions from "../helpers/interactions/osuInteractions";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
+import heardle from "../modules/heardle/heardle";
 
 export default {
 	name: "interactionCreate",
@@ -25,6 +26,12 @@ export default {
 
 			if (interaction.isCommand()) {
 				slashCommandHandler(bot, interaction);
+			}
+
+			if (interaction.isSelectMenu()) {
+				if (interaction.customId.split("|")[0] == "heardle") {
+					heardle(interaction);
+				}
 			}
 		});
 	},
