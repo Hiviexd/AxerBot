@@ -50,7 +50,7 @@ export default {
 		};
 
 		if (isNaN(params.size) || isNaN(params.increments) || params.size == 0)
-			message.channel.send({
+			return message.channel.send({
 				embeds: [
 					generateErrorEmbed(
 						`❗ Invalid cooldown/increments size value. Provide a valid number.`
