@@ -4,10 +4,10 @@ import getRequestStatus from "./getRequestStatus";
 let parseUsergroupFromQatUser = (user: QatUser): string => {
 	let usergroup = "";
 	if (user.groups.includes("nat")) {
-		usergroup = "<:1nat:992500805527674940>";
+		usergroup = "🟠";
 	} else if (user.groups.includes("bn") && user.probationModes.length === 0) {
-		usergroup = "<:2bn:992500782274457702>";
-	} else usergroup = "<:3probo:992500821591867442>";
+		usergroup = "🟣";
+	} else usergroup = "⚪";
 	return usergroup;
 };
 
@@ -22,9 +22,9 @@ export default function getOpenBNsPerMode(
 			switch (type) {
 				case "link":
 					bns.push(
-						`${parseUsergroupFromQatUser(openBN)} ${
+						`${parseUsergroupFromQatUser(openBN)} [${
 							openBN.username
-						}`
+						}](https://osu.ppy.sh/users/${openBN.osuId})`
 					);
 					break;
 				case "status":
