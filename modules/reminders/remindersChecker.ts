@@ -6,7 +6,6 @@ import moment from "moment";
 import { Client, TextChannel } from "discord.js";
 import * as database from "../../database";
 import { consoleCheck } from "../../helpers/core/logger";
-import { findIndex } from "lodash";
 
 export interface IReminder {
 	time: moment.MomentInput;
@@ -16,7 +15,7 @@ export interface IReminder {
 }
 
 const queue: string[] = [];
-export default async (bot: Client) => {
+async function remindersChecker(bot: Client) {
 	let users = await database.users.find();
 
 	for (const user of users) {
@@ -59,4 +58,10 @@ export default async (bot: Client) => {
 			}
 		}
 	}
-};
+
+	setTimeout(() => {
+		remindersChecker(bot);
+	}, 1000);
+}
+
+export default remindersChecker;
