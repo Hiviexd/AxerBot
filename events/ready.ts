@@ -17,17 +17,15 @@ export default {
 
 			//? Sets and updates the status of the bot every minute
 			serverCountInStatus(bot, bot_user);
-			
+
 			setInterval(() => {
 				serverCountInStatus(bot, bot_user);
-			}
-			, 60000);
+			}, 60000);
 
-			//? checks for reminders every 3 seconds
+			//? checks for reminders every 1 second
 			setInterval(() => {
 				remindersChecker(bot);
-			}
-			, 3000);
+			}, 1000);
 		});
 	},
 };

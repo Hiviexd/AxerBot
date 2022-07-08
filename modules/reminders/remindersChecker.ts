@@ -15,16 +15,18 @@ export interface IReminder {
 	message: any;
 }
 
+const queue: string[] = [];
 export default async (bot: Client) => {
 	let users = await database.users.find();
 
 	for (const user of users) {
-		if (user.reminders.length > 0) {
+		if (user.reminders.length > 0 && !queue.includes(user._id)) {
 			const validReminders = user.reminders.filter(
 				(r: IReminder) => moment().diff(moment(r.time), "seconds") >= 0
 			);
 
 			for (const reminder of validReminders) {
+				queue.push(user._id);
 				let guild = bot.guilds.cache.get(reminder.guild);
 
 				if (guild) {
@@ -50,6 +52,8 @@ export default async (bot: Client) => {
 
 						user.reminders.splice(reminderIndex, 1);
 						await database.users.findByIdAndUpdate(user._id, user);
+						const queue_index = queue.indexOf(user._id);
+						queue.splice(queue_index, 1);
 					}
 				}
 			}
