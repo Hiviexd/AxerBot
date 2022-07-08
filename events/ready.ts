@@ -23,9 +23,8 @@ export default {
 			}, 60000);
 
 			//? checks for reminders every 1 second
-			setInterval(() => {
-				remindersChecker(bot);
-			}, 1000);
+
+			remindersChecker(bot);
 		});
 	},
 };
