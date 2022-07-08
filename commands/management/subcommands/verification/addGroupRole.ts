@@ -9,22 +9,20 @@ export default {
 	name: "grouprole",
 	group: "add",
 	help: {
-		description: "Set the roles that accounts with X user tag will recive",
-		syntax: "{prefix}verification `grouproles` `<Group>,<Role Id|Role Mention>,<Modes (followed by dots)>`",
-		example:
-			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`\n{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890,taiko.mania`",
+		description: "Sets the roles that users with X usergroups will recieve",
+		syntax: "/verification `add grouprole` `group:<Group Name>` `role:<Role Id|Role Mention>` `[modes_1:<modes> ...]`",
 		groups: [
 			"`DEV`: osu!dev",
 			"`SPT`: Support Team",
 			"`NAT`: Nomination Assessment Team",
 			"`BN`: Beatmap Nominators",
-			"`PBN`: (Probation BNs)",
+			"`PBN`: Probationary BNs",
 			"`GMT`: Global Moderation Team",
 			"`LVD`: Project Loved",
 			"`ALM`: Alumni",
 		],
 		modes: [
-			"`osu`: osu!standard",
+			"`osu`: osu!",
 			"`taiko`: osu!taiko",
 			"`fruits`: osu!catch",
 			"`mania`: osu!mania",

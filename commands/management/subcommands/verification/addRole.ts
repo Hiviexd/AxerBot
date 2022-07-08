@@ -9,27 +9,10 @@ export default {
 	name: "role",
 	group: "add",
 	help: {
-		description: "Set the roles that accounts with X user tag will recive",
-		syntax: "{prefix}verification `grouproles` `<Group>,<Role Id|Role Mention>,<Modes (followed by dots)>`",
+		description: "Adds a role to the default verification role(s) of the server",
+		syntax: "/verification `add role` `target_role:<Role Id|Role Mention>`",
 		example:
-			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`\n{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890,taiko.mania`",
-		groups: [
-			"`DEV`: osu!dev",
-			"`SPT`: Support Team",
-			"`NAT`: Nomination Assessment Team",
-			"`BN`: Beatmap Nominators",
-			"`PBN`: (Probation BNs)",
-			"`GMT`: Global Moderation Team",
-			"`LVD`: Project Loved",
-			"`ALM`: Alumni",
-		],
-		modes: [
-			"`osu`: osu!standard",
-			"`taiko`: osu!taiko",
-			"`fruits`: osu!catch",
-			"`mania`: osu!mania",
-			"`none`: This is for groups without modes, like LVD",
-		],
+			"/verification `add role` `target_role:@Verified`",
 	},
 	run: async (command: CommandInteraction, args: string[]) => {
 		if (!command.member || !command.guild || !command.client.user) return;

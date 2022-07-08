@@ -12,10 +12,10 @@ export default {
 	help: {
 		description:
 			"Set which data that will be replaced with the osu! user data.",
-		syntax: "{prefix}verification `flags` `<flag>,<value>`",
-		example: "{prefix}verification `flags` `username,true`",
+		syntax: "/verification `set flags` `flag:<flag>` `status:<enable|disable>`",
+		example: "/verification `set flags` `flag:username` `status:enable`",
 		"avaliable flags": [
-			"`username,<true|false>`: Set the user's discord nickname to match their osu! username",
+			"`username, <enable|disable>`: Set the user's discord nickname to match their osu! username",
 		],
 	},
 	run: async (command: CommandInteraction, args: string[]) => {

@@ -10,9 +10,9 @@ export default {
 	group: "set",
 	help: {
 		description:
-			"Sets the channel for the system (this will enable the system)",
-		syntax: "{prefix}verification `channel` `#channel`",
-		example: "{prefix}verification `channel` `#arrival`",
+			"Sets the channel for the system",
+		syntax: "/verification `set channel` `text_channel:<channel>`",
+		example: "/verification `set channel` `text_channel:#arrival`",
 	},
 	run: async (command: CommandInteraction, args: string[]) => {
 		if (!command.member) return;

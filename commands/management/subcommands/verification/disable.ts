@@ -10,8 +10,7 @@ export default {
 	group: "set",
 	help: {
 		description: "Disable the system manually",
-		syntax: "{prefix}verification `channel` `#channel`",
-		example: "{prefix}verification `channel` `#arrival`",
+		syntax: "/verification `set disabled`",
 	},
 	run: async (command: CommandInteraction, args: string[]) => {
 		if (!command.member) return;

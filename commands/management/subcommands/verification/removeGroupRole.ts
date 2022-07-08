@@ -9,10 +9,8 @@ export default {
 	name: "grouprole",
 	group: "remove",
 	help: {
-		description: "Set the roles that accounts with X user tag will recive",
-		syntax: "{prefix}verification `grouproles` `<Group>,<Role Id|Role Mention>,<Modes (followed by dots)>`",
-		example:
-			"{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890`\n{prefix}verification `grouproles` `BN,@Beatmap Nominators ALM,1234567890,taiko.mania`",
+		description: "removes a role from a usergroup",
+		syntax: "/verification `remove grouprole` `group:<Group Name>` `role:<Role Id|Role Mention>` `[modes_1:<modes> ...]`",
 		groups: [
 			"`DEV`: osu!dev",
 			"`SPT`: Support Team",

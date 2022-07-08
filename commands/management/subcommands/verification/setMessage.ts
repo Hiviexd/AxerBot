@@ -17,8 +17,10 @@ export default {
 	name: "message",
 	group: "set",
 	help: {
-		description: "Set the message that will be sent on the system channel",
-		syntax: "{prefix}verification `message` `Welcome to the server!`",
+		description: "Set the message that will be sent on the system channel (will open a popup that takes text input)",
+		syntax: "{prefix}verification `set message`",
+		placeholders: "`{member}` - a ping of the member that will be verified",
+		"example message": "Hello {member} and welcome to this server!",
 	},
 	run: async (command: CommandInteraction, args: string[]) => {
 		if (!command.member) return;
