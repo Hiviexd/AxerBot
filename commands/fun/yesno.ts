@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, CommandInteraction } from "discord.js";
 import { parseTextFile } from "../../helpers/text/processText";
 
 export default {
@@ -8,19 +8,28 @@ export default {
 		syntax: "{prefix}yesno `option`",
 		example: "{prefix}yesno `axer cringe?`",
 	},
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "question",
+				description: "Type your question here!",
+				type: 3,
+				required: true,
+			},
+		],
+	},
+	interaction: true,
 	category: "fun",
-	run: async (bot: Client, message: Message, args: string[]) => {
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
 		const phrases = await parseTextFile(
 			__dirname.concat("/../../responses/text/yesno.txt")
 		);
 
-		if (args.length < 1) {
-			message.channel.send("waht is your question you dumbass");
-			return;
-		}
-
 		const res = phrases[Math.floor(Math.random() * phrases.length)];
 
-		message.channel.send(res);
+		command.editReply(res);
 	},
 };

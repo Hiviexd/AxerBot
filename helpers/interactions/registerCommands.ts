@@ -70,6 +70,7 @@ export default (bot: Client) => {
 			);
 		} catch (error) {
 			console.error(error);
+			console.error(JSON.stringify(error));
 		}
 	})();
 };

@@ -1,42 +1,86 @@
-import { Message } from "discord.js";
+import {
+	Message,
+	CommandInteraction,
+	Modal,
+	TextInputComponent,
+	ModalActionRowComponent,
+	MessageActionRow,
+} from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import crypto from "crypto";
 
 export default {
-	name: "verification message",
-	trigger: ["message"],
+	name: "message",
+	group: "set",
 	help: {
 		description: "Set the message that will be sent on the system channel",
 		syntax: "{prefix}verification `message` `Welcome to the server!`",
 	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+	run: async (command: CommandInteraction, args: string[]) => {
+		if (!command.member) return;
+
+		if (typeof command.member?.permissions == "string") return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
+			!command.member.permissions.has("MANAGE_GUILD", true) &&
+			command.user.id !== ownerId
 		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+			return command.editReply({ embeds: [MissingPermissions] });
 
-		const new_message = args.join(" ");
+		let guild = await guilds.findById(command.guildId);
+		if (!guild)
+			return command.editReply(
+				"This guild isn't validated, try again after some seconds.."
+			);
 
-		if (new_message.trim() == "")
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ You need to set a message.")],
-			});
+		const modalId = crypto.randomBytes(15).toString("hex").slice(10);
+		const modal = new Modal()
+			.setTitle("Verification welcome message")
+			.setCustomId(modalId);
 
-		let guild = await guilds.findById(message.guildId);
-		if (!guild) return;
+		const textInput = new TextInputComponent()
+			.setLabel("Message")
+			.setStyle("PARAGRAPH")
+			.setValue(guild.verification.message)
+			.setCustomId("newWelcomeMessage");
 
-		guild.verification.message = new_message;
+		const firstTextInput =
+			new MessageActionRow<ModalActionRowComponent>().addComponents(
+				textInput
+			);
 
-		await guilds.findByIdAndUpdate(message.guildId, guild);
+		modal.addComponents(firstTextInput);
 
-		message.channel.send({
-			embeds: [generateSuccessEmbed("✅ Message updated.")],
-		});
+		await command.showModal(modal);
+
+		command.client.on(
+			"interactionCreate",
+			async (interaction): Promise<any> => {
+				if (!interaction.isModalSubmit()) return;
+				if (interaction.customId != modalId) return;
+
+				await interaction.deferReply();
+				const message =
+					interaction.fields.getField("newWelcomeMessage");
+
+				let guild = await guilds.findById(command.guildId);
+				if (!guild)
+					return interaction.editReply(
+						"This guild isn't validated, try again after some seconds.."
+					);
+
+				guild.verification.message = message.value;
+
+				await guilds.findByIdAndUpdate(command.guildId, guild);
+
+				interaction.editReply({
+					embeds: [generateSuccessEmbed("✅ Message changed!")],
+				});
+			}
+		);
 	},
 };

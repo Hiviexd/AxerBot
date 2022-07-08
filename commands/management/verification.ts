@@ -1,15 +1,17 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed, CommandInteraction } from "discord.js";
 import disable from "./subcommands/verification/disable";
 import enable from "./subcommands/verification/enable";
 import setChannel from "./subcommands/verification/setChannel";
 import setFlags from "./subcommands/verification/setFlags";
-import setGroupRoles from "./subcommands/verification/setGroupRoles";
 import setMessage from "./subcommands/verification/setMessage";
-import setRoles from "./subcommands/verification/setRoles";
+import addRole from "./subcommands/verification/addRole";
+import removeRole from "./subcommands/verification/removeRole";
 import { ownerId } from "../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { guilds } from "../../database";
 import parseMessagePlaceholderFromMember from "../../helpers/text/parseMessagePlaceholderFromMember";
+import addGroupRole from "./subcommands/verification/addGroupRole";
+import removeGroupRole from "./subcommands/verification/removeGroupRole";
 
 export default {
 	name: "verification",
@@ -21,6 +23,7 @@ export default {
 		\`roles\`: Set the roles that will be given to all verified users
 		\`grouproles\`: Set the roles that will be given to all verified users with X osu! usergroup (i.e BNs)
         \`message\`: Set the welcome message to send on the channel
+		\`channel\`: Set the welcome message to send on the channel
         \`enable\`: Enable the system manually.
         \`disable\`: Yep`,
 	},
@@ -28,26 +31,631 @@ export default {
 		setChannel,
 		setFlags,
 		setMessage,
-		setRoles,
-		setGroupRoles,
+		// setGroupRoles,
+		addRole,
+		removeRole,
+		removeGroupRole,
+		addGroupRole,
 		enable,
 		disable,
 	],
+	interaction: true,
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "status",
+				type: 1,
+				description: "Check current system status",
+			},
+			{
+				name: "add",
+				description: "Add some valuefrom module.",
+				type: 2,
+				max_value: 1,
+				options: [
+					{
+						name: "grouprole",
+						type: 1,
+						description: "Add a role for x user with x tag.",
+						options: [
+							{
+								name: "group",
+								type: 3,
+								description: "Target usergroup",
+								max_value: 1,
+								required: true,
+								choices: [
+									// "`DEV`: osu!dev",
+									// "`SPT`: Support Team",
+									// "`NAT`: Nomination Assessment Team",
+									// "`BN`: Beatmap Nominators",
+									// "`PBN`: (Probation BNs)",
+									// "`GMT`: Global Moderation Team",
+									// "`LVD`: Project Loved",
+									// "`ALM`: Alumni",
+									{
+										name: "osu!developer",
+										value: "DEV",
+									},
+									{
+										name: "osu!support",
+										value: "SPT",
+									},
+									{
+										name: "Nomination Assessment Team",
+										value: "NAT",
+									},
+									{
+										name: "Beatmap Nominator",
+										value: "BN",
+									},
+									{
+										name: "Beatmap Nominator (Probationary)",
+										value: "PBN",
+									},
+									{
+										name: "Global Moderator",
+										value: "GMT",
+									},
+									{
+										name: "Project Loved",
+										value: "LVD",
+									},
+									{
+										name: "Alumni",
+										value: "ALM",
+									},
+								],
+							},
+							{
+								name: "role",
+								type: 8,
+								description: "Role to remove.",
+								max_value: 1,
+								required: true,
+							},
+							{
+								name: "mode_1",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								required: true,
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_2",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_3",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_4",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_5",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+						],
+					},
+					{
+						name: "role",
+						type: 1,
+						description: "Add role to verified users.",
+						options: [
+							{
+								name: "target_role",
+								type: 8,
+								description:
+									"Verified users will recive this role.",
+							},
+						],
+					},
+				],
+			},
+			{
+				name: "remove",
+				description: "Remove some value from some module.",
+				type: 2,
+				max_value: 1,
+				options: [
+					{
+						name: "grouprole",
+						type: 1,
+						description: "Add a role for x user with x tag.",
+						options: [
+							{
+								name: "group",
+								type: 3,
+								description: "Target usergroup",
+								max_value: 1,
+								required: true,
+								choices: [
+									// "`DEV`: osu!dev",
+									// "`SPT`: Support Team",
+									// "`NAT`: Nomination Assessment Team",
+									// "`BN`: Beatmap Nominators",
+									// "`PBN`: (Probation BNs)",
+									// "`GMT`: Global Moderation Team",
+									// "`LVD`: Project Loved",
+									// "`ALM`: Alumni",
+									{
+										name: "osu!developer",
+										value: "DEV",
+									},
+									{
+										name: "osu!support",
+										value: "SPT",
+									},
+									{
+										name: "Nomination Assessment Team",
+										value: "NAT",
+									},
+									{
+										name: "Beatmap Nominator",
+										value: "BN",
+									},
+									{
+										name: "Beatmap Nominator (Probationary)",
+										value: "PBN",
+									},
+									{
+										name: "Global Moderator",
+										value: "GMT",
+									},
+									{
+										name: "Project Loved",
+										value: "LVD",
+									},
+									{
+										name: "Alumni",
+										value: "ALM",
+									},
+								],
+							},
+							{
+								name: "role",
+								type: 8,
+								description: "Role to remove.",
+								max_value: 1,
+								required: true,
+							},
+							{
+								name: "mode_1",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								required: true,
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_2",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_3",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_4",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "mode_5",
+								type: 3,
+								description:
+									"This role will be added to users with the given usergroup and mode:",
+								choices: [
+									{
+										name: "All Modes",
+										value: "all",
+									},
+									{
+										name: "None (Like loved captains)",
+										value: "none",
+									},
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+						],
+					},
+					{
+						name: "role",
+						type: 1,
+						description: "Remove role from verified users.",
+						options: [
+							{
+								name: "target_role",
+								type: 8,
+								description:
+									"Verified users don't will recive this role anymore.",
+							},
+						],
+					},
+				],
+			},
+			{
+				name: "set",
+				description: "Set some configuration.",
+				type: 2,
+				max_value: 1,
+				options: [
+					{
+						name: "disabled",
+						type: 1,
+						description: "Disable the system",
+					},
+					{
+						name: "enabled",
+						type: 1,
+						description: "Enable the system",
+					},
+					{
+						name: "message",
+						type: 1,
+						description:
+							"Welcome message to send when a user joins",
+					},
+					{
+						name: "channel",
+						type: 1,
+						description: "Set system channel",
+						options: [
+							{
+								name: "text_channel",
+								type: 7,
+								description: "Text channel to set",
+								required: true,
+							},
+						],
+					},
+					{
+						name: "flag",
+						type: 1,
+						description: "Set a flag to sync or no.",
+						options: [
+							{
+								name: "flag",
+								type: 3,
+								description: "Data to sync",
+								max_value: 1,
+								required: true,
+								choices: [
+									{
+										name: "username",
+										value: "username",
+									},
+								],
+							},
+							{
+								name: "status",
+								type: 3,
+								description: "Enable or disable",
+								max_value: 1,
+								required: true,
+								choices: [
+									{
+										name: "enable",
+										value: "true",
+									},
+									{
+										name: "disable",
+										value: "false",
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+
+			// {
+			// 	name: "set",
+			// 	description: "Set some static settings",
+			// 	type: 3,
+			// 	max_value: 1,
+			// 	options: [
+			// 		{
+			// 			name: "channel",
+			// 			type: 7,
+			// 			description: "Set system channel",
+			// 		},
+			// 		{
+			// 			name: "enabled",
+			// 			type: 7,
+			// 			description: "Enable the system.",
+			// 		},
+			// 		{
+			// 			name: "disabled",
+			// 			type: 7,
+			// 			description: "Yep",
+			// 		},
+			// 	],
+			// },
+		],
+	},
 	category: "management",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		if (!message.member) return;
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
+		if (!command.member || typeof command.member.permissions == "string")
+			return;
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
+			!command.member.permissions.has("MANAGE_GUILD", true) &&
+			command.user.id !== ownerId
 		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+			return command.editReply({ embeds: [MissingPermissions] });
 
-		let guild = await guilds.findById(message.guildId);
+		let guild = await guilds.findById(command.guildId);
 		if (!guild) return;
 
 		if (!guild.verification)
-			return message.reply(
+			return command.editReply(
 				`What? Nothing to display here... Use \`${guild.prefix}help verification\` to get help`
 			);
 
@@ -85,7 +693,7 @@ export default {
 					 * use this if you want an actual ping to appear instead of {member} (it will have the command author's ping)
 					 * parseMessagePlaceholderFromMember(
 						guild.verification.message,
-						message.member,
+						command.member,
 						guild.verification.message
 					),
 					*/
@@ -93,7 +701,7 @@ export default {
 			],
 		});
 
-		message.reply({
+		command.editReply({
 			embeds: [embed],
 		});
 

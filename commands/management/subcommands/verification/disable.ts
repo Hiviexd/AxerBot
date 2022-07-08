@@ -1,34 +1,43 @@
-import { Message } from "discord.js";
+import { CommandInteraction, CommandInteractionOption } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
-	name: "verification disable",
-	trigger: ["disable"],
+	name: "disabled",
+	group: "set",
 	help: {
-		description: "Yep, you guessed it",
-		syntax: "{prefix}verification `disable`",
+		description: "Disable the system manually",
+		syntax: "{prefix}verification `channel` `#channel`",
+		example: "{prefix}verification `channel` `#arrival`",
 	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+	run: async (command: CommandInteraction, args: string[]) => {
+		if (!command.member) return;
+
+		if (typeof command.member?.permissions == "string") return;
+
+		await command.deferReply();
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
+			!command.member.permissions.has("MANAGE_GUILD", true) &&
+			command.user.id !== ownerId
 		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+			return command.editReply({ embeds: [MissingPermissions] });
 
-		let guild = await guilds.findById(message.guildId);
-		if (!guild) return;
+		let guild = await guilds.findById(command.guildId);
+		if (!guild)
+			return command.editReply(
+				"This guild isn't validated, try again after some seconds.."
+			);
 
 		guild.verification.enable = false;
 
-		await guilds.findByIdAndUpdate(message.guildId, guild);
+		await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		message.channel.send({
-			embeds: [generateSuccessEmbed("✅ Disabled verification system.")],
+		command.editReply({
+			embeds: [generateSuccessEmbed("✅ System disabled!")],
 		});
 	},
 };
