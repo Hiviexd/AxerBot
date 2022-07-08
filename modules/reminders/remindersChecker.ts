@@ -36,9 +36,9 @@ async function remindersChecker(bot: Client) {
 					if (channel) {
 						const reminderIndex = user.reminders.indexOf(reminder);
 
-						await channel.send(
-							`<@${user._id}> ${reminder.message}`
-						);
+						await channel
+							.send(`<@${user._id}> ${reminder.message}`)
+							.catch(console.error);
 
 						await guild.members.fetch(user._id).then((member) => {
 							consoleCheck(
