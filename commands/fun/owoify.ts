@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, CommandInteraction } from "discord.js";
 const { default: owoify } = require("owoify-js");
 
 export default {
@@ -7,12 +7,24 @@ export default {
 		description: "Turn your text into owo text!\n I'm not sorry.",
 		syntax: "{prefix}owoify `<text>`",
 	},
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "text",
+				description: owoify("Type your text"),
+				type: 3,
+				required: true,
+			},
+		],
+	},
+	interaction: true,
 	category: "fun",
-	run: (bot: Client, message: Message, args: string[]) => {
-		if (!args[0])
-			return message.channel.send(
-				"U nyeed two pwovide swomwe text to owoify!"
-			);
-		message.channel.send(owoify(args.join(" ")));
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
+		const text = command.options.getString("text", true);
+
+		command.editReply(owoify(text));
 	},
 };

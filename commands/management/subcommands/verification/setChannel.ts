@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { CommandInteraction, CommandInteractionOption } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
@@ -6,41 +6,50 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
-	name: "verification channel",
-	trigger: ["channel"],
+	name: "channel",
+	group: "set",
 	help: {
 		description:
 			"Sets the channel for the system (this will enable the system)",
 		syntax: "{prefix}verification `channel` `#channel`",
 		example: "{prefix}verification `channel` `#arrival`",
 	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+	run: async (command: CommandInteraction, args: string[]) => {
+		if (!command.member) return;
+
+		if (typeof command.member?.permissions == "string") return;
+
+		await command.deferReply();
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
+			!command.member.permissions.has("MANAGE_GUILD", true) &&
+			command.user.id !== ownerId
 		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+			return command.editReply({ embeds: [MissingPermissions] });
 
-		const channel = message.mentions.channels.first();
+		const channel = command.options.getChannel("text_channel", true);
 
-		if (!channel || channel.type != "GUILD_TEXT")
-			return message.channel.send({
+		if (channel.type != "GUILD_TEXT")
+			return command.editReply({
 				embeds: [
-					generateErrorEmbed("❗ You need to mention a channel."),
+					generateErrorEmbed(
+						"❗ You need to provide a **TEXT** channel."
+					),
 				],
 			});
 
-		let guild = await guilds.findById(message.guildId);
-		if (!guild) return;
+		let guild = await guilds.findById(command.guildId);
+		if (!guild)
+			return command.editReply(
+				"This guild isn't validated, try again after some seconds.."
+			);
 
 		guild.verification.enable = true;
 		guild.verification.channel = channel.id;
 
-		await guilds.findByIdAndUpdate(message.guildId, guild);
+		await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		message.channel.send({
+		command.editReply({
 			embeds: [generateSuccessEmbed("✅ Set the verification channel.")],
 		});
 	},

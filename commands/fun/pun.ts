@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, CommandInteraction } from "discord.js";
 import axios from "axios";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
@@ -8,8 +8,14 @@ export default {
 		description: "Get a random pun!",
 		syntax: "{prefix}pun",
 	},
+	config: {
+		type: 1,
+	},
+	interaction: true,
 	category: "fun",
-	run: async (bot: Client, message: Message, args: string[]) => {
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
 		const config = {
 			headers: {
 				Accept: "application/json",
@@ -20,7 +26,7 @@ export default {
 
 		try {
 			const req = await axios.get(url, config);
-			message.channel.send({
+			command.editReply({
 				embeds: [
 					{
 						title: "Pun",
@@ -30,13 +36,13 @@ export default {
 				],
 			});
 		} catch (e) {
-			message.channel.send({
-                embeds: [
-                    generateErrorEmbed(
-                        `❌ A server error occured, try again later.`
-                    ),
-                ],
-            });
+			command.editReply({
+				embeds: [
+					generateErrorEmbed(
+						`❌ A server error occured, try again later.`
+					),
+				],
+			});
 		}
 	},
 };

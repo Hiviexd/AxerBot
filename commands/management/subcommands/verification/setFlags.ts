@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, CommandInteraction } from "discord.js";
 import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
@@ -7,8 +7,8 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
-	name: "verification flags",
-	trigger: ["flags"],
+	name: "flag",
+	group: "set",
 	help: {
 		description:
 			"Set which data that will be replaced with the osu! user data.",
@@ -18,78 +18,108 @@ export default {
 			"`username,<true|false>`: Set the user's discord nickname to match their osu! username",
 		],
 	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+	run: async (command: CommandInteraction, args: string[]) => {
+		if (!command.member) return;
+
+		if (typeof command.member?.permissions == "string") return;
+
+		await command.deferReply();
 
 		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
+			!command.member.permissions.has("MANAGE_GUILD", true) &&
+			command.user.id !== ownerId
 		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+			return command.editReply({ embeds: [MissingPermissions] });
 
-		if (args.length < 1)
-			return message.channel.send({ embeds: [CommandOptionInvalid] });
+		const flag = command.options.getString("flag", true);
+		const status =
+			command.options.getString("status", true) == "true" ? true : false;
 
-		let guild = await guilds.findById(message.guildId);
-		if (!guild) return;
+		let guild = await guilds.findById(command.guildId);
+		if (!guild)
+			return command.editReply(
+				"This guild isn't validated, try again after some seconds.."
+			);
 
-		const validFlags = ["username"];
+		guild.verification.targets[flag] = status;
 
-		const flagsValues: any = {
-			username: "boolean",
-		};
-		const flagsToUpdate: { target: string; value: any }[] = [];
+		await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		args.forEach((a) => {
-			const flag = a.split(",");
-
-			if (flag.length != 2) return;
-
-			if (validFlags.includes(flag[0].toLowerCase())) {
-				flagsToUpdate.push({
-					target: flag[0].toLowerCase(),
-					value: flag[1].toLowerCase(),
-				});
-			}
+		command.editReply({
+			embeds: [generateSuccessEmbed("✅ Flag updated!")],
 		});
 
-		const clearFlags: any[] = [];
+		// if (!message.member) return;
 
-		flagsToUpdate.forEach((flag) => {
-			switch (flagsValues[flag.target]) {
-				case "boolean": {
-					const booleans = ["true", "false"];
-					if (!booleans.includes(flag.value)) return;
+		// if (
+		// 	!message.member.permissions.has("MANAGE_GUILD", true) &&
+		// 	message.author.id !== ownerId
+		// )
+		// 	return message.channel.send({ embeds: [MissingPermissions] });
 
-					clearFlags.push({
-						target: flag.target,
-						value: Boolean(flag.value),
-					});
+		// if (args.length < 1)
+		// 	return message.channel.send({ embeds: [CommandOptionInvalid] });
 
-					break;
-				}
-			}
-		});
+		// let guild = await guilds.findById(message.guildId);
+		// if (!guild) return;
 
-		clearFlags.forEach((flag) => {
-			if (!guild) return;
+		// const validFlags = ["username"];
 
-			guild.verification.targets[flag.target] = flag.value;
-		});
+		// const flagsValues: any = {
+		// 	username: "boolean",
+		// };
+		// const flagsToUpdate: { target: string; value: any }[] = [];
 
-		if (clearFlags.length < 1)
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						`❌ Invalid tags! Check if you're using the correct syntax using \`${guild.prefix}help verification flags\``
-					),
-				],
-			});
+		// args.forEach((a) => {
+		// 	const flag = a.split(",");
 
-		await guilds.findByIdAndUpdate(message.guildId, guild);
+		// 	if (flag.length != 2) return;
 
-		message.channel.send({
-			embeds: [generateSuccessEmbed("✅ Updated verification flags.")],
-		});
+		// 	if (validFlags.includes(flag[0].toLowerCase())) {
+		// 		flagsToUpdate.push({
+		// 			target: flag[0].toLowerCase(),
+		// 			value: flag[1].toLowerCase(),
+		// 		});
+		// 	}
+		// });
+
+		// const clearFlags: any[] = [];
+
+		// flagsToUpdate.forEach((flag) => {
+		// 	switch (flagsValues[flag.target]) {
+		// 		case "boolean": {
+		// 			const booleans = ["true", "false"];
+		// 			if (!booleans.includes(flag.value)) return;
+
+		// 			clearFlags.push({
+		// 				target: flag.target,
+		// 				value: Boolean(flag.value),
+		// 			});
+
+		// 			break;
+		// 		}
+		// 	}
+		// });
+
+		// clearFlags.forEach((flag) => {
+		// 	if (!guild) return;
+
+		// 	guild.verification.targets[flag.target] = flag.value;
+		// });
+
+		// if (clearFlags.length < 1)
+		// 	return message.channel.send({
+		// 		embeds: [
+		// 			generateErrorEmbed(
+		// 				`❌ Invalid tags! Check if you're using the correct syntax using \`${guild.prefix}help verification flags\``
+		// 			),
+		// 		],
+		// 	});
+
+		// await guilds.findByIdAndUpdate(message.guildId, guild);
+
+		// message.channel.send({
+		// 	embeds: [generateSuccessEmbed("✅ Updated verification flags.")],
+		// });
 	},
 };

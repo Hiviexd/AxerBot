@@ -1,6 +1,7 @@
 import { Client, Message } from "discord.js";
 import { owners } from "../../config.json";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import * as db from "./../../database";
 
 import util from "util";
 
@@ -14,6 +15,7 @@ export default {
 	},
 	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {
+		const database: any = db;
 		try {
 			if (!args.join(" ")) return;
 			if (owners.includes(message.author.id)) {

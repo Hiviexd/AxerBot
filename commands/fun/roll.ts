@@ -1,21 +1,34 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, CommandInteraction } from "discord.js";
 
 export default {
 	name: "roll",
 	help: {
 		description: "Roll a dice! \nDefault roll is 100.",
 		syntax: "{prefix}roll `<value>`",
-		example: "{prefix}roll\n{prefix}roll `727`\n{prefix}roll `dubs and I ping @everyone`\n",
-
+		example:
+			"{prefix}roll\n{prefix}roll `727`\n{prefix}roll `dubs and I ping @everyone`\n",
 	},
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "value",
+				description: "727",
+				type: 4,
+			},
+		],
+	},
+	interaction: true,
 	category: "fun",
-	run: (bot: Client, message: Message, args: string[]) => {
-		let dice: number;
-		(args.length < 1)? dice = 100: dice = Number(args[0]);
-		if (isNaN(dice)) {
-			dice = 100;
-		}
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
+
+		const dice =
+			(command.options.getInteger("value")
+				? command.options.getInteger("value")
+				: 100) || 100;
+
 		let roll = Math.floor(Math.random() * dice) + 1;
-		message.channel.send(`**${message.author.username}** rolled **${roll}**!`);
+		command.editReply(`${command.user} rolled **${roll}**!`);
 	},
 };
