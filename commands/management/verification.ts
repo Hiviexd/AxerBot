@@ -57,7 +57,7 @@ export default {
 					{
 						name: "grouprole",
 						type: 1,
-						description: "Add a role for x user with x tag.",
+						description: "Add a role for x user with x usergroup.",
 						options: [
 							{
 								name: "group",
@@ -287,7 +287,7 @@ export default {
 								name: "target_role",
 								type: 8,
 								description:
-									"Verified users will recive this role.",
+									"Verified users will recieve this role.",
 							},
 						],
 					},

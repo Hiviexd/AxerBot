@@ -1,4 +1,4 @@
-# Commands
+# Commands (THIS IS OUTDATED DO NOT README LITERALLY EVERYTHNG HAS CHANGED WITH THE SLASH COMMAND MIGRATION)
 
 Below is a guide on how do commands work in this project.
 
