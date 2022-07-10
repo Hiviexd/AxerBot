@@ -40,7 +40,7 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 				name: "Elite Nominator",
 				icon: "https://media.discordapp.net/attachments/941102492857557023/991137703288635462/bn22.png",
 				colour: "#ffc05b",
-			}
+			},
 		},
 		ALM: {
 			index: 6,
@@ -57,6 +57,12 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			name: "BOT",
 			colour: "#ffffff",
 			icon: "https://media.discordapp.net/attachments/865037717590245436/955965426964258906/bot.png",
+		},
+		FA: {
+			index: 8,
+			name: "Featured Artist",
+			colour: "#ffffff",
+			icon: "#00FFFF",
 		},
 	};
 
@@ -85,9 +91,8 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			groups[index].icon = userGroupInfo[g.short_name].probationary.icon;
 		}
 
-		if ((g.short_name == "BN") && (mapper.title?.includes("Elite Nominator"))) {
-			groups[index].colour =
-				userGroupInfo[g.short_name].elite.colour;
+		if (g.short_name == "BN" && mapper.title?.includes("Elite Nominator")) {
+			groups[index].colour = userGroupInfo[g.short_name].elite.colour;
 			groups[index].icon = userGroupInfo[g.short_name].elite.icon;
 		}
 	});
