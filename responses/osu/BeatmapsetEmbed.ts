@@ -193,6 +193,12 @@ export default {
 				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
 				label: "osu!direct",
 			}),
+			new MessageButton({
+				type: "BUTTON",
+				style: "PRIMARY",
+				customId: `beatmap_download|${beatmapset.id}`,
+				label: "Quick download",
+			}),
 		]);
 
 		message
@@ -462,6 +468,12 @@ export default {
 				style: "LINK",
 				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
 				label: "osu!direct",
+			}),
+			new MessageButton({
+				type: "BUTTON",
+				style: "PRIMARY",
+				customId: `beatmap_download|${beatmapset.id}`,
+				label: "Quick download",
 			}),
 		]);
 

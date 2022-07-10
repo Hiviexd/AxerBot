@@ -100,13 +100,13 @@ export default {
 					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
 					label: "osu!direct",
 				}),
-				// new MessageButton({
-				// 	type: "BUTTON",
-				// 	style: "PRIMARY",
-				// 	customId: `beatmap_download|${beatmap.data.id}`,
-				// 	label: "Quick download",
-				// })
-			])
+				new MessageButton({
+					type: "BUTTON",
+					style: "PRIMARY",
+					customId: `beatmap_download|${beatmap.data.id}`,
+					label: "Quick download",
+				}),
+			]);
 		}
 
 		message.reply({
@@ -174,6 +174,12 @@ export default {
 					style: "LINK",
 					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
 					label: "osu!direct",
+				}),
+				new MessageButton({
+					type: "BUTTON",
+					style: "PRIMARY",
+					label: "Quick Download",
+					customId: `beatmap_download|${beatmap.data.id}`,
 				}),
 			]);
 		}

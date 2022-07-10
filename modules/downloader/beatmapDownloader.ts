@@ -1,54 +1,61 @@
-import {ButtonInteraction, MessageButton,MessageActionRow} from "discord.js";
+import { ButtonInteraction, MessageButton, MessageActionRow } from "discord.js";
+import relativeTime from "../../helpers/general/relativeTime";
 import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
-import osuApi from "./../../helpers/osu/fetcher/osuApi"
+import osuApi from "./../../helpers/osu/fetcher/osuApi";
 
 export default async (button: ButtonInteraction) => {
-    const targets = button.customId.split("|")
-    if (targets[0] != "beatmap_download") return;
+	const targets = button.customId.split("|");
+	if (targets[0].trim() != "beatmap_download") return;
 
-    await button.deferReply();
+	const time = new Date();
 
-    console.log(button)
+	await button.deferReply();
 
-    const beatmapId = targets[1];
-    const downloadUrlButton = new MessageActionRow()
+	const beatmapId = targets[1].trim();
+	const downloadUrlButton = new MessageActionRow();
 
-    try {
-        const beatmap_data = await osuApi.fetch.beatmapset(beatmapId);
-        const beatmap_file = await osuApi.download.beatmapset(beatmapId);
+	try {
+		const beatmap_data = await osuApi.fetch.beatmapset(beatmapId);
+		const beatmap_file = await osuApi.download.beatmapset(beatmapId);
 
-        const stored_file = await storeBeatmap(
-            beatmap_file,
-            beatmap_data.data,
-            button
-        );
+		const stored_file = await storeBeatmap(
+			beatmap_file,
+			beatmap_data.data,
+			button
+		);
 
-        if (!stored_file.big) {
-            downloadUrlButton.addComponents([
-                new MessageButton({
-                    type: "BUTTON",
-                    style: "LINK",
-                    url: stored_file.url,
-                    label: "Download Beatmap",
-                }),
-            ]);
+		if (stored_file.error)
+			return button.editReply({
+				content: `Something is wrong. I can't download your beatmap... You can try it again.`,
+			});
 
-            button.editReply({
-                content: `Beatmap downloaded!`,
-                components: [downloadUrlButton]
-            })
-        } else {
-            button.editReply({
-                content: `This beatmap is too big! I can't download it.`,
-            })
-        }
-    } catch (e) {
-        console.error(e);
+		if (!stored_file.big) {
+			downloadUrlButton.addComponents([
+				new MessageButton({
+					type: "BUTTON",
+					style: "LINK",
+					url: stored_file.url,
+					label: "Download Beatmap",
+				}),
+			]);
 
-        button.editReply({
-            content: `Something is wrong. I can't download the beatmap.`,
-        })
-    }
+			button.editReply({
+				content: `Beatmap downloaded! (It took ${relativeTime(
+					new Date(),
+					time
+				)})`,
+				components: [downloadUrlButton],
+			});
+		} else {
+			button.editReply({
+				content: `This beatmap is too big! I can't download it.`,
+			});
+		}
+	} catch (e) {
+		console.error(e);
 
-
-}
+		button.editReply({
+			content: `Something is wrong. I can't download the beatmap.`,
+		});
+	}
+};
