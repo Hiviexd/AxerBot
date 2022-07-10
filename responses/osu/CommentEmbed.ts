@@ -36,7 +36,7 @@ export default {
 				iconURL: comment.user.avatar_url,
 				url: `https://osu.ppy.sh/users/${comment.user.id}`,
 			},
-			description: truncateString(comment.content, 4096),
+			description: truncateString(comment.content, 2048),
 			color: comment.type == "Comment" ? "#f45592" : "#5639ac",
 			footer: {
 				text: getFooter(),

@@ -225,7 +225,7 @@ export default async (input: SelectMenuInteraction) => {
 
 		time = new Date();
 
-		validIndexes = heardle.indexes.filter((i) => i != answerIndex);
+		validIndexes = heardle.indexes.filter((i: number) => i != answerIndex);
 		heardle.indexes = validIndexes;
 		heardle.date = new Date();
 
