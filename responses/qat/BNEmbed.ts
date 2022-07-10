@@ -8,6 +8,7 @@ import getTop3Genres from "../../helpers/qat/getters/genres/getTop3Genres";
 import getTop3Languages from "../../helpers/qat/getters/languages/getTop3Languages";
 import calculateDuration from "../../helpers/text/calculateDuration";
 import getRequestStatus from "../../helpers/qat/getters/requestStatus/getRequestStatus";
+import abreviation from "../../helpers/text/abreviation";
 
 export default {
 	send: (
@@ -191,14 +192,18 @@ export default {
 
 		let e = new MessageEmbed()
 			.setAuthor({
-				name: `${osuUser.data.username} • BN/NAT info`,
+				name: `${abreviation(osuUser.data.username)} • BN/NAT info`,
 				url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
 				iconURL: usergroup.icon,
 			})
 			.setThumbnail(`https://a.ppy.sh/${osuUser.data.id}`)
 			.setColor(usergroup.colour)
 			.setDescription(
-				`showing **[${osuUser.data.username}'s BN website info](https://bn.mappersguild.com/users?id=${qatUser.data.id})** from the last **90** days.`
+				`showing **[${abreviation(
+					osuUser.data.username
+				)} BN website info](https://bn.mappersguild.com/users?id=${
+					qatUser.data.id
+				})** from the last **90** days.`
 			)
 			.addField("BN Status", `${reqStatus}`, true)
 			.addField(
