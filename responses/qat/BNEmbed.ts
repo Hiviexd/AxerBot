@@ -192,7 +192,7 @@ export default {
 
 		let e = new MessageEmbed()
 			.setAuthor({
-				name: `${abreviation(osuUser.data.username)} • BN/NAT info`,
+				name: `${osuUser.data.username} • BN/NAT info`,
 				url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
 				iconURL: usergroup.icon,
 			})
