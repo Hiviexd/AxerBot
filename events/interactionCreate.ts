@@ -7,6 +7,7 @@ import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
 import osuInteractions from "../helpers/interactions/osuInteractions";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
 import heardle from "../modules/heardle/heardle";
+import beatmapDownloader from "../modules/downloader/beatmapDownloader";
 
 export default {
 	name: "interactionCreate",
@@ -15,8 +16,14 @@ export default {
 			addPrivateRoles(interaction);
 
 			if (interaction.isButton()) {
-				await interaction.deferReply({ ephemeral: true });
+				if (!interaction.customId.includes("beatmap_download")) {
+					await interaction.deferReply({ ephemeral: true });
 				sendVerificationLink(interaction);
+				} 
+
+				if (interaction.customId.includes("beatmap_download")) {
+					beatmapDownloader(interaction);
+				}
 			}
 
 			if (interaction.isMessageContextMenu()) {

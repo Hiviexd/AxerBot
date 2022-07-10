@@ -163,26 +163,26 @@ export default {
 			}),
 		]);
 
-		const beatmap_file = await osuApi.download.beatmapset(
-			beatmapset.id.toString()
-		);
+		// const beatmap_file = await osuApi.download.beatmapset(
+		// 	beatmapset.id.toString()
+		// );
 
-		const stored_file = await storeBeatmap(
-			beatmap_file,
-			beatmapset,
-			message
-		);
+		// const stored_file = await storeBeatmap(
+		// 	beatmap_file,
+		// 	beatmapset,
+		// 	message
+		// );
 
-		if (!stored_file.big) {
-			buttons.addComponents([
-				new MessageButton({
-					type: "BUTTON",
-					style: "LINK",
-					url: stored_file.url,
-					label: "Download Beatmap",
-				}),
-			]);
-		}
+		// if (!stored_file.big) {
+		// 	buttons.addComponents([
+		// 		new MessageButton({
+		// 			type: "BUTTON",
+		// 			style: "LINK",
+		// 			url: stored_file.url,
+		// 			label: "Download Beatmap",
+		// 		}),
+		// 	]);
+		// }
 
 		const elements = await generateFor(beatmapset.beatmaps[index]);
 

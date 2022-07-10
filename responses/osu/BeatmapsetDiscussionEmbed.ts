@@ -48,7 +48,7 @@ export default {
 
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
-				truncateString(metadata.concat(post.posts[0].message), 4096)
+				truncateString(metadata.concat(post.posts[0].message), 2048)
 			),
 			color: embedDecoration.color,
 			title: embedDecoration.title,
@@ -67,30 +67,30 @@ export default {
 
 		const buttons = new MessageActionRow();
 
-		try {
-			const beatmap_file = await osuApi.download.beatmapset(
-				post.beatmapsets[0].id.toString()
-			);
+		// try {
+		// 	const beatmap_file = await osuApi.download.beatmapset(
+		// 		post.beatmapsets[0].id.toString()
+		// 	);
 
-			const stored_file = await storeBeatmap(
-				beatmap_file,
-				post.beatmapsets[0],
-				message
-			);
+		// 	const stored_file = await storeBeatmap(
+		// 		beatmap_file,
+		// 		post.beatmapsets[0],
+		// 		message
+		// 	);
 
-			if (!stored_file.big) {
-				buttons.addComponents([
-					new MessageButton({
-						type: "BUTTON",
-						style: "LINK",
-						url: stored_file.url,
-						label: "Download Beatmap",
-					}),
-				]);
-			}
-		} catch (e) {
-			console.error(e);
-		}
+		// 	if (!stored_file.big) {
+		// 		buttons.addComponents([
+		// 			new MessageButton({
+		// 				type: "BUTTON",
+		// 				style: "LINK",
+		// 				url: stored_file.url,
+		// 				label: "Download Beatmap",
+		// 			}),
+		// 		]);
+		// 	}
+		// } catch (e) {
+		// 	console.error(e);
+		// }
 
 		if (beatmap.status == 200 && beatmap.data.beatmaps) {
 			buttons.addComponents([
@@ -100,7 +100,13 @@ export default {
 					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
 					label: "osu!direct",
 				}),
-			]);
+				// new MessageButton({
+				// 	type: "BUTTON",
+				// 	style: "PRIMARY",
+				// 	customId: `beatmap_download|${beatmap.data.id}`,
+				// 	label: "Quick download",
+				// })
+			])
 		}
 
 		message.reply({
@@ -142,7 +148,7 @@ export default {
 
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
-				truncateString(metadata.concat(post.posts[0].message), 4096)
+				truncateString(metadata.concat(post.posts[0].message), 2048)
 			),
 			color: embedDecoration.color,
 			title: embedDecoration.title,

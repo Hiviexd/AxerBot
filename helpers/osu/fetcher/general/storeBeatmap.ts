@@ -1,10 +1,10 @@
-import { Message, MessageAttachment } from "discord.js";
+import { Message, MessageAttachment, ButtonInteraction } from "discord.js";
 import { Beatmapset, BeatmapsetCompact } from "../../../../types/beatmap";
 
 export default async (
 	beatmap_file: any,
 	beatmapset: BeatmapsetCompact | Beatmapset,
-	message: Message
+	interaction: ButtonInteraction
 ) => {
 	let big = false;
 	const beatmap_attachment = new MessageAttachment(
@@ -23,18 +23,13 @@ export default async (
 
 	let beatmap_url = "";
 
-	const cache_guild = message.client.guilds.cache.find(
-		(g) => g.id == "589557574702071819"
-	);
+	const cache_guild = interaction.client.guilds.cache.get("589557574702071819");
 
 	if (cache_guild) {
-		const cache_channel: any = cache_guild.channels.cache.find(
-			(c) => c.id == "959824657576521828"
-		);
+		const cache_channel: any = cache_guild.channels.cache.get("959824657576521828");
 
 		const m = await cache_channel.send({
-			content: `Requested by ${message.author.tag} (${message.author.id})
-			Guild: ${message.guild?.name}`,
+			content: `Requested by ${interaction.user.tag} (${interaction.user.id})\nGuild: ${interaction.guild?.name}`,
 			files: [beatmap_attachment],
 		});
 
