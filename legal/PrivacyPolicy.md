@@ -46,6 +46,11 @@ We do not sell your data ever.
 ## 5. How long do you store data?
 
 We only store Your Discord ID until you request the deletion of your data. We also don't store message logs as they're only cached and never saved to disk, ever.
+The cached data lasts for a maximum of 30 days, but in reality it lasts for much shorter periods of time because the cache resets each time the bot is rebooted, which happens every few days because of the bot's continuous updates.
+
+## 6. Can I request the deletion of my data?
+
+Absolutely! Please e-mail us at rayenattia@gmail.com to request a deletion of all your stored data.
 
 ## Final
 
