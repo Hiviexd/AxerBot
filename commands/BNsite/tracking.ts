@@ -9,8 +9,8 @@ import { ownerId } from "./../../config.json";
 export default {
 	name: "bntrack",
 	help: {
-		description: "Track nominators requests status",
-		example: "{prefix}openbns\n{prefix}openbns `taiko`",
+		description: "Track nominators' request status from the BN website",
+		example: "/bntrack",
 	},
 	interaction: true,
 	category: "BNsite",
@@ -143,7 +143,7 @@ export default {
 			)
 			.setColor("#27b6b3")
 			.setFooter({
-				text: "from the BN website",
+				text: "BN website",
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 			});
 
