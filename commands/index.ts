@@ -33,6 +33,7 @@ import bn from "./BNsite/bn";
 import invite from "./misc/invite";
 import openbns from "./BNsite/openbns";
 import heardle from "./fun/heardle";
+import qattrack from "./BNsite/tracking";
 
 const commands: any = {
 	ping: ping,
@@ -46,9 +47,9 @@ const commands: any = {
 	osuset: osuset,
 	mapsetrank: mapsetrank,
 	help: help,
-	setprefix: setprefix,
+	//setprefix: setprefix,
 	quotes: quotes,
-	cooldown: cooldown,
+	//cooldown: cooldown,
 	logging: logging,
 	player: player,
 	eval: eval,
@@ -70,6 +71,7 @@ const commands: any = {
 	invite: invite,
 	openbns: openbns,
 	heardle: heardle,
+	bntrack: qattrack,
 };
 
 export default commands;

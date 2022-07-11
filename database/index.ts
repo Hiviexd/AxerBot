@@ -5,6 +5,7 @@ import addBNsiteToCooldown from "./migrations/addBNsiteToCooldown";
 import guild from "./schemas/guild";
 import user from "./schemas/user";
 import heardle from "./schemas/heardle";
+import track from "./schemas/track";
 
 consoleLog("database", "Starting databse connection...");
 
@@ -25,3 +26,4 @@ mongoose.connect(
 export const users = mongoose.model("Users", user);
 export const guilds = mongoose.model("Guilds", guild);
 export const heardles = mongoose.model("Heardles", heardle);
+export const tracks = mongoose.model("Tracks", track);
