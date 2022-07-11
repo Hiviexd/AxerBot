@@ -10,6 +10,7 @@ import path from "path";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import { QatUser } from "../../types/qat";
 import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPreferences";
+import getEmoji from "../../helpers/text/getEmoji";
 
 async function qatTracking(bot: Client) {
 	const allTracks = await tracks.find({ type: "qat" });
@@ -68,20 +69,23 @@ async function qatTracking(bot: Client) {
 
 	async function sendUpdate(bn: QatUser, track: any) {
 		const footer = {
-			text: "from the BN website",
+			text: "BN website",
 			iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 		};
 
 		const texts: { [key: string]: any } = {
 			open: {
-				title: `🟢 Open (< <t:${Math.trunc(
+				title: `🟢 Open (<t:${Math.trunc(
 					new Date().valueOf() / 1000
 				)}:R>)`,
 				thumbnail: {
 					url: `https://a.ppy.sh/${bn.osuId}`,
 				},
 				color: "#1df27d",
-				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** is now **accepting** BN requests!\n Check out their preferences below:`,
+				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${bn.modes.map((mode: string) => {
+						return `${getEmoji(mode)} `;
+					}). join('')
+				} is now **accepting** BN requests!\n Check out their preferences below:`,
 				fields: [
 					{
 						name: "Positive",
@@ -97,7 +101,7 @@ async function qatTracking(bot: Client) {
 				footer: footer,
 			},
 			closed: {
-				title: `🔴 Closed (< <t:${Math.trunc(
+				title: `🔴 Closed (<t:${Math.trunc(
 					new Date().valueOf() / 1000
 				)}:R>)`,
 				thumbnail: {
@@ -113,7 +117,7 @@ async function qatTracking(bot: Client) {
 
 		const embed = new MessageEmbed(
 			texts[open ? "open" : "closed"]
-		).setTimestamp(new Date());
+		);
 
 		const buttons = new MessageActionRow();
 		const buttons2 = new MessageActionRow();
@@ -198,7 +202,7 @@ async function qatTracking(bot: Client) {
 	);
 	setTimeout(async () => {
 		await qatTracking(bot);
-	}, 30000);
+	}, 5000);
 
 	return void {};
 }

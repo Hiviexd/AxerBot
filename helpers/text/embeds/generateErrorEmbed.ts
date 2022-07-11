@@ -10,8 +10,8 @@ import {MessageEmbed } from "discord.js";
 
 export default(response?: string): MessageEmbed => {
 	return new MessageEmbed({
-		title: "Error",
-		description: response || "❌ There was an error executing this operation.",
+		title: "❌ Error",
+		description: response || "There was an error executing this operation.",
 		color: "#ff5050",
 	});
 };
