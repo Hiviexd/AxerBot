@@ -12,6 +12,8 @@ export default {
 			result = result.concat(`<:check:995849401492832316> ${c}\n`);
 		});
 
+		if (result.trim() == "") return "Not specified.";
+
 		return result;
 	},
 	negative: (user: QatUser) => {
@@ -24,6 +26,8 @@ export default {
 		config.forEach((c) => {
 			result = result.concat(`:x: ${c}\n`);
 		});
+
+		if (result.trim() == "") return "Not specified.";
 
 		return result;
 	},
