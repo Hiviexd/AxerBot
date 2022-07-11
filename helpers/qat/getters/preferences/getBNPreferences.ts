@@ -24,7 +24,7 @@ export default {
 			.concat(user.detailNegativePreferences);
 
 		config.forEach((c) => {
-			result = result.concat(`:x: ${c}\n`);
+			result = result.concat(`<:x:996082571261784114> ${c}\n`);
 		});
 
 		if (result.trim() == "") return "Not specified.";

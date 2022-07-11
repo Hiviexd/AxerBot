@@ -72,6 +72,12 @@ async function qatTracking(bot: Client) {
 			text: "BN website",
 			iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 		};
+		const modeIcons = bn.modes
+			.map((mode: string) => {
+				return `${getEmoji(mode)} `;
+			})
+			.join("")
+			.trim();
 
 		const texts: { [key: string]: any } = {
 			open: {
@@ -82,10 +88,7 @@ async function qatTracking(bot: Client) {
 					url: `https://a.ppy.sh/${bn.osuId}`,
 				},
 				color: "#1df27d",
-				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${bn.modes.map((mode: string) => {
-						return `${getEmoji(mode)} `;
-					}). join('')
-				} is now **accepting** BN requests!\n Check out their preferences below:`,
+				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`,
 				fields: [
 					{
 						name: "Positive",
@@ -108,7 +111,7 @@ async function qatTracking(bot: Client) {
 					url: `https://a.ppy.sh/${bn.osuId}`,
 				},
 				color: "#ff5050",
-				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** is **no longer** accepting BN requests.`,
+				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`,
 				footer: footer,
 			},
 		};
@@ -202,7 +205,7 @@ async function qatTracking(bot: Client) {
 	);
 	setTimeout(async () => {
 		await qatTracking(bot);
-	}, 5000);
+	}, 30000); // ? checks every 30 seconds
 
 	return void {};
 }
