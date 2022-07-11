@@ -158,10 +158,7 @@ export default new Schema({
 			},
 		},
 	},
-	autorole: {
-		users: [],
-		bot: [],
-	},
+	qat_tracking: [{ type: String, channel: String }],
 	logging: {
 		type: Object,
 		default: {
