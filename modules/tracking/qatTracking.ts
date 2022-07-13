@@ -32,8 +32,9 @@ async function qatTracking(bot: Client) {
 			);
 
 			if (
+				storedData[storedDataIndex] &&
 				storedData[storedDataIndex].requestStatus.includes("closed") !=
-				user.requestStatus.includes("closed")
+					user.requestStatus.includes("closed")
 			)
 				differentData.push(user);
 		}
@@ -118,9 +119,7 @@ async function qatTracking(bot: Client) {
 
 		const open = bn.requestStatus.includes("closed") ? false : true;
 
-		const embed = new MessageEmbed(
-			texts[open ? "open" : "closed"]
-		);
+		const embed = new MessageEmbed(texts[open ? "open" : "closed"]);
 
 		const buttons = new MessageActionRow();
 		const buttons2 = new MessageActionRow();
