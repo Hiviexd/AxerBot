@@ -15,7 +15,7 @@ We collect information from you when you voluntarily provide such information, s
 **Chat data**: We store username and user id to aid you and others with using our Service.
 **osu! data**: We store your osu! id to access your public osu! information in order to provide you with functionality such as your profile info and statistics.
 **Message logs**: If a server administrator enables the message logging feature, AxerBot will copy all deleted and edited messages in a text channel on that server which you might not have access to.
-You can contact us at rayenattia@gmail.com to find out which channel this data is stored in. This data is not stored persistently on any of our servers.
+You can contact us at rayenattia@gmail.com to find out which channel this data is stored in. This data is not stored nor saved on any of our servers.
 
 AxerBot mainly gathers public data (but not save them) from the following sources:
 
@@ -51,6 +51,7 @@ The cached data lasts for a maximum of 30 days, but in reality it lasts for much
 ## 6. Can I request the deletion of my data?
 
 Absolutely! Please e-mail us at rayenattia@gmail.com to request a deletion of all your stored data.
+For server owners, you will have to remove the bot from your server before requesting data deletion for your server.
 
 ## Final
 
