@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last modified July 11, 2022
+Last modified July 15, 2022
 
 ## 1. Why and how do you collect my data?
 
