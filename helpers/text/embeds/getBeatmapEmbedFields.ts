@@ -39,10 +39,10 @@ export default (
 					  ).toFixed(0)})`
 			}\`
             OD: \`${attributes.overallDifficulty.toFixed(
-				0
+				1
 			)}\` HP: \`${attributes.drainRate.toFixed(
-				0
-			)}\` AR: \`${attributes.approachRate.toFixed(0)}\` CS: \`${
+				1
+			)}\` AR: \`${attributes.approachRate.toFixed(1)}\` CS: \`${
 				beatmap.cs
 			}\` Aim Strain: \`${attributes.aimStrain.toFixed(
 				2
@@ -104,7 +104,7 @@ export default (
 			}\`
             OD: \`${beatmap.accuracy}\` HP: \`${
 				beatmap.drain
-			}\` AR: \`${attributes.approachRate.toFixed(0)}\` CS: \`${
+			}\` AR: \`${attributes.approachRate.toFixed(1)}\` CS: \`${
 				beatmap.cs
 			}\``;
 
