@@ -50,7 +50,11 @@ export default (osu_file: string, mods?: string) => {
 
 		const totalPerformance = performanceCalculator.calculate();
 
-		result.push({ pp: Math.round(totalPerformance), acc: acc });
+		result.push({
+			pp: Math.round(totalPerformance),
+			acc: acc,
+			spikes: difficultyCalculator.calculateTimedWithMods(_mods),
+		});
 
 		return result;
 	});

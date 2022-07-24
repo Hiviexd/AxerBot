@@ -14,19 +14,22 @@ import getEmoji from "../../helpers/text/getEmoji";
 
 export default {
 	send: async (user: UserResponse, message: Message, mode?: string) => {
+		const usergroup = parseUsergroup(user.data);
+
 		const attachment = user.data.statistics?.global_rank
 			? new MessageAttachment(
-					await generatePlayerRankChart(user.data),
+					await generatePlayerRankChart(
+						user.data,
+						String(usergroup.colour)
+					),
 					"rank.png"
 			  )
 			: undefined;
 
-		const usergroup = parseUsergroup(user.data);
-
 		const modesList: any = {
 			osu: "",
 			taiko: "taiko",
-			catch: "catch",
+			fruits: "catch",
 			mania: "mania",
 		};
 
@@ -140,15 +143,17 @@ export default {
 		interaction: MessageContextMenuInteraction | CommandInteraction,
 		mode?: string
 	) => {
-		console.log(user.data.statistics?.global_rank);
+		const usergroup = parseUsergroup(user.data);
+
 		const attachment = user.data.statistics?.global_rank
 			? new MessageAttachment(
-					await generatePlayerRankChart(user.data),
+					await generatePlayerRankChart(
+						user.data,
+						String(usergroup.colour)
+					),
 					"rank.png"
 			  )
 			: undefined;
-
-		const usergroup = parseUsergroup(user.data);
 
 		const modesList: any = {
 			osu: "",
@@ -158,7 +163,6 @@ export default {
 		};
 
 		mode = mode ? mode : user.data.playmode.toString();
-		console.log(mode, user.data.playmode);
 
 		const embed = {
 			author: {
@@ -246,12 +250,12 @@ export default {
 						  }`
 				}`,
 			},
-			files: attachment ? [attachment] : [],
 		};
 
 		interaction
 			.editReply({
 				embeds: [embed],
+				files: attachment ? [attachment] : [],
 			})
 			.catch(console.error);
 	},

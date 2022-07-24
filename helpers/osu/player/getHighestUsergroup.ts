@@ -6,26 +6,31 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			index: 0,
 			name: "Bald",
 			icon: "https://media.discordapp.net/attachments/950107895754784908/953774037790769182/dev.png",
+			colour: "#0000ff",
 		},
 		SPT: {
 			index: 1,
 			name: "Support Team",
 			icon: "https://media.discordapp.net/attachments/950107895754784908/953775607395807242/spt.png",
+			colour: "#ebd047",
 		},
 		DEV: {
 			index: 2,
 			name: "Developer",
 			icon: "https://media.discordapp.net/attachments/950107895754784908/953774037790769182/dev.png",
+			colour: "#eb47d0",
 		},
 		GMT: {
 			index: 3,
 			name: "Global Moderator",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173396361226/gmt.png",
+			colour: "#99eb47",
 		},
 		NAT: {
 			index: 4,
 			name: "Nomination Assessment Team",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173794832414/nat2.png",
+			colour: "#eb8c47",
 		},
 		BN: {
 			index: 5,
@@ -46,11 +51,13 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			index: 6,
 			name: "Alumni",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649174197489694/alm.png",
+			colour: "#999999",
 		},
 		LVD: {
 			index: 7,
 			name: "Project Loved",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
+			colour: "#ffd1dc",
 		},
 		BOT: {
 			index: 8,
@@ -62,7 +69,7 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			index: 8,
 			name: "Featured Artist",
 			colour: "#ffffff",
-			icon: "#00FFFF",
+			icon: "https://media.discordapp.net/attachments/950107895754784908/1000854297745043506/fa.png",
 		},
 	};
 
