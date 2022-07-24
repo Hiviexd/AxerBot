@@ -49,7 +49,7 @@ const commands: any = {
 	help: help,
 	//setprefix: setprefix,
 	quotes: quotes,
-	//cooldown: cooldown,
+	cooldown: cooldown,
 	logging: logging,
 	player: player,
 	eval: eval,

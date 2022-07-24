@@ -83,7 +83,10 @@ export interface UserCompactProfileBanner {
 }
 
 export interface UserBadge {
-	todo?: boolean;
+	awarded_at: Timestamp;
+	description: string;
+	image_url: string;
+	url: string;
 }
 
 export interface UserCompactCountry {
