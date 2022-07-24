@@ -46,7 +46,11 @@ export default (osu_file: string, mods?: string) => {
 
 		const pp = performanceCalculator.calculate();
 
-		result.push({ pp: Math.round(pp), acc: acc });
+		result.push({
+			pp: Math.round(pp),
+			acc: acc,
+			spikes: map.calculateTimedWithMods(_mods),
+		});
 	});
 
 	return result;

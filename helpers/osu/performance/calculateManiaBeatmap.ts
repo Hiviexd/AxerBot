@@ -13,7 +13,9 @@ export default (osu_file: string, mods?: string) => {
 
 	const difficultyAttributes = ruleset.createDifficultyCalculator(parsed);
 
-	const difficulty = difficultyAttributes.calculate();
+	const _mods = ruleset.createModCombination(mods || "nm");
+
+	const difficulty = difficultyAttributes.calculateWithMods(_mods);
 
 	let pps: any = [];
 
@@ -74,6 +76,7 @@ export default (osu_file: string, mods?: string) => {
 					1.1 *
 					nerfpp
 			),
+			spikes: difficultyAttributes.calculateTimedWithMods(_mods),
 		});
 	});
 
