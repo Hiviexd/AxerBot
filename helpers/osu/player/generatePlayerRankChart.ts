@@ -53,9 +53,6 @@ export default async (user: User, color: string): Promise<any> => {
 					display: true,
 				},
 			},
-			font: {
-				family: "Quicksand",
-			},
 			scales: {
 				x: {
 					grid: {
