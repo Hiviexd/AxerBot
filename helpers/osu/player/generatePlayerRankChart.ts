@@ -240,6 +240,8 @@ export default async (user: User, color: string): Promise<any> => {
 		};
 	}
 
+	if (badges.getWidth() < 2) container.crop(1350, 100, 1350, 240);
+
 	function getRandomDefaultBg() {
 		const bgs = [1, 2, 3, 4, 5, 6, 7, 8];
 
