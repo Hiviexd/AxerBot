@@ -59,6 +59,16 @@ export default {
 		await command.deferReply();
 		if (!command.guild) return;
 
+		if (!command.member || !command.guild) return;
+
+		if (typeof command.member?.permissions == "string") return;
+
+		if (
+			!command.member.permissions.has("MANAGE_CHANNELS", true) &&
+			command.user.id !== ownerId
+		)
+			return command.editReply({ embeds: [MissingPermissions] });
+
 		const channel = command.options.getString("channels", true);
 
 		const channelIds = channel
@@ -151,6 +161,8 @@ export default {
 				", "
 			)}`,
 		};
+
+		await guilds.findByIdAndUpdate(guild._id, guild);
 
 		return await command.editReply({
 			embeds: [
