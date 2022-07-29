@@ -4,3 +4,4 @@ tests
 .env
 dist
 cache/nominators.json
+cache/nominators.json
