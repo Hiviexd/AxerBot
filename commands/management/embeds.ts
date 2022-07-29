@@ -162,7 +162,7 @@ export default {
 			)}`,
 		};
 
-		await guilds.findByIdAndUpdate(guild._id, guild);
+		await database.guilds.findByIdAndUpdate(guild._id, guild);
 
 		return await command.editReply({
 			embeds: [
