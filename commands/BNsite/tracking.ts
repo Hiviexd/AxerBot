@@ -114,7 +114,7 @@ export default {
 			return command.editReply({
 				embeds: [
 					generateErrorEmbed(
-						"This server doesn't have any tracker configured. Use `/qtrack add tracker` to add a tracker."
+						"This server doesn't have any tracker configured. Use `/bntrack add tracker` to add a tracker."
 					),
 				],
 			});
