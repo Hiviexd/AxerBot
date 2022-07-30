@@ -9,7 +9,7 @@ export default async (button: ButtonInteraction) => {
 
 	const time = new Date();
 
-	await button.deferReply();
+	await button.deferReply({ ephemeral: true });
 
 	const beatmapId = targets[1].trim();
 	const downloadUrlButton = new MessageActionRow();
