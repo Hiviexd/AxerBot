@@ -155,7 +155,7 @@ async function qatTracking(bot: Client) {
 
 		const guild = bot.guilds.cache.get(track.guild);
 
-		if (!guild) return tracks.findByIdAndDelete(track._id);
+		if (!guild) return;
 
 		const channel = guild.channels.cache.get(track.channel);
 
