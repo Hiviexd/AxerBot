@@ -50,7 +50,11 @@ export default async (message: Message, bot: Client) => {
 					console.error(e);
 				});
 			}
-		} else if (message.content.includes("💀")) {
+		} 
+		// ? removed auto reactions cuz they can be annoying
+		// TODO: make a customizable reaction system where you assign emoji reactions to certain keywords
+		
+		/*else if (message.content.includes("💀")) {
 			message.react("💀").catch((e) => {
 				console.error(e);
 			});
@@ -58,6 +62,6 @@ export default async (message: Message, bot: Client) => {
 			message.react("⬆️").catch((e) => {
 				console.error(e);
 			});
-		}
+		}*/
 	}
 };
