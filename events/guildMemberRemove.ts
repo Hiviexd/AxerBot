@@ -1,6 +1,6 @@
-import { MessageEmbed, GuildMember, Client } from "discord.js";
+import { Client } from "discord.js";
 import { consoleLog } from "../helpers/core/logger";
-import * as database from "../database";
+import logServerLeaves from "../modules/loggers/logServerLeaves";
 
 export default {
 	name: "guildMemberRemove",
@@ -12,41 +12,13 @@ export default {
 				if (member.id == bot_user.id) return;
 
 				if (!member.user) return;
-				const guild = await database.guilds.findOne({
-					_id: member.guild.id,
-				});
-
-				if (!guild) return;
-
-				if (guild.logging.enabled === false) return;
-				if (!member.guild.channels.cache.get(guild.logging.channel))
-					return;
-
-				const memberRoles = member.roles.cache
-					.filter((roles) => roles.id !== member.guild.id)
-					.map((role) => role.toString());
-				const embed = new MessageEmbed()
-					.setColor("#d97f36")
-					.setAuthor(
-						`${member.user.username}`,
-						member.user.displayAvatarURL()
-					)
-					.setDescription(
-						`:wave: ${member.user} has left the server ${member.guild.name}!\n\n**Roles:** \n${memberRoles}`
-					)
-					.setTimestamp();
+				
+				await logServerLeaves(member);
 
 				consoleLog(
 					"guildMemberRemove",
 					`User ${member.user.tag} has left the server ${member.guild.name}!`
 				);
-
-				const channel: any = member.guild.channels.cache.get(
-					guild.logging.channel
-				);
-				if (!channel) return;
-
-				channel.send({ embeds: [embed] });
 			});
 		} catch (e: any) {
 			console.error(e);
