@@ -17,7 +17,7 @@ This bot contains many features that makes your life easier as an osu! Discord s
 - command cooldowns
 - A message logging system
 - A reminder system
-- A bunch of of fun and trivial commands
+- A bunch of fun and trivial commands
 - Clickable osu! timestamps
 <img src ="https://bns.are-la.me/992SNJv.png" width="488" />
 
