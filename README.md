@@ -29,8 +29,17 @@ The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](ht
 - An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server
 <img src ="https://bns.are-la.me/3yBn2uk.png" width="700" />
 
+- A feed system that actively keeps track of the request statuses for all BNs/NATs
+
+<img src ="https://bns.are-la.me/5XHQimv.png" width="500" />
+
 - Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website
 <img src ="https://bns.are-la.me/9HixUXZ.png" width="700" />
+
+## Thanks to
+
+- **[Sebola3461](https://github.com/Sebola3461)** for helping me a lot with this project!
+- **[pishifat](https://github.com/pishifat)** for granting me access to BN site's interOp routes.
 
 ## Usage
 
@@ -71,8 +80,3 @@ If you want to contribute to this project, please read the following to learn ho
 - Set up config.json
 - Set up `.env` file starting from the `.envexample` file
 - `ts-node .` (use sudo if you're on linux)
-
-## Thanks to
-
-- **[Sebola3461](https://github.com/Sebola3461)** for helping me a lot with this project!
-- **[pishifat](https://github.com/pishifat)** for granting me access to BN site's interOp routes.
