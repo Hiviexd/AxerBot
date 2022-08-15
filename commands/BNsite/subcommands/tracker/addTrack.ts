@@ -55,13 +55,26 @@ export default {
 		const avaliableModes = ["osu", "taiko", "catch", "mania"];
 		const clearModes: string[] = [];
 
-		modes.forEach((m) => {
-			m = m.trim().toLowerCase();
-
-			if (avaliableModes.includes(m)) {
-				clearModes.push(m);
+		for (let mode of modes) {
+			if (!avaliableModes.includes(mode)) {
+				return command.editReply({
+					embeds: [
+						generateErrorEmbed(
+							`The mode \`${mode}\` is not valid. Avaliable modes are: \`${avaliableModes.join(
+								","
+							)}\`
+							Make sure that modes are separated by comma.`
+						),
+					],
+				});
 			}
-		});
+
+			mode = mode.trim().toLowerCase();
+
+			if (avaliableModes.includes(mode)) {
+				clearModes.push(mode);
+			}
+		}
 
 		const config = {
 			modes: clearModes,

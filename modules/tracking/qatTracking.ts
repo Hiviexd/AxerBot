@@ -155,11 +155,14 @@ async function qatTracking(bot: Client) {
 
 		const guild = bot.guilds.cache.get(track.guild);
 
-		if (!guild) return tracks.findByIdAndDelete(track._id);
+		if (!guild) return;
 
 		const channel = guild.channels.cache.get(track.channel);
 
-		if (!channel) return tracks.findByIdAndDelete(track._id);
+		// ! deletes trackers upon booting for some reason dont use
+		// if (!channel) return tracks.findByIdAndDelete(track._id);
+		
+		if (!channel) return;
 
 		function allowSend() {
 			if (bn.requestStatus.includes("closed") && !track.targets.closed)
