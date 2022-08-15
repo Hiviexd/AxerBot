@@ -10,7 +10,11 @@ import parseComment from "./parseComment";
 export default async (message: Message) => {
 	if (message.author.bot) return;
 	const links: string[] = [];
-	const args = message.content.toLowerCase().trim().split(" ");
+	const args = message.content
+		.toLowerCase()
+		.trim()
+		.replace(/\n/g, " ")
+		.split(" ");
 	const guild = await database.guilds.findOne({ _id: message.guildId });
 
 	if (guild == null) return;

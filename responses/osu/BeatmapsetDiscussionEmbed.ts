@@ -46,6 +46,25 @@ export default {
 			post.beatmapsets[0].creator
 		}**](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
+		function getPostLocation() {
+			if (!post.discussions[0].beatmap_id)
+				return "General (All difficulties)";
+
+			if (!beatmap.data.beatmaps) return "General (All difficulties)";
+
+			const beatmapData = beatmap.data.beatmaps.find(
+				(b) => b.id == post.discussions[0].beatmap_id
+			);
+
+			if (!beatmapData) return "General (All difficulties)";
+
+			if (url.includes("general") && !url.includes("generalAll"))
+				return `General (${beatmapData.version})`;
+
+			if (url.includes("timeline"))
+				return `Timeline (${beatmapData.version})`;
+		}
+
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
 				truncateString(metadata.concat(post.posts[0].message), 2048)
@@ -61,6 +80,9 @@ export default {
 				name: `${author.data.username} ${
 					usergroup.name ? `(${usergroup.name})` : ""
 				}`,
+			},
+			footer: {
+				text: `${getPostLocation()}`,
 			},
 			timestamp: new Date(post.posts[0].created_at),
 		});
