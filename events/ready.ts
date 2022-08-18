@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
 import remindersChecker from "../modules/reminders/remindersChecker";
-import serverCountInStatus from "../modules/serverCount/serverCountInStatus";
+import presence from "../modules/presence/presence";
 import qatTracking from "../modules/tracking/qatTracking";
 
 export default {
@@ -16,12 +16,12 @@ export default {
 				`${bot_user.username} is online on ${bot.guilds.cache.size} servers!`
 			);
 
-			//? Sets and updates the status of the bot every minute
-			serverCountInStatus(bot, bot_user);
+			//? Sets and updates the status of the bot every 15 seconds
+			presence(bot, bot_user, false); // ! false = not ready
 
 			setInterval(() => {
-				serverCountInStatus(bot, bot_user);
-			}, 60000);
+				presence(bot, bot_user, true); // ! true = ready
+			}, 15000);
 
 			//? checks for reminders every 1 second
 
