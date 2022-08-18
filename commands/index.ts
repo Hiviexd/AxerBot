@@ -34,6 +34,7 @@ import invite from "./misc/invite";
 import openbns from "./BNsite/openbns";
 import heardle from "./fun/heardle";
 import qattrack from "./BNsite/tracking";
+import osutimestamps from "./management/osuTimestamps";
 
 const commands: any = {
 	ping: ping,
@@ -72,6 +73,7 @@ const commands: any = {
 	openbns: openbns,
 	heardle: heardle,
 	bntrack: qattrack,
+    osutimestamps: osutimestamps,
 };
 
 export default commands;
