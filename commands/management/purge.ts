@@ -1,9 +1,4 @@
-import {
-	Client,
-	Message,
-	CommandInteraction,
-	TextBasedChannel,
-} from "discord.js";
+import { Client, Message, CommandInteraction, TextBasedChannel } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import generateConfirmationEmbed from "./../../helpers/text/embeds/generateConfirmationEmbed";
@@ -14,7 +9,7 @@ export default {
 	name: "purge",
 	help: {
 		description:
-			"Deletes x amount of messages from a channel.\nMax amount is `98` because of Discord limitations.",
+			"Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
 		syntax: "{prefix}purge `<count>`",
 		example: "{prefix}purge `6`",
 	},
@@ -33,11 +28,12 @@ export default {
 		],
 	},
 	category: "management",
+    permissions: ["MANAGE_MESSAGES"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
 		let purge = (channel: any, amount: number) => {
-			channel.bulkDelete(amount + 2).catch((e: any) => {
+			channel.bulkDelete(amount + 1).catch((e: any) => {
 				command.editReply({
 					embeds: [
 						generateErrorEmbed(
@@ -53,12 +49,6 @@ export default {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;
-
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
 
 		if (!command.channel || !command.channel.isText()) return;
 

@@ -166,4 +166,8 @@ export default new Schema({
 			channel: "",
 		},
 	},
+    osuTimestamps: {
+        type: Boolean,
+        default: true,
+    }
 });

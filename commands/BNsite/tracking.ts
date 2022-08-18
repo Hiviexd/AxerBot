@@ -1,10 +1,8 @@
 import { Client, CommandInteraction, MessageEmbed } from "discord.js";
 import { tracks } from "../../database";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import addTrack from "./subcommands/tracker/addTrack";
 import removeTrack from "./subcommands/tracker/removeTrack";
-import { ownerId } from "./../../config.json";
 
 export default {
 	name: "bntrack",
@@ -15,6 +13,7 @@ export default {
 	interaction: true,
 	category: "BNsite",
 	subcommands: [addTrack, removeTrack],
+    permissions: ["MANAGE_CHANNELS"],
 	config: {
 		type: 1,
 		options: [
@@ -96,14 +95,8 @@ export default {
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
-		if (!command.member || typeof command.member.permissions == "string")
+		if (!command.member)
 			return;
-
-		if (
-			!command.member.permissions.has("MANAGE_CHANNELS", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
 
 		const guildTrackers = await tracks.find({
 			guild: command.guildId,

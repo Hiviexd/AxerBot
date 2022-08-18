@@ -9,8 +9,6 @@ import quotesGetList from "./subcommands/quotes/quotesGetList";
 import quotesAddWord from "./subcommands/quotes/quotesAddWord";
 import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
 import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../config.json";
 import quotesSetChance from "./subcommands/quotes/quotesSetChance";
 
 export default {
@@ -47,15 +45,9 @@ export default {
 		quotesSetChance,
 	],
 	category: "management",
+    permissions: ["MANAGE_GUILD"],
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (!message.guild || !message.member) return;
-
-		// ? Only guild managers and admins can use this
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
 
 		// const action = args[1]; // {prefix}quotes set <argument>
 		// const getter = args[0]; // {prefix}quotes <something>
