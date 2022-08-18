@@ -5,6 +5,7 @@ import {
 	TextInputComponent,
 	ModalActionRowComponent,
 	MessageActionRow,
+	MessageButton,
 } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
@@ -79,8 +80,16 @@ export default {
 
 				await guilds.findByIdAndUpdate(command.guildId, guild);
 
+				const previewButton = new MessageButton()
+				.setLabel("Preview message")
+				.setStyle("PRIMARY")
+				.setCustomId(`verificationpreviewmessage|${interaction.user.id}`)
+
+				const previewButtonActionRow = new MessageActionRow().addComponents(previewButton)
+
 				interaction.editReply({
 					embeds: [generateSuccessEmbed("✅ Message changed!")],
+					components: [previewButtonActionRow]
 				});
 			}
 		);
