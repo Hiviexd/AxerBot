@@ -8,6 +8,7 @@ import osuInteractions from "../helpers/interactions/osuInteractions";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
 import heardle from "../modules/heardle/heardle";
 import beatmapDownloader from "../modules/downloader/beatmapDownloader";
+import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 
 export default {
 	name: "interactionCreate",
@@ -18,11 +19,17 @@ export default {
 			if (interaction.isButton()) {
 				if (!interaction.customId.includes("beatmap_download")) {
 					await interaction.deferReply({ ephemeral: true });
-				sendVerificationLink(interaction);
-				} 
+					sendVerificationLink(interaction);
+				}
 
 				if (interaction.customId.includes("beatmap_download")) {
 					beatmapDownloader(interaction);
+				}
+
+				if (
+					interaction.customId.includes("verificationpreviewmessage")
+				) {
+					previewVerificationMessage(interaction);
 				}
 			}
 
