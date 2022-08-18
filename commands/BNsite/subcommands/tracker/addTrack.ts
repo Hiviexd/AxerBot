@@ -18,12 +18,6 @@ export default {
 		if (!command.member || typeof command.member.permissions == "string")
 			return;
 
-		if (
-			!command.member.permissions.has("MANAGE_CHANNELS", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
-
 		const channel = command.options.getChannel("channel", true);
 		const modes = command.options.getString("modes", true).split(",");
 		const status = command.options.getString("status", true).split(",");

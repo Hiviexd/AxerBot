@@ -1,6 +1,4 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../config.json";
 import * as database from "./../../database";
 import generateSuccessEmbed from "./../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
@@ -15,16 +13,11 @@ export default {
 		options: ["`channel`", "`disable`"],
 	},
 	category: "management",
+    permissions: ["MANAGE_CHANNELS"],
 	run: async (bot: Client, message: Message, args: string[]) => {
 		const actions = ["disable", "channel"];
 
 		if (!message.guild) return;
-
-		if (
-			!message.member?.permissions.has("MANAGE_CHANNELS", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
 
 		const guild = await database.guilds.findOne({ _id: message.guildId });
 		if (!guild) return;

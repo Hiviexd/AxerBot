@@ -1,7 +1,5 @@
-import { Client, Channel, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, Channel, CommandInteraction } from "discord.js";
 import * as database from "../../database";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../config.json";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
@@ -55,6 +53,7 @@ export default {
 		],
 	},
 	category: "management",
+    permissions: ["MANAGE_CHANNELS"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 		if (!command.guild) return;
@@ -62,12 +61,6 @@ export default {
 		if (!command.member || !command.guild) return;
 
 		if (typeof command.member?.permissions == "string") return;
-
-		if (
-			!command.member.permissions.has("MANAGE_CHANNELS", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
 
 		const channel = command.options.getString("channels", true);
 

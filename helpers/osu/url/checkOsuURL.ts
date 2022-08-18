@@ -9,6 +9,7 @@ import parseComment from "./parseComment";
 
 export default async (message: Message) => {
 	if (message.author.bot) return;
+
 	const links: string[] = [];
 	const args = message.content
 		.toLowerCase()
@@ -19,7 +20,7 @@ export default async (message: Message) => {
 
 	if (guild == null) return;
 
-	osuTimestamp(message);
+	if (guild.osuTimestamps) osuTimestamp(message);
 
 	if (!(await checkCooldown(guild, "osu", message.channelId, message, true)))
 		return;
@@ -28,54 +29,60 @@ export default async (message: Message) => {
 		if (arg.startsWith("https://osu.ppy.sh/")) links.push(arg);
 	});
 
-	links.forEach((link) => {
-		if (link.split("/").includes("users")) {
-			if (
-				(guild.embeds &&
-					guild.embeds.player.all &&
+	function validateArg(arg: string) {
+		if (!guild) return;
+		if (!guild.embeds) return;
+
+		const url = new URL(arg);
+
+		// ? User link
+		if (url.pathname.includes("users")) {
+			if ((guild.embeds.player.all &&
 					!guild.embeds.player.none) ||
 				guild.embeds.player.channels.includes(message.channelId)
 			) {
-				return parseUser(link, message);
+				return parseUser(arg, message);
 			}
 		}
 
+		// ? Beatmap link
 		if (
-			link.split("/").includes("beatmapsets") &&
-			!link.includes("discussion")
+			url.pathname.includes("beatmapsets") &&
+			!url.pathname.includes("discussion")
 		) {
-			if (
-				(guild.embeds &&
-					guild.embeds.beatmap.all &&
+			if ((guild.embeds.beatmap.all &&
 					!guild.embeds.beatmap.none) ||
 				guild.embeds.beatmap.channels.includes(message.channelId)
 			) {
-				return parseBeatmap(link, message);
-			}
-		}
-		if (
-			link.split("/").includes("discussion") &&
-			!link.includes("reviews")
-		) {
-			if (
-				(guild.embeds &&
-					guild.embeds.discussion.all &&
-					!guild.embeds.discussion.none) ||
-				guild.embeds.discussion.channels.includes(message.channelId)
-			) {
-				return parseDiscussionPost(link, message);
+				return parseBeatmap(arg, message);
 			}
 		}
 
-		if (link.split("/").includes("comments")) {
-			if (
-				(guild.embeds &&
-					guild.embeds.comment.all &&
+		// ? Discussion link
+		if (
+			url.pathname.includes("discussion") &&
+			!url.pathname.includes("reviews")
+		) {
+			if ((guild.embeds.discussion.all &&
+					!guild.embeds.discussion.none) ||
+				guild.embeds.discussion.channels.includes(message.channelId)
+			) {
+				return parseDiscussionPost(arg, message);
+			}
+		}
+
+		// ? Comment link
+		if (url.pathname.includes("comments")) {
+			if ((guild.embeds.comment.all &&
 					!guild.embeds.comment.none) ||
 				guild.embeds.comment.channels.includes(message.channelId)
 			) {
-				return parseComment(link, message);
+				return parseComment(arg, message);
 			}
 		}
+	}
+
+	links.forEach((link) => {
+		validateArg(link.toLowerCase())
 	});
 };

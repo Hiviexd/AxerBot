@@ -6,8 +6,6 @@ import setFlags from "./subcommands/verification/setFlags";
 import setMessage from "./subcommands/verification/setMessage";
 import addRole from "./subcommands/verification/addRole";
 import removeRole from "./subcommands/verification/removeRole";
-import { ownerId } from "../../config.json";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { guilds } from "../../database";
 import parseMessagePlaceholderFromMember from "../../helpers/text/parseMessagePlaceholderFromMember";
 import addGroupRole from "./subcommands/verification/addGroupRole";
@@ -639,17 +637,12 @@ export default {
 		],
 	},
 	category: "management",
+    permissions: ["MANAGE_GUILD"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
 		if (!command.member || typeof command.member.permissions == "string")
 			return;
-
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
 
 		let guild = await guilds.findById(command.guildId);
 		if (!guild) return;

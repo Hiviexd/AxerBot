@@ -9,6 +9,8 @@ import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
 import checkCooldown from "../general/checkCooldown";
 import createNewUser from "../../database/utils/createNewUser";
+import { ownerId } from "./../../config.json"
+import generateMissingPermsEmbed from "../text/embeds/generateMissingPermsEmbed";
 
 export default async function commandHandler(
 	bot: Client,
@@ -27,41 +29,25 @@ export default async function commandHandler(
 	const requested_command = commands[interaction.commandName];
 	if (!requested_command) return interaction.reply("Command not found!");
 
-	if (requested_command)
-		/*
-		return interaction.channel.send({
-			embeds: [CommandNotFound],
-		});
-		*/
+	if (requested_command) {
+		function checkPermissions() {
+			if (!requested_command.permissions) return true;
+
+			if (!interaction.member) return false;
+			if (typeof interaction.member.permissions == "string") return false;
+
+			if (interaction.user.id == ownerId) return true;
+
+			return interaction.member.permissions.has(requested_command.permissions, true)
+		}
+
+		if (!checkPermissions()) {
+			return interaction.reply({
+				embeds: [generateMissingPermsEmbed(requested_command.permissions)]
+			});
+		}
 
 		try {
-			// if (
-			// 	!(await checkCooldown(
-			// 		guild,
-			// 		requested_command.category,
-			// 		interaction.channelId,
-			// 		interaction
-			// 	))
-			// )
-			// 	return;
-
-			// * ================== Subcommands
-			// if (requested_command.subcommands) {
-			// 	let subcommand: any = {};
-
-			// 	subcommand = requested_command.subcommands.filter(
-			// 		(c: any) =>
-			// 			c.trigger.toString() ==
-			// 			args.slice(0, c.trigger.length).toString()
-			// 	)[0];
-
-			// 	if (subcommand) {
-			// 		args.splice(0, subcommand.trigger.length);
-
-			// 		return subcommand.run(interaction, args);
-			// 	}
-			// }
-
 			let subcommand_group = "";
 
 			try {
@@ -81,40 +67,6 @@ export default async function commandHandler(
 				if (requested_subcommand)
 					return requested_subcommand.run(interaction, []);
 			}
-			// const subcommands = interaction.options.data.filter(
-			// 	(o) => o.type == "SUB_COMMAND_GROUP"
-			// );
-
-			// const subcommand_group = subcommands[0];
-
-			// if (subcommand_group && subcommand_group.options) {
-			// 	const first_option: any = subcommand_group.options[0];
-
-			// 	if (subcommand_group.options) {
-			// 		const requested_subcommand =
-			// 			requested_command.subcommands.find(
-			// 				(c: any) =>
-			// 					c.group == subcommand_group.name &&
-			// 					c.name == first_option.name
-			// 			);
-
-			// 		if (requested_subcommand) {
-			// 			const subcommand_group_object =
-			// 				interaction.options.getSubcommand(true);
-
-			// 			console.log(subcommand_group_object);
-
-			// 			const subcommand_object =
-			// 				subcommand_group_object.options.getSubCommand(
-			// 					first_option.name
-			// 				);
-
-			// 			interaction.options = subcommand_object.options;
-
-			// 			return requested_subcommand.run(interaction, []);
-			// 		}
-			//}
-			//}
 
 			requested_command.run(bot, interaction, []);
 		} catch (e) {
@@ -125,4 +77,5 @@ export default async function commandHandler(
 					console.error(e);
 				});
 		}
+	}
 }
