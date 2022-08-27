@@ -34,7 +34,7 @@
     "mime-db": "^1.50.0",
     "mime-types": "^2.1.33",
     "moment": "^2.29.4",
-    "mongoose": "^6.2.4",
+    "mongoose": "^6.4.6",
     "mp3-cutter": "^1.0.6",
     "node-fetch": "^2.6.7",
     "node-osu": "^2.2.1",
