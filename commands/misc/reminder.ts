@@ -89,7 +89,7 @@ export default {
 				embeds: [
 					{
 						title: "❌ Invalid time format",
-						description: "Use `/help reminder` to get help",
+						description: "time format: `s`: seconds, `m`: minutes, `h`: hours, `d`: days\nExample: `/reminder time:30m content:Remind me to do something`",
 						color: "#ff5050",
 					},
 				],
