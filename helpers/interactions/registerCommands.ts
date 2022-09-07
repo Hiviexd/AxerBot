@@ -6,6 +6,8 @@ import commands from "../../commands";
 
 export default (bot: Client) => {
 	const _commands: { [key: string]: any } = [
+        /*
+        ! temp disabling context menu commands because they cause a fatal error where the bot stops working bit doesn't actually crash or exit
 		{
 			name: "Display player info",
 			type: 3,
@@ -22,6 +24,7 @@ export default (bot: Client) => {
 			name: "Display comment info",
 			type: 3,
 		},
+        */
 	];
 
 	Object.keys(commands).forEach((command) => {
