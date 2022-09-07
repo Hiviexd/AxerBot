@@ -15,6 +15,7 @@ import truncateString from "../../helpers/text/truncateString";
 import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
 import replaceOsuTimestampsToURL from "../../helpers/text/replaceOsuTimestampsToURL";
 import getEmoji from "../../helpers/text/getEmoji";
+import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 
 export default {
 	send: async (
@@ -42,11 +43,25 @@ export default {
 
 		const metadata = `
 		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
-		${getEmoji(beatmap.data.beatmaps[0].mode)} Mapped by [**${
+		${generateModeIcon()} Mapped by [${
 			post.beatmapsets[0].creator
-		}**](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
+		}](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
-		function getPostLocation() {
+		function generateModeIcon() {
+            if (!beatmap.data.beatmaps) return;
+
+            const beatmapData = beatmap.data.beatmaps.find(
+				(b) => b.id == post.discussions[0].beatmap_id
+			);
+
+            if (!post.discussions[0].beatmap_id || !beatmapData) {
+                return getEmoji(beatmap.data.beatmaps[0].mode);
+            }
+            return generateColoredModeIcon(beatmapData?.mode, beatmapData?.difficulty_rating);
+            
+        }
+        
+        function getPostLocation() {
 			if (!post.discussions[0].beatmap_id)
 				return "General (All difficulties)";
 

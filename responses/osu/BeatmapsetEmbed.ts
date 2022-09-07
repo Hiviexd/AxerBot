@@ -9,6 +9,7 @@ import {
 } from "discord.js";
 import calculateTaikoBeatmap from "../../helpers/osu/performance/calculateTaikoBeatmap";
 import getEmoji from "../../helpers/text/getEmoji";
+import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { Beatmap, Beatmapset } from "../../types/beatmap";
 import axios from "axios";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -107,7 +108,7 @@ export default {
 				url: `https://osu.ppy.sh/s/${beatmapset.id}`,
 				fields: [
 					{
-						name: `${getEmoji(beatmap.mode)} ${beatmap.version}`,
+						name: `${generateColoredModeIcon(beatmap.mode, +beatmap.difficulty_rating.toFixed(2))} ${beatmap.version}`,
 						value: getBeatmapEmbedFields(
 							beatmap,
 							beatmap.mode,

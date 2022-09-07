@@ -9,6 +9,7 @@ import getTop3Languages from "../../helpers/qat/getters/languages/getTop3Languag
 import calculateDuration from "../../helpers/text/calculateDuration";
 import getRequestStatus from "../../helpers/qat/getters/requestStatus/getRequestStatus";
 import abreviation from "../../helpers/text/abreviation";
+import getEmoji from "../../helpers/text/getEmoji";
 
 //! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
 // TODO: add BN finder count IF you're re-adding QA info
@@ -38,6 +39,13 @@ export default {
 			reqStatus = "Unknown";
 		}
 
+        const modeIcons = qatUser.data.modes
+			.map((mode: string) => {
+				return `${getEmoji(mode)} `;
+			})
+			.join("")
+			.trim();
+        
 		let e = new MessageEmbed()
 			.setAuthor({
 				name: `${osuUser.data.username} • BN/NAT info`,
@@ -49,9 +57,9 @@ export default {
 			.setDescription(
 				`showing **[${abreviation(
 					osuUser.data.username
-				)} BN website info](https://bn.mappersguild.com/users?id=${
+				)}](https://bn.mappersguild.com/users?id=${
 					qatUser.data.id
-				})** from the last **90** days.`
+				})** ${modeIcons} BN website info from the last **90** days.`
 			)
 			.addField("Request Status", `${reqStatus}`, true);
 

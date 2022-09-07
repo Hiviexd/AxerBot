@@ -29,7 +29,7 @@ export default {
 			command.editReply({
 				embeds: [
 					{
-						title: "Pun",
+						title: "🗿 Pun",
 						color: "#0080ff",
 						description: req.data.joke,
 					},
