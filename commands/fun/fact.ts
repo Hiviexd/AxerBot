@@ -21,11 +21,11 @@ export default {
 				max_value: 1,
 				choices: [
 					{
-						name: "Daily",
+						name: "daily",
 						value: "today",
 					},
 					{
-						name: "Random",
+						name: "random",
 						value: "random",
 					},
 				],
@@ -47,7 +47,7 @@ export default {
 				.then(async (res) => {
 					const fact = res.data.text;
 					const embed = new MessageEmbed({
-						title: "Fact of the Day",
+						title: "🌟 Fact of the Day",
 						description: fact.replace(/`/g, "'"),
 						color: "#ffac00",
 						footer: {
@@ -63,11 +63,11 @@ export default {
 				.then(async (res) => {
 					const fact = res.data.text;
 					const embed = new MessageEmbed({
-						title: "Random Fact",
+						title: "📘 Random Fact",
 						description: fact.replace(/`/g, "'"),
 						color: "#0080ff",
 						footer: {
-							text: `Check out today's fact with \"/fact type:Daily\"!`,
+							text: `Check out today's fact with \"/fact type:daily\"!`,
 						},
 					});
 					command.editReply({ embeds: [embed] }).catch(console.error);
