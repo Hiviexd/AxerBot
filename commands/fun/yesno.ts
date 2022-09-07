@@ -1,4 +1,4 @@
-import { Client, Message, CommandInteraction } from "discord.js";
+import { Client, Message, CommandInteraction, GuildMember } from "discord.js";
 import { parseTextFile } from "../../helpers/text/processText";
 
 export default {
@@ -23,12 +23,23 @@ export default {
 	category: "fun",
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
+        
+		//get question from options
+		const question = command.options.getString("question");
 
 		const phrases = await parseTextFile(
 			__dirname.concat("/../../responses/text/yesno.txt")
 		);
 
-		const res = phrases[Math.floor(Math.random() * phrases.length)];
+		if (!(command.member instanceof GuildMember)) return;
+
+		const res = `**${
+			command.member?.nickname
+				? command.member.nickname
+				: command.user.username
+		}:**\n> ${question}\n${
+			phrases[Math.floor(Math.random() * phrases.length)]
+		}`;
 
 		command.editReply(res);
 	},

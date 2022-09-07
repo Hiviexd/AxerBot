@@ -1,4 +1,4 @@
-import { Client, Message, CommandInteraction } from "discord.js";
+import { Client, GuildMember, CommandInteraction } from "discord.js";
 
 export default {
 	name: "roll",
@@ -28,7 +28,16 @@ export default {
 				? command.options.getInteger("value")
 				: 100) || 100;
 
-		let roll = Math.floor(Math.random() * dice) + 1;
-		command.editReply(`${command.user} rolled **${roll}**!`);
+		const roll = Math.floor(Math.random() * dice) + 1;
+
+		if (!(command.member instanceof GuildMember)) return;
+
+		command.editReply(
+			`**${
+				command.member?.nickname
+					? command.member.nickname
+					: command.user.username
+			}** rolled **${roll}**!`
+		);
 	},
 };
