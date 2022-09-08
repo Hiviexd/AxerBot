@@ -56,6 +56,11 @@ export default new Schema({
 				none: false,
 				channels: [],
 			},
+			modhub: {
+				all: true,
+				none: false,
+				channels: [],
+			},
 		},
 	},
 	channels: {
@@ -166,8 +171,8 @@ export default new Schema({
 			channel: "",
 		},
 	},
-    osuTimestamps: {
-        type: Boolean,
-        default: true,
-    }
+	osuTimestamps: {
+		type: Boolean,
+		default: true,
+	},
 });
