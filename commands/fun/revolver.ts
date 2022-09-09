@@ -1,4 +1,4 @@
-import { Client, Message, CommandInteraction } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 import { numberToEmoji } from "../../helpers/text/numberToEmoji";
 import * as database from "./../../database";
 
