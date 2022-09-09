@@ -41,6 +41,12 @@ export default function getOpenBNsPerMode(
 			}
 		}
 	}
-
-	return bns.sort().join("\n");
+    //sort bns based on usergroup
+    return bns.sort((a, b) => {
+        if (a.includes("🟠")) return -1;
+        if (b.includes("🟠")) return 1;
+        if (a.includes("🟣")) return -1;
+        if (b.includes("🟣")) return 1;
+        return 0;
+    }).join("\n");
 }

@@ -13,8 +13,8 @@ export default async (url: URL, message: Message) => {
 
 	const texts: { [key: string]: string } = {
 		pending: "Pending",
-		rechecking: "Need Recheck",
-		waiting: "Waiting another BN",
+		rechecking: "Needs a recheck",
+		waiting: "Waiting on another BN",
 		finished: "Modded",
 		nominated: "Nominated",
 		ranked: "Ranked",
@@ -24,13 +24,15 @@ export default async (url: URL, message: Message) => {
 	};
 
 	const colors: { [key: string]: ColorResolvable } = {
-		rechecking: "#cf3274",
+		rechecking: "#886ce4",
 		accepted: "#25ca6a",
 		finished: "#259bca",
 		nominated: "#259bca",
 		ranked: "#259bca",
 		rejected: "#d4152f",
 		waiting: "#f44336",
+        pending: "#fdcb58",
+        archived: "#9e9e9e"
 	};
 
 	const emojis: { [key: string]: string } = {
@@ -41,6 +43,8 @@ export default async (url: URL, message: Message) => {
 		ranked: "🔵",
 		rejected: "🔴",
 		waiting: "🟠",
+        pending: "🟡",
+        archived: "⚫"
 	};
 
 	const queue = await ModhubFetcher.QueueFetcher.fetchQueue(
@@ -67,6 +71,7 @@ export default async (url: URL, message: Message) => {
 		.setColor(colors[request.data.data.status])
 		.setFooter({
 			text: `Requested to ${queue.data.data.name}`,
+            iconURL: `https://a.ppy.sh/${queue.data.data._id}`,
 		})
 		.setTimestamp(request.data.data.date);
 

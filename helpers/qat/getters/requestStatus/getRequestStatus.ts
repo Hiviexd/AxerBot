@@ -6,6 +6,8 @@ export default function getRequestStatus(user: QatUser): string {
 	requestStatus = requestStatus.filter((status) => status !== "closed");
 
 	return requestStatus
+    //sort alphabetically
+        .sort()
 		.join(", ")
 		.replace(
 			"personalQueue",

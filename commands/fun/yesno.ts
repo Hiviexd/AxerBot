@@ -33,11 +33,7 @@ export default {
 
 		if (!(command.member instanceof GuildMember)) return;
 
-		const res = `**${
-			command.member?.nickname
-				? command.member.nickname
-				: command.user.username
-		}:**\n> ${question}\n${
+		const res = `> ${question}\n${
 			phrases[Math.floor(Math.random() * phrases.length)]
 		}`;
 
