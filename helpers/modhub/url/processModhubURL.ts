@@ -16,10 +16,10 @@ export default async (url: URL, type: string, message: Message) => {
 		if (message.member?.permissions.has("MANAGE_MESSAGES", true))
 			return true;
 
-		if (
-			(guild.embeds[category].all && !guild.embeds[category].none) ||
-			guild.embeds[category].channels.includes(message.channelId)
-		)
+		if (guild.embeds[category].channels.includes(message.channelId))
+			return true;
+
+		if (guild.embeds[category].all && !guild.embeds[category].none)
 			return true;
 
 		return false;
