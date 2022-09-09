@@ -42,7 +42,7 @@ export default {
 				name: `${
 					getOpenBNsPerMode(openBNs, gamemode, "link").split("\n")
 						.length
-				} open ${gamemode} BNs`,
+				} open osu!${gamemode === "osu" ? "" : gamemode} BNs`,
 				url: `https://bn.mappersguild.com/`,
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 			})
