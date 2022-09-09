@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 
 export default {
 	name: "choose",
@@ -77,10 +77,10 @@ export default {
 				choices.push(option);
 			}
 		}
+        const choicesString = choices.join(" or ");
 
-		const randomChoice =
-			choices[Math.floor(Math.random() * choices.length)];
+		const randomChoice = choices[Math.floor(Math.random() * choices.length)];
 
-		command.editReply(randomChoice);
+		command.editReply(`> ${choicesString}\n${randomChoice}`);
 	},
 };
