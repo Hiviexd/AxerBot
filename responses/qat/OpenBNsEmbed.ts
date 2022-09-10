@@ -1,7 +1,6 @@
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 import { QatAllUsersResponse, QatUser } from "../../types/qat";
 import getOpenBNsPerMode from "../../helpers/qat/getters/requestStatus/getOpenBNsPerMode";
-import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 
 export default {
 	reply: (
@@ -11,19 +10,6 @@ export default {
 		guild: any
 	) => {
 		let openBNs: QatUser[] = [];
-
-		let parseUsergroupFromQatUser = (user: QatUser): string => {
-			let usergroup = "";
-			if (user.groups.includes("nat")) {
-				usergroup = "<:1nat:992500805527674940>";
-			} else if (
-				user.groups.includes("bn") &&
-				user.probationModes.length === 0
-			) {
-				usergroup = "<:2bn:992500782274457702>";
-			} else usergroup = "<:3probo:992500821591867442>";
-			return usergroup;
-		};
 
 		qatAllUsers.data.forEach((user: QatUser) => {
 			if (
@@ -59,22 +45,22 @@ export default {
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 			})
 				.addField(
-					"osu",
+					`osu! (${getOpenBNsPerMode(openBNs, "osu", "link").split("\n").length})`,
 					`${getOpenBNsPerMode(openBNs, "osu", "link")}`,
 					true
 				)
 				.addField(
-					"taiko",
+					`osu!taiko (${getOpenBNsPerMode(openBNs, "taiko", "link").split("\n").length})`,
 					`${getOpenBNsPerMode(openBNs, "taiko", "link")}`,
 					true
 				)
 				.addField(
-					"mania",
+					`osu!mania (${getOpenBNsPerMode(openBNs, "mania", "link").split("\n").length})`,
 					`${getOpenBNsPerMode(openBNs, "mania", "link")}`,
 					true
 				)
 				.addField(
-					"catch",
+					`osu!catch (${getOpenBNsPerMode(openBNs, "catch", "link").split("\n").length})`,
 					`${getOpenBNsPerMode(openBNs, "catch", "link")}`,
 					true
 				)
