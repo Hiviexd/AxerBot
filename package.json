@@ -21,7 +21,7 @@
     "combined-stream": "^1.0.8",
     "d3": "^7.4.0",
     "delayed-stream": "^1.0.0",
-    "discord-api-types": "^0.22.0",
+    "discord-api-types": "^0.37.10",
     "discord.js": "13.8.1",
     "discord.js-pagination": "^1.0.3",
     "dot-prop": "^6.0.1",
