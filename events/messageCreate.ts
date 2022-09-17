@@ -13,6 +13,10 @@ export default {
 			if (message.channel.type === "DM") return;
 			if (!message.guild) return;
 
+            const validChannelTypes = ["GUILD_TEXT", "GUILD_NEWS", "GUILD_VOICE"];
+
+            if (!validChannelTypes.includes(message.channel.type)) return;
+
 			const botAsMember = message.guild.members.cache.get(
 				bot.user?.id || ""
 			);
