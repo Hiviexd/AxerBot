@@ -25,6 +25,9 @@ async function qatTracking(bot: Client) {
 	const liveData = await qatApi.fetch.allUsers();
 	const differentData: QatUser[] = [];
 
+    // dickwads and people who don't want to be tracked go here
+    const blacklistedBNs = [9487458, 10959501];
+
 	if (storedData.length != 0) {
 		for (const user of liveData.data) {
 			const storedDataIndex = storedData.findIndex(
@@ -58,6 +61,8 @@ async function qatTracking(bot: Client) {
 		}
 
 		for (const user of differentData) {
+            if (blacklistedBNs.includes(user.osuId)) continue;
+
 			if (await checkModes(user)) {
 				usersToSend.push(user);
 			}
