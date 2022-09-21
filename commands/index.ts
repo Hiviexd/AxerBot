@@ -11,7 +11,7 @@ import participant from "./contests/participant";
 import spectator from "./contests/spectator";
 import resetRoles from "./contests/resetRoles";
 import purge from "./management/purge";
-import send from "./management/send";
+import sendmessage from "./management/sendMessage";
 import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
 import help from "./misc/help";
@@ -35,6 +35,7 @@ import openbns from "./BNsite/openbns";
 import heardle from "./fun/heardle";
 import qattrack from "./BNsite/tracking";
 import osutimestamps from "./management/osuTimestamps";
+import editmessage from "./management/editMessage";
 
 const commands: any = {
 	ping: ping,
@@ -44,7 +45,7 @@ const commands: any = {
 	participant: participant,
 	spectator: spectator,
 	purge: purge,
-	send: send,
+	sendmessage: sendmessage,
 	osuset: osuset,
 	mapsetrank: mapsetrank,
 	help: help,
@@ -74,6 +75,7 @@ const commands: any = {
 	heardle: heardle,
 	bntrack: qattrack,
     osutimestamps: osutimestamps,
+    editmessage: editmessage,
 };
 
 export default commands;
