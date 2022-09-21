@@ -21,7 +21,7 @@ export default {
 	config: {
 		type: 1,
 		options: [
-            {
+			{
 				name: "channel",
 				type: 7,
 				description: "Text channel of the message",
@@ -43,24 +43,27 @@ export default {
 
 		if (typeof command.member?.permissions == "string") return;
 
-        const channel = command.options.getChannel("channel", true);
-        const messageId = command.options.getString("messageid", true);
+		const channel = command.options.getChannel("channel", true);
+		const messageId = command.options.getString("messageid", true);
 
 		if (!command.channel || !command.channel.isText()) return;
 
-        const guild_channel = await command.guild.channels.fetch(channel.id);
-        if (!guild_channel || !guild_channel.isText()) return;
+		const guild_channel = await command.guild.channels.fetch(channel.id);
+		if (!guild_channel || !guild_channel.isText()) return;
 
-        const message = await command.guild.channels.fetch(guild_channel.id).then(channel => {
-            if (channel && channel.isText()) {
-                return channel.messages.fetch(messageId);
-            } else {
-                return undefined;
-            }
-        }).catch(() => {
-            return undefined;
-        });
-        
+		const message = await command.guild.channels
+			.fetch(guild_channel.id)
+			.then((channel) => {
+				if (channel && channel.isText()) {
+					return channel.messages.fetch(messageId);
+				} else {
+					return undefined;
+				}
+			})
+			.catch(() => {
+				return undefined;
+			});
+
 		const modalId = crypto.randomBytes(15).toString("hex").slice(10);
 		const modal = new Modal().setTitle("Edit message").setCustomId(modalId);
 
@@ -68,11 +71,16 @@ export default {
 			.setCustomId("edit-message-text-input")
 			.setStyle("PARAGRAPH")
 			.setLabel("Message")
-            .setPlaceholder(message ? message.content : "Message unknown, will result in an error after submitting.")
-            .setValue(message ? message.content : "")
+			.setPlaceholder(
+				message
+					? message.content
+					: "Message unknown, will result in an error after submitting."
+			)
+			.setValue(message ? message.content : "")
 			.setRequired(true);
 
-		const firstTextInput = new MessageActionRow<ModalActionRowComponent>().addComponents(textInput);
+		const firstTextInput =
+			new MessageActionRow<ModalActionRowComponent>().addComponents(textInput);
 
 		modal.addComponents(firstTextInput);
 		await command.showModal(modal);
@@ -92,7 +100,7 @@ export default {
 				interaction.customId === modalId &&
 				guild_channel &&
 				guild_channel.isText() &&
-                message
+				message
 			) {
 				const editedMessage = interaction.fields.getTextInputValue(
 					"edit-message-text-input"
@@ -100,20 +108,20 @@ export default {
 
 				if (!message) return;
 				await guild_channel.messages
-                    .fetch(messageId)
-                    .then((message) => {
-                        message.edit(editedMessage);
-                    })
-                .then(() => {
-					interaction.followUp({
-						embeds: [
-							generateSuccessEmbed(
-								"✅ Message edited successfully."
-							),
-						],
-						ephemeral: true,
+					.fetch(messageId)
+					.then((message) => {
+						message.edit(editedMessage);
+					})
+					.then(() => {
+						interaction.followUp({
+							embeds: [
+								generateSuccessEmbed(
+									"✅ Message edited successfully."
+								),
+							],
+							ephemeral: true,
+						});
 					});
-				});
 			} else {
 				interaction.followUp({
 					embeds: [
