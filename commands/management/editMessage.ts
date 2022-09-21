@@ -73,7 +73,7 @@ export default {
 			.setLabel("Message")
 			.setPlaceholder(
 				message
-					? message.content
+					? "Message"
 					: "Message unknown, will result in an error after submitting."
 			)
 			.setValue(message ? message.content : "")
