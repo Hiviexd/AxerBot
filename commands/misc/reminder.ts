@@ -113,7 +113,7 @@ export default {
 
 		let normalizedTime = "";
 
-		// Based off the delimiter, sets the time
+		// ? Based off the delimiter, sets the time
 		switch (measure) {
 			case "s":
 				normalizedTime =
@@ -144,7 +144,7 @@ export default {
 				break;
 		}
 
-		//set max allowed date to 2 years
+		// ? set max allowed date to 2 years
 		if (time > 1000 * 60 * 60 * 24 * 365 * 2)
 			return interaction.editReply({
 				embeds: [
@@ -162,8 +162,25 @@ export default {
 
 		const message_ = contentInput.value.toString().trim();
 
+        // ? limit reminder message to 1000 characters
+        if (message_.length > 1000)
+        return interaction.editReply({
+            embeds: [
+                {
+                    title: "❌ Message too long",
+                    description:
+                        "Reminder message can only be up to 1000 characters long.",
+                    color: "#ff5050",
+                },
+            ],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
+
 		const reminder = {
 			time: new Date().getTime() + time,
+            creationTime: new Date().getTime(),
 			message: message_,
 			channel: interaction.channel.id,
 			guild: interaction.guild.id,
