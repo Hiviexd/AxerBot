@@ -3,12 +3,13 @@
  */
 
 import moment from "moment";
-import { Client, TextChannel } from "discord.js";
+import { Client, TextChannel, MessageEmbed } from "discord.js";
 import * as database from "../../database";
 import { consoleCheck } from "../../helpers/core/logger";
 
 export interface IReminder {
 	time: moment.MomentInput;
+    creationTime: moment.MomentInput;
 	guild: string;
 	channel: string;
 	message: any;
@@ -36,8 +37,15 @@ async function remindersChecker(bot: Client) {
 					if (channel) {
 						const reminderIndex = user.reminders.indexOf(reminder);
 
+                        const embed = new MessageEmbed()
+                            .setColor("#ffc85a")
+                            .setTitle("🔔 Reminder")
+                            .setDescription(reminder.message);
+                        
+                        reminder.creationTime ? embed.setFooter({text: `Created ${moment(reminder.creationTime).calendar()}`}) : null;
+
 						await channel
-							.send(`<@${user._id}> ${reminder.message}`)
+							.send({ content: `<@${user._id}>`, embeds: [embed] })
 							.catch(console.error);
 
 						await guild.members.fetch(user._id).then((member) => {

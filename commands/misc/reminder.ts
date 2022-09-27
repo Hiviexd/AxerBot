@@ -162,8 +162,26 @@ export default {
 
 		const message_ = contentInput.value.toString().trim();
 
+        // limit reminder message to 1000 characters
+        if (message_.length > 1000)
+        return interaction.editReply({
+            embeds: [
+                {
+                    title: "❌ Message too long",
+                    description:
+                        "The reminder message can only be up to 1000 characters long.",
+                    color: "#ff5050",
+                },
+            ],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
+
+
 		const reminder = {
 			time: new Date().getTime() + time,
+            creationTime: new Date().getTime(),
 			message: message_,
 			channel: interaction.channel.id,
 			guild: interaction.guild.id,
