@@ -64,19 +64,15 @@ If you want to contribute to this project, please read the following to learn ho
 
 - A Discord bot user
 - Node v17
-- npm
-- discord.js
-- TypeScript
-- ts-node
+- yarn
 - MongoDB
 - an osu! API v2 client
 - (optional) BN site interOp access
-- sudo access if you're on linux
 
 ### Installation
 
 - Clone the repository
-- `npm i`
-- Set up config.json
+- `yarn`
+- Set up `config.json`
 - Set up `.env` file starting from the `.envexample` file
-- `ts-node .` (use sudo if you're on linux)
+- `yarn dev`
