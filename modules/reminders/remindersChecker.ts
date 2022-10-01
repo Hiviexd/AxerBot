@@ -42,7 +42,7 @@ async function remindersChecker(bot: Client) {
                             .setTitle("🔔 Reminder")
                             .setDescription(reminder.message);
                         
-                        reminder.creationTime ? embed.setFooter({text: `Created ${moment(reminder.creationTime).calendar()}`}) : null;
+                        reminder.creationTime ? embed.setTimestamp(reminder.creationTime) : null;
 
 						await channel
 							.send({ content: `<@${user._id}>`, embeds: [embed] })
