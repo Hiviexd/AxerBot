@@ -7,7 +7,7 @@ import user from "./schemas/user";
 import heardle from "./schemas/heardle";
 import track from "./schemas/track";
 
-consoleLog("database", "Starting databse connection...");
+consoleLog("database", "Starting database connection...");
 
 mongoose.connect(
 	`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
