@@ -7,17 +7,19 @@ import {
 	MessageEmbed,
 	ReactionCollector,
 } from "discord.js";
-import calculateTaikoBeatmap from "../../helpers/osu/performance/calculateTaikoBeatmap";
+
+import {
+	calculateOsuBeatmap,
+	calculateTaikoBeatmap,
+	calculateFruitsBeatmap,
+	calculateManiaBeatmap,
+} from "../../helpers/osu/performance/calculateBeatmap";
+
 import getEmoji from "../../helpers/text/getEmoji";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { Beatmap, Beatmapset } from "../../types/beatmap";
 import axios from "axios";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
-import timeString from "../../helpers/text/timeString";
-import calculateOsuBeatmap from "../../helpers/osu/performance/calculateOsuBeatmap";
-import calculateFruitsBeatmap from "../../helpers/osu/performance/calculateFruitsBeatmap";
-import calculateManiaBeatmap from "../../helpers/osu/performance/calculateManiaBeatmap";
-import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
 
 export default {
@@ -55,37 +57,34 @@ export default {
 
 			if (mapper.status != 200) mapper.data.username = "---";
 
-			let performance;
-			let pps = "";
+			let beatmapResult;
 
 			switch (beatmap.mode) {
 				case "taiko": {
-					performance = calculateTaikoBeatmap(map.data);
+					beatmapResult = calculateTaikoBeatmap(map.data);
 
 					break;
 				}
 				case "osu": {
-					performance = calculateOsuBeatmap(map.data);
+					beatmapResult = calculateOsuBeatmap(map.data);
 
 					break;
 				}
 				case "fruits": {
-					performance = calculateFruitsBeatmap(map.data);
+					beatmapResult = calculateFruitsBeatmap(map.data);
 
 					break;
 				}
 				case "mania": {
-					performance = calculateManiaBeatmap(map.data);
+					beatmapResult = calculateManiaBeatmap(map.data);
 
 					break;
 				}
 			}
 
-			performance.forEach((p: any) => {
-				pps = pps.concat(
-					`${p.acc ? `${p.acc}%` : p.score} \`${p.pp}pp\` `
-				);
-			});
+			const pps = beatmapResult.performance
+				.map((p: any) => `${p.acc}% \`${p.pp}pp\``)
+				.join(' ');
 
 			const status_icons: any = {
 				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
@@ -112,7 +111,8 @@ export default {
 						value: getBeatmapEmbedFields(
 							beatmap,
 							beatmap.mode,
-							map.data
+							beatmapResult.beatmap,
+							beatmapResult.difficulty,
 						),
 					},
 					{
@@ -352,37 +352,34 @@ export default {
 
 			if (mapper.status != 200) mapper.data.username = "---";
 
-			let performance;
-			let pps = "";
+			let beatmapResult;
 
 			switch (beatmap.mode) {
 				case "taiko": {
-					performance = calculateTaikoBeatmap(map.data);
+					beatmapResult = calculateTaikoBeatmap(map.data);
 
 					break;
 				}
 				case "osu": {
-					performance = calculateOsuBeatmap(map.data);
+					beatmapResult = calculateOsuBeatmap(map.data);
 
 					break;
 				}
 				case "fruits": {
-					performance = calculateFruitsBeatmap(map.data);
+					beatmapResult = calculateFruitsBeatmap(map.data);
 
 					break;
 				}
 				case "mania": {
-					performance = calculateManiaBeatmap(map.data);
+					beatmapResult = calculateManiaBeatmap(map.data);
 
 					break;
 				}
 			}
 
-			performance.forEach((p: any) => {
-				pps = pps.concat(
-					`${p.acc ? `${p.acc}%` : p.score} \`${p.pp}pp\` `
-				);
-			});
+			const pps = beatmapResult.performance
+				.map((p: any) => `${p.acc}% \`${p.pp}pp\``)
+				.join(' ');
 
 			const status_icons: any = {
 				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
@@ -409,7 +406,8 @@ export default {
 						value: getBeatmapEmbedFields(
 							beatmap,
 							beatmap.mode,
-							map.data
+							beatmapResult.beatmap,
+							beatmapResult.difficulty,
 						),
 					},
 					{
