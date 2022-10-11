@@ -34,7 +34,6 @@ export interface Score {
 	/** float */
 	accuracy: number;
 	mods: string[];
-	mods_int: number;
 	/** integer */
 	score: number;
 	/** integer */
