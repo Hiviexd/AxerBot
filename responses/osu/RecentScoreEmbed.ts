@@ -1,9 +1,12 @@
 import axios from "axios";
 import { CommandInteraction, Message, MessageEmbed } from "discord.js";
-import calculateFruitsScore from "../../helpers/osu/performance/calculateFruitsScore";
-import calculateManiaScore from "../../helpers/osu/performance/calculateManiaScore";
-import calculateOsuScore from "../../helpers/osu/performance/calculateOsuScore";
-import calculateTaikoScore from "../../helpers/osu/performance/calculateTaikoScore";
+import {
+	calculateOsuScore,
+	calculateTaikoScore,
+	calculateFruitsScore,
+	calculateManiaScore, 
+} from "../../helpers/osu/performance/calculateScore";
+
 import getEmoji from "../../helpers/text/getEmoji";
 import { Score } from "../../types/score";
 import { User } from "../../types/user";
@@ -144,32 +147,27 @@ export default {
 		});
 
 		function getHitsFor(score: Score) {
+			const geki = score.statistics.count_geki;
+			const katu = score.statistics.count_katu;
+			const n300 = score.statistics.count_300;
+			const n100 = score.statistics.count_100;
+			const n50 = score.statistics.count_50;
+			const miss = score.statistics.count_miss;
+
 			if (score.mode == "osu") {
-				return `${
-					score.statistics.count_300 + score.statistics.count_geki
-				}/${score.statistics.count_100 + score.statistics.count_katu}/${
-					score.statistics.count_50
-				}/${score.statistics.count_miss}`;
+				return [n300, n100, n50, miss].join('/');
 			}
 
 			if (score.mode == "taiko") {
-				return `${
-					score.statistics.count_300 + score.statistics.count_geki
-				}/${score.statistics.count_100 + score.statistics.count_katu}/${
-					score.statistics.count_miss
-				}`;
+				return [n300, n100, miss].join('/');
 			}
 
 			if (score.mode == "fruits") {
-				return `${
-					score.statistics.count_300 + score.statistics.count_geki
-				}/${score.statistics.count_100 + score.statistics.count_katu}/${
-					score.statistics.count_50
-				}/${score.statistics.count_miss}`;
+				return [n300, n100, n50, katu, miss].join('/');
 			}
 
 			if (score.mode == "mania") {
-				return `${score.statistics.count_300}/${score.statistics.count_geki}/${score.statistics.count_100}/${score.statistics.count_katu}/${score.statistics.count_50}/${score.statistics.count_miss}`;
+				return [geki, n300, katu, n100, n50, miss].join('/');
 			}
 		}
 
