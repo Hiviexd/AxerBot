@@ -4,7 +4,7 @@ import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 
 export async function userActivity(
 	userId: number,
-	timeframe: 90 //? 90 days
+	timeframe: number
 ): Promise<UserActivityResponse> {
 	try {
 		consoleLog(
