@@ -39,13 +39,13 @@ export default {
 			reqStatus = "Unknown";
 		}
 
-        const modeIcons = qatUser.data.modes
+		const modeIcons = qatUser.data.modes
 			.map((mode: string) => {
 				return `${getEmoji(mode)} `;
 			})
 			.join("")
 			.trim();
-        
+
 		let e = new MessageEmbed()
 			.setAuthor({
 				name: `${osuUser.data.username} • BN/NAT info`,
@@ -63,22 +63,15 @@ export default {
 			)
 			.addField("Request Status", `${reqStatus}`, true);
 
-		if (qatUser.data.natDuration) {
-			e.addField(
-				"NAT For",
-				`${calculateDuration(qatUser.data.natDuration)}`,
-				true
-			);
-		} else { //! if you're re-adding QA info, remove this else and re-add "bn for" field above "nat for"
-			e.addField(
-				"BN For",
-				`${calculateDuration(qatUser.data.bnDuration)}`,
-				true
-			);
-		}
-		/*else {
-			e.addField("\u200b", "\u200b", true);
-		}*/
+		e.addField(
+			`BN${qatUser.data.natDuration ? "/NAT" : ""} for`,
+			`${calculateDuration(qatUser.data.bnDuration)}${
+				qatUser.data.natDuration
+					? `\n${calculateDuration(qatUser.data.natDuration)}`
+					: ""
+			}`,
+			true
+		);
 
 		e.addFields(
 			{
