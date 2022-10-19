@@ -6,8 +6,8 @@ export default function calculateDuration(days: number): string {
     let remainingDays = Math.round(days % 365);
 
     if (years > 0) {
-        return `${years} ${years == 1 ? 'year' : 'years'}, ${remainingDays} days`;
+        return `${years}y, ${remainingDays}d`;
     } else {
-        return `${remainingDays} days`;
+        return `${remainingDays}d`;
     }
 }
