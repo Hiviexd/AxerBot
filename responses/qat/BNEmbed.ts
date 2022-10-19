@@ -8,8 +8,9 @@ import getTop3Genres from "../../helpers/qat/getters/genres/getTop3Genres";
 import getTop3Languages from "../../helpers/qat/getters/languages/getTop3Languages";
 import calculateDuration from "../../helpers/text/calculateDuration";
 import getRequestStatus from "../../helpers/qat/getters/requestStatus/getRequestStatus";
-import abreviation from "../../helpers/text/abreviation";
+import abbreviation from "../../helpers/text/abbreviation";
 import getEmoji from "../../helpers/text/getEmoji";
+import parseResets from "../../helpers/qat/getters/resets/parseResets";
 
 //! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
 // TODO: add BN finder count IF you're re-adding QA info
@@ -31,12 +32,12 @@ export default {
 		let reqStatus = "";
 		if (qatUser.data.requestStatus.length > 0) {
 			if (qatUser.data.requestStatus.includes("closed")) {
-				reqStatus = "Closed";
+				reqStatus = "🔴 Closed";
 			} else {
-				reqStatus = `Open (${getRequestStatus(qatUser.data)})`;
+				reqStatus = `🟢 Open (${getRequestStatus(qatUser.data)})`;
 			}
 		} else {
-			reqStatus = "Unknown";
+			reqStatus = "⚪ Unknown";
 		}
 
 		const modeIcons = qatUser.data.modes
@@ -55,7 +56,7 @@ export default {
 			.setThumbnail(`https://a.ppy.sh/${osuUser.data.id}`)
 			.setColor(usergroup.colour)
 			.setDescription(
-				`showing **[${abreviation(
+				`showing **[${abbreviation(
 					osuUser.data.username
 				)}](https://bn.mappersguild.com/users?id=${
 					qatUser.data.id
@@ -65,29 +66,32 @@ export default {
 
 		e.addField(
 			`BN${qatUser.data.natDuration ? "/NAT" : ""} for`,
-			`${calculateDuration(qatUser.data.bnDuration)}${
+			`${
 				qatUser.data.natDuration
-					? `\n${calculateDuration(qatUser.data.natDuration)}`
+					? `🟠 ${calculateDuration(qatUser.data.natDuration)}\n`
 					: ""
-			}`,
+			}🟣 ${calculateDuration(qatUser.data.bnDuration)}`,
 			true
 		);
 
 		e.addFields(
 			{
 				name: "Mappers",
-				value: `${getUniqueMappersNumber(
-					activity
-				).toString()} (${Math.floor(
-					(getUniqueMappersNumber(activity) /
-						activity.data.uniqueNominations.length) *
-						100
-				)}%)`,
+                // sorry for whoever has to read this idk
+				value: `🗺️ ${getUniqueMappersNumber(activity).toString()} ${
+					getUniqueMappersNumber(activity)
+						? `(${Math.floor(
+								(getUniqueMappersNumber(activity) /
+									activity.data.uniqueNominations.length) *
+									100
+						  )}%)`
+						: ""
+				}`,
 				inline: true,
 			},
 			{
 				name: "Nominations",
-				value: activity.data.uniqueNominations.length.toString(),
+				value: `💭 ${activity.data.uniqueNominations.length.toString()}`,
 				inline: true,
 			},
 			/*{
@@ -98,15 +102,18 @@ export default {
 			},*/
 			{
 				name: "Resets Received",
-				value: `${
-					activity.data.nominationsDisqualified.length +
-					activity.data.nominationsPopped.length
-				}`,
+				value: `${parseResets(
+					activity.data.nominationsDisqualified,
+					activity.data.nominationsPopped
+				)}`,
 				inline: true,
 			},
 			{
 				name: "Resets Given",
-				value: `${activity.data.disqualifications.length}`,
+				value: `${parseResets(
+					activity.data.disqualifications,
+					activity.data.pops
+				)}`,
 				inline: true,
 			},
 			/*{
