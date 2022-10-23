@@ -6,6 +6,8 @@ export default async (interaction: Interaction) => {
 
 		if (interaction.customId != "private_roles") return;
 
+        await interaction.deferReply({ ephemeral: true });
+
 		const roles: any = {
 			spectator:
 				interaction.guild?.roles.cache.find(
