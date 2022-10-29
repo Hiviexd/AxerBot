@@ -84,7 +84,7 @@ export default {
 
 			const pps = beatmapResult.performance
 				.map((p: any) => `${p.acc}% \`${p.pp}pp\``)
-				.join(' ');
+				.join(" ");
 
 			const status_icons: any = {
 				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
@@ -107,12 +107,15 @@ export default {
 				url: `https://osu.ppy.sh/s/${beatmapset.id}`,
 				fields: [
 					{
-						name: `${generateColoredModeIcon(beatmap.mode, +beatmap.difficulty_rating.toFixed(2))} ${beatmap.version}`,
+						name: `${generateColoredModeIcon(
+							beatmap.mode,
+							+beatmap.difficulty_rating.toFixed(2)
+						)} ${beatmap.version}`,
 						value: getBeatmapEmbedFields(
 							beatmap,
 							beatmap.mode,
 							beatmapResult.beatmap,
-							beatmapResult.difficulty,
+							beatmapResult.difficulty
 						),
 					},
 					{
@@ -191,7 +194,7 @@ export default {
 			new MessageButton({
 				type: "BUTTON",
 				style: "LINK",
-				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
+				url: `https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[0].id}`,
 				label: "osu!direct",
 			}),
 			new MessageButton({
@@ -379,7 +382,7 @@ export default {
 
 			const pps = beatmapResult.performance
 				.map((p: any) => `${p.acc}% \`${p.pp}pp\``)
-				.join(' ');
+				.join(" ");
 
 			const status_icons: any = {
 				ranked: "https://media.discordapp.net/attachments/959908232736952420/961745250462883930/ranked.png",
@@ -407,7 +410,7 @@ export default {
 							beatmap,
 							beatmap.mode,
 							beatmapResult.beatmap,
-							beatmapResult.difficulty,
+							beatmapResult.difficulty
 						),
 					},
 					{
@@ -465,7 +468,7 @@ export default {
 			new MessageButton({
 				type: "BUTTON",
 				style: "LINK",
-				url: `https://axer-url.herokuapp.com/dl/${beatmapset.beatmaps[0].id}`,
+				url: `https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[0].id}`,
 				label: "osu!direct",
 			}),
 			new MessageButton({

@@ -51,7 +51,7 @@ export default async (interaction: Interaction) => {
 	buttons.addComponents([
 		new MessageButton({
 			style: "LINK",
-			url: `https://axer-auth.herokuapp.com/authorize?code=${verification.token}&user=${interaction.user.id}`,
+			url: `https://axer-auth.ppy.tn/authorize?code=${verification.token}&user=${interaction.user.id}`,
 			label: "Verify my account",
 		}),
 	]);
