@@ -11,7 +11,7 @@ export default (rawText: string) => {
 		TIMESTAMP.lastIndex = 0;
 		if (!res) continue;
 
-		let url = `[${timestamp}](https://axer-url.herokuapp.com/edit/${res[1]}:${res[2]}:${res[3]}`;
+		let url = `[${timestamp}](https://axer-url.ppy.tn/edit/${res[1]}:${res[2]}:${res[3]}`;
 
 		if (res[4]) url += `-${res[4]}`;
 		url += ")";

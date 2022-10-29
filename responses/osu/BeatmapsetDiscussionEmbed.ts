@@ -48,20 +48,22 @@ export default {
 		}](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
 		function generateModeIcon() {
-            if (!beatmap.data.beatmaps) return;
+			if (!beatmap.data.beatmaps) return;
 
-            const beatmapData = beatmap.data.beatmaps.find(
+			const beatmapData = beatmap.data.beatmaps.find(
 				(b) => b.id == post.discussions[0].beatmap_id
 			);
 
-            if (!post.discussions[0].beatmap_id || !beatmapData) {
-                return getEmoji(beatmap.data.beatmaps[0].mode);
-            }
-            return generateColoredModeIcon(beatmapData?.mode, beatmapData?.difficulty_rating);
-            
-        }
-        
-        function getPostLocation() {
+			if (!post.discussions[0].beatmap_id || !beatmapData) {
+				return getEmoji(beatmap.data.beatmaps[0].mode);
+			}
+			return generateColoredModeIcon(
+				beatmapData?.mode,
+				beatmapData?.difficulty_rating
+			);
+		}
+
+		function getPostLocation() {
 			if (!post.discussions[0].beatmap_id)
 				return "General (All difficulties)";
 
@@ -134,7 +136,7 @@ export default {
 				new MessageButton({
 					type: "BUTTON",
 					style: "LINK",
-					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
+					url: `https://axer-url.ppy.tn/dl/${beatmap.data.beatmaps[0].id}`,
 					label: "osu!direct",
 				}),
 				new MessageButton({
@@ -209,7 +211,7 @@ export default {
 				new MessageButton({
 					type: "BUTTON",
 					style: "LINK",
-					url: `https://axer-url.herokuapp.com/dl/${beatmap.data.beatmaps[0].id}`,
+					url: `https://axer-url.ppy.tn/dl/${beatmap.data.beatmaps[0].id}`,
 					label: "osu!direct",
 				}),
 				new MessageButton({
