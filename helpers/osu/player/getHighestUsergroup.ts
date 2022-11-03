@@ -4,9 +4,9 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 	const userGroupInfo: any = {
 		PPY: {
 			index: 0,
-			name: "Bald",
-			icon: "https://media.discordapp.net/attachments/950107895754784908/953774037790769182/dev.png",
-			colour: "#0000ff",
+			name: "peppy",
+			icon: "https://media.discordapp.net/attachments/959908232736952420/1037830827784020111/ppy.png",
+			colour: "#0066FF",
 		},
 		SPT: {
 			index: 1,
@@ -32,8 +32,14 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173794832414/nat2.png",
 			colour: "#eb8c47",
 		},
-		BN: {
+        FA: {
 			index: 5,
+			name: "Featured Artist",
+			colour: "#00ffff",
+			icon: "https://media.discordapp.net/attachments/950107895754784908/1000854297745043506/fa.png",
+		},
+		BN: {
+			index: 6,
 			name: "Beatmap Nominator",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173199249438/bn2.png",
 			probationary: {
@@ -48,28 +54,28 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			},
 		},
 		ALM: {
-			index: 6,
+			index: 7,
 			name: "Alumni",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649174197489694/alm.png",
 			colour: "#999999",
 		},
 		LVD: {
-			index: 7,
+			index: 8,
 			name: "Project Loved",
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
 			colour: "#ffd1dc",
 		},
+        BSC: {
+            index: 9,
+            name: "Beatmap Spotlight Curator",
+            icon: "https://media.discordapp.net/attachments/959908232736952420/1037829623142174811/bsc.png",
+            colour: "#76AEBC",
+        },
 		BOT: {
-			index: 8,
+			index: 10,
 			name: "BOT",
 			colour: "#ffffff",
 			icon: "https://media.discordapp.net/attachments/865037717590245436/955965426964258906/bot.png",
-		},
-		FA: {
-			index: 8,
-			name: "Featured Artist",
-			colour: "#ffffff",
-			icon: "https://media.discordapp.net/attachments/950107895754784908/1000854297745043506/fa.png",
 		},
 	};
 
@@ -90,7 +96,7 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 		groups[index].index = index;
 		groups[index].icon = userGroupInfo[g.short_name].icon;
 
-		if (g.short_name == "PPY") g.colour = "#eb47d0";
+		//if (g.short_name == "PPY") g.colour = "#eb47d0";
 
 		if (g.is_probationary) {
 			groups[index].colour =
