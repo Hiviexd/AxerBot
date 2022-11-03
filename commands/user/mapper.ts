@@ -21,15 +21,15 @@ export default {
 		type: 1,
 		options: [
 			{
-				name: "user",
-				description: "By user mention (This doesn't ping the user)",
-				type: 6,
-				max_value: 1,
-			},
-			{
 				name: "username",
 				description: "By osu! username",
 				type: 3,
+				max_value: 1,
+			},
+            {
+				name: "usermention",
+				description: "By user mention (This doesn't ping the user)",
+				type: 6,
 				max_value: 1,
 			},
 		],
