@@ -84,7 +84,7 @@ export default {
 
 		let e = new MessageEmbed({
 			description: replaceOsuTimestampsToURL(
-				truncateString(metadata.concat(post.posts[0].message), 2048)
+				truncateString(metadata.concat(post.posts[0].message), 1024)
 			),
 			color: embedDecoration.color,
 			title: embedDecoration.title,
