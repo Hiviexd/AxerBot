@@ -31,6 +31,7 @@ export default new Schema({
 				default_roles: [],
 				group_roles: [],
 			},
+            button: true,
 		},
 	},
 	embeds: {
