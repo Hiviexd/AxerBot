@@ -6,6 +6,7 @@ import setFlags from "./subcommands/verification/setFlags";
 import setMessage from "./subcommands/verification/setMessage";
 import addRole from "./subcommands/verification/addRole";
 import removeRole from "./subcommands/verification/removeRole";
+import setButton from "./subcommands/verification/setButton";
 import { guilds } from "../../database";
 import parseMessagePlaceholderFromMember from "../../helpers/text/parseMessagePlaceholderFromMember";
 import addGroupRole from "./subcommands/verification/addGroupRole";
@@ -36,6 +37,7 @@ export default {
 		addGroupRole,
 		enable,
 		disable,
+        setButton,
 	],
 	interaction: true,
 	config: {
@@ -48,7 +50,7 @@ export default {
 			},
 			{
 				name: "add",
-				description: "Add some valuefrom module.",
+				description: "Add some value from module.",
 				type: 2,
 				max_value: 1,
 				options: [
@@ -285,7 +287,7 @@ export default {
 								name: "target_role",
 								type: 8,
 								description:
-									"Verified users will recieve this role.",
+									"Verified users will receive this role.",
 							},
 						],
 					},
@@ -530,7 +532,7 @@ export default {
 								name: "target_role",
 								type: 8,
 								description:
-									"Verified users don't will recive this role anymore.",
+									"Verified users don't will receive this role anymore.",
 							},
 						],
 					},
@@ -552,6 +554,31 @@ export default {
 						type: 1,
 						description: "Enable the system",
 					},
+                    {
+                        name: "button",
+                        description: "Toggle verification button",
+                        type: 1,
+                        maxValues: 1,
+                        options: [
+                            {
+                                name: "status",
+                                type: 3,
+                                description: "Enable or disable",
+                                max_value: 1,
+                                required: true,
+                                choices: [
+                                    {
+                                        name: "enabled",
+                                        value: "true",
+                                    },
+                                    {
+                                        name: "disabled",
+                                        value: "false",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
 					{
 						name: "message",
 						type: 1,
@@ -658,13 +685,17 @@ export default {
 			fields: [
 				{
 					name: "Status",
-					value: guild.verification.enable ? "Enabled" : "Disabled",
+					value: guild.verification.enable ? "🟢 Enabled" : "🔴 Disabled",
 				},
+                {
+                    name: "Verification Button",
+                    value: guild.verification.button ? "🟢 Enabled" : "🔴 Disabled"
+                },
 				{
 					name: "Channel",
 					value:
 						guild.verification.channel == ""
-							? "None"
+							? "🔴 None"
 							: `<#${guild.verification.channel}>`,
 				},
 				{

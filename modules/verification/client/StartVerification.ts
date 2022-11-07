@@ -1,10 +1,8 @@
 import {
 	GuildMember,
-	Message,
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
-	ReactionCollector,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -49,27 +47,37 @@ export default async (member: GuildMember) => {
 			);
 	}
 
-	const buttons = new MessageActionRow();
+	if (guild_db.verification.button) {
+		const buttons = new MessageActionRow();
 
-	buttons.addComponents([
-		new MessageButton({
-			type: "BUTTON",
-			customId: `verification|${member.id}|${member.guild.id}`,
-			label: "Send verification link",
-			style: "SUCCESS",
-			emoji: "982656610285527114",
-		}),
-	]);
+		buttons.addComponents([
+			new MessageButton({
+				type: "BUTTON",
+				customId: `verification|${member.id}|${member.guild.id}`,
+				label: "Send verification link",
+				style: "SUCCESS",
+				emoji: "982656610285527114",
+			}),
+		]);
 
-	verification_channel.send({
-		content: parseMessagePlaceholderFromMember(
-			guild_db.verification.message,
-			member,
-			guild_db
-		),
-		components: [buttons],
-	});
-	
+		verification_channel.send({
+			content: parseMessagePlaceholderFromMember(
+				guild_db.verification.message,
+				member,
+				guild_db
+			),
+			components: [buttons],
+		});
+	} else {
+		verification_channel.send({
+			content: parseMessagePlaceholderFromMember(
+				guild_db.verification.message,
+				member,
+				guild_db
+			),
+		});
+	}
+
 	//? This is back from when we used PMs and reactions for verification
 	// .then((m: Message) => {
 

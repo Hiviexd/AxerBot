@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { consoleCheck, consoleError, consoleLog } from "../helpers/core/logger";
 import addRevolverToGuildObject from "./migrations/addRevolverToGuildObject";
 import addBNsiteToCooldown from "./migrations/addBNsiteToCooldown";
+import addButtonToGuildVerification from "./migrations/addButtonToGuildVerification";
 import guild from "./schemas/guild";
 import user from "./schemas/user";
 import heardle from "./schemas/heardle";
@@ -19,7 +20,10 @@ mongoose.connect(
 			);
 
 		consoleCheck("database", "Database connected!");
+
+        //! Migrations
 		// addBNsiteToCooldown();
+        //addButtonToGuildVerification()
 	}
 );
 
