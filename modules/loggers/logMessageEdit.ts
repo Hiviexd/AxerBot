@@ -8,18 +8,18 @@ export default async (
 ) => {
 	try {
 		// TODO: add proper console logs to these errors
-        if (
+		if (
 			!oldMessage.author ||
 			!oldMessage.content ||
-            !oldMessage.cleanContent ||
-            !oldMessage.guild ||
-            oldMessage.author.bot ||
-            oldMessage.channel.type === "DM" ||
+			!oldMessage.cleanContent ||
+			!oldMessage.guild ||
+			oldMessage.author.bot ||
+			oldMessage.channel.type === "DM" ||
 			!newMessage.content ||
 			!newMessage.author ||
-            !newMessage.cleanContent ||
-            !newMessage.guild ||
-            !newMessage.member
+			!newMessage.cleanContent ||
+			!newMessage.guild ||
+			!newMessage.member
 		)
 			return;
 
@@ -50,7 +50,18 @@ export default async (
 			.setDescription(
 				`:pencil:  edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n\n**After:** \n${edited}\n`
 			)
+			.addField("Message id", newMessage.id, true)
+			.addField("Message link", `[Message](${newMessage.url})`, true)
+			.addField("\u200b", "\u200b", true)
+			.addField("Channel id", newMessage.channel.id, true)
+			.addField("Channel name", oldMessage.channel.name, true)
+			.addField("\u200b", "\u200b", true)
+			.addField("User id", newMessage.member.id, true)
+			.addField("User tag", newMessage.member.user.tag, true)
 			.setTimestamp();
+		newMessage.member.nickname
+			? embed.addField("Nickname", newMessage.member.nickname, true)
+			: embed.addField("\u200b", "\u200b", true);
 
 		if (newMessage.attachments.size > 0) {
 			let img: any = newMessage.attachments.first();
