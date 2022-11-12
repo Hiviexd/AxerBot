@@ -37,7 +37,7 @@ export default {
 		addGroupRole,
 		enable,
 		disable,
-        setButton,
+		setButton,
 	],
 	interaction: true,
 	config: {
@@ -105,6 +105,10 @@ export default {
 									{
 										name: "Alumni",
 										value: "ALM",
+									},
+									{
+										name: "Beatmap Spotlight Curators",
+										value: "BSC",
 									},
 								],
 							},
@@ -351,6 +355,10 @@ export default {
 										name: "Alumni",
 										value: "ALM",
 									},
+									{
+										name: "Beatmap Spotlight Curators",
+										value: "BSC",
+									},
 								],
 							},
 							{
@@ -554,31 +562,31 @@ export default {
 						type: 1,
 						description: "Enable the system",
 					},
-                    {
-                        name: "button",
-                        description: "Toggle verification button",
-                        type: 1,
-                        maxValues: 1,
-                        options: [
-                            {
-                                name: "status",
-                                type: 3,
-                                description: "Enable or disable",
-                                max_value: 1,
-                                required: true,
-                                choices: [
-                                    {
-                                        name: "enabled",
-                                        value: "true",
-                                    },
-                                    {
-                                        name: "disabled",
-                                        value: "false",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
+					{
+						name: "button",
+						description: "Toggle verification button",
+						type: 1,
+						maxValues: 1,
+						options: [
+							{
+								name: "status",
+								type: 3,
+								description: "Enable or disable",
+								max_value: 1,
+								required: true,
+								choices: [
+									{
+										name: "enabled",
+										value: "true",
+									},
+									{
+										name: "disabled",
+										value: "false",
+									},
+								],
+							},
+						],
+					},
 					{
 						name: "message",
 						type: 1,
@@ -664,7 +672,7 @@ export default {
 		],
 	},
 	category: "management",
-    permissions: ["MANAGE_GUILD"],
+	permissions: ["MANAGE_GUILD"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
@@ -685,12 +693,16 @@ export default {
 			fields: [
 				{
 					name: "Status",
-					value: guild.verification.enable ? "🟢 Enabled" : "🔴 Disabled",
+					value: guild.verification.enable
+						? "🟢 Enabled"
+						: "🔴 Disabled",
 				},
-                {
-                    name: "Verification Button",
-                    value: guild.verification.button ? "🟢 Enabled" : "🔴 Disabled"
-                },
+				{
+					name: "Verification Button",
+					value: guild.verification.button
+						? "🟢 Enabled"
+						: "🔴 Disabled",
+				},
 				{
 					name: "Channel",
 					value:
