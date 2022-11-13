@@ -106,6 +106,10 @@ export default {
 										name: "Alumni",
 										value: "ALM",
 									},
+									{
+										name: "Beatmap Spotlight Curators",
+										value: "BSC",
+									},
 								],
 							},
 							{
@@ -350,6 +354,10 @@ export default {
 									{
 										name: "Alumni",
 										value: "ALM",
+									},
+									{
+										name: "Beatmap Spotlight Curators",
+										value: "BSC",
 									},
 								],
 							},

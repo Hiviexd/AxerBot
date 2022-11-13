@@ -20,6 +20,7 @@ export default {
 			"`GMT`: Global Moderation Team",
 			"`LVD`: Project Loved",
 			"`ALM`: Alumni",
+			"`BSC`: Beatmap Spotlight Curators",
 		],
 		modes: [
 			"`osu`: osu!standard",
