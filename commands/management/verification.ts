@@ -688,7 +688,7 @@ export default {
 			);
 
 		const embed = new MessageEmbed({
-			title: "Current system configuration",
+			title: "⚙️ Verification configuration",
 			color: guild.verification.enable ? "#1df27d" : "#e5243b",
 			fields: [
 				{

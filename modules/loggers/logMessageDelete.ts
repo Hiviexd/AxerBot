@@ -32,7 +32,7 @@ export default async (message: Message<boolean> | PartialMessage) => {
 				iconURL: message.author.displayAvatarURL(),
 			})
 			.setDescription(
-				`:x:  deleted a message from ${message.channel}\n\n**Message:** \n${truncatedMessage}`
+				`❌ ${message.member.user} deleted a message from ${message.channel}\n\n**Message:** \n${truncatedMessage}`
 			)
 			.addField("Message id", message.id, true)
 			.addField("Message link", `[Message](${message.url})`, true)

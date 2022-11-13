@@ -48,7 +48,7 @@ export default async (
 				iconURL: newMessage.author.displayAvatarURL(),
 			})
 			.setDescription(
-				`:pencil:  edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n\n**After:** \n${edited}\n`
+				`📝 ${newMessage.member.user} edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n\n**After:** \n${edited}\n`
 			)
 			.addField("Message id", newMessage.id, true)
 			.addField("Message link", `[Message](${newMessage.url})`, true)

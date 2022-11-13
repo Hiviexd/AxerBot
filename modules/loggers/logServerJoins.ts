@@ -24,7 +24,7 @@ export default async function logServerJoins(
 					: member.user.tag,
 				iconURL: member.user.displayAvatarURL(),
 			})
-			.setDescription(`:beginner:  ${member.user} has joined the server!`)
+			.setDescription(`🔰 ${member.user} has joined the server!`)
 			.addField("User id", member.id, false)
 			.addField("User tag", member.user.tag, false)
 			.addField(

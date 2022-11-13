@@ -1,7 +1,7 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, CommandInteraction, MessageEmbed } from "discord.js";
 import * as database from "./../../database";
-import generateSuccessEmbed from "./../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import enable from "./subcommands/logging/enable";
+import disable from "./subcommands/logging/disable";
 
 export default {
 	name: "logging",
@@ -10,122 +10,73 @@ export default {
 		syntax: "{prefix}logging `<action>` `<value>`",
 		example:
 			"{prefix}logging `channel` `wasteland`\n{prefix}logging `disable`",
-		options: ["`channel`", "`disable`"],
+		options: ["`set enable`", "`set disable`"],
 	},
 	category: "management",
-    permissions: ["MANAGE_CHANNELS"],
-	run: async (bot: Client, message: Message, args: string[]) => {
-		const actions = ["disable", "channel"];
+	permissions: ["MANAGE_CHANNELS"],
+	subcommands: [enable, disable],
+	interaction: true,
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "status",
+				type: 1,
+				description: "Check current system configuration",
+			},
+			{
+				name: "set",
+				type: 2,
+				description: "Configure the logging system",
+				max_value: 1,
+				options: [
+					{
+						name: "enable",
+						type: 1,
+						description: "Enable the logging system",
+						options: [
+							{
+								name: "channel",
+								type: 7,
+								description: "The channel to log to",
+								required: true,
+							},
+						],
+					},
+					{
+						name: "disable",
+						type: 1,
+						description: "Disable the logging system",
+					},
+				],
+			},
+		],
+	},
+	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+		await command.deferReply();
 
-		if (!message.guild) return;
+		if (!command.member || typeof command.member.permissions == "string")
+			return;
 
-		const guild = await database.guilds.findOne({ _id: message.guildId });
+		let guild = await database.guilds.findById(command.guildId);
 		if (!guild) return;
 
-		if (args.length == 0) return sendCurrentConfiguration();
+		const embed = new MessageEmbed()
+			.setTitle("⚙️ Logging Configuration")
+			.setColor(guild.logging.enabled ? "#1df27d" : "#e5243b")
+			.addField(
+				"Status",
+				guild.logging.enabled ? "🟢 Enabled" : "🔴 Disabled",
+				false
+			)
+			.addField(
+				"Channel",
+				guild.logging.channel
+					? `<#${guild.logging.channel}>`
+					: "Not set",
+				false
+			);
 
-		if (args.length == 2) {
-			const params = {
-				action: args[0],
-				value: args[1],
-			};
-
-			if (!actions.includes(params.action))
-				return message.channel.send({
-					embeds: [
-						generateErrorEmbed(
-							`❗ Invalid action value. Provide a valid action.`
-						),
-					],
-				});
-
-			if (params.action == "channel") {
-				if (params.value == "") {
-					return message.channel.send({
-						embeds: [
-							generateErrorEmbed(
-								`❗ Invalid channel value. Provide a valid channel.`
-							),
-						],
-					});
-				}
-				const channel = message.guild?.channels.cache.find(
-					(channel) =>
-						channel.name.toLowerCase() == params.value &&
-						channel.type == "GUILD_TEXT"
-				);
-
-				if (!channel)
-					return message.channel.send({
-						embeds: [
-							generateErrorEmbed(
-								`❗ No channel found with name ${params.value.toLowerCase()}.`
-							),
-						],
-					});
-
-				guild.logging.channel = channel.id;
-				guild.logging.enabled = true;
-
-				await database.guilds.updateOne(
-					{ _id: message.guildId },
-					{ logging: guild.logging }
-				);
-
-				return message.channel.send({
-					embeds: [
-						generateSuccessEmbed(
-							`✅ Logging channel set to <#${guild.logging.channel}>`
-						),
-					],
-				});
-			}
-		}
-
-		if (args.length == 1) {
-			const params = {
-				action: args[0],
-			};
-
-			if (!actions.includes(params.action))
-				return message.channel.send({
-					embeds: [
-						generateErrorEmbed(
-							`❗ Invalid action value. Provide a valid action.`
-						),
-					],
-				});
-
-			if (params.action == "disable") {
-				guild.logging.enabled = false;
-
-				await database.guilds.updateOne(
-					{ _id: message.guildId },
-					{ $set: { logging: guild.logging } }
-				);
-
-				return message.channel.send({
-					embeds: [generateSuccessEmbed(`✅ Logging disabled.`)],
-				});
-			}
-		}
-		function sendCurrentConfiguration() {
-			if (!guild) return;
-
-			let ch: string = "";
-			if (guild.logging.channel == "") ch = "None";
-			else ch = `<#${guild.logging.channel}>`;
-			const embed = new MessageEmbed()
-				.setTitle("Logging Configuration")
-				.setColor(guild.logging.enabled ? "#1df27d" : "#e5243b")
-				.setDescription(
-					`**Status:** ${
-						guild.logging.enabled ? "Enabled" : "Disabled"
-					}
-                    **Channel:** ${ch}`
-				);
-
-			message.channel.send({ embeds: [embed] });
-		}
+		command.editReply({ embeds: [embed] });
 	},
 };

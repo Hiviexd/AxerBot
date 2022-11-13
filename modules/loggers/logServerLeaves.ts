@@ -28,7 +28,7 @@ export default async function logServerLeaves(
 					: member.user.tag,
 				iconURL: member.user.displayAvatarURL(),
 			})
-			.setDescription(`:wave: ${member.user} has left the server.`)
+			.setDescription(`👋 ${member.user} has left the server.`)
 			.addField("User id", member.id, true)
 			.addField("User tag", member.user.tag, true)
 
