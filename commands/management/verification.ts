@@ -37,7 +37,7 @@ export default {
 		addGroupRole,
 		enable,
 		disable,
-        setButton,
+		setButton,
 	],
 	interaction: true,
 	config: {
@@ -554,31 +554,31 @@ export default {
 						type: 1,
 						description: "Enable the system",
 					},
-                    {
-                        name: "button",
-                        description: "Toggle verification button",
-                        type: 1,
-                        maxValues: 1,
-                        options: [
-                            {
-                                name: "status",
-                                type: 3,
-                                description: "Enable or disable",
-                                max_value: 1,
-                                required: true,
-                                choices: [
-                                    {
-                                        name: "enabled",
-                                        value: "true",
-                                    },
-                                    {
-                                        name: "disabled",
-                                        value: "false",
-                                    },
-                                ],
-                            },
-                        ],
-                    },
+					{
+						name: "button",
+						description: "Toggle verification button",
+						type: 1,
+						maxValues: 1,
+						options: [
+							{
+								name: "status",
+								type: 3,
+								description: "Enable or disable",
+								max_value: 1,
+								required: true,
+								choices: [
+									{
+										name: "enabled",
+										value: "true",
+									},
+									{
+										name: "disabled",
+										value: "false",
+									},
+								],
+							},
+						],
+					},
 					{
 						name: "message",
 						type: 1,
@@ -664,7 +664,7 @@ export default {
 		],
 	},
 	category: "management",
-    permissions: ["MANAGE_GUILD"],
+	permissions: ["MANAGE_GUILD"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
@@ -680,17 +680,21 @@ export default {
 			);
 
 		const embed = new MessageEmbed({
-			title: "Current system configuration",
+			title: "⚙️ Verification configuration",
 			color: guild.verification.enable ? "#1df27d" : "#e5243b",
 			fields: [
 				{
 					name: "Status",
-					value: guild.verification.enable ? "🟢 Enabled" : "🔴 Disabled",
+					value: guild.verification.enable
+						? "🟢 Enabled"
+						: "🔴 Disabled",
 				},
-                {
-                    name: "Verification Button",
-                    value: guild.verification.button ? "🟢 Enabled" : "🔴 Disabled"
-                },
+				{
+					name: "Verification Button",
+					value: guild.verification.button
+						? "🟢 Enabled"
+						: "🔴 Disabled",
+				},
 				{
 					name: "Channel",
 					value:

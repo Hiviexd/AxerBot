@@ -49,11 +49,13 @@ export default {
 
 		let e = new MessageEmbed()
 			.setAuthor({
-				name: `${osuUser.data.username} • BN/NAT info`,
+				name: `${osuUser.data.username} • BN${
+					qatUser.data.natDuration ? "/NAT" : ""
+				} info`,
 				url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
 				iconURL: usergroup.icon,
 			})
-			.setThumbnail(`https://a.ppy.sh/${osuUser.data.id}`)
+			.setThumbnail(osuUser.data.avatar_url)
 			.setColor(usergroup.colour)
 			.setDescription(
 				`showing **[${abbreviation(
@@ -77,7 +79,7 @@ export default {
 		e.addFields(
 			{
 				name: "Mappers",
-                // sorry for whoever has to read this idk
+				// sorry for whoever has to read this idk
 				value: `🗺️ ${getUniqueMappersNumber(activity).toString()} ${
 					getUniqueMappersNumber(activity)
 						? `(${Math.floor(
@@ -174,7 +176,7 @@ export default {
 			if (latestNom.content) {
 				e.setFooter({
 					text: `${osuUser.data.username} "${nomMessage}"`,
-					iconURL: `https://a.ppy.sh/${osuUser.data.id}`,
+					iconURL: osuUser.data.avatar_url,
 				});
 			}
 		}
