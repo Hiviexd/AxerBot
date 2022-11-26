@@ -1,4 +1,4 @@
-import { Client, CommandInteraction } from "discord.js";
+import { CommandInteraction } from "discord.js";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";

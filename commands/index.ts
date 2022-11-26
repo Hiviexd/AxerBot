@@ -36,6 +36,7 @@ import heardle from "./fun/heardle";
 import qattrack from "./BNsite/tracking";
 import osutimestamps from "./management/osuTimestamps";
 import editmessage from "./management/editMessage";
+import userlog from "./management/userLog";
 
 const commands: any = {
 	ping: ping,
@@ -76,6 +77,7 @@ const commands: any = {
 	bntrack: qattrack,
     osutimestamps: osutimestamps,
     editmessage: editmessage,
+    userlog: userlog
 };
 
 export default commands;

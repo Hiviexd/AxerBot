@@ -31,7 +31,7 @@ export default new Schema({
 				default_roles: [],
 				group_roles: [],
 			},
-            button: true,
+			button: true,
 		},
 	},
 	embeds: {
@@ -176,4 +176,10 @@ export default new Schema({
 		type: Boolean,
 		default: true,
 	},
+	user_logs: [
+		{
+			username: String,
+			logs: [{ reason: String, date: Date }],
+		},
+	],
 });
