@@ -89,7 +89,7 @@ export default {
 			},
 		],
 	},
-	permissions: ["MANAGE_MEMBERS"],
+	permissions: ["MANAGE_GUILD"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
