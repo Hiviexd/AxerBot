@@ -29,14 +29,20 @@ export default {
 					value: getMappingAge(beatmaps),
 				},
 				{
+					name: "Followers",
+					value: `👤 ${user.data.follower_count} 🔔 ${user.data.mapping_follower_count}`,
+				},
+				{
 					name: "Mapset Count",
 					inline: true,
 					value: `🗺️ ${beatmaps.data.sets.length} ✅ ${
 						user.data.ranked_and_approved_beatmapset_count
-					} ❤ ${user.data.loved_beatmapset_count} ❓ ${
+					} 👥 ${user.data.guest_beatmapset_count} ❤ ${
+						user.data.loved_beatmapset_count
+					} ❓ ${
 						Number(user.data.pending_beatmapset_count) +
 						Number(user.data.graveyard_beatmapset_count)
-					}
+					} 💭 ${user.data.nominated_beatmapset_count}
 					`,
 				},
 				{
@@ -86,14 +92,20 @@ export default {
 					value: getMappingAge(beatmaps),
 				},
 				{
+					name: "Followers",
+					value: `👤 ${user.data.follower_count} 🔔 ${user.data.mapping_follower_count}`,
+				},
+				{
 					name: "Mapset Count",
 					inline: true,
 					value: `🗺️ ${beatmaps.data.sets.length} ✅ ${
 						user.data.ranked_and_approved_beatmapset_count
-					} ❤ ${user.data.loved_beatmapset_count} ❓ ${
+					} 👥 ${user.data.guest_beatmapset_count} ❤ ${
+						user.data.loved_beatmapset_count
+					} ❓ ${
 						Number(user.data.pending_beatmapset_count) +
 						Number(user.data.graveyard_beatmapset_count)
-					}
+					} 💭 ${user.data.nominated_beatmapset_count}
 					`,
 				},
 				{
