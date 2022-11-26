@@ -197,6 +197,7 @@ export interface UserCompactBase {
 	blocks?: unknown;
 	favourite_beatmapset_count?: number;
 	follower_count?: number;
+	mapping_follower_count?: number;
 	friends?: unknown;
 	graveyard_beatmapset_count?: number;
 	ranked_and_approved_beatmapset_count?: number;
@@ -210,6 +211,8 @@ export interface UserCompactBase {
 		data?: number[];
 	};
 	ranked_beatmapset_count?: unknown;
+	guest_beatmapset_count?: number;
+    nominated_beatmapset_count?: number;
 	replays_watched_counts?: unknown;
 	scores_best_count?: number;
 	scores_first_count?: number;

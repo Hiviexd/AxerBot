@@ -6,7 +6,7 @@ import remove from "./subcommands/userLog/remove";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import truncateString from "../../helpers/text/truncateString";
 
-// TODO: work on options char limit, consider using forms for reason input
+// TODO: consider using forms for reason input
 
 export default {
 	name: "userlog",

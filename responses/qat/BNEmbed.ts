@@ -93,7 +93,8 @@ export default {
 			},
 			{
 				name: "Nominations",
-				value: `💭 ${activity.data.uniqueNominations.length.toString()}`,
+				value: `💭 ${activity.data.uniqueNominations.length.toString()} (90d)
+                💭 ${osuUser.data.nominated_beatmapset_count} (all)`,
 				inline: true,
 			},
 			/*{
