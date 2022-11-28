@@ -81,6 +81,12 @@ export default {
 	) => {
 		const usergroup = parseUsergroup(user.data); // ? Get the highest usergroup
 
+		const totalMapsets =
+			Number(user.data.ranked_and_approved_beatmapset_count) +
+			Number(user.data.loved_beatmapset_count) +
+			Number(user.data.pending_beatmapset_count) +
+			Number(user.data.graveyard_beatmapset_count);
+
 		let e = new MessageEmbed({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
@@ -98,11 +104,10 @@ export default {
 				{
 					name: "Mapset Count",
 					inline: true,
-					value: `🗺️ ${beatmaps.data.sets.length} ✅ ${
+					value: `🗺️ ${totalMapsets} ✅ ${
 						user.data.ranked_and_approved_beatmapset_count
-					} 👥 ${user.data.guest_beatmapset_count} ❤ ${
-						user.data.loved_beatmapset_count
-					} ❓ ${
+					} 👥 ${user.data.guest_beatmapset_count}
+                    ❤ ${user.data.loved_beatmapset_count} ❓ ${
 						Number(user.data.pending_beatmapset_count) +
 						Number(user.data.graveyard_beatmapset_count)
 					} 💭 ${user.data.nominated_beatmapset_count}
