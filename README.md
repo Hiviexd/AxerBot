@@ -26,15 +26,15 @@ This bot contains many features that makes your life easier as an osu! Discord s
 
 The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](https://bn.mappersguild.com/)'s interOp routes to provide you with multiple stats and management systems such as:
 
-- An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server
-<img src ="https://bns.are-la.me/3yBn2uk.png" width="700" />
+- An OAuth2 verification system where you sign up with your osu! account in order to be granted access to the server, with usergroup-specific role assignments
+<img src ="https://nats.are-la.me/1HzvzQs.png" />
 
 - A feed system that actively keeps track of the request statuses for all BNs/NATs
 
 <img src ="https://bns.are-la.me/5XHQimv.png" width="500" />
 
 - Several commands that allow you to view your playing/mapping stats from the osu! website or the BN/NAT website
-<img src ="https://bns.are-la.me/9HixUXZ.png" width="700" />
+<img src ="https://nats.are-la.me/5s5Lj1w.png" width="800" />
 
 ## Thanks to
 

@@ -16,10 +16,11 @@ export default {
 
 				await createNewUser(member);
 
-				StartVerification(member);
+				setTimeout(() => {
+					StartVerification(member);
+				}, 1000);
 
 				await logServerJoins(member);
-				
 			});
 		} catch (e: any) {
 			console.error(e);
