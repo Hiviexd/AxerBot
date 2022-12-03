@@ -73,7 +73,6 @@ export default {
 				embeds: [UserNotFound],
 			});
 
-		// ? refactory this, add a option to support interaction instead message (Check mapper embed), we will remove message option later
 		BNEmbed.reply(osuUser, qatUser, qatUserActivity, command);
 	},
 };
