@@ -915,6 +915,8 @@ export default {
 		}
 
 		function getRankRoles() {
+			if (!guild) return "-";
+
 			if (!guild.verification.targets.rank_roles) return "-";
 
 			if (guild.verification.targets.rank_roles.length == 0) return "-";
