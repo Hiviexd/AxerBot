@@ -26,12 +26,12 @@ export default {
 				type: 3,
 				max_value: 1,
 			},
-			{
+			/*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,
 				max_value: 1,
-			},
+			},*/
 			{
 				name: "mode",
 				description: "Gamemode info to view",
