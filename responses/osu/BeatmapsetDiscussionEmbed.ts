@@ -95,7 +95,7 @@ export default {
 				iconURL: `https://a.ppy.sh/${post.posts[0].user_id}`,
 				url: `https://osu.ppy.sh/users/${post.posts[0].user_id}`,
 				name: `${author.data.username} ${
-					usergroup.name ? `(${usergroup.name})` : ""
+					usergroup.name ? `(${usergroup.short_name})` : ""
 				}`,
 			},
 			footer: {
