@@ -11,6 +11,8 @@ import { guilds } from "../../database";
 import addGroupRole from "./subcommands/verification/addGroupRole";
 import removeGroupRole from "./subcommands/verification/removeGroupRole";
 import colors from "../../constants/colors";
+import addRankRole from "./subcommands/verification/addRankRole";
+import removeRankRole from "./subcommands/verification/removeRankRole";
 
 export default {
 	name: "verification",
@@ -38,6 +40,8 @@ export default {
 		enable,
 		disable,
 		setButton,
+		addRankRole,
+		removeRankRole,
 	],
 	interaction: true,
 	config: {
@@ -54,6 +58,74 @@ export default {
 				type: 2,
 				max_value: 1,
 				options: [
+					{
+						name: "rankrole",
+						type: 1,
+						description: addRankRole.help.description,
+						options: [
+							{
+								name: "role",
+								type: 8,
+								description: "Role to add",
+								max_value: 1,
+								required: true,
+							},
+							{
+								name: "min_rank",
+								type: 4,
+								description: "Minimum rank range",
+								min_value: 1,
+								required: true,
+							},
+							{
+								name: "max_rank",
+								type: 4,
+								description: "Max rank range",
+								min_value: 1,
+								required: true,
+							},
+							{
+								name: "gamemode",
+								type: 3,
+								description: "Gamemode to get the rank",
+								required: true,
+								choices: [
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "rank_type",
+								type: 3,
+								description: "Rank type",
+								required: true,
+								choices: [
+									{
+										name: "global",
+										value: "global",
+									},
+									{
+										name: "country",
+										value: "country",
+									},
+								],
+							},
+						],
+					},
 					{
 						name: "grouprole",
 						type: 1,
@@ -115,7 +187,7 @@ export default {
 							{
 								name: "role",
 								type: 8,
-								description: "Role to remove.",
+								description: "Role to add.",
 								max_value: 1,
 								required: true,
 							},
@@ -285,7 +357,7 @@ export default {
 					{
 						name: "role",
 						type: 1,
-						description: "Add role to verified users.",
+						description: "remove role to verified users.",
 						options: [
 							{
 								name: "target_role",
@@ -303,6 +375,74 @@ export default {
 				type: 2,
 				max_value: 1,
 				options: [
+					{
+						name: "rankrole",
+						type: 1,
+						description: removeRankRole.help.description,
+						options: [
+							{
+								name: "role",
+								type: 8,
+								description: "Role to remove",
+								max_value: 1,
+								required: true,
+							},
+							{
+								name: "min_rank",
+								type: 4,
+								description: "Minimum rank range",
+								min_value: 1,
+								required: true,
+							},
+							{
+								name: "max_rank",
+								type: 4,
+								description: "Max rank range",
+								min_value: 1,
+								required: true,
+							},
+							{
+								name: "gamemode",
+								type: 3,
+								description: "Gamemode to get the rank",
+								required: true,
+								choices: [
+									{
+										name: "osu!",
+										value: "osu",
+									},
+									{
+										name: "osu!taiko",
+										value: "taiko",
+									},
+									{
+										name: "osu!catch",
+										value: "fruits",
+									},
+									{
+										name: "osu!mania",
+										value: "mania",
+									},
+								],
+							},
+							{
+								name: "rank_type",
+								type: 3,
+								description: "Rank type",
+								required: true,
+								choices: [
+									{
+										name: "global",
+										value: "global",
+									},
+									{
+										name: "country",
+										value: "country",
+									},
+								],
+							},
+						],
+					},
 					{
 						name: "grouprole",
 						type: 1,
@@ -682,6 +822,13 @@ export default {
 		let guild = await guilds.findById(command.guildId);
 		if (!guild) return;
 
+		const modes: { [key: string]: string } = {
+			osu: "osu!standard",
+			taiko: "osu!taiko",
+			fruits: "osu!catch",
+			mania: "osu!mania",
+		};
+
 		if (!guild.verification)
 			return command.editReply(
 				`What? Nothing to display here... Use \`${guild.prefix}help verification\` to get help`
@@ -723,6 +870,10 @@ export default {
 					value: getGroupRoles(),
 				},
 				{
+					name: "Rank Roles",
+					value: getRankRoles(),
+				},
+				{
 					name: "Welcome Message",
 					value: guild.verification.message,
 					/**
@@ -761,6 +912,21 @@ export default {
 			if (val == "") return "None";
 
 			return val;
+		}
+
+		function getRankRoles() {
+			if (!guild.verification.targets.rank_roles) return "-";
+
+			if (guild.verification.targets.rank_roles.length == 0) return "-";
+
+			return guild.verification.targets.rank_roles
+				.map(
+					(r: any) =>
+						`<@&${r.id}> [#${r.min_rank} -> #${r.max_rank}] | ${
+							modes[r.gamemode]
+						} | ${r.type}`
+				)
+				.join("\n");
 		}
 
 		function getGroupRoles() {
