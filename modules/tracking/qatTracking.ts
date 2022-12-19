@@ -11,6 +11,7 @@ import qatApi from "../../helpers/qat/fetcher/qatApi";
 import { QatUser } from "../../types/qat";
 import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPreferences";
 import getEmoji from "../../helpers/text/getEmoji";
+import colors from "../../constants/colors";
 
 async function qatTracking(bot: Client) {
 	const allTracks = await tracks.find({ type: "qat" });
@@ -25,8 +26,8 @@ async function qatTracking(bot: Client) {
 	const liveData = await qatApi.fetch.allUsers();
 	const differentData: QatUser[] = [];
 
-    // dickwads and people who don't want to be tracked go here
-    const blacklistedBNs = [9487458, 10959501, 33599, 3558897];
+	// dickwads and people who don't want to be tracked go here
+	const blacklistedBNs = [9487458, 10959501, 33599, 3558897];
 
 	if (storedData.length != 0) {
 		for (const user of liveData.data) {
@@ -61,7 +62,7 @@ async function qatTracking(bot: Client) {
 		}
 
 		for (const user of differentData) {
-            if (blacklistedBNs.includes(user.osuId)) continue;
+			if (blacklistedBNs.includes(user.osuId)) continue;
 
 			if (await checkModes(user)) {
 				usersToSend.push(user);
@@ -93,7 +94,7 @@ async function qatTracking(bot: Client) {
 				thumbnail: {
 					url: `https://a.ppy.sh/${bn.osuId}`,
 				},
-				color: "#1df27d",
+				color: colors.green,
 				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`,
 				fields: [
 					{
@@ -116,7 +117,7 @@ async function qatTracking(bot: Client) {
 				thumbnail: {
 					url: `https://a.ppy.sh/${bn.osuId}`,
 				},
-				color: "#ff5050",
+				color: colors.red,
 				description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`,
 				footer: footer,
 			},
@@ -166,7 +167,7 @@ async function qatTracking(bot: Client) {
 
 		// ! deletes trackers upon booting for some reason dont use
 		// if (!channel) return tracks.findByIdAndDelete(track._id);
-		
+
 		if (!channel) return;
 
 		function allowSend() {

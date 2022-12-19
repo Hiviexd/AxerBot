@@ -25,11 +25,11 @@ export default {
 				description: "By osu! username",
 				type: 3,
 			},
-            {
+            /*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,
-			},
+			},*/
 		],
 	},
 	category: "BNsite",

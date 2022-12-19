@@ -21,6 +21,7 @@ import { Beatmap, Beatmapset } from "../../types/beatmap";
 import axios from "axios";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
+import colors from "../../constants/colors";
 
 export default {
 	send: async (
@@ -132,7 +133,7 @@ export default {
 					}`,
 					iconURL: status_icons[beatmap.status],
 				},
-				color: "#f45592",
+				color: colors.pink,
 				footer: {
 					text: `Mapped by ${mapper.data.username} | ${
 						pending_status.includes(beatmapset.status)
@@ -427,7 +428,7 @@ export default {
 					}`,
 					iconURL: status_icons[beatmap.status],
 				},
-				color: "#f45592",
+				color: colors.pink,
 				footer: {
 					text: `Mapped by ${mapper.data.username} | ${
 						pending_status.includes(beatmapset.status)

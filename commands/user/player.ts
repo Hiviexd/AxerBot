@@ -5,6 +5,7 @@ import osuApi from "../../helpers/osu/fetcher/osuApi";
 import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 import PlayerEmbed from "../../responses/osu/PlayerEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
+import colors from "../../constants/colors";
 
 export default {
 	name: "player",
@@ -25,12 +26,12 @@ export default {
 				type: 3,
 				max_value: 1,
 			},
-            {
+			/*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,
 				max_value: 1,
-			},
+			},*/
 			{
 				name: "mode",
 				description: "Gamemode info to view",
@@ -82,7 +83,7 @@ export default {
 					{
 						title: "Umm...",
 						description: `This user isn't active on this gamemode.`,
-						color: "#ea6112",
+						color: colors.orange,
 					},
 				],
 				allowedMentions: {

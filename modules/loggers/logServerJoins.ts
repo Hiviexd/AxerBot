@@ -1,6 +1,7 @@
 import { MessageEmbed, GuildMember, PartialGuildMember } from "discord.js";
 import moment from "moment";
 import * as database from "../../database";
+import colors from "../../constants/colors";
 
 export default async function logServerJoins(
 	member: GuildMember | PartialGuildMember
@@ -17,7 +18,7 @@ export default async function logServerJoins(
 		if (!member.guild.channels.cache.get(guild.logging.channel)) return;
 
 		const embed = new MessageEmbed()
-			.setColor("#ffff55")
+			.setColor(colors.yellowBright)
 			.setAuthor({
 				name: member.nickname
 					? `${member.nickname} (${member.user.tag})`

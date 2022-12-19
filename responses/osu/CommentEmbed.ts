@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { ParsedComment } from "../../helpers/osu/url/parseComment";
 import truncateString from "../../helpers/text/truncateString";
+import colors from "../../constants/colors";
 
 export default {
 	async send(comment: ParsedComment, message: Message) {
@@ -37,7 +38,7 @@ export default {
 				url: `https://osu.ppy.sh/users/${comment.user.id}`,
 			},
 			description: truncateString(comment.content, 2048),
-			color: comment.type == "Comment" ? "#f45592" : "#5639ac",
+			color: comment.type == "Comment" ? colors.pink : colors.purple,
 			footer: {
 				text: getFooter(),
 			},
@@ -84,7 +85,7 @@ export default {
 				url: `https://osu.ppy.sh/users/${comment.user.id}`,
 			},
 			description: truncateString(comment.content, 4096),
-			color: comment.type == "Comment" ? "#f45592" : "#5639ac",
+			color: comment.type == "Comment" ? colors.pink : colors.purple,
 			footer: {
 				text: getFooter(),
 			},

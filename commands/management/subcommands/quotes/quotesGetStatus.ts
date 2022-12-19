@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import * as database from "../../../../database";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
+import colors from "../../../../constants/colors";
 
 export default {
 	name: "quotes status",
@@ -30,7 +31,7 @@ export default {
 			embeds: [
 				{
 					title: "Current quotes system configuration",
-					color: guild.fun.enable ? "#1df27d" : "#e5243b",
+					color: guild.fun.enable ? colors.green : colors.red,
 					fields: [
 						{
 							name: "Status",

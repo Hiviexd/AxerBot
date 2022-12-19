@@ -1,6 +1,7 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { QatAllUsersResponse, QatUser } from "../../types/qat";
 import getOpenBNsPerMode from "../../helpers/qat/getters/requestStatus/getOpenBNsPerMode";
+import colors from "../../constants/colors";
 
 export default {
 	reply: (
@@ -20,7 +21,7 @@ export default {
 			}
 		});
 
-		let e = new MessageEmbed().setColor("#27b6b3");
+		let e = new MessageEmbed().setColor(colors.qat);
 		//.setDescription(`According to the **[BN/NAT website](https://bn.mappersguild.com/)**`);
 
 		if (gamemode) {
@@ -45,22 +46,34 @@ export default {
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
 			})
 				.addField(
-					`osu! (${getOpenBNsPerMode(openBNs, "osu", "link").split("\n").length})`,
+					`osu! (${
+						getOpenBNsPerMode(openBNs, "osu", "link").split("\n")
+							.length
+					})`,
 					`${getOpenBNsPerMode(openBNs, "osu", "link")}`,
 					true
 				)
 				.addField(
-					`osu!taiko (${getOpenBNsPerMode(openBNs, "taiko", "link").split("\n").length})`,
+					`osu!taiko (${
+						getOpenBNsPerMode(openBNs, "taiko", "link").split("\n")
+							.length
+					})`,
 					`${getOpenBNsPerMode(openBNs, "taiko", "link")}`,
 					true
 				)
 				.addField(
-					`osu!mania (${getOpenBNsPerMode(openBNs, "mania", "link").split("\n").length})`,
+					`osu!mania (${
+						getOpenBNsPerMode(openBNs, "mania", "link").split("\n")
+							.length
+					})`,
 					`${getOpenBNsPerMode(openBNs, "mania", "link")}`,
 					true
 				)
 				.addField(
-					`osu!catch (${getOpenBNsPerMode(openBNs, "catch", "link").split("\n").length})`,
+					`osu!catch (${
+						getOpenBNsPerMode(openBNs, "catch", "link").split("\n")
+							.length
+					})`,
 					`${getOpenBNsPerMode(openBNs, "catch", "link")}`,
 					true
 				)

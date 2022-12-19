@@ -10,6 +10,7 @@
 import { Message, ReactionCollector } from "discord.js";
 import generateSuccessEmbed from "./generateSuccessEmbed";
 import generateErrorEmbed from "./generateErrorEmbed";
+import colors from "../../../constants/colors";
 
 export default (
 	message: Message,
@@ -25,7 +26,7 @@ export default (
 				{
 					title: "⚠ Are you sure?",
 					description: warning,
-					color: "#edcd02",
+					color: colors.yellow,
 				},
 			],
 		})
@@ -53,7 +54,7 @@ export default (
 				m.delete();
 
 				return message.channel
-					.send({embeds : [generateSuccessEmbed()]})
+					.send({ embeds: [generateSuccessEmbed()] })
 					.then((msg) => {
 						setTimeout(() => {
 							msg.delete();
@@ -64,7 +65,13 @@ export default (
 			collector.on("end", (c, r) => {
 				if (r != "done") {
 					message.channel
-					.send({embeds : [generateErrorEmbed("❌ You've waited for too long! Please try again.")]})
+						.send({
+							embeds: [
+								generateErrorEmbed(
+									"❌ You've waited for too long! Please try again."
+								),
+							],
+						})
 						.then((msg) => {
 							setTimeout(() => {
 								msg.delete();

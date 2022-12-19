@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import parseMessagePlaceholderFromString from "../text/parseMessagePlaceholderFromString";
 import * as database from "./../../database";
+import colors from "./../../constants/colors";
 
 export default async (command: any, message: Message) => {
 	const guild = await database.guilds.findOne({ _id: message.guildId });
@@ -14,7 +15,7 @@ export default async (command: any, message: Message) => {
 			guild,
 			command.help.description || "No description provided"
 		),
-		color: "#f45592",
+		color: colors.pink,
 		fields: [],
 	});
 

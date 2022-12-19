@@ -3,6 +3,7 @@ import sendCommandHelp from "../../helpers/core/sendCommandHelp";
 import commands from "./../";
 import CommandNotFound from "../../responses/embeds/CommandNotFound";
 import * as database from "./../../database";
+import colors from "./../../constants/colors";
 
 export default {
 	name: "help",
@@ -91,7 +92,7 @@ export default {
 				title: "List of avaliable commands",
 				description: `Use \`${guild.prefix}help <command>\` to see how a specific command works.
 								If the command has a  \`/\` prefix, that's a slash command, and it cannot be used anymore with the\`${guild.prefix}\` prefix!`,
-				color: "#f45592",
+				color: colors.pink,
 				fields: fields,
 			});
 

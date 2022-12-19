@@ -6,14 +6,13 @@
 	? @returns The success embed.
 */
 
-import {MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
+import colors from "../../../constants/colors";
 
-export default(response?: string): MessageEmbed => {
+export default (response?: string): MessageEmbed => {
 	return new MessageEmbed({
 		title: "✅ Success!",
 		description: response || "Operation successful.",
-		color: "#1df27d",
+		color: colors.green,
 	});
 };
-
-				
