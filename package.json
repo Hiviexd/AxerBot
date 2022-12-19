@@ -37,7 +37,6 @@
     "mongoose": "^6.4.6",
     "mp3-cutter": "^1.0.6",
     "node-fetch": "^2.6.7",
-    "node-osu": "^2.2.1",
     "osu-beatmapset-downloader": "^1.1.2",
     "osu-catch-stable": "^3.2.1",
     "osu-classes": "^2.0.0",
@@ -48,7 +47,6 @@
     "osureplayparser": "^1.0.1",
     "ow": "^0.27.0",
     "owoify-js": "^1.0.7",
-    "patch-package": "^6.4.7",
     "tr46": "^0.0.3",
     "ts-mixer": "^6.0.0",
     "ts-node": "^10.6.0",
@@ -66,7 +64,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node .",
     "build": "tsc",
-    "postinstall": "patch-package",
     "dev": "ts-node-dev --transpile-only --respawn --ignore-watch node_modules ./index.ts"
   },
   "repository": {
