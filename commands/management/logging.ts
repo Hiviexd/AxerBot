@@ -2,6 +2,7 @@ import { Client, CommandInteraction, MessageEmbed } from "discord.js";
 import * as database from "./../../database";
 import enable from "./subcommands/logging/enable";
 import disable from "./subcommands/logging/disable";
+import colors from "./../../constants/colors";
 
 export default {
 	name: "logging",
@@ -63,7 +64,7 @@ export default {
 
 		const embed = new MessageEmbed()
 			.setTitle("⚙️ Logging Configuration")
-			.setColor(guild.logging.enabled ? "#1df27d" : "#e5243b")
+			.setColor(guild.logging.enabled ? colors.green : colors.red)
 			.addField(
 				"Status",
 				guild.logging.enabled ? "🟢 Enabled" : "🔴 Disabled",

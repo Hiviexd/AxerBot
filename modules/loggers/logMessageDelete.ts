@@ -1,6 +1,7 @@
 import { MessageEmbed, Message, PartialMessage } from "discord.js";
 import * as database from "../../database";
 import truncateString from "../../helpers/text/truncateString";
+import colors from "../../constants/colors";
 
 export default async (message: Message<boolean> | PartialMessage) => {
 	try {
@@ -24,7 +25,7 @@ export default async (message: Message<boolean> | PartialMessage) => {
 		const truncatedMessage = truncateString(message.cleanContent, count);
 
 		const embed = new MessageEmbed()
-			.setColor("#ff5050")
+			.setColor(colors.red)
 			.setAuthor({
 				name: message.member.nickname
 					? `${message.member.nickname} (${message.author.tag})`

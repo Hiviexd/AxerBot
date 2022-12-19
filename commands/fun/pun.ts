@@ -1,6 +1,7 @@
 import { Client, Message, CommandInteraction } from "discord.js";
 import axios from "axios";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import colors from "../../constants/colors";
 
 export default {
 	name: "pun",
@@ -30,7 +31,7 @@ export default {
 				embeds: [
 					{
 						title: "🗿 Pun",
-						color: "#0080ff",
+						color: colors.blue,
 						description: req.data.joke,
 					},
 				],

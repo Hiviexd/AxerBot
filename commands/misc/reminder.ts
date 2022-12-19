@@ -3,7 +3,7 @@
 import { Client, CommandInteraction, Message } from "discord.js";
 import * as database from "./../../database";
 import { consoleCheck } from "../../helpers/core/logger";
-import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
+import colors from "../../constants/colors";
 
 export default {
 	name: "reminder",
@@ -61,7 +61,7 @@ export default {
 					{
 						title: "❗ Reminder limit reached",
 						description: "You can only have 10 reminders at once.",
-						color: "#ff5050",
+						color: colors.red,
 					},
 				],
 				allowedMentions: {
@@ -89,8 +89,9 @@ export default {
 				embeds: [
 					{
 						title: "❌ Invalid time format",
-						description: "time format: `s`: seconds, `m`: minutes, `h`: hours, `d`: days\nExample: `/reminder time:30m content:Remind me to do something`",
-						color: "#ff5050",
+						description:
+							"time format: `s`: seconds, `m`: minutes, `h`: hours, `d`: days\nExample: `/reminder time:30m content:Remind me to do something`",
+						color: colors.red,
 					},
 				],
 				allowedMentions: {
@@ -152,7 +153,7 @@ export default {
 						title: "❌ Invalid time format",
 						description:
 							"You can only set reminders for up to 2 years. (730 days)",
-						color: "#ff5050",
+						color: colors.red,
 					},
 				],
 				allowedMentions: {
@@ -162,25 +163,25 @@ export default {
 
 		const message_ = contentInput.value.toString().trim();
 
-        // ? limit reminder message to 1000 characters
-        if (message_.length > 1000)
-        return interaction.editReply({
-            embeds: [
-                {
-                    title: "❌ Message too long",
-                    description:
-                        "Reminder message can only be up to 1000 characters long.",
-                    color: "#ff5050",
-                },
-            ],
-            allowedMentions: {
-                repliedUser: false,
-            },
-        });
+		// ? limit reminder message to 1000 characters
+		if (message_.length > 1000)
+			return interaction.editReply({
+				embeds: [
+					{
+						title: "❌ Message too long",
+						description:
+							"Reminder message can only be up to 1000 characters long.",
+						color: colors.red,
+					},
+				],
+				allowedMentions: {
+					repliedUser: false,
+				},
+			});
 
 		const reminder = {
 			time: new Date().getTime() + time,
-            creationTime: new Date().getTime(),
+			creationTime: new Date().getTime(),
 			message: message_,
 			channel: interaction.channel.id,
 			guild: interaction.guild.id,
@@ -209,7 +210,7 @@ export default {
 								message_.length > 0 ? message_ : "*No message*",
 						},
 					],
-					color: "#1df27d",
+					color: colors.green,
 				},
 			],
 			allowedMentions: {

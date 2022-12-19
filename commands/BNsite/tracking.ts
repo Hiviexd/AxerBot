@@ -3,6 +3,7 @@ import { tracks } from "../../database";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import addTrack from "./subcommands/tracker/addTrack";
 import removeTrack from "./subcommands/tracker/removeTrack";
+import colors from "../../constants/colors";
 
 export default {
 	name: "bntrack",
@@ -13,7 +14,7 @@ export default {
 	interaction: true,
 	category: "BNsite",
 	subcommands: [addTrack, removeTrack],
-    permissions: ["MANAGE_CHANNELS"],
+	permissions: ["MANAGE_CHANNELS"],
 	config: {
 		type: 1,
 		options: [
@@ -95,8 +96,7 @@ export default {
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 
-		if (!command.member)
-			return;
+		if (!command.member) return;
 
 		const guildTrackers = await tracks.find({
 			guild: command.guildId,
@@ -134,7 +134,7 @@ export default {
 					})
 					.join("\n")}`
 			)
-			.setColor("#27b6b3")
+			.setColor(colors.qat)
 			.setFooter({
 				text: "BN website",
 				iconURL: "https://bn.mappersguild.com/images/qatlogo.png",

@@ -7,6 +7,7 @@ import {
 import { users } from "../../database";
 import createNewUser from "../../database/utils/createNewUser";
 import { IVerificationObject } from "../../modules/verification/client/GenerateAuthToken";
+import colors from "../../constants/colors"
 
 export default async (interaction: Interaction) => {
 	if (!interaction.isButton()) return;
@@ -44,7 +45,7 @@ export default async (interaction: Interaction) => {
 		thumbnail: {
 			url: interaction.guild.iconURL() || "",
 		},
-		color: "#f72a59",
+		color: colors.yellow,
 	});
 
 	const buttons = new MessageActionRow();

@@ -4,12 +4,13 @@ import {
 	calculateOsuScore,
 	calculateTaikoScore,
 	calculateFruitsScore,
-	calculateManiaScore, 
+	calculateManiaScore,
 } from "../../helpers/osu/performance/calculateScore";
 
 import getEmoji from "../../helpers/text/getEmoji";
 import { Score } from "../../types/score";
 import { User } from "../../types/user";
+import colors from "../../constants/colors";
 
 export default {
 	send: async (message: Message, score: Score, user: User) => {
@@ -59,7 +60,7 @@ export default {
 			thumbnail: {
 				url: `https://b.ppy.sh/thumb/${score.beatmapset.id}l.jpg`,
 			},
-			color: "#f45592",
+			color: colors.pink,
 			timestamp: new Date(score.created_at),
 		});
 
@@ -142,7 +143,7 @@ export default {
 			thumbnail: {
 				url: `https://b.ppy.sh/thumb/${score.beatmapset.id}l.jpg`,
 			},
-			color: "#f45592",
+			color: colors.pink,
 			timestamp: new Date(score.created_at),
 		});
 
@@ -155,19 +156,19 @@ export default {
 			const miss = score.statistics.count_miss;
 
 			if (score.mode == "osu") {
-				return [n300, n100, n50, miss].join('/');
+				return [n300, n100, n50, miss].join("/");
 			}
 
 			if (score.mode == "taiko") {
-				return [n300, n100, miss].join('/');
+				return [n300, n100, miss].join("/");
 			}
 
 			if (score.mode == "fruits") {
-				return [n300, n100, n50, katu, miss].join('/');
+				return [n300, n100, n50, katu, miss].join("/");
 			}
 
 			if (score.mode == "mania") {
-				return [geki, n300, katu, n100, n50, miss].join('/');
+				return [geki, n300, katu, n100, n50, miss].join("/");
 			}
 		}
 

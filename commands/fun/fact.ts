@@ -1,6 +1,6 @@
-import { Client, Message, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, MessageEmbed, CommandInteraction } from "discord.js";
+import colors from "../../constants/colors";
 import axios from "axios";
-import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
 import * as database from "./../../database";
 
 export default {
@@ -49,7 +49,7 @@ export default {
 					const embed = new MessageEmbed({
 						title: "🌟 Fact of the Day",
 						description: fact.replace(/`/g, "'"),
-						color: "#ffac00",
+						color: colors.gold,
 						footer: {
 							text: `Feeling lucky? Try \"/fact\" for a random fact!`,
 						},
@@ -65,7 +65,7 @@ export default {
 					const embed = new MessageEmbed({
 						title: "📘 Random Fact",
 						description: fact.replace(/`/g, "'"),
-						color: "#0080ff",
+						color: colors.blue,
 						footer: {
 							text: `Check out today's fact with \"/fact type:daily\"!`,
 						},

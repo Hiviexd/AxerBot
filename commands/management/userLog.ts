@@ -5,6 +5,7 @@ import add from "./subcommands/userLog/add";
 import remove from "./subcommands/userLog/remove";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import truncateString from "../../helpers/text/truncateString";
+import colors from "../../constants/colors";
 
 // TODO: consider using forms for reason input
 
@@ -124,7 +125,7 @@ export default {
 
 		const embed = new MessageEmbed()
 			.setTitle(`📙 Logs for ${username.toLowerCase()}`)
-			.setColor("#ffaa00");
+			.setColor(colors.gold);
 
 		if (userLogs.logs.length == 0) {
 			embed.setDescription("*No logs found*");

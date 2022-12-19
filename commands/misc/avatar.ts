@@ -6,6 +6,7 @@ import {
 	User,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
+import colors from "../../constants/colors";
 
 export default {
 	name: "avatar",
@@ -66,7 +67,7 @@ export default {
 		}
 
 		const avatarEmbed = new MessageEmbed()
-			.setColor("#0099ff")
+			.setColor(colors.purple)
 			.setTitle(`${user.tag}'s avatar`)
 			.setImage(user.displayAvatarURL({ format: "png", dynamic: true }))
 			.setFooter(

@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import colors from "../../../../constants/colors";
 
 export default {
 	name: "log",
@@ -55,7 +56,7 @@ export default {
 
 		const embed = new MessageEmbed()
 			.setTitle("✅ User Logged")
-			.setColor("#1df27d")
+			.setColor(colors.green)
 			.addField("User", user)
 			.addField("Reason", reason)
 			.setFooter({

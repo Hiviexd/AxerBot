@@ -7,6 +7,7 @@ import {
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
 import GenerateAuthToken from "./GenerateAuthToken";
+import colors from "../../../constants/colors";
 
 export default async (member: GuildMember) => {
 	const guild_db = await guilds.findById(member.guild.id);
@@ -25,7 +26,7 @@ export default async (member: GuildMember) => {
 		const error = new MessageEmbed({
 			title: "Wait...",
 			description: verification.message,
-			color: "#ea6112",
+			color: colors.orange,
 		});
 
 		user_dm.send({

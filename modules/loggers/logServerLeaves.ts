@@ -1,6 +1,7 @@
 import { MessageEmbed, GuildMember, PartialGuildMember } from "discord.js";
 import moment from "moment";
 import * as database from "../../database";
+import colors from "../../constants/colors";
 
 export default async function logServerLeaves(
 	member: GuildMember | PartialGuildMember
@@ -21,7 +22,7 @@ export default async function logServerLeaves(
 			.map((role) => role.toString());
 
 		const embed = new MessageEmbed()
-			.setColor("#d97f36")
+			.setColor(colors.orange)
 			.setAuthor({
 				name: member.nickname
 					? `${member.nickname} (${member.user.tag})`

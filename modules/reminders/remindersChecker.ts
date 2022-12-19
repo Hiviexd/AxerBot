@@ -6,6 +6,7 @@ import moment from "moment";
 import { Client, TextChannel, MessageEmbed } from "discord.js";
 import * as database from "../../database";
 import { consoleCheck } from "../../helpers/core/logger";
+import colors from "../../constants/colors";
 
 export interface IReminder {
 	time: moment.MomentInput;
@@ -42,7 +43,7 @@ async function remindersChecker(bot: Client) {
 						try {
 							if (channel) {
 								const embed = new MessageEmbed()
-									.setColor("#ffc85a")
+									.setColor(colors.yellow)
 									.setTitle("🔔 Reminder")
 									.setDescription(reminder.message);
 

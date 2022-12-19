@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, MessageEmbed, CommandInteraction } from "discord.js";
 import disable from "./subcommands/verification/disable";
 import enable from "./subcommands/verification/enable";
 import setChannel from "./subcommands/verification/setChannel";
@@ -8,9 +8,9 @@ import addRole from "./subcommands/verification/addRole";
 import removeRole from "./subcommands/verification/removeRole";
 import setButton from "./subcommands/verification/setButton";
 import { guilds } from "../../database";
-import parseMessagePlaceholderFromMember from "../../helpers/text/parseMessagePlaceholderFromMember";
 import addGroupRole from "./subcommands/verification/addGroupRole";
 import removeGroupRole from "./subcommands/verification/removeGroupRole";
+import colors from "../../constants/colors";
 
 export default {
 	name: "verification",
@@ -689,7 +689,7 @@ export default {
 
 		const embed = new MessageEmbed({
 			title: "⚙️ Verification configuration",
-			color: guild.verification.enable ? "#1df27d" : "#e5243b",
+			color: guild.verification.enable ? colors.green : colors.red,
 			fields: [
 				{
 					name: "Status",

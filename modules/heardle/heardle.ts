@@ -12,6 +12,7 @@ import relativeTime from "../../helpers/general/relativeTime";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import truncateString from "../../helpers/text/truncateString";
 import { Beatmapset } from "../../types/beatmap";
+import colors from "../../constants/colors";
 
 export default async (input: SelectMenuInteraction) => {
 	consoleLog(
@@ -66,7 +67,7 @@ export default async (input: SelectMenuInteraction) => {
 			)
 			.setFooter("Next map in 5 seconds...")
 			.setImage(heardle.map.covers["cover@2x"])
-			.setColor("#17ea64");
+			.setColor(colors.green);
 
 		await input.editReply({
 			content: `<@${input.user.id}> Loading next map...`,

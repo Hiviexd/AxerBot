@@ -2,6 +2,8 @@ import { Client, Message, MessageEmbed, ReactionCollector } from "discord.js";
 import { owners } from "../../config.json";
 import { Paginator } from "array-paginator";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import colors from "../../constants/colors";
+
 
 export default {
 	name: "serverlist",
@@ -30,7 +32,7 @@ export default {
 				if (!pageData) return;
 
 				const embed = new MessageEmbed()
-					.setColor("#0099ff")
+					.setColor(colors.blue)
 					.setTitle("Server List")
 					.setDescription(
 						"This is a list of all the servers the bot is in."
