@@ -9,7 +9,7 @@ export async function userActivity(
 	try {
 		consoleLog(
 			"qatUserActivity fetcher",
-			`Fetching user activity for user ${userId}`
+			`Fetching user activity for user ${userId} in the past ${timeframe} days...`
 		);
 
 		const req = await axios(

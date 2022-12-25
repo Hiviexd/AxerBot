@@ -139,7 +139,7 @@ async function qatTracking(bot: Client) {
 
 			buttons.addComponents(dmButton);
 
-			if (bn.requestStatus.includes("personalQueue")) {
+			if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
 				const siteName = new URL(bn.requestLink).hostname.split(".")[0];
 				const personalQueueButton = new MessageButton();
 				personalQueueButton
