@@ -11,7 +11,7 @@ export default {
 	trigger: ["remove"],
 	help: {
 		description: "Remove a channel from a category.",
-		syntax: "{prefix}cooldown `remove` `<channel>` `<category>`",
+		syntax: "/cooldown `remove` `<channel>` `<category>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		let guild = await database.guilds.findOne({ _id: message.guildId });

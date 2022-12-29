@@ -6,7 +6,7 @@ export default {
 	name: "revolver",
 	help: {
 		description: "Russian Roulette, but with bigger numbers!",
-		syntax: "{prefix}revolver",
+		syntax: "/revolver",
 	},
 	interaction: true,
 	config: {

@@ -10,7 +10,7 @@ export default {
 	help: {
 		description:
 			"Removes the Participant role from all participants, and gives them the Spectator role instead.",
-		syntax: "{prefix}resetroles",
+		syntax: "/resetroles",
 	},
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {

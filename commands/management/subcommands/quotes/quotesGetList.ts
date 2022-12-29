@@ -9,7 +9,7 @@ export default {
 	trigger: ["viewlist"],
 	help: {
 		description: "Shows the current custom list",
-		syntax: "{prefix}quotes `viewlist`",
+		syntax: "/quotes `viewlist`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

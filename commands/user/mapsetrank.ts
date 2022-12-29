@@ -17,11 +17,11 @@ export default {
 	name: "mapsetrank",
 	help: {
 		description: "Displays beatmapset statistics of a user",
-		syntax: "{prefix}mapsetrank `<user>` `<option>`",
+		syntax: "/mapsetrank `<user>` `<option>`",
 		options: ["`-favs` | `-favorites`", "`-plays` | `-playcount`"],
 		example:
-			"{prefix}mapsetrank `Hivie` `-favs`\n{prefix}mapsetrank <@341321481390784512>\n{prefix}mapsetrank",
-		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
+			"/mapsetrank `Hivie` `-favs`\n/mapsetrank <@341321481390784512>\n/mapsetrank",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
 	},
 	config: {
 		type: 1,
@@ -32,7 +32,7 @@ export default {
 				type: 3,
 				max_value: 1,
 			},
-            /*{
+			/*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,

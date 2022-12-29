@@ -13,7 +13,7 @@ export default {
 	name: "guessbg",
 	help: {
 		description: "Can you guess which map is?",
-		syntax: "{prefix}guessbg",
+		syntax: "/guessbg",
 	},
 	category: "fun",
 	run: async (bot: Client, message: Message, args: string[]) => {

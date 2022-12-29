@@ -11,8 +11,8 @@ export default {
 	help: {
 		description:
 			"Set a chance between 1->100 to reply with a quote after the trigger word is detected",
-		syntax: "{prefix}quotes `chance` `<number>`",
-		example: "{prefix}quotes `chance` `50`",
+		syntax: "/quotes `chance` `<number>`",
+		example: "/quotes `chance` `50`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

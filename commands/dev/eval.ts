@@ -10,8 +10,8 @@ export default {
 	help: {
 		description:
 			"Developer-exclusive command that allows you to execute arbitrary code.\n Usually used for debugging purposes.",
-		syntax: "{prefix}eval `<code>`",
-		example: '{prefix}eval `message.channel.send("Hello World!")`',
+		syntax: "/eval `<code>`",
+		example: '/eval `message.channel.send("Hello World!")`',
 	},
 	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {

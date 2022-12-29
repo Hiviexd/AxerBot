@@ -1,107 +1,202 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed, CommandInteraction } from "discord.js";
 import sendCommandHelp from "../../helpers/core/sendCommandHelp";
-import commands from "./../";
+import { commands } from "./../";
 import CommandNotFound from "../../responses/embeds/CommandNotFound";
 import * as database from "./../../database";
 import colors from "./../../constants/colors";
+import generateErrorEmbed from "./../../helpers/text/embeds/generateErrorEmbed";
 
 export default {
 	name: "help",
 	category: "misc",
-	run: async (bot: Client, message: Message, args: string[]) => {
-		if (args.length != 0) {
-			const requested_command = commands[args[0].toLowerCase()];
+	help: {
+		description: "Need help?",
+		syntax: "/help <command?> <group?> <subcommand?>",
+		example: "/help\n/help `quotes` `set` `enabled`",
+	},
+	interaction: true,
+	config: {
+		type: 1,
+		options: [
+			{
+				name: "command_name",
+				description: "The first argument after slash",
+				type: 3,
+			},
+			{
+				name: "command_group",
+				description: "The 2nd argument of the command",
+				type: 3,
+			},
+			{
+				name: "subcommand",
+				description: "Last argument in the command",
+				type: 3,
+			},
+		],
+	},
+	run: async (bot: Client, interaction: CommandInteraction, args: []) => {
+		await interaction.deferReply();
 
-			if (!requested_command)
-				return message.channel.send({
-					embeds: [CommandNotFound],
+		const commandName = interaction.options.getString("command_name", true);
+		const commandGroup = interaction.options.getString("command_group");
+		const subcommand = interaction.options.getString("subcommand");
+
+		const baseCommand = commands[commandName];
+
+		if (!baseCommand)
+			return interaction.editReply({
+				embeds: [
+					generateErrorEmbed(
+						"Command not found! Use `/help` to see the list of avaliable commands."
+					),
+				],
+			});
+
+		// ? Generate embed for general
+		if (!commandGroup && !subcommand)
+			return sendGeneralCommandHelp(baseCommand);
+
+		if (commandName && !commandGroup && subcommand)
+			return sendIndividualCommandHelp(baseCommand);
+
+		if (commandName && commandGroup && !subcommand)
+			return sendGroupHelp(baseCommand);
+
+		if (commandName && commandGroup && subcommand)
+			return sendCommandHelp(baseCommand);
+
+		async function sendIndividualCommandHelp(command: typeof baseCommand) {
+			if (!commandName || commandGroup || !subcommand)
+				return interaction.editReply({
+					embeds: [
+						generateErrorEmbed(
+							`Command not found! Use \`/help ${commandName} ${subcommand}\` to see the list of avaliable commands of this group.`
+						),
+					],
 				});
 
-			try {
-				// * ================== Subcommands
-				if (requested_command.subcommands) {
-					let subcommand: any = {};
-					args.shift();
+			const commandObject = baseCommand.config.options.find(
+				(c: { name: string }) => c.name == subcommand.toLowerCase()
+			);
 
-					subcommand = requested_command.subcommands.filter(
-						(c: any) =>
-							c.trigger.toString() ==
-							args.slice(0, c.trigger.length).toString()
-					)[0];
+			if (!commandObject)
+				return interaction.editReply({
+					embeds: [
+						generateErrorEmbed(
+							`Command not found! Use \`/help ${commandName} ${subcommand}\` to see the list of avaliable commands of this group.`
+						),
+					],
+				});
 
-					if (subcommand) {
-						args.splice(0, subcommand.trigger.length);
+			const embed = new MessageEmbed()
+				.setTitle(`/${command.name} ${subcommand}`)
+				.setColor(colors.pink)
+				.setDescription(commandObject.description);
 
-						return sendCommandHelp(subcommand, message);
-					}
-				}
+			interaction.editReply({ embeds: [embed] });
+		}
 
-				sendCommandHelp(requested_command, message);
-			} catch (e) {
-				console.error(e);
+		async function sendCommandHelp(command: typeof baseCommand) {
+			const subcommandObject = command.subcommands.find(
+				(c: any) => c.name == subcommand && c.group == commandGroup
+			);
+
+			if (!subcommand || !commandGroup || !subcommand)
+				return interaction.editReply({
+					embeds: [
+						generateErrorEmbed(
+							`Command not found! Use \`/help ${commandName} ${commandGroup}\` to see the list of avaliable commands of this group.`
+						),
+					],
+				});
+
+			const embed = new MessageEmbed()
+				.setTitle(
+					`/${command.name} ${subcommandObject.group} ${subcommandObject.name}`
+				)
+				.setColor(colors.pink)
+				.setDescription(subcommandObject.help.description)
+				.addFields(generateFields(subcommandObject));
+
+			interaction.editReply({ embeds: [embed] });
+		}
+
+		async function sendGroupHelp(command: typeof baseCommand) {
+			if (!commandGroup) return;
+
+			const embed = new MessageEmbed()
+				.setTitle(`/${command.name} ${commandGroup}`)
+				.setColor(colors.pink)
+				.setDescription("Check below all commands in this group:")
+				.addField(
+					"Subcommands",
+					generateSubcommandsField(
+						command,
+						commandGroup.toLowerCase()
+					)
+				)
+				.setFooter(
+					`Use /help ${command.name} ${commandGroup} <subcommand> to get info about a command.`
+				);
+
+			interaction.editReply({ embeds: [embed] });
+		}
+
+		async function sendGeneralCommandHelp(command: typeof baseCommand) {
+			const embed = new MessageEmbed()
+				.setTitle(`/${command.name}`)
+				.setColor(colors.pink)
+				.setDescription(command.help.description)
+				.addFields(generateFields(command));
+
+			if (command.subcommand) {
+				embed.addField(
+					"subcommands",
+					generateSubcommandsField(command),
+					true
+				);
 			}
-		} else {
-			const categories: string[] = [];
-			const fields: any = [];
-			const commands_array: any = [];
-			const guild = await database.guilds.findOne({
-				_id: message.guildId,
+
+			interaction.editReply({ embeds: [embed] });
+		}
+
+		function generateSubcommandsField(
+			command: typeof baseCommand,
+			filter?: string
+		) {
+			const subcommands = filter
+				? command.subcommands.filter((c: any) => c.group == filter)
+				: command.subcommands;
+
+			return subcommands
+				.map(
+					(c: any) =>
+						`\`/${command.name}\` \`${c.group}\` \`${c.name}\``
+				)
+				.join("\n");
+		}
+
+		function generateFields(command: typeof baseCommand) {
+			const fields: { name: string; value: string; inline?: boolean }[] =
+				[];
+
+			const ignoreKeys = ["description"];
+			Object.keys(command.help).forEach((k) => {
+				if (ignoreKeys.includes(k)) return;
+				const commandHelp: { [key: string]: string | string[] } =
+					command.help;
+
+				fields.push({ name: k, value: parseHelpField(commandHelp[k]) });
 			});
 
-			if (!guild) return;
+			function parseHelpField(field: string | string[]) {
+				if (typeof field == "object") return field.join(`\n`);
 
-			// ? Transform Object object to Array object
-			Object.keys(commands).forEach((command: any) => {
-				commands_array.push(commands[command]);
-				return;
-			});
-
-			commands_array.forEach((command: any) => {
-				if (!categories.includes(command.category))
-					return categories.push(command.category);
-
-				return;
-			});
-
-			// ? Parse category commands
-			categories.forEach((category) => {
-				fields.push({
-					name: category,
-					value: getCategoryCommands(category),
-				});
-			});
-
-			function getCategoryCommands(category: string) {
-				const c: string[] = [];
-
-				commands_array.forEach((command: any) => {
-					if (command.category == category)
-						return c.push(
-							`\`${
-								command.interaction
-									? "/".concat(command.name)
-									: command.name
-							}\``
-						);
-				});
-
-				return c.join(", ");
+				return field;
 			}
 
-			const embed = new MessageEmbed({
-				title: "List of avaliable commands",
-				description: `Use \`${guild.prefix}help <command>\` to see how a specific command works.
-								If the command has a  \`/\` prefix, that's a slash command, and it cannot be used anymore with the\`${guild.prefix}\` prefix!`,
-				color: colors.pink,
-				fields: fields,
-			});
-
-			message.reply({
-				embeds: [embed],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+			return fields;
 		}
 	},
 };

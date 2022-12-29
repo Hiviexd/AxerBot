@@ -7,7 +7,7 @@ export default {
 	name: "pun",
 	help: {
 		description: "Get a random pun!",
-		syntax: "{prefix}pun",
+		syntax: "/pun",
 	},
 	config: {
 		type: 1,

@@ -4,7 +4,7 @@ export default {
 	name: "invite",
 	help: {
 		description: "Generates an invite link for the bot",
-		example: "{prefix}invite",
+		example: "/invite",
 	},
 	category: "misc",
 	interaction: true,

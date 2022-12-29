@@ -4,7 +4,7 @@ export default {
 	name: "ping",
 	help: {
 		description: "Pong?",
-		example: "{prefix}ping",
+		example: "/ping",
 	},
 	config: {
 		type: 1,

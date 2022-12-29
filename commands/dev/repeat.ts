@@ -5,9 +5,10 @@ import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 export default {
 	name: "repeat",
 	help: {
-		description: "Developer-exclusive command that makes the bot send X amount of messages for testing purposes.\n Max is 200 to prevent abuse.",
-		syntax: "{prefix}repeat `<amount>` `<optionalMsg>`",
-		example: "{prefix}repeat `10` `Hello World!`\n{prefix}repeat `7`",
+		description:
+			"Developer-exclusive command that makes the bot send X amount of messages for testing purposes.\n Max is 200 to prevent abuse.",
+		syntax: "/repeat `<amount>` `<optionalMsg>`",
+		example: "/repeat `10` `Hello World!`\n/repeat `7`",
 	},
 	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {
@@ -37,12 +38,11 @@ export default {
 				return;
 			}
 			const msg = args.slice(1).join(" ");
-			
-		for (let i = 0; i < amount; i++) {
-			setTimeout(() => {
-				message.channel.send(`${msg ? msg :i + 1}`);
-			}, 500);
-			
+
+			for (let i = 0; i < amount; i++) {
+				setTimeout(() => {
+					message.channel.send(`${msg ? msg : i + 1}`);
+				}, 500);
 			}
 		} else {
 			message.reply({

@@ -5,7 +5,7 @@ export default {
 	name: "owoify",
 	help: {
 		description: "Turn your text into owo text!\n I'm not sorry.",
-		syntax: "{prefix}owoify `<text>`",
+		syntax: "/owoify `<text>`",
 	},
 	config: {
 		type: 1,

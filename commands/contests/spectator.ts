@@ -7,9 +7,8 @@ export default {
 	help: {
 		description:
 			"Gives the Verified + Spectator role to a user (and sets a new nickname when given)",
-		syntax: "{prefix}spectator `@user` \n{prefix}spectator `@user` `<nickname>`",
-		example:
-			"{prefix}spectator `@Sebola`\n{prefix}spectator `@Nifty1234` `Nifty`",
+		syntax: "/spectator `@user` \n/spectator `@user` `<nickname>`",
+		example: "/spectator `@Sebola`\n/spectator `@Nifty1234` `Nifty`",
 	},
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {

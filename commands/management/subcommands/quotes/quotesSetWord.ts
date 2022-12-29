@@ -10,7 +10,7 @@ export default {
 	trigger: ["setword"],
 	help: {
 		description: "Sets a trigger word for the quotes system",
-		syntax: "{prefix}quotes `set` `word` `<new word>`",
+		syntax: "/quotes `set` `word` `<new word>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		const word = args.join(" ").trim();

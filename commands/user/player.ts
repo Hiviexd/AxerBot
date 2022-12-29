@@ -11,10 +11,9 @@ export default {
 	name: "player",
 	help: {
 		description: "Check statistics for a player",
-		syntax: "{prefix}player `<name|mention>` `<-?mode>`",
-		example:
-			"{prefix}player `Hivie` `-osu`\n {prefix}player <@341321481390784512> ",
-		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
+		syntax: "/player `<name|mention>` `<-?mode>`",
+		example: "/player `Hivie` `-osu`\n /player <@341321481390784512> ",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
 	},
 	category: "osu",
 	config: {

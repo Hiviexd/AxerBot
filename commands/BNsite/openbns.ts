@@ -9,9 +9,9 @@ export default {
 	help: {
 		description:
 			"Displays a list of currently open BNs/NATs based on data from the BN website",
-		syntax: "{prefix}openbns\n{prefix}openbns `<gamemode>`",
+		syntax: "/openbns\n/openbns `<gamemode>`",
 		gamemodes: "`osu`, `taiko`, `catch`, `mania`",
-		example: "{prefix}openbns\n{prefix}openbns `taiko`",
+		example: "/openbns\n/openbns `taiko`",
 	},
 	interaction: true,
 	config: {

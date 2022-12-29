@@ -7,9 +7,8 @@ export default {
 	help: {
 		description:
 			"Gives the Verified + Participant role to a user (and sets a new nickname when given)",
-		syntax: "{prefix}participant `@user` \n{prefix}participant `@user` `<nickname>`",
-		example:
-			"{prefix}participant `@Sebola`\n{prefix}participant `@Nifty1234` `Nifty`",
+		syntax: "/participant `@user` \n/participant `@user` `<nickname>`",
+		example: "/participant `@Sebola`\n/participant `@Nifty1234` `Nifty`",
 	},
 	category: "contests",
 	run: async (bot: Client, message: Message, args: string[]) => {

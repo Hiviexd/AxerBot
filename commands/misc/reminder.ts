@@ -9,10 +9,9 @@ export default {
 	name: "reminder",
 	help: {
 		description: "Sets a reminder",
-		syntax: "{prefix}reminder `<time>`\n{prefix}reminder `<time>` `<message>`",
+		syntax: "/reminder `<time>`\n/reminder `<time>` `<message>`",
 		"time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",
-		example:
-			"{prefix}reminder `30m` `Remind me to do something`\n{prefix}reminder `1d`",
+		example: "/reminder `30m` `Remind me to do something`\n/reminder `1d`",
 	},
 	config: {
 		type: 1,

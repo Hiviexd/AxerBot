@@ -1,4 +1,9 @@
-import { Client, Message, CommandInteraction, TextBasedChannel } from "discord.js";
+import {
+	Client,
+	Message,
+	CommandInteraction,
+	TextBasedChannel,
+} from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import generateConfirmationEmbed from "./../../helpers/text/embeds/generateConfirmationEmbed";
@@ -10,8 +15,8 @@ export default {
 	help: {
 		description:
 			"Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
-		syntax: "{prefix}purge `<count>`",
-		example: "{prefix}purge `6`",
+		syntax: "/purge `<count>`",
+		example: "/purge `6`",
 	},
 	interaction: true,
 	config: {
@@ -28,7 +33,7 @@ export default {
 		],
 	},
 	category: "management",
-    permissions: ["MANAGE_MESSAGES"],
+	permissions: ["MANAGE_MESSAGES"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 

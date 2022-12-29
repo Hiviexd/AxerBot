@@ -37,8 +37,9 @@ import qattrack from "./BNsite/tracking";
 import osutimestamps from "./management/osuTimestamps";
 import editmessage from "./management/editMessage";
 import userlog from "./management/userLog";
+import { Client, CommandInteraction, Message } from "discord.js";
 
-const commands: any = {
+export const commands: any = {
 	ping: ping,
 	mapper: mapper,
 	choose: choose,
@@ -75,9 +76,7 @@ const commands: any = {
 	openbns: openbns,
 	heardle: heardle,
 	bntrack: qattrack,
-    osutimestamps: osutimestamps,
-    editmessage: editmessage,
-    userlog: userlog
+	osutimestamps: osutimestamps,
+	editmessage: editmessage,
+	userlog: userlog,
 };
-
-export default commands;
