@@ -38,11 +38,11 @@ export default {
 	run: async (bot: Client, interaction: CommandInteraction, args: []) => {
 		await interaction.deferReply();
 
-		const commandName = interaction.options.getString("command_name", true);
+		const commandName = interaction.options.getString("command_name");
 		const commandGroup = interaction.options.getString("command_group");
 		const subcommand = interaction.options.getString("subcommand");
 
-		const baseCommand = commands[commandName];
+		const baseCommand = commandName ? commands[commandName] : null;
 
 		if (!baseCommand)
 			return interaction.editReply({
