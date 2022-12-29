@@ -4,12 +4,12 @@ import {
 	CommandInteractionOptionResolver,
 	Interaction,
 } from "discord.js";
-import commands from "../../commands";
+import { commands } from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
 import checkCooldown from "../general/checkCooldown";
 import createNewUser from "../../database/utils/createNewUser";
-import { ownerId } from "./../../config.json"
+import { ownerId } from "./../../config.json";
 import generateMissingPermsEmbed from "../text/embeds/generateMissingPermsEmbed";
 
 export default async function commandHandler(
@@ -38,12 +38,17 @@ export default async function commandHandler(
 
 			if (interaction.user.id == ownerId) return true;
 
-			return interaction.member.permissions.has(requested_command.permissions, true)
+			return interaction.member.permissions.has(
+				requested_command.permissions,
+				true
+			);
 		}
 
 		if (!checkPermissions()) {
 			return interaction.reply({
-				embeds: [generateMissingPermsEmbed(requested_command.permissions)]
+				embeds: [
+					generateMissingPermsEmbed(requested_command.permissions),
+				],
 			});
 		}
 

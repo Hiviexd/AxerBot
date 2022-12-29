@@ -9,7 +9,7 @@ export default {
 	trigger: ["setdisabled"],
 	help: {
 		description: "Disables the quotes system",
-		syntax: "{prefix}quotes `set` `disabled`",
+		syntax: "/quotes `set` `disabled`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

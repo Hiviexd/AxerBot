@@ -10,8 +10,8 @@ export default {
 	name: "cooldown",
 	help: {
 		description: "applies a cooldown to a command category",
-		syntax: "{prefix}cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
-		example: "{prefix}cooldown `general,offtopic` `fun,osu` `10` `5`",
+		syntax: "/cooldown `<channels>` `<categories>` `<cooldown>` `<increments>`",
+		example: "/cooldown `general,offtopic` `fun,osu` `10` `5`",
 	},
 	subcommands: [cooldownClear, cooldownRemove],
 	category: "management",

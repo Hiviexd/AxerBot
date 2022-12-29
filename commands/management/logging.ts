@@ -8,9 +8,8 @@ export default {
 	name: "logging",
 	help: {
 		description: "Configure the logging system",
-		syntax: "{prefix}logging `<action>` `<value>`",
-		example:
-			"{prefix}logging `channel` `wasteland`\n{prefix}logging `disable`",
+		syntax: "/logging `<action>` `<value>`",
+		example: "/logging `channel` `wasteland`\n/logging `disable`",
 		options: ["`set enable`", "`set disable`"],
 	},
 	category: "management",

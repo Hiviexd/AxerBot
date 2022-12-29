@@ -10,7 +10,7 @@ export default {
 	trigger: ["block"],
 	help: {
 		description: "Set channels that quotes can't run.",
-		syntax: "{prefix}quotes `block` `<#channels>`",
+		syntax: "/quotes `block` `<#channels>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

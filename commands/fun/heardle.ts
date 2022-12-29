@@ -22,7 +22,7 @@ export default {
 	name: "heardle",
 	help: {
 		description: "Guess the song!",
-		syntax: "{prefix}heardle",
+		syntax: "/heardle",
 	},
 	category: "fun",
 	interaction: true,

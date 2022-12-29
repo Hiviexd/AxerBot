@@ -1,5 +1,5 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import commands from "../../commands";
+import { commands } from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
 //import CommandNotFound from "../../data/embeds/CommandNotFound";

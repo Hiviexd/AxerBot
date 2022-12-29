@@ -13,8 +13,8 @@ export default {
 		description:
 			"Displays nominator data of a BN/NAT from the last 90 days",
 		example:
-			"{prefix}bn\n{prefix}bn `Hivie`\n{prefix}bn <@341321481390784512>\n{prefix}bn `HEAVENLY MOON`",
-		note: "You won't need to specify your username if you set yourself up with this command:\n`{prefix}osuset user <username>`",
+			"/bn\n/bn `Hivie`\n/bn <@341321481390784512>\n/bn `HEAVENLY MOON`",
+		note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
 	},
 	interaction: true,
 	config: {
@@ -25,7 +25,7 @@ export default {
 				description: "By osu! username",
 				type: 3,
 			},
-            /*{
+			/*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,

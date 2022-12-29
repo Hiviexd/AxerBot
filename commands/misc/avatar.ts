@@ -13,8 +13,7 @@ export default {
 	help: {
 		description: "Displays the avatar of the mentioned user or the author.",
 		syntax: "!avatar <option>",
-		example:
-			"{prefix}avatar\n {prefix}avatar @Hivie\n {prefix}avatar <userid>",
+		example: "/avatar\n /avatar @Hivie\n /avatar <userid>",
 	},
 	interaction: true,
 	config: {

@@ -4,9 +4,8 @@ export default {
 	name: "roll",
 	help: {
 		description: "Roll a dice! \nDefault roll is 100.",
-		syntax: "{prefix}roll `<value>`",
-		example:
-			"{prefix}roll\n{prefix}roll `727`\n{prefix}roll `dubs and I ping @everyone`\n",
+		syntax: "/roll `<value>`",
+		example: "/roll\n/roll `727`\n/roll `dubs and I ping @everyone`\n",
 	},
 	config: {
 		type: 1,

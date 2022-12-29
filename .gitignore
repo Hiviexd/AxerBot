@@ -2,5 +2,6 @@
 node_modules
 tests
 .env
+.enxexample
 dist
 cache

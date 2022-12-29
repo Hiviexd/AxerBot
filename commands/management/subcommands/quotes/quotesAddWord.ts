@@ -10,7 +10,7 @@ export default {
 	trigger: ["add"],
 	help: {
 		description: "Adds a new phrase to the server custom quotes list",
-		syntax: "{prefix}quotes `add` `<phrase>`",
+		syntax: "/quotes `add` `<phrase>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

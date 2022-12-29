@@ -11,7 +11,7 @@ export default {
 	trigger: ["setlist"],
 	help: {
 		description: "Sets a custom list for the server quotes",
-		syntax: "{prefix}quotes `set` `list` `[Text File Attachment]`",
+		syntax: "/quotes `set` `list` `[Text File Attachment]`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

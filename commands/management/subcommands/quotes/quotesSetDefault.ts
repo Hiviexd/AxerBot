@@ -9,7 +9,7 @@ export default {
 	trigger: ["setdefault"],
 	help: {
 		description: "Change quotes system list to default list",
-		syntax: "{prefix}quotes `set` `default`",
+		syntax: "/quotes `set` `default`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

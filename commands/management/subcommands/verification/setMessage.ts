@@ -20,7 +20,7 @@ export default {
 	help: {
 		description:
 			"Set the message that will be sent on the system channel (will open a popup that takes text input)",
-		syntax: "{prefix}verification `set message`",
+		syntax: "/verification `set message`",
 		placeholders: "`{member}` - a ping of the member that will be verified",
 		"example message": "Hello {member} and welcome to this server!",
 	},

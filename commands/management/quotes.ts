@@ -15,8 +15,8 @@ export default {
 	name: "quotes",
 	help: {
 		description: "Configure the random quotes system",
-		syntax: "{prefix}quotes `<action>` `<value>`",
-		example: "{prefix}quotes `setcustom`\n {prefix}quotes `status`",
+		syntax: "/quotes `<action>` `<value>`",
+		example: "/quotes `setcustom`\n /quotes `status`",
 		options: [
 			"`setcustom`",
 			"`setdefault`",
@@ -45,12 +45,12 @@ export default {
 		quotesSetChance,
 	],
 	category: "management",
-    permissions: ["MANAGE_GUILD"],
+	permissions: ["MANAGE_GUILD"],
 	run: (bot: Client, message: Message, args: string[]) => {
 		if (!message.guild || !message.member) return;
 
-		// const action = args[1]; // {prefix}quotes set <argument>
-		// const getter = args[0]; // {prefix}quotes <something>
+		// const action = args[1]; // /quotes set <argument>
+		// const getter = args[0]; // /quotes <something>
 
 		// if (!action && !getter)
 		// 	return message.channel.send({

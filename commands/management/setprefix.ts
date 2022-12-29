@@ -8,8 +8,8 @@ export default {
 	name: "setprefix",
 	help: {
 		description: "Define a custom command prefix on this server.",
-		syntax: "{prefix}setprefix `<prefix>`",
-		example: "{prefix}setprefix `!`",
+		syntax: "/setprefix `<prefix>`",
+		example: "/setprefix `!`",
 	},
 	category: "management",
 	run: async (bot: Client, message: Message, args: string[]) => {

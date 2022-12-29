@@ -20,9 +20,9 @@ export default {
 	name: "osuset",
 	help: {
 		description: "Sets your credentials so the bot recognizes you.",
-		syntax: "{prefix}osuset `<field>` `<value>`",
+		syntax: "/osuset `<field>` `<value>`",
 		example:
-			"{prefix}osuset `user` `Hivie`\n {prefix}osuset `user` `HEAVENLY MOON`\n {prefix}osuset `embed` `mapper`\n {prefix}osuset `embed` `player`",
+			"/osuset `user` `Hivie`\n /osuset `user` `HEAVENLY MOON`\n /osuset `embed` `mapper`\n /osuset `embed` `player`",
 	},
 	category: "osu",
 	config: {

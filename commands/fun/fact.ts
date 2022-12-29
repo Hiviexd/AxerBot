@@ -7,9 +7,9 @@ export default {
 	name: "fact",
 	help: {
 		description: "Get a random fact!",
-		syntax: "{prefix}fact",
+		syntax: "/fact",
 		options: `\`today\`: Gets the fact of the day.`,
-		example: `{prefix}fact\n {prefix}fact today`,
+		example: `/fact\n /fact today`,
 	},
 	interaction: true,
 	config: {

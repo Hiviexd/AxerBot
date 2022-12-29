@@ -9,7 +9,7 @@ export default {
 	trigger: ["status"],
 	help: {
 		description: "Check quotes system configuration",
-		syntax: "{prefix}quotes `status`",
+		syntax: "/quotes `status`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

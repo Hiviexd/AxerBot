@@ -17,8 +17,8 @@ export default {
 	name: "recent",
 	help: {
 		description: "Check statistics for a player",
-		syntax: "{prefix}player `<name|mention>` `<-?mode>`",
-		example: "{prefix}player `sebola` `-osu`\n {prefix}player `@hivie` ",
+		syntax: "/player `<name|mention>` `<-?mode>`",
+		example: "/player `sebola` `-osu`\n /player `@hivie` ",
 	},
 	category: "osu",
 	config: {
@@ -30,7 +30,7 @@ export default {
 				type: 3,
 				max_value: 1,
 			},
-            /*{
+			/*{
 				name: "usermention",
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,

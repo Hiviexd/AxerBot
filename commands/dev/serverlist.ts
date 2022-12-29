@@ -4,13 +4,12 @@ import { Paginator } from "array-paginator";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../constants/colors";
 
-
 export default {
 	name: "serverlist",
 	help: {
 		description:
 			"Developer-exclusive command that shows a list of all servers the bot is in.",
-		syntax: "{prefix}serverlist",
+		syntax: "/serverlist",
 	},
 	category: "dev",
 	run: async (bot: Client, message: Message, args: string[]) => {

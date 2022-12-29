@@ -13,8 +13,8 @@ export default {
 	name: "userlog",
 	help: {
 		description: "logs info about a user",
-		syntax: "{prefix}userlog `<add/remove/list>` `<user>` `<reason>`",
-		example: "{prefix}userlog `add` `@user` `reason`",
+		syntax: "/userlog `<add/remove/list>` `<user>` `<reason>`",
+		example: "/userlog `add` `@user` `reason`",
 		options: ["`add`", "`remove`", "`list`"],
 	},
 	subcommands: [add, remove],

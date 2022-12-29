@@ -4,8 +4,8 @@ export default {
 	name: "choose",
 	help: {
 		description: "I will choose for you!",
-		syntax: "{prefix}choose `<option_1>` or `<option_2>`",
-		example: "{prefix}choose `map a song or mod a map`",
+		syntax: "/choose `<option_1>` or `<option_2>`",
+		example: "/choose `map a song or mod a map`",
 	},
 	interaction: true,
 	config: {
@@ -77,9 +77,10 @@ export default {
 				choices.push(option);
 			}
 		}
-        const choicesString = choices.join(" or ");
+		const choicesString = choices.join(" or ");
 
-		const randomChoice = choices[Math.floor(Math.random() * choices.length)];
+		const randomChoice =
+			choices[Math.floor(Math.random() * choices.length)];
 
 		command.editReply(`> ${choicesString}\n${randomChoice}`);
 	},

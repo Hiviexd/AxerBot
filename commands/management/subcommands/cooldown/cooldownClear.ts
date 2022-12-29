@@ -12,7 +12,7 @@ export default {
 	help: {
 		description:
 			"Clear cooldown configuration for the system or a category.",
-		syntax: "{prefix}cooldown `clear` `category (optional)`",
+		syntax: "/cooldown `clear` `category (optional)`",
 	},
 	run: async (message: Message, args: string[]) => {
 		const categories = ["contests", "fun", "misc", "management", "osu"];

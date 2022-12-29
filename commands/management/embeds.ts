@@ -8,9 +8,9 @@ export default {
 	help: {
 		description:
 			"configure where and which embed will be allowed in X channels",
-		syntax: "{prefix}embeds `<categories> <#channels>`",
+		syntax: "/embeds `<categories> <#channels>`",
 		example:
-			"{prefix}embeds `player,discussion,beatmap #osu #commands` \n{prefix}embeds `player,discussion,beatmap all` \n {prefix}embeds `player,discussion,beatmap none`",
+			"/embeds `player,discussion,beatmap #osu #commands` \n/embeds `player,discussion,beatmap all` \n /embeds `player,discussion,beatmap none`",
 		categories: ["`player`", "`comment`", "`beatmap`", "`discussion`"],
 		extra: "You can use `all` or `none` to select all channels, or none",
 	},
@@ -53,7 +53,7 @@ export default {
 		],
 	},
 	category: "management",
-    permissions: ["MANAGE_CHANNELS"],
+	permissions: ["MANAGE_CHANNELS"],
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
 		if (!command.guild) return;

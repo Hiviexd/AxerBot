@@ -10,7 +10,7 @@ export default {
 	trigger: ["allow"],
 	help: {
 		description: "Remove a channel from blacklist.",
-		syntax: "{prefix}quotes `allow` `<#channels>`",
+		syntax: "/quotes `allow` `<#channels>`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;

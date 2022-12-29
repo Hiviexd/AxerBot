@@ -9,7 +9,7 @@ export default {
 	trigger: ["setcustom"],
 	help: {
 		description: "Change quotes system list to server custom list",
-		syntax: "{prefix}quotes `set` `custom`",
+		syntax: "/quotes `set` `custom`",
 	},
 	run: async (message: Message, args: string[]) => {
 		if (!message.member) return;
