@@ -74,5 +74,21 @@ If you want to contribute to this project, please read the following to learn ho
 - Clone the repository
 - `yarn`
 - Set up `config.json`
-- Set up `.env` file starting from the `.envexample` file
+- Set up `.env` file starting from the `.env.example` file
+  - `TOKEN`: bot's token
+  - `CLIENT_ID`: bot's client ID
+  - `OSU_CLIENT_ID`: osu! API v2 client ID
+  - `OSU_CLIENT_SECRET`: osu! API v2 client secret
+  - `PORT`: port, default is 3000
+  - `MONGO_USER`: MongoDB username
+  - `MONGO_PASSWORD`: MongoDB password
+  - `MONGO_DB`: mongoDB database name
+  - `MONGO_CLUSTER`: mongoDB cluster name
+  - `QAT_USER`: BN site interOp username[^optional-bnsite]
+  - `QAT_SECRET`: BN site interOp secret[^optional-bnsite]
+  - `OSU_USERNAME`: your osu! username[^optional-beatmaps]
+  - `OSU_PASSWORD`: your osu! password[^optional-beatmaps]
 - `yarn dev`
+
+[^optional-bnsite]: These are optional, but without those, all BN site-related functionality won't work (BN commands/tracking).
+[^optional-beatmaps]: These are optional, but without those, the "Download" button on beatmap embeds won't work.
