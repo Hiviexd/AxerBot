@@ -62,7 +62,7 @@ export default {
 			.setThumbnail(`https://b.ppy.sh/thumb/${score.beatmapset.id}l.jpg`)
 			.setURL(score.beatmap.url)
 			.setDescription(
-				`● ${getEmoji(score.rank)} ${(score.accuracy * 100).toFixed(
+				`▸ ${getEmoji(score.rank)} ${(score.accuracy * 100).toFixed(
 					2
 				)}% [${score.max_combo}x/${rulesetBeatmap.maxCombo}x] ▸ **${
 					Math.round(score.pp) || realPerformance.pp
