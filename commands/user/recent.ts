@@ -81,6 +81,14 @@ export default {
 				},
 			});
 
+		if (!player.data || !player.data.id)
+			return command.editReply({
+				embeds: [UserNotFound],
+				allowedMentions: {
+					repliedUser: false,
+				},
+			});
+
 		const recent = await osuApi.fetch.userRecent(
 			player.data.id.toString(),
 			mode
@@ -107,6 +115,6 @@ export default {
 				},
 			});
 
-		RecentScoreEmbed.reply(command, recent.data[0], player.data);
+		RecentScoreEmbed.send(command, recent.data[0], player.data);
 	},
 };

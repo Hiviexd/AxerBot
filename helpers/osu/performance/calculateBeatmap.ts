@@ -12,8 +12,8 @@ interface BeatmapCalculationResult {
 }
 
 interface BeatmapPerformance {
-  pp: number;
-  acc: number;
+	pp: number;
+	acc: number;
 }
 
 export function calculateOsuBeatmap(osu_file: string, mods?: string) {
@@ -32,13 +32,33 @@ export function calculateManiaBeatmap(osu_file: string, mods?: string) {
 	return calculateBeatmap(osu_file, 3, mods);
 }
 
-function calculateBeatmap(osu_file: string, rulesetId: number, mods?: string) {
+export function generateRulesetBeatmap(
+	osu_file: string,
+	rulesetId: number,
+	mods?: string
+) {
 	const decoder = new BeatmapDecoder();
 	const ruleset = getRulesetById(rulesetId);
-	
-	const parsed = decoder.decodeFromString(osu_file);	
+
+	const parsed = decoder.decodeFromString(osu_file);
 	const combination = ruleset.createModCombination(mods);
-	
+
+	const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
+
+	return beatmap;
+}
+
+export function calculateBeatmap(
+	osu_file: string,
+	rulesetId: number,
+	mods?: string
+) {
+	const decoder = new BeatmapDecoder();
+	const ruleset = getRulesetById(rulesetId);
+
+	const parsed = decoder.decodeFromString(osu_file);
+	const combination = ruleset.createModCombination(mods);
+
 	const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
 	const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
 	const difficulty = difficultyCalculator.calculateWithMods(combination);
@@ -58,7 +78,7 @@ function calculateBeatmap(osu_file: string, rulesetId: number, mods?: string) {
 
 		const performanceCalculator = ruleset.createPerformanceCalculator(
 			difficulty,
-			scoreInfo,
+			scoreInfo
 		);
 
 		const pp = Math.round(performanceCalculator.calculate());
@@ -71,4 +91,4 @@ function calculateBeatmap(osu_file: string, rulesetId: number, mods?: string) {
 		difficulty,
 		performance,
 	} as BeatmapCalculationResult;
-};
+}
