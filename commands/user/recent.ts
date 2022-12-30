@@ -14,11 +14,11 @@ import { Score } from "../../types/score";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 
 export default {
-	name: "recent",
+	name: "rs",
 	help: {
 		description: "Check statistics for a player",
-		syntax: "/player `<name|mention>` `<-?mode>`",
-		example: "/player `sebola` `-osu`\n /player `@hivie` ",
+		syntax: "/rs `username` `?mode`",
+		example: "/rs `username:sebola` `mode:taiko`",
 	},
 	category: "osu",
 	config: {
