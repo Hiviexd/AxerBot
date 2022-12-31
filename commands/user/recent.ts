@@ -12,6 +12,7 @@ import RecentScoreEmbed from "../../responses/osu/RecentScoreEmbed";
 import { GameModeName } from "../../types/game_mode";
 import { Score } from "../../types/score";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
+import { ApplicationCommandOptionType } from "discord-api-types/v9";
 
 export default {
 	name: "rs",
@@ -60,6 +61,22 @@ export default {
 					},
 				],
 			},
+			{
+				name: "include_fails",
+				description: "Include failed scores?",
+				type: ApplicationCommandOptionType.Boolean,
+				max_value: 1,
+				choices: [
+					{
+						name: "yes",
+						value: true,
+					},
+					{
+						name: "no",
+						value: false,
+					},
+				],
+			},
 		],
 	},
 	interaction: true,
@@ -68,6 +85,8 @@ export default {
 
 		const modeInput = command.options.get("mode");
 		const mode = modeInput ? modeInput.value?.toString() : undefined;
+		const includeFail =
+			command.options.getBoolean("include_fails") || false;
 
 		let { playerName, status } = await checkCommandPlayers(command);
 
@@ -91,6 +110,7 @@ export default {
 
 		const recent = await osuApi.fetch.userRecent(
 			player.data.id.toString(),
+			includeFail,
 			mode
 		);
 
