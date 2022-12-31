@@ -85,7 +85,7 @@ export default {
 
 		const modeInput = command.options.get("mode");
 		const mode = modeInput ? modeInput.value?.toString() : undefined;
-		const includeFail =
+		const includeFails =
 			command.options.getBoolean("include_fails") || false;
 
 		let { playerName, status } = await checkCommandPlayers(command);
@@ -110,7 +110,7 @@ export default {
 
 		const recent = await osuApi.fetch.userRecent(
 			player.data.id.toString(),
-			includeFail,
+			includeFails,
 			mode
 		);
 
