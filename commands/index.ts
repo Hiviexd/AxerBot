@@ -67,7 +67,7 @@ export const commands: any = {
 	fact: fact,
 	repeat: repeat,
 	embeds: embeds,
-	recent: recent,
+	rs: recent,
 	verification: verification,
 	resetroles: resetRoles,
 	reminder: reminder,

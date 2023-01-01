@@ -38,9 +38,46 @@ export default {
 	run: async (bot: Client, interaction: CommandInteraction, args: []) => {
 		await interaction.deferReply();
 
-		const commandName = interaction.options.getString("command_name", true);
+		const commandName = interaction.options.getString("command_name");
 		const commandGroup = interaction.options.getString("command_group");
 		const subcommand = interaction.options.getString("subcommand");
+
+		if (!commandName) return sendGlobalHelp();
+
+		async function sendGlobalHelp() {
+			const allCommands: any[] = [];
+
+			Object.keys(commands).forEach((command) => {
+				allCommands.push(commands[command]);
+			});
+
+			const categories: { [key: string]: any[] } = {};
+
+			allCommands.forEach((command) => {
+				if (!categories[command.category])
+					return (categories[command.category] = [command]);
+
+				categories[command.category].push(command);
+			});
+
+			const embed = new MessageEmbed()
+				.setTitle("List of avaliable commands")
+				.setDescription(
+					`Use \`/help\` \`<command>\` to see how a specific command works.!`
+				)
+				.setColor(colors.pink);
+
+			Object.keys(categories).forEach((c) => {
+				embed.addField(
+					c,
+					categories[c]
+						.map((command) => `\`/${command.name}\``)
+						.join(", ")
+				);
+			});
+
+			interaction.editReply({ embeds: [embed] });
+		}
 
 		const baseCommand = commands[commandName];
 
@@ -102,7 +139,12 @@ export default {
 				(c: any) => c.name == subcommand && c.group == commandGroup
 			);
 
-			if (!subcommand || !commandGroup || !subcommand)
+			if (
+				!subcommand ||
+				!commandGroup ||
+				!subcommand ||
+				!subcommandObject
+			)
 				return interaction.editReply({
 					embeds: [
 						generateErrorEmbed(
@@ -150,7 +192,7 @@ export default {
 				.setDescription(command.help.description)
 				.addFields(generateFields(command));
 
-			if (command.subcommand) {
+			if (command.subcommands) {
 				embed.addField(
 					"subcommands",
 					generateSubcommandsField(command),
