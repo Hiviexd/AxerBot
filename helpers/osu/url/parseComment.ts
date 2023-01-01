@@ -5,6 +5,7 @@ import { CommentUser, User } from "../../../types/user";
 import { Timestamp } from "../../../types/timestamp";
 
 export interface ParsedComment {
+	id: number;
 	type: "Comment" | "Reply";
 	title: string;
 	url: string;
@@ -26,6 +27,7 @@ export default async (
 	if (!comment_id || isNaN(Number(comment_id))) return;
 
 	const comment_data: ParsedComment = {
+		id: Number(comment_id),
 		type: "Comment",
 		title: "Anonymous",
 		postType: "news_post",
