@@ -42,8 +42,9 @@ export default {
 		if (!beatmap.data.beatmaps) return;
 
 		const metadata = `
-		**[${post.beatmapsets[0].artist} - ${post.beatmapsets[0].title}](${url})**
-		${generateModeIcon()} Mapped by [${
+		**[${post.beatmapsets[0].artist} - ${
+			post.beatmapsets[0].title
+		}](${url})**\n${generateModeIcon()} Mapped by [${
 			post.beatmapsets[0].creator
 		}](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
