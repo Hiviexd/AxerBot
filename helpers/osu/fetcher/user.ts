@@ -47,6 +47,7 @@ export async function user(
 
 export async function userRecent(
 	user_id: string,
+	include_fails?: boolean,
 	mode?: string
 ): Promise<UserScoreResponse> {
 	try {
@@ -63,10 +64,14 @@ export async function userRecent(
 		consoleCheck("user fetcher", `user ${user_id} recent scores found!`);
 
 		function parseMode() {
-			let link = `https://osu.ppy.sh/api/v2/users/${user_id}/scores/recent?include_fails=1`;
+			let link = `https://osu.ppy.sh/api/v2/users/${user_id}/scores/recent?include_fails=${
+				include_fails ? 1 : 0
+			}`;
 
 			if (mode) {
-				link = `https://osu.ppy.sh/api/v2/users/${user_id}/scores/recent?include_fails=1&mode=${mode}`;
+				link = `https://osu.ppy.sh/api/v2/users/${user_id}/scores/recent?include_fails=${
+					include_fails ? 1 : 0
+				}&mode=${mode}`;
 			}
 
 			return link;

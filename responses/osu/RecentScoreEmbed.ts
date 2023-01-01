@@ -1,11 +1,11 @@
 import axios from "axios";
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
 import {
-	calculateScore,
-	simulateFC,
-	generateScoreInfo,
-} from "../../helpers/osu/performance/calculateScore";
-
+	CommandInteraction,
+	MessageActionRow,
+	MessageButton,
+	MessageEmbed,
+} from "discord.js";
+import { calculateScore } from "../../helpers/osu/performance/calculateScore";
 import getEmoji from "../../helpers/text/getEmoji";
 import { Score } from "../../types/score";
 import { User } from "../../types/user";
@@ -55,7 +55,7 @@ export default {
 			.setTitle(
 				`${score.beatmapset.artist} - ${score.beatmapset.title} [${
 					score.beatmap.version
-				}] (★${realPerformance.starRating.toFixed(2)} ${getMods(
+				}] (★${realPerformance.starRating.toFixed(2)}${getMods(
 					score.mods
 				)})`
 			)
@@ -136,8 +136,24 @@ export default {
 			return names[ruleset];
 		}
 
+		const openBeatmapButton = new MessageButton()
+			.setLabel("Beatmap Page")
+			.setStyle(5)
+			.setURL(score.beatmap.url);
+
+		const userProfileButton = new MessageButton()
+			.setLabel("Player Profile")
+			.setStyle(5)
+			.setURL(`https://osu.ppy.sh/u/${score.user.id}`);
+
+		const buttonsActionRow = new MessageActionRow().addComponents(
+			openBeatmapButton,
+			userProfileButton
+		);
+
 		return command.editReply({
 			embeds: [embed],
+			components: [buttonsActionRow],
 		});
 
 		// 	if (!score || !score.user || !score.beatmapset || !score.beatmap)
