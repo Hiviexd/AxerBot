@@ -13,7 +13,7 @@ export default {
 		const labels = {
 			build: "Go to changelog",
 			news_post: "Go to news post",
-			beatmapset: "Go to beatmapset",
+			beatmapset: "Go to beatmap",
 		};
 
 		const buttons = new MessageActionRow();
@@ -24,23 +24,23 @@ export default {
 			url: comment.url,
 		});
 
-		function getFooter() {
-			if (comment.type == "Reply")
-				return `+${comment.votes} | Replying to ${comment.repliedAuthor?.username} | ${comment.title}`;
-
-			return `+${comment.votes} | ${comment.type} | ${comment.title}`;
-		}
-
 		const embed = new MessageEmbed({
 			author: {
 				name: comment.user.username,
 				iconURL: comment.user.avatar_url,
 				url: `https://osu.ppy.sh/users/${comment.user.id}`,
 			},
-			description: truncateString(comment.content, 2048),
+			title: `${
+				comment.type == "Comment"
+					? `💬 Comment`
+					: `🗨️ Reply ▶️ ${comment.repliedAuthor?.username}`
+			}`,
+			description: `**[${comment.title}](https://osu.ppy.sh/comments/${
+				comment.id
+			})**\n\n${truncateString(comment.content, 2048)}`,
 			color: comment.type == "Comment" ? colors.pink : colors.purple,
 			footer: {
-				text: getFooter(),
+				text: `+${comment.votes}`,
 			},
 			timestamp: new Date(comment.created_at),
 		});
@@ -60,7 +60,7 @@ export default {
 		const labels = {
 			build: "Go to changelog",
 			news_post: "Go to news post",
-			beatmapset: "Go to beatmapset",
+			beatmapset: "Go to beatmap",
 		};
 
 		const buttons = new MessageActionRow();
@@ -71,23 +71,23 @@ export default {
 			url: comment.url,
 		});
 
-		function getFooter() {
-			if (comment.type == "Reply")
-				return `+${comment.votes} | Replying to ${comment.repliedAuthor?.username} | ${comment.title}`;
-
-			return `+${comment.votes} | ${comment.type} | ${comment.title}`;
-		}
-
 		const embed = new MessageEmbed({
 			author: {
 				name: comment.user.username,
 				iconURL: comment.user.avatar_url,
 				url: `https://osu.ppy.sh/users/${comment.user.id}`,
 			},
-			description: truncateString(comment.content, 4096),
+			title: `${
+				comment.type == "Comment"
+					? `💬 Comment`
+					: `🗨️ Reply ▶️ ${comment.repliedAuthor?.username}`
+			}`,
+			description: `**[${comment.title}](https://osu.ppy.sh/comments/${
+				comment.id
+			})**\n\n${truncateString(comment.content, 2048)}`,
 			color: comment.type == "Comment" ? colors.pink : colors.purple,
 			footer: {
-				text: getFooter(),
+				text: `+${comment.votes}`,
 			},
 			timestamp: new Date(comment.created_at),
 		});
