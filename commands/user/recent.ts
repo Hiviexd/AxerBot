@@ -62,18 +62,18 @@ export default {
 				],
 			},
 			{
-				name: "include_fails",
-				description: "Include failed scores?",
-				type: ApplicationCommandOptionType.Boolean,
+				name: "passed",
+				description: "Include only passed scores?",
+				type: ApplicationCommandOptionType.Number,
 				max_value: 1,
 				choices: [
 					{
 						name: "yes",
-						value: true,
+						value: 0,
 					},
 					{
 						name: "no",
-						value: false,
+						value: 1,
 					},
 				],
 			},
@@ -85,8 +85,7 @@ export default {
 
 		const modeInput = command.options.get("mode");
 		const mode = modeInput ? modeInput.value?.toString() : undefined;
-		const includeFails =
-			command.options.getBoolean("include_fails") || false;
+		const passed = command.options.getNumber("passed") || 1;
 
 		let { playerName, status } = await checkCommandPlayers(command);
 
@@ -108,12 +107,6 @@ export default {
 				},
 			});
 
-		const recent = await osuApi.fetch.userRecent(
-			player.data.id.toString(),
-			includeFails,
-			mode
-		);
-
 		if (status != 200)
 			return command.editReply({
 				embeds: [UserNotFound],
@@ -121,6 +114,12 @@ export default {
 					repliedUser: false,
 				},
 			});
+
+		const recent = await osuApi.fetch.userRecent(
+			player.data.id.toString(),
+			passed,
+			mode
+		);
 
 		if (
 			!recent.data[0] ||
