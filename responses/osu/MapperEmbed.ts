@@ -99,7 +99,7 @@ export default {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},
 			color: usergroup.colour,
-			description: `*${user.data.title}*`,
+			description: user.data.title ? `*${user.data.title}*` : undefined,
 			fields: [
 				{
 					name: "Mapping for",
