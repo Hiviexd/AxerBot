@@ -2,7 +2,6 @@ import { Client, CommandInteraction, Message } from "discord.js";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import OpenBNsEmbed from "../../responses/qat/OpenBNsEmbed";
-import * as database from "./../../database";
 
 export default {
 	name: "openbns",
@@ -55,8 +54,6 @@ export default {
 			gamemode = gamemodeInput.value.toString();
 		}
 
-		const guild = await database.guilds.findOne({ _id: command.guildId }); //for prefix parsing in footer
-
 		const qatAllUsers = await qatApi.fetch.allUsers();
 
 		if (qatAllUsers.status != 200)
@@ -68,6 +65,6 @@ export default {
 				],
 			});
 
-		OpenBNsEmbed.reply(qatAllUsers, gamemode, command, guild);
+		OpenBNsEmbed.reply(qatAllUsers, gamemode, command);
 	},
 };
