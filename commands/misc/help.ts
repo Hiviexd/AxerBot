@@ -1,8 +1,5 @@
-import { Client, Message, MessageEmbed, CommandInteraction } from "discord.js";
-import sendCommandHelp from "../../helpers/core/sendCommandHelp";
+import { Client, MessageEmbed, CommandInteraction } from "discord.js";
 import { commands } from "./../";
-import CommandNotFound from "../../responses/embeds/CommandNotFound";
-import * as database from "./../../database";
 import colors from "./../../constants/colors";
 import generateErrorEmbed from "./../../helpers/text/embeds/generateErrorEmbed";
 
@@ -61,9 +58,9 @@ export default {
 			});
 
 			const embed = new MessageEmbed()
-				.setTitle("List of avaliable commands")
+				.setTitle("List of available commands")
 				.setDescription(
-					`Use \`/help\` \`<command>\` to see how a specific command works.!`
+					`Use \`/about\` to get more information about the bot.\nUse \`/help\` \`<command>\` to see how a specific command works.`
 				)
 				.setColor(colors.pink);
 

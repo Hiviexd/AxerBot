@@ -15,7 +15,7 @@ import sendmessage from "./management/sendMessage";
 import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
 import help from "./misc/help";
-import setprefix from "./management/setprefix";
+// import setprefix from "./management/setprefix";
 import cooldown from "./management/cooldown";
 import quotes from "./management/quotes";
 import logging from "./management/logging";
@@ -30,14 +30,14 @@ import verification from "./management/verification";
 import fact from "./fun/fact";
 import reminder from "./misc/reminder";
 import bn from "./BNsite/bn";
-import invite from "./misc/invite";
+import about from "./misc/about";
 import openbns from "./BNsite/openbns";
 import heardle from "./fun/heardle";
 import qattrack from "./BNsite/tracking";
 import osutimestamps from "./management/osuTimestamps";
 import editmessage from "./management/editMessage";
 import userlog from "./management/userLog";
-import { Client, CommandInteraction, Message } from "discord.js";
+import minesweeper from "./fun/minesweeper";
 
 export const commands: any = {
 	ping: ping,
@@ -72,11 +72,12 @@ export const commands: any = {
 	resetroles: resetRoles,
 	reminder: reminder,
 	bn: bn,
-	invite: invite,
+	about: about,
 	openbns: openbns,
 	heardle: heardle,
 	bntrack: qattrack,
 	osutimestamps: osutimestamps,
 	editmessage: editmessage,
 	userlog: userlog,
+	minesweeper: minesweeper,
 };
