@@ -1369,6 +1369,11 @@ discord-api-types@^0.37.10:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.10.tgz#d596ed7178f349009e6a9109de5724f11a1de157"
   integrity sha512-NvDh2Puc3wZQzQt2zLavlI5ewBnLFjI46/NJmvWIs6OC0JOkq7KcmH4s80X2+22mSQ3wUyge2mxq3cGYRT2noQ==
 
+discord.js-minesweeper@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/discord.js-minesweeper/-/discord.js-minesweeper-1.1.0.tgz#d77178b8e8111873da74a8c69dfd8e5a85e92f43"
+  integrity sha512-TpqgzIbX8Nw8L3mJCDqTTyhRKyJS0w3I6NKeiDC6CsI4FoqAueTPMa04F+xM+DbNnga7sD+UjqMoICw9VhGnfQ==
+
 discord.js-pagination@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/discord.js-pagination/-/discord.js-pagination-1.0.3.tgz#b637d9b547f6de0187c58b22ad07dc9e532583f2"

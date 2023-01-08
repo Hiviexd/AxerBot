@@ -7,8 +7,7 @@ export default {
 	reply: (
 		qatAllUsers: QatAllUsersResponse,
 		gamemode: string | undefined,
-		command: CommandInteraction,
-		guild: any
+		command: CommandInteraction
 	) => {
 		let openBNs: QatUser[] = [];
 

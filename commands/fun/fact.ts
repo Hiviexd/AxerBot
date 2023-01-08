@@ -1,7 +1,6 @@
 import { Client, MessageEmbed, CommandInteraction } from "discord.js";
 import colors from "../../constants/colors";
 import axios from "axios";
-import * as database from "./../../database";
 
 export default {
 	name: "fact",
@@ -35,8 +34,6 @@ export default {
 	category: "fun",
 	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
 		await command.deferReply();
-
-		const guild = await database.guilds.findOne({ _id: command.guildId });
 
 		let type = command.options.get("type")
 			? command.options.get("type")?.value
