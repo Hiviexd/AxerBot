@@ -63,7 +63,7 @@ export default {
 			return command.editReply({
 				embeds: [
 					generateErrorEmbed(
-						"Failed to fetch all users from the QAT website"
+						"Failed to fetch all users from the BN website"
 					),
 				],
 			});
