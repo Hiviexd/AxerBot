@@ -52,7 +52,7 @@ export default {
 			author: {
 				name: `${user.data.username} | ${decorator.title}`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			},
 		});
 
@@ -109,7 +109,7 @@ export default {
 			author: {
 				name: `${user.data.username} | ${decorator.title}`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			},
 		});
 

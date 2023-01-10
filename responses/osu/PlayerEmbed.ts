@@ -43,7 +43,7 @@ export default {
 					author: {
 						url: `https://osu.ppy.sh/u/${user.data.id}`,
 						name: `${user.data.username} • osu!${modesList[mode]} player info`,
-						iconURL: usergroup.icon,
+						iconURL: usergroup.icon ? usergroup.icon : undefined,
 					},
 					thumbnail: {
 						url: `https://a.ppy.sh/${user.data.id}`,
@@ -172,7 +172,7 @@ export default {
 			author: {
 				url: `https://osu.ppy.sh/u/${user.data.id}`,
 				name: `${user.data.username} • osu!${modesList[mode]} player info`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			},
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,

@@ -29,7 +29,7 @@ export default {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},
 			color: usergroup.colour,
-			description: `*${user.data.title}*`,
+			description: user.data.title ? `*${user.data.title}*` : undefined,
 			fields: [
 				{
 					name: "Mapping for",
@@ -69,7 +69,7 @@ export default {
 			author: {
 				name: `${user.data.username} • mapper info`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			},
 			image: {
 				url: beatmaps.data.last.covers["cover@2x"],
@@ -139,7 +139,7 @@ export default {
 			author: {
 				name: `${user.data.username} • mapper info`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			},
 			image: {
 				url: beatmaps.data.last.covers["cover@2x"],
