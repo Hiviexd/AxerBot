@@ -53,7 +53,7 @@ export default {
 					qatUser.data.natDuration ? "/NAT" : ""
 				} info`,
 				url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
-				iconURL: usergroup.icon,
+				iconURL: usergroup.icon ? usergroup.icon : undefined,
 			})
 			.setThumbnail(osuUser.data.avatar_url)
 			.setColor(usergroup.colour)

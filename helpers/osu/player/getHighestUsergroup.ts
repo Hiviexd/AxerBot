@@ -32,7 +32,7 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173794832414/nat2.png",
 			colour: "#eb8c47",
 		},
-        FA: {
+		FA: {
 			index: 5,
 			name: "Featured Artist",
 			colour: "#00ffff",
@@ -65,12 +65,12 @@ export default function parseUsergroup(mapper: User): EmbededUserGroup {
 			icon: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
 			colour: "#ffd1dc",
 		},
-        BSC: {
-            index: 9,
-            name: "Beatmap Spotlight Curator",
-            icon: "https://media.discordapp.net/attachments/959908232736952420/1037829623142174811/bsc.png",
-            colour: "#76AEBC",
-        },
+		BSC: {
+			index: 9,
+			name: "Beatmap Spotlight Curator",
+			icon: "https://media.discordapp.net/attachments/959908232736952420/1037829623142174811/bsc.png",
+			colour: "#76AEBC",
+		},
 		BOT: {
 			index: 10,
 			name: "BOT",
