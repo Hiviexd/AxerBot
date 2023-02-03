@@ -133,6 +133,13 @@ export default {
 			.setStyle("LINK")
 			.setURL(`https://osu.ppy.sh/users/${beatmapset.creator}`);
 
+		const staticOsuDirectButton = new MessageButton()
+			.setStyle("LINK")
+			.setLabel("osu!direct")
+			.setURL(
+				`https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[selectedDifficultyIndex].id}`
+			);
+
 		const staticQuickDownloadButton = new MessageButton({
 			type: "BUTTON",
 			style: "SECONDARY",
