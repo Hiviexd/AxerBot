@@ -51,14 +51,5 @@ export default async (
 				message
 			);
 		}
-
-		if (interaction) {
-			BeatmapsetEmbed.reply(
-				chart.beatmapset.data,
-				data.beatmap_id,
-				interaction,
-				data.mode
-			);
-		}
 	}
 };
