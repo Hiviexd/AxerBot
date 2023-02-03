@@ -1,5 +1,6 @@
 import {
 	ButtonInteraction,
+	InteractionCollector,
 	Message,
 	MessageActionRow,
 	MessageButton,
@@ -307,38 +308,36 @@ export default {
 			}
 		}
 
-		const collector = message.client.on(
-			"interactionCreate",
-			(interaction) => {
-				console.log(interaction.id);
-				if (!interaction.isButton() || !beatmapset.beatmaps) return;
+		const interactionCollector = new InteractionCollector(message.client, {
+			channel: message.channel,
+			time: 60000,
+			filter: (i: ButtonInteraction) => i.user.id == message.author.id,
+		});
 
-				const handshake = interaction.customId.split("|")[0];
+		interactionCollector.on("collect", (interaction) => {
+			if (!interaction.isButton() || !beatmapset.beatmaps) return;
 
-				if (handshake != handshakeId) return;
+			const handshake = interaction.customId.split("|")[0];
 
-				const action = interaction.customId.split("|")[1];
+			if (handshake != handshakeId) return;
 
-				try {
-					interaction.deferUpdate();
-				} catch (e) {
-					void {};
-				}
+			const action = interaction.customId.split("|")[1];
 
-				if (
-					action == "skip" &&
-					selectedDifficultyIndex + 1 < beatmapset.beatmaps.length
-				)
-					return selectDifficulty(true, interaction);
-
-				if (action == "back" && selectedDifficultyIndex > 0)
-					return selectDifficulty(false, interaction);
+			try {
+				interaction.deferUpdate();
+			} catch (e) {
+				void {};
 			}
-		);
 
-		setTimeout(() => {
-			collector.destroy();
-		}, 60000);
+			if (
+				action == "skip" &&
+				selectedDifficultyIndex + 1 < beatmapset.beatmaps.length
+			)
+				return selectDifficulty(true, interaction);
+
+			if (action == "back" && selectedDifficultyIndex > 0)
+				return selectDifficulty(false, interaction);
+		});
 
 		message.reply({
 			embeds: [embed],
