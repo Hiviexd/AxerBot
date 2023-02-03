@@ -150,6 +150,7 @@ export default {
 
 		staticButtonsRow.addComponents(
 			staticMapperProfileButton,
+			staticOsuDirectButton,
 			staticQuickDownloadButton
 		);
 
