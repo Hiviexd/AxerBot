@@ -17,6 +17,7 @@ export default {
 			addPrivateRoles(interaction);
 
 			if (
+				(interaction as ButtonInteraction).customId &&
 				(interaction as ButtonInteraction).customId.includes(
 					"handlerIgnore"
 				)
