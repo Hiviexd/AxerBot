@@ -7,6 +7,7 @@ import guild from "./schemas/guild";
 import user from "./schemas/user";
 import heardle from "./schemas/heardle";
 import track from "./schemas/track";
+import addScoreEmbedConfiguration from "./migrations/addScoreEmbedConfiguration";
 
 consoleLog("database", "Starting database connection...");
 
@@ -21,9 +22,10 @@ mongoose.connect(
 
 		consoleCheck("database", "Database connected!");
 
-        //! Migrations
+		//! Migrations
 		// addBNsiteToCooldown();
-        //addButtonToGuildVerification()
+		//addButtonToGuildVerification()
+		//addScoreEmbedConfiguration();
 	}
 );
 

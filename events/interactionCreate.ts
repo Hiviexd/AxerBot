@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { ButtonInteraction, Client } from "discord.js";
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 import commandHandler from "../helpers/core/commandHandler";
@@ -15,6 +15,13 @@ export default {
 	execute(bot: Client) {
 		bot.on("interactionCreate", async (interaction) => {
 			addPrivateRoles(interaction);
+
+			if (
+				(interaction as ButtonInteraction).customId.includes(
+					"handlerIgnore"
+				)
+			)
+				return;
 
 			if (interaction.isButton()) {
 				if (!interaction.customId.includes("beatmap_download")) {

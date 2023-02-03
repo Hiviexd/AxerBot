@@ -5,11 +5,13 @@ import {
 	beatmapsetDiscussionVotes,
 	download,
 	featuredBeatmapsets,
+	osuFile,
 	userBeatmaps,
 } from "./beatmap";
 import { user, userRecent } from "./user";
 import { comment } from "./comment";
 import { fetchBeatmapEvents } from "./qat";
+import { downloadUnofficialReplay } from "./downloader/replay/downloadUnofficialReplay";
 
 export default {
 	fetch: {
@@ -23,8 +25,10 @@ export default {
 		userBeatmaps: userBeatmaps,
 		userRecent: userRecent,
 		comment: comment,
+		osuFile: osuFile,
 	},
 	download: {
 		beatmapset: download,
+		unofficialReplay: downloadUnofficialReplay,
 	},
 };

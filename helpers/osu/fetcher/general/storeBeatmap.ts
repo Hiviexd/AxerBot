@@ -4,7 +4,7 @@ import { Beatmapset, BeatmapsetCompact } from "../../../../types/beatmap";
 export default async (
 	beatmap_file: any,
 	beatmapset: BeatmapsetCompact | Beatmapset,
-	interaction: ButtonInteraction
+	interaction: ButtonInteraction | Message
 ) => {
 	let big = false;
 	const beatmap_attachment = new MessageAttachment(
@@ -32,7 +32,7 @@ export default async (
 
 		try {
 			const m = await cache_channel.send({
-				content: `Requested by ${interaction.user.tag} (${interaction.user.id})\nGuild: ${interaction.guild?.name}`,
+				content: `Requested by ${interaction.member?.user.username}#${interaction.member?.user.discriminator} (${interaction.member?.user.id})\nGuild: ${interaction.guild?.name}`,
 				files: [beatmap_attachment],
 			});
 

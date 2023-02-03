@@ -6,6 +6,8 @@ import parseDiscussionPost from "./parseDiscussionPost";
 import parseBeatmap from "./parseBeatmap";
 import osuTimestamp from "../../text/osuTimestamp";
 import parseComment from "./parseComment";
+import { SendScoreEmbed } from "responses/osu/ScoreEmbed";
+import { parseScoreURL } from "./parseScoreURL";
 
 export default async (message: Message) => {
 	if (message.author.bot) return;
@@ -37,8 +39,8 @@ export default async (message: Message) => {
 
 		// ? User link
 		if (url.pathname.includes("users")) {
-			if ((guild.embeds.player.all &&
-					!guild.embeds.player.none) ||
+			if (
+				(guild.embeds.player.all && !guild.embeds.player.none) ||
 				guild.embeds.player.channels.includes(message.channelId)
 			) {
 				return parseUser(arg, message);
@@ -50,8 +52,8 @@ export default async (message: Message) => {
 			url.pathname.includes("beatmapsets") &&
 			!url.pathname.includes("discussion")
 		) {
-			if ((guild.embeds.beatmap.all &&
-					!guild.embeds.beatmap.none) ||
+			if (
+				(guild.embeds.beatmap.all && !guild.embeds.beatmap.none) ||
 				guild.embeds.beatmap.channels.includes(message.channelId)
 			) {
 				return parseBeatmap(arg, message);
@@ -63,7 +65,8 @@ export default async (message: Message) => {
 			url.pathname.includes("discussion") &&
 			!url.pathname.includes("reviews")
 		) {
-			if ((guild.embeds.discussion.all &&
+			if (
+				(guild.embeds.discussion.all &&
 					!guild.embeds.discussion.none) ||
 				guild.embeds.discussion.channels.includes(message.channelId)
 			) {
@@ -73,16 +76,27 @@ export default async (message: Message) => {
 
 		// ? Comment link
 		if (url.pathname.includes("comments")) {
-			if ((guild.embeds.comment.all &&
-					!guild.embeds.comment.none) ||
+			if (
+				(guild.embeds.comment.all && !guild.embeds.comment.none) ||
 				guild.embeds.comment.channels.includes(message.channelId)
 			) {
 				return parseComment(arg, message);
 			}
 		}
+
+		if (url.pathname.includes("scores")) {
+			if (
+				(guild.embeds.scores &&
+					guild.embeds.scores.all &&
+					!guild.embeds.scores.none) ||
+				guild.embeds.scores.channels.includes(message.channelId)
+			) {
+				return parseScoreURL(url);
+			}
+		}
 	}
 
 	links.forEach((link) => {
-		validateArg(link.toLowerCase())
+		validateArg(link.toLowerCase());
 	});
 };

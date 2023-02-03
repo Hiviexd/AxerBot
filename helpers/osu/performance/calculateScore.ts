@@ -6,6 +6,7 @@ import { getRulesetById } from "./getRuleset";
 import { Score } from "../../../types/score";
 import { getTotalHits } from "./calculateHits";
 import { GameMode } from "../../../types/game_mode";
+import { ScoreCalculator } from '@kionell/osu-pp-calculator'
 
 interface ScorePerformance {
 	pp: number;

@@ -174,6 +174,34 @@ export async function featuredBeatmapsets(page?: number): Promise<{
 	}
 }
 
+export async function osuFile(beatmap_id: number | string): Promise<{
+	status: number;
+	data: string;
+}> {
+	try {
+		consoleLog("beatmap fetcher", `Fetching osu file for ${beatmap_id}`);
+
+		const req = await axios(`https://osu.ppy.sh/osu/${beatmap_id}`);
+
+		const res = req.data;
+
+		consoleCheck("beatmap fetcher", `Osu file for ${beatmap_id} found!`);
+
+		return {
+			status: 200,
+			data: res,
+		};
+	} catch (e: any) {
+		consoleError("beatmap fetcher", "Wtf an error:");
+		console.error(e);
+
+		return {
+			status: 500,
+			data: e,
+		};
+	}
+}
+
 export async function beatmapsetDiscussionPost(
 	post_id: string,
 	type: string

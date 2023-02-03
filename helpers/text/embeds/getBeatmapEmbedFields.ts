@@ -10,21 +10,9 @@ export default (
 	beatmap: Beatmap,
 	mode: GameModeName,
 	parsed: IBeatmap,
-	attributes: DifficultyAttributes,
+	attributes: DifficultyAttributes
 ) => {
-	const bpmMin = parsed.bpmMin.toFixed(0);
-	const bpmMax = parsed.bpmMax.toFixed(0);
-	const bpmMode = parsed.bpmMode.toFixed(0);
-	const bpm = bpmMin === bpmMax 
-		? bpmMode 
-		: `(Min: ${bpmMin} / Max: ${bpmMax})`;
-
-	const description = [
-		`SR: \`${beatmap.difficulty_rating.toFixed(2)}\``,
-		`Combo: \`${attributes.maxCombo}\``,
-		`Length: \`${timeString(beatmap.total_length)}\``,
-		`BPM: \`${bpm}\``,
-	];
+	const description = [];
 
 	switch (mode) {
 		case "osu": {
@@ -34,13 +22,9 @@ export default (
 				`OD: \`${difficulty.overallDifficulty.toFixed(1)}\``
 			);
 
-			description.push(
-				`HP: \`${difficulty.drainRate.toFixed(1)}\``)
-			; 
+			description.push(`HP: \`${difficulty.drainRate.toFixed(1)}\``);
 
-			description.push(
-				`AR: \`${difficulty.approachRate.toFixed(1)}\``)
-			; 
+			description.push(`AR: \`${difficulty.approachRate.toFixed(1)}\``);
 
 			description.push(
 				`CS: \`${parsed.difficulty.circleSize.toFixed(1)}\``
@@ -52,7 +36,7 @@ export default (
 
 			description.push(
 				`Speed Strain: \`${difficulty.speedDifficulty.toFixed(2)}\``
-				);
+			);
 
 			break;
 		}
@@ -66,7 +50,7 @@ export default (
 
 			description.push(
 				`HP: \`${parsed.difficulty.drainRate.toFixed(1)}\``
-			); 
+			);
 
 			description.push(
 				`Stamina Strain: \`${difficulty.staminaDifficulty.toFixed(2)}\``
@@ -96,11 +80,9 @@ export default (
 
 			description.push(
 				`HP: \`${parsed.difficulty.drainRate.toFixed(1)}\``
-			); 
+			);
 
-			description.push(
-				`AR: \`${difficulty.approachRate.toFixed(1)}\``
-			); 
+			description.push(`AR: \`${difficulty.approachRate.toFixed(1)}\``);
 
 			description.push(
 				`CS: \`${parsed.difficulty.circleSize.toFixed(1)}\``
@@ -122,5 +104,5 @@ export default (
 		}
 	}
 
-	return description.join(' ');
+	return description.join("\n");
 };

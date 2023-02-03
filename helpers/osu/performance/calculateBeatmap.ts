@@ -5,7 +5,7 @@ import { createBeatmapInfo } from "./createBeatmapInfo";
 import { calculateAccuracy } from "./calculateAccuracy";
 import { getRulesetById } from "./getRuleset";
 
-interface BeatmapCalculationResult {
+export interface BeatmapCalculationResult {
 	beatmap: RulesetBeatmap;
 	difficulty: DifficultyAttributes;
 	performance: BeatmapPerformance[];

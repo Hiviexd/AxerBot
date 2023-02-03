@@ -1,30 +1,30 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add discord.js/typings/enums
+  C:\Program Files\nodejs\node.exe C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @types/osu-pp-calculator
 
 PATH: 
-  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Git\cmd;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\dotnet\;C:\Program Files\nodejs\;C:\Users\Sebola\AppData\Local\Microsoft\WindowsApps;;C:\Users\Sebola\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Sebola\.dotnet\tools;C:\Users\Sebola\AppData\Local\Programs\Fiddler;C:\Users\Sebola\AppData\Roaming\npm
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Git\cmd;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;C:\Program Files\nodejs\;C:\Users\Sebola\AppData\Local\Microsoft\WindowsApps;;C:\Users\Sebola\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Sebola\.dotnet\tools;C:\Users\Sebola\AppData\Local\Programs\Fiddler;C:\Users\Sebola\AppData\Roaming\npm
 
 Yarn version: 
   1.22.19
 
 Node version: 
-  19.3.0
+  16.19.0
 
 Platform: 
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/discord.js%2ftypings/enums: Request "https://registry.yarnpkg.com/discord.js%2ftypings/enums" returned a 405
-      at params.callback [as _callback] (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66154:18)
-      at self.callback (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
+  Error: https://registry.yarnpkg.com/@types%2fosu-pp-calculator: Not found
+      at Request.params.callback [as _callback] (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66145:18)
+      at Request.self.callback (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
       at Request.emit (node:events:513:28)
       at Request.<anonymous> (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141862:10)
       at Request.emit (node:events:513:28)
       at IncomingMessage.<anonymous> (C:\Users\Sebola\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141784:12)
       at Object.onceWrapper (node:events:627:28)
       at IncomingMessage.emit (node:events:525:35)
-      at endReadableNT (node:internal/streams/readable:1359:12)
-      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+      at endReadableNT (node:internal/streams/readable:1358:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
 
 npm manifest: 
   {
@@ -34,6 +34,7 @@ npm manifest:
   	"main": "index.ts",
   	"dependencies": {
   		"@discordjs/rest": "^0.5.0",
+  		"@kionell/osu-pp-calculator": "^3.2.9",
   		"@types/express": "^4.17.13",
   		"@types/moment": "^2.13.0",
   		"@types/mongoose": "^5.11.97",
@@ -51,6 +52,7 @@ npm manifest:
   		"delayed-stream": "^1.0.0",
   		"discord-api-types": "^0.37.10",
   		"discord.js": "13.8.1",
+  		"discord.js-minesweeper": "^1.1.0",
   		"discord.js-pagination": "^1.0.3",
   		"dot-prop": "^6.0.1",
   		"dotenv": "^16.0.0",
@@ -473,6 +475,11 @@ Lockfile:
     dependencies:
       "@jridgewell/resolve-uri" "^3.0.3"
       "@jridgewell/sourcemap-codec" "^1.4.10"
+  
+  "@kionell/osu-pp-calculator@^3.2.9":
+    version "3.2.9"
+    resolved "https://registry.yarnpkg.com/@kionell/osu-pp-calculator/-/osu-pp-calculator-3.2.9.tgz#c9b6321f542f9bd1c5620c03369d727461a64f82"
+    integrity sha512-/A9qHZKIP5iotJRj6NheurQsHzJC3NfnXIP9mDlQkIw2RD5hUdGqRt6sZbVdao/WyE/lKB2C1rLz8MYYDCM0aw==
   
   "@mapbox/node-pre-gyp@^1.0.0":
     version "1.0.10"
@@ -1490,6 +1497,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.10.tgz#d596ed7178f349009e6a9109de5724f11a1de157"
     integrity sha512-NvDh2Puc3wZQzQt2zLavlI5ewBnLFjI46/NJmvWIs6OC0JOkq7KcmH4s80X2+22mSQ3wUyge2mxq3cGYRT2noQ==
   
+  discord.js-minesweeper@^1.1.0:
+    version "1.1.0"
+    resolved "https://registry.yarnpkg.com/discord.js-minesweeper/-/discord.js-minesweeper-1.1.0.tgz#d77178b8e8111873da74a8c69dfd8e5a85e92f43"
+    integrity sha512-TpqgzIbX8Nw8L3mJCDqTTyhRKyJS0w3I6NKeiDC6CsI4FoqAueTPMa04F+xM+DbNnga7sD+UjqMoICw9VhGnfQ==
+  
   discord.js-pagination@^1.0.3:
     version "1.0.3"
     resolved "https://registry.yarnpkg.com/discord.js-pagination/-/discord.js-pagination-1.0.3.tgz#b637d9b547f6de0187c58b22ad07dc9e532583f2"
@@ -2236,6 +2248,11 @@ Lockfile:
     dependencies:
       buffer "^6.0.3"
       lzma-js-simple "^1.1.0"
+  
+  osu-pp-calculator@^0.1.7:
+    version "0.1.7"
+    resolved "https://registry.yarnpkg.com/osu-pp-calculator/-/osu-pp-calculator-0.1.7.tgz#433e528958168981fdf509f4b6bf5d3d09669924"
+    integrity sha512-PbzAVfgTLQ7zNiD9o05XPLk10H5EA2PHGhj+KCfCOtFCKxUywSQVtYPrzdEBOUQe2ihT9x6iJNlPpxB6OqzVNA==
   
   osu-standard-stable@^4.0.1:
     version "4.0.1"

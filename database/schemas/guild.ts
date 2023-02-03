@@ -62,6 +62,11 @@ export default new Schema({
 				none: false,
 				channels: [],
 			},
+			scores: {
+				all: true,
+				none: false,
+				channels: [],
+			},
 		},
 	},
 	channels: {

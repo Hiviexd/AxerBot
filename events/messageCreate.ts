@@ -3,6 +3,7 @@ import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 import commandHandler from "../helpers/core/commandHandler";
 import checkModhubURL from "../helpers/modhub/url/checkModhubURL";
+import { checkOsuAttachment } from "../helpers/osu/file/checkOsuAttachment";
 // import osuURL from "../utils/messages/osuURLmanager";
 
 export default {
@@ -13,9 +14,13 @@ export default {
 			if (message.channel.type === "DM") return;
 			if (!message.guild) return;
 
-            const validChannelTypes = ["GUILD_TEXT", "GUILD_NEWS", "GUILD_VOICE"];
+			const validChannelTypes = [
+				"GUILD_TEXT",
+				"GUILD_NEWS",
+				"GUILD_VOICE",
+			];
 
-            if (!validChannelTypes.includes(message.channel.type)) return;
+			if (!validChannelTypes.includes(message.channel.type)) return;
 
 			const botAsMember = message.guild.members.cache.get(
 				bot.user?.id || ""
@@ -51,6 +56,7 @@ export default {
 			sendQuotes(message, bot);
 			checkOsuURL(message);
 			checkModhubURL(message);
+			// checkOsuAttachment(message); disabled cuz my brain sucks
 		});
 	},
 };
