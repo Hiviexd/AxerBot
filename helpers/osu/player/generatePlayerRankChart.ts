@@ -1,5 +1,5 @@
 import { createCanvas, loadImage } from "canvas";
-import { Chart } from "chart.js";
+import { Chart, ChartItem } from "chart.js";
 import { User, UserBadge } from "../../../types/user";
 import jimp from "jimp";
 import axios from "axios";
@@ -25,7 +25,7 @@ export default async (user: User, color: string): Promise<any> => {
 	}
 
 	const labels: any = new Array(parsed_raw.length).fill("");
-	const myChart = new Chart(ctx, {
+	const myChart = new Chart(ctx as unknown as CanvasRenderingContext2D, {
 		type: "line",
 		data: {
 			labels: labels,
