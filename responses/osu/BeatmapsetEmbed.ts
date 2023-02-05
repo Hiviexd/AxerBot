@@ -5,6 +5,8 @@ import {
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
+	MessageSelectMenu,
+	SelectMenuInteraction,
 } from "discord.js";
 
 import {
@@ -19,8 +21,43 @@ import colors from "../../constants/colors";
 import { validateArrayIndex } from "../../helpers/general/validateArrayIndex";
 import timeString from "../../helpers/text/timeString";
 import crypto from "crypto";
-import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import moment from "moment";
+
+const mods = [
+	{ name: "EZ", emoji: "1071874648112910436" },
+	{ name: "NF", emoji: "1071874650801459220" },
+	{ name: "HT", emoji: "1071874652214931586" },
+	{ name: "HR", emoji: "1071874637799108719" },
+	{ name: "DT", emoji: "1071874639543943248" },
+	{ name: "HD", emoji: "1071874641804660757" },
+	{ name: "FL", emoji: "1071874645898309683" },
+];
+
+function getModsSelector(handshakeId: string, selectedMods: string[]) {
+	const selector = new MessageSelectMenu()
+		.setCustomId(`${handshakeId}|mods|handlerIgnore`)
+		.setPlaceholder("Mod selector")
+		.setMinValues(0)
+		.setMaxValues(5);
+
+	for (const mod of mods) {
+		selector.addOptions({
+			label: mod.name,
+			value: mod.name,
+			emoji: mod.emoji,
+			default: selectedMods.includes(mod.name),
+		});
+	}
+
+	return selector;
+}
+
+function getModsEmojis(selected: string[]) {
+	return selected
+		.map((mod) => `<:${mod}:${mods.find((m) => m.name == mod)?.emoji}>`)
+		.filter((m) => !m.includes("undefined"))
+		.join("");
+}
 
 export default {
 	send: async (
@@ -36,6 +73,7 @@ export default {
 		);
 
 		const handshakeId = crypto.randomUUID();
+		let mods = ["NM"];
 
 		let selectedDifficultyIndex = beatmap_id
 			? validateArrayIndex(
@@ -46,14 +84,18 @@ export default {
 			: 0;
 
 		const embed = new MessageEmbed();
+		let modsSelector = new MessageActionRow().setComponents(
+			getModsSelector(handshakeId, mods)
+		);
 
-		const beatmapDifficulty = calculateBeatmap(
+		let beatmapDifficulty = calculateBeatmap(
 			(
 				await osuApi.fetch.osuFile(
 					beatmapset.beatmaps[selectedDifficultyIndex].id
 				)
 			).data,
-			beatmapset.beatmaps[selectedDifficultyIndex].mode_int
+			beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
+			mods.join("")
 		);
 
 		const status_icons: any = {
@@ -70,6 +112,8 @@ export default {
 				"https://media.discordapp.net/attachments/959908232736952420/961745250672603146/pending.png",
 		};
 
+		console.log(mods);
+
 		embed.setTitle(`${beatmapset.artist} - ${beatmapset.title}`);
 		embed.setColor(colors.pink);
 		embed.setURL(getURL());
@@ -79,11 +123,15 @@ export default {
 		}),
 			embed.setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.id}l.jpg`);
 		embed.setDescription(
-			`⭐ **Star Rating**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
+			`⭐ **SR**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
 				2
 			)}\` | 🕒 **Duration**: \`${timeString(
 				beatmapset.beatmaps[selectedDifficultyIndex].total_length
-			)}\` | 🎵 **BPM**: \`${getBPMString(beatmapDifficulty)}\``
+			)}\` | 🎵 **BPM**: \`${getBPMString(
+				beatmapDifficulty
+			)}\` | **Mods**: ${
+				mods.includes("NM") ? "None" : getModsEmojis(mods)
+			}`
 		);
 		embed.setFields(
 			{
@@ -215,20 +263,42 @@ export default {
 
 		async function selectDifficulty(
 			sum: boolean,
-			interaction?: ButtonInteraction
+			interaction?: ButtonInteraction | SelectMenuInteraction,
+			refresh?: boolean
 		) {
 			if (!beatmapset.beatmaps) return;
 
-			sum
-				? (selectedDifficultyIndex += 1)
-				: (selectedDifficultyIndex -= 1);
+			if (!refresh) {
+				sum
+					? (selectedDifficultyIndex += 1)
+					: (selectedDifficultyIndex -= 1);
+			}
+
+			beatmapDifficulty = calculateBeatmap(
+				(
+					await osuApi.fetch.osuFile(
+						beatmapset.beatmaps[selectedDifficultyIndex].id
+					)
+				).data,
+				beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
+				false,
+				mods.join("")
+			);
+
+			new MessageActionRow().setComponents(
+				getModsSelector(handshakeId, mods)
+			);
 
 			embed.setDescription(
-				`⭐ **Star Rating**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
+				`⭐ **SR**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
 					2
 				)}\` | 🕒 **Duration**: \`${timeString(
 					beatmapset.beatmaps[selectedDifficultyIndex].total_length
-				)}\` | 🎵 **BPM**: \`${getBPMString(beatmapDifficulty)}\``
+				)}\` | 🎵 **BPM**: \`${getBPMString(
+					beatmapDifficulty
+				)}\` | **Mods**: ${
+					mods.includes("NM") ? "None" : getModsEmojis(mods)
+				}`
 			);
 
 			embed.setFields(
@@ -300,7 +370,11 @@ export default {
 
 				msg.edit({
 					embeds: [embed],
-					components: [staticButtonsRow, embedButtonsRow],
+					components: [
+						staticButtonsRow,
+						modsSelector,
+						embedButtonsRow,
+					],
 					allowedMentions: {
 						repliedUser: false,
 					},
@@ -311,37 +385,63 @@ export default {
 		const interactionCollector = new InteractionCollector(message.client, {
 			channel: message.channel,
 			time: 60000,
-			filter: (i: ButtonInteraction) => i.user.id == message.author.id,
+			filter: (i: ButtonInteraction | SelectMenuInteraction) =>
+				i.user.id == message.author.id,
 		});
 
 		interactionCollector.on("collect", (interaction) => {
-			if (!interaction.isButton() || !beatmapset.beatmaps) return;
+			if (!beatmapset.beatmaps) return;
 
-			const handshake = interaction.customId.split("|")[0];
+			if (interaction.isButton()) {
+				const handshake = interaction.customId.split("|")[0];
 
-			if (handshake != handshakeId) return;
+				if (handshake != handshakeId) return;
 
-			const action = interaction.customId.split("|")[1];
+				const action = interaction.customId.split("|")[1];
 
-			try {
-				interaction.deferUpdate();
-			} catch (e) {
-				void {};
+				try {
+					interaction.deferUpdate();
+				} catch (e) {
+					void {};
+				}
+
+				if (
+					action == "skip" &&
+					selectedDifficultyIndex + 1 < beatmapset.beatmaps.length
+				)
+					return selectDifficulty(true, interaction);
+
+				if (action == "back" && selectedDifficultyIndex > 0)
+					return selectDifficulty(false, interaction);
 			}
 
-			if (
-				action == "skip" &&
-				selectedDifficultyIndex + 1 < beatmapset.beatmaps.length
-			)
-				return selectDifficulty(true, interaction);
+			if (interaction.isSelectMenu()) {
+				const handshake = interaction.customId.split("|")[0];
 
-			if (action == "back" && selectedDifficultyIndex > 0)
-				return selectDifficulty(false, interaction);
+				if (handshake != handshakeId) return;
+
+				try {
+					interaction.deferUpdate();
+				} catch (e) {
+					void {};
+				}
+
+				mods =
+					interaction.values.length == 0
+						? ["NM"]
+						: interaction.values;
+
+				modsSelector = new MessageActionRow().setComponents(
+					getModsSelector(handshakeId, interaction.values)
+				);
+
+				selectDifficulty(true, interaction, true);
+			}
 		});
 
 		message.reply({
 			embeds: [embed],
-			components: [staticButtonsRow, embedButtonsRow],
+			components: [staticButtonsRow, modsSelector, embedButtonsRow],
 			allowedMentions: {
 				repliedUser: false,
 			},

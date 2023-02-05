@@ -30,6 +30,7 @@
 		"express": "^4.17.2",
 		"is-obj": "^2.0.0",
 		"jimp": "^0.16.1",
+		"konva": "^8.4.2",
 		"lodash": "^4.17.21",
 		"lodash.isequal": "^4.5.0",
 		"markdown-js": "^0.0.4",

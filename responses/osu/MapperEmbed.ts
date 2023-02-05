@@ -5,10 +5,12 @@ import {
 	ContextMenuInteraction,
 	Interaction,
 	Message,
+	MessageAttachment,
 	MessageEmbed,
 } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
+import { generateBeatmapsetCover } from "../../helpers/osu/beatmaps/generateBeatmapCover";
 
 export default {
 	send: (
@@ -94,6 +96,14 @@ export default {
 			Number(user.data.pending_beatmapset_count) +
 			Number(user.data.graveyard_beatmapset_count);
 
+		const bgImage = new MessageAttachment(
+			await generateBeatmapsetCover(
+				beatmaps.data.last,
+				interaction.client
+			),
+			"test.png"
+		);
+
 		let e = new MessageEmbed({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
@@ -139,16 +149,18 @@ export default {
 			author: {
 				name: `${user.data.username} • mapper info`,
 				url: `https://osu.ppy.sh/users/${user.data.id}`,
-				iconURL: usergroup.icon ? usergroup.icon : undefined,
+				icon_url: usergroup.icon ? usergroup.icon : "",
 			},
 			image: {
-				url: beatmaps.data.last.covers["cover@2x"],
+				// url: beatmaps.data.last.covers["cover@2x"],
+				url: `attachment://test.png`,
 			},
 		});
 
 		interaction
 			.editReply({
 				embeds: [e],
+				files: [bgImage],
 			})
 			.catch(console.error);
 	},
