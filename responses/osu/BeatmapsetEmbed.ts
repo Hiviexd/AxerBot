@@ -281,7 +281,6 @@ export default {
 					)
 				).data,
 				beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
-				false,
 				mods.join("")
 			);
 
