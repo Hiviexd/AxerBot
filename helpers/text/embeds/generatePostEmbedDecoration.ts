@@ -33,7 +33,7 @@ export default (
 			emoji: "💔",
 		},
 		nomination_reset: {
-			name: "Disqualify",
+			name: "Nomination Reset",
 			emoji: "🗯️",
 		},
 		problem: {
