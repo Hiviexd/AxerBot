@@ -1,3 +1,4 @@
+import { QatEvent } from "types/qat";
 import {
 	BeatmapsetDiscussionPost,
 	BeatmapsetDiscussionPostCompact,
@@ -7,6 +8,7 @@ import { DiscussionAttributtes } from "../../osu/url/getTargetDiscussionPost";
 export default (
 	raw_posts: BeatmapsetDiscussionPost,
 	post: DiscussionAttributtes,
+	qatData: QatEvent | undefined,
 	post_filter_types: string
 ) => {
 	const post_types: any = {
@@ -17,6 +19,22 @@ export default (
 		hype: {
 			name: "Hype",
 			emoji: "<:hype:957733964712394812>",
+		},
+		nominate: {
+			name: "Nomination",
+			emoji: "💭",
+		},
+		qualify: {
+			name: "Qualify",
+			emoji: "❤️",
+		},
+		disqualify: {
+			name: "Disqualify",
+			emoji: "💔",
+		},
+		nomination_reset: {
+			name: "Disqualify",
+			emoji: "🗯️",
 		},
 		problem: {
 			name: "Problem",
@@ -48,11 +66,24 @@ export default (
 	const colors: any = {
 		suggestion: "#c6a132",
 		problem: "#c33c33",
+		qualify: "#ff4b63",
+		disqualify: "#ff4b63",
 		hype: "#3399cc",
 		praise: "#3399cc",
+		nominate: "#3399cc",
+		nomination_reset: "#3399cc",
 		resolved: "#80cc33",
 		mapper_note: "#6851b6",
 	};
+
+	if (qatData) {
+		return {
+			color: colors[qatData.type],
+			title: `${post_types[qatData.type].emoji}  ${
+				post_types[qatData.type].name
+			}`,
+		};
+	}
 
 	if (post.discussions[0].resolved)
 		return {

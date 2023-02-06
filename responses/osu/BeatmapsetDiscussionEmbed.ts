@@ -16,12 +16,14 @@ import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussion
 import replaceOsuTimestampsToURL from "../../helpers/text/replaceOsuTimestampsToURL";
 import getEmoji from "../../helpers/text/getEmoji";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
+import { QatEvent } from "types/qat";
 
 export default {
 	send: async (
 		post: DiscussionAttributtes,
 		raw_posts: BeatmapsetDiscussionPost,
 		type: string,
+		qatData: QatEvent | undefined,
 		message: Message,
 		url: string
 	) => {
@@ -32,6 +34,7 @@ export default {
 		const embedDecoration = generatePostEmbedDecoration(
 			raw_posts,
 			post,
+			qatData,
 			type
 		);
 
@@ -171,6 +174,7 @@ export default {
 		const embedDecoration = generatePostEmbedDecoration(
 			raw_posts,
 			post,
+			undefined,
 			type
 		);
 

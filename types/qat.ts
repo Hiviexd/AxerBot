@@ -1,7 +1,11 @@
 import { GameModeName } from "./game_mode";
 import { Timestamp } from "./timestamp";
 
-export type EventType = "nominate" | "qualify" | "disqualify" | "nomination_reset";
+export type EventType =
+	| "nominate"
+	| "qualify"
+	| "disqualify"
+	| "nomination_reset";
 
 export interface InterOpEvent {
 	modes: GameModeName[];
@@ -202,6 +206,38 @@ export interface QatUser {
 	id: string;
 }
 
+export type QatEventType =
+	| "qualify"
+	| "disqualify"
+	| "nomination"
+	| "nomination_reset";
+
+export interface QatEvent {
+	modes: string[];
+	obviousness: number;
+	severity: number;
+	isBnOrNat: boolean;
+	isUnique: boolean;
+	responsibleNominators: [];
+	isReviewed: boolean;
+	_id: string;
+	type: QatEventType;
+	timestamp: Timestamp;
+	beatmapsetId: number;
+	creatorId: number;
+	creatorName: string;
+	discussionId: number;
+	userId: number;
+	artistTitle: string;
+	content: string;
+	genre: string;
+	language: string;
+	__v: 1;
+	createdAt: Timestamp;
+	updatedAt: Timestamp;
+	id: string;
+}
+
 export interface QatUserResponse {
 	status: number;
 	data: QatUser;
@@ -210,4 +246,9 @@ export interface QatUserResponse {
 export interface QatAllUsersResponse {
 	status: number;
 	data: QatUser[];
+}
+
+export interface HTTPResponse<DataType> {
+	status: number;
+	data: DataType | null;
 }
