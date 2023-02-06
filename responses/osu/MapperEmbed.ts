@@ -143,8 +143,7 @@ export default {
 				icon_url: usergroup.icon ? usergroup.icon : "",
 			},
 			image: {
-				// url: beatmaps.data.last.covers["cover@2x"],
-				url: `attachment://test.png`,
+				url: beatmaps.data.last.covers["cover@2x"],
 			},
 		});
 
