@@ -2,7 +2,7 @@ import {
 	Client,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import { tracks } from "../../database";
 import { readFileSync, writeFileSync } from "fs";
@@ -125,7 +125,7 @@ async function qatTracking(bot: Client) {
 
 		const open = bn.requestStatus.includes("closed") ? false : true;
 
-		const embed = new MessageEmbed(texts[open ? "open" : "closed"]);
+		const embed = new EmbedBuilder(texts[open ? "open" : "closed"]);
 
 		const buttons = new MessageActionRow();
 		const buttons2 = new MessageActionRow();

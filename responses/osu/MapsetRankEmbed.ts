@@ -1,6 +1,6 @@
 import { UserResponse } from "../../types/user";
 import { Beatmapset } from "../../types/beatmap";
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 
 export default {
@@ -43,7 +43,7 @@ export default {
 
 		geneateEmbedDescription(); // ? Generate the rank
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},
@@ -64,7 +64,7 @@ export default {
 	reply: (
 		user: UserResponse,
 		beatmaps: Beatmapset[],
-		command: CommandInteraction,
+		command: ChatInputCommandInteraction,
 		decorator: any
 	) => {
 		const usergroup = parseUsergroup(user.data);
@@ -100,7 +100,7 @@ export default {
 
 		geneateEmbedDescription(); // ? Generate the rank
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},

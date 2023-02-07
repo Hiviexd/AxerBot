@@ -1,6 +1,6 @@
 import { UserResponse } from "../../types/user";
 import {
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	ContextMenuInteraction,
 	Message,
 	MessageAttachment,
@@ -144,7 +144,9 @@ export default {
 	},
 	reply: async (
 		user: UserResponse,
-		interaction: MessageContextMenuInteraction | CommandInteraction,
+		interaction:
+			| MessageContextMenuInteraction
+			| ChatInputCommandInteraction,
 		mode?: string
 	) => {
 		const usergroup = parseUsergroup(user.data);

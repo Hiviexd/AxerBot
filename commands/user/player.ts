@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, ChatInputCommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -58,7 +58,11 @@ export default {
 		],
 	},
 	interaction: true,
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const modeInput = command.options.get("mode");

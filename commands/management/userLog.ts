@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, MessageEmbed } from "discord.js";
+import { Client, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import * as database from "../../database";
 import moment from "moment";
 import add from "./subcommands/userLog/add";
@@ -91,7 +91,11 @@ export default {
 		],
 	},
 	permissions: ["MANAGE_GUILD"],
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		if (!command.member || typeof command.member.permissions == "string")
@@ -123,7 +127,7 @@ export default {
 			});
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle(`📙 Logs for ${username.toLowerCase()}`)
 			.setColor(colors.gold);
 

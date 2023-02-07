@@ -1,9 +1,9 @@
 import {
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Message,
 	MessageActionRow,
-	MessageEmbed,
+	EmbedBuilder,
 	MessageSelectMenu,
 	Modal,
 	ModalActionRowComponent,
@@ -56,7 +56,7 @@ export default {
 		],
 	},
 	interaction: true,
-	run: async (bot: Client, command: CommandInteraction) => {
+	run: async (bot: Client, command: ChatInputCommandInteraction) => {
 		await command.deferReply();
 
 		let user = await database.users.findOne({ _id: command.user.id });

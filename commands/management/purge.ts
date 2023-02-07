@@ -1,7 +1,7 @@
 import {
 	Client,
 	Message,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	TextBasedChannel,
 } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
@@ -34,7 +34,11 @@ export default {
 	},
 	category: "management",
 	permissions: ["MANAGE_MESSAGES"],
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		let purge = (channel: any, amount: number) => {

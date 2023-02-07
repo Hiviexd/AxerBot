@@ -2,7 +2,7 @@ import axios from "axios";
 import {
 	MessageActionRow,
 	MessageAttachment,
-	MessageEmbed,
+	EmbedBuilder,
 	MessageSelectMenu,
 	SelectMenuInteraction,
 } from "discord.js";
@@ -46,7 +46,7 @@ export default async (input: SelectMenuInteraction) => {
 	);
 
 	if (selected == answer) {
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({
 				name: input.user.username,
 				iconURL: input.user.avatarURL() || "",

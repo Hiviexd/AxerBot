@@ -1,4 +1,4 @@
-import { Client, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 import disable from "./subcommands/verification/disable";
 import enable from "./subcommands/verification/enable";
 import setChannel from "./subcommands/verification/setChannel";
@@ -813,7 +813,11 @@ export default {
 	},
 	category: "management",
 	permissions: ["MANAGE_GUILD"],
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		if (!command.member || typeof command.member.permissions == "string")
@@ -834,7 +838,7 @@ export default {
 				`What? Nothing to display here... Use \`${guild.prefix}help verification\` to get help`
 			);
 
-		const embed = new MessageEmbed({
+		const embed = new EmbedBuilder({
 			title: "⚙️ Verification configuration",
 			color: guild.verification.enable ? colors.green : colors.red,
 			fields: [

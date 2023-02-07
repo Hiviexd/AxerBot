@@ -1,4 +1,7 @@
-import { CommandInteraction, CommandInteractionOption } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	ChatInputCommandInteractionOption,
+} from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
@@ -6,12 +9,13 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 
 export default {
 	name: "button",
-    group: "set",
+	group: "set",
 	help: {
-        description: "Enable or disable the button to send the verification link.\nOnly reason to disable this is to only use the welcome message instead of the verification module",
+		description:
+			"Enable or disable the button to send the verification link.\nOnly reason to disable this is to only use the welcome message instead of the verification module",
 		syntax: "/verification `set button` `status:enabled|disabled`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;
@@ -30,19 +34,23 @@ export default {
 			return command.editReply(
 				"This guild isn't validated, try again after some seconds.."
 			);
-        
-        const status = command.options.getString("status", true);
 
-        status == "true" ? guild.verification.button = true : guild.verification.button = false;
+		const status = command.options.getString("status", true);
 
-        await guilds.findByIdAndUpdate(guild._id, guild);
+		status == "true"
+			? (guild.verification.button = true)
+			: (guild.verification.button = false);
 
-        return command.editReply({
-            embeds: [
-                generateSuccessEmbed(
-                    `The verification button has been ${status == "true" ? "enabled" : "disabled"}!`
-                ),
-            ],
-        });
+		await guilds.findByIdAndUpdate(guild._id, guild);
+
+		return command.editReply({
+			embeds: [
+				generateSuccessEmbed(
+					`The verification button has been ${
+						status == "true" ? "enabled" : "disabled"
+					}!`
+				),
+			],
+		});
 	},
 };

@@ -2,7 +2,8 @@ import { Client } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { consoleLog, consoleCheck } from "../core/logger";
-import { commands } from "../../commands";
+import { AxerCommands } from "../../commands";
+import { SlashCommand } from "models/commands/SlashCommand";
 
 export default (bot: Client) => {
 	const _commands: { [key: string]: any } = [
@@ -27,22 +28,32 @@ export default (bot: Client) => {
         */
 	];
 
-	Object.keys(commands).forEach((command) => {
-		if (commands[command].config != undefined) {
-			let newCommand = {
-				name: commands[command].name,
-				description: commands[command].help.description,
-			};
+	for (const command of AxerCommands) {
+		post(command);
+	}
 
-			newCommand = Object.assign(newCommand, commands[command].config);
+	function post(command: SlashCommand) {
+		consoleCheck(
+			"registerCommands",
+			`Command ${command.names.join("/")} queued!`
+		);
 
-			_commands.push(newCommand);
-			consoleCheck(
-				"registerCommands",
-				`Command ${commands[command].name} queued!`
-			);
-		}
-	});
+		command.names.forEach((name) => {
+			command.builder.setName(name);
+			_commands.push(command.builder.toJSON());
+		});
+	}
+
+	// Object.keys(AxerCommands).forEach((command, i) => {
+	// 	let newCommand = {
+	// 		name: commands[i].name,
+	// 		description: commands[i].help.description,
+	// 	};
+
+	// 	newCommand = Object.assign(newCommand, commands[i].config);
+
+	// 	_commands.push(newCommand);
+	// });
 
 	const rest = new REST({ version: "10" }).setToken(process.env.TOKEN || "");
 

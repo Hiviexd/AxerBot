@@ -1,4 +1,4 @@
-import { Client, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 import { commands } from "./../";
 import colors from "./../../constants/colors";
 import generateErrorEmbed from "./../../helpers/text/embeds/generateErrorEmbed";
@@ -32,7 +32,11 @@ export default {
 			},
 		],
 	},
-	run: async (bot: Client, interaction: CommandInteraction, args: []) => {
+	run: async (
+		bot: Client,
+		interaction: ChatInputCommandInteraction,
+		args: []
+	) => {
 		await interaction.deferReply();
 
 		const commandName = interaction.options.getString("command_name");
@@ -57,7 +61,7 @@ export default {
 				categories[command.category].push(command);
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle("List of available commands")
 				.setDescription(
 					`Use \`/about\` to get more information about the bot.\nUse \`/help\` \`<command>\` to see how a specific command works.`
@@ -65,12 +69,12 @@ export default {
 				.setColor(colors.pink);
 
 			Object.keys(categories).forEach((c) => {
-				embed.addField(
-					c,
-					categories[c]
+				embed.addFields({
+					name: c,
+					value: categories[c]
 						.map((command) => `\`/${command.name}\``)
-						.join(", ")
-				);
+						.join(", "),
+				});
 			});
 
 			interaction.editReply({ embeds: [embed] });
@@ -123,7 +127,7 @@ export default {
 					],
 				});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(`/${command.name} ${subcommand}`)
 				.setColor(colors.pink)
 				.setDescription(commandObject.description);
@@ -150,7 +154,7 @@ export default {
 					],
 				});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(
 					`/${command.name} ${subcommandObject.group} ${subcommandObject.name}`
 				)
@@ -164,37 +168,37 @@ export default {
 		async function sendGroupHelp(command: typeof baseCommand) {
 			if (!commandGroup) return;
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(`/${command.name} ${commandGroup}`)
 				.setColor(colors.pink)
 				.setDescription("Check below all commands in this group:")
-				.addField(
-					"Subcommands",
-					generateSubcommandsField(
+				.addFields({
+					name: "Subcommands",
+					value: generateSubcommandsField(
 						command,
 						commandGroup.toLowerCase()
-					)
-				)
-				.setFooter(
-					`Use /help ${command.name} ${commandGroup} <subcommand> to get info about a command.`
-				);
+					),
+				})
+				.setFooter({
+					text: `Use /help ${command.name} ${commandGroup} <subcommand> to get info about a command.`,
+				});
 
 			interaction.editReply({ embeds: [embed] });
 		}
 
 		async function sendGeneralCommandHelp(command: typeof baseCommand) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(`/${command.name}`)
 				.setColor(colors.pink)
 				.setDescription(command.help.description)
 				.addFields(generateFields(command));
 
 			if (command.subcommands) {
-				embed.addField(
-					"subcommands",
-					generateSubcommandsField(command),
-					true
-				);
+				embed.addFields({
+					name: "subcommands",
+					value: generateSubcommandsField(command),
+					inline: true,
+				});
 			}
 
 			interaction.editReply({ embeds: [embed] });

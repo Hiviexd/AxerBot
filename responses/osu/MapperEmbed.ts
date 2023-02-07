@@ -1,12 +1,12 @@
 import { UserResponse } from "../../types/user";
 import { UserBeatmapetsResponse } from "../../types/beatmap";
 import {
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	ContextMenuInteraction,
 	Interaction,
 	Message,
 	MessageAttachment,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
@@ -25,7 +25,7 @@ export default {
 			Number(user.data.pending_beatmapset_count) +
 			Number(user.data.graveyard_beatmapset_count);
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},
@@ -84,7 +84,7 @@ export default {
 	reply: async (
 		user: UserResponse,
 		beatmaps: UserBeatmapetsResponse,
-		interaction: ContextMenuInteraction | CommandInteraction,
+		interaction: ContextMenuInteraction | ChatInputCommandInteraction,
 		ephemeral?: boolean
 	) => {
 		const usergroup = parseUsergroup(user.data); // ? Get the highest usergroup
@@ -95,7 +95,7 @@ export default {
 			Number(user.data.pending_beatmapset_count) +
 			Number(user.data.graveyard_beatmapset_count);
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			thumbnail: {
 				url: `https://a.ppy.sh/${user.data.id}`,
 			},

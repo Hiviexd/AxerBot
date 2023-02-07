@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, EmbedBuilder } from "discord.js";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
 import * as database from "./../../database";
@@ -205,7 +205,7 @@ export default {
 				return void {};
 			});
 
-			embed = new MessageEmbed(embed);
+			embed = new EmbedBuilder(embed);
 			embed.setColor("#1df27d");
 
 			message.channel.send({ embeds: [embed] });

@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 
@@ -9,7 +9,7 @@ export default {
 		description: "disable the logging system",
 		syntax: "/logging `set disabled`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.guild || !command.member) return;
 
 		await command.deferReply();

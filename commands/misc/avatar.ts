@@ -1,8 +1,8 @@
 import {
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Message,
-	MessageEmbed,
+	EmbedBuilder,
 	User,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
@@ -36,7 +36,7 @@ export default {
 	category: "misc",
 	run: async (
 		bot: Client,
-		interaction: CommandInteraction,
+		interaction: ChatInputCommandInteraction,
 		args: string[]
 	) => {
 		await interaction.deferReply(); // ? prevent errors
@@ -65,7 +65,7 @@ export default {
 			user = interaction.user;
 		}
 
-		const avatarEmbed = new MessageEmbed()
+		const avatarEmbed = new EmbedBuilder()
 			.setColor(colors.purple)
 			.setTitle(`${user.tag}'s avatar`)
 			.setImage(user.displayAvatarURL({ format: "png", dynamic: true }))

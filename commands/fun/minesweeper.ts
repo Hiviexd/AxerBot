@@ -1,4 +1,4 @@
-import { Client, GuildMember, CommandInteraction } from "discord.js";
+import { Client, GuildMember, ChatInputCommandInteraction } from "discord.js";
 import Minesweeper from "discord.js-minesweeper";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
@@ -33,7 +33,11 @@ export default {
 	},
 	interaction: true,
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const rows = command.options.getInteger("rows")

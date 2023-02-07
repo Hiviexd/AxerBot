@@ -1,4 +1,4 @@
-import { Client, Message, CommandInteraction } from "discord.js";
+import { Client, Message, ChatInputCommandInteraction } from "discord.js";
 const { default: owoify } = require("owoify-js");
 
 export default {
@@ -20,7 +20,11 @@ export default {
 	},
 	interaction: true,
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const text = command.options.getString("text", true);

@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message, EmbedBuilder } from "discord.js";
 import * as database from "./../../database";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { ownerId } from "../../config.json";
@@ -53,7 +53,7 @@ export default {
 			}
 		);
 
-		const res = new MessageEmbed()
+		const res = new EmbedBuilder()
 			.setTitle("✅ Prefix updated!")
 			.setDescription(`New prefix on this server is \`${new_prefix}\``)
 			.setColor("#1df27d");

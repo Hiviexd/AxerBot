@@ -1,7 +1,7 @@
 import {
 	ApplicationCommandManager,
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Message,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
@@ -58,7 +58,11 @@ export default {
 	},
 	category: "osu",
 	interaction: true,
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		let sort = command.options.get("sort")

@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, ChatInputCommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
@@ -34,7 +34,7 @@ export default {
 			},*/
 		],
 	},
-	run: async (bot: Client, command: CommandInteraction) => {
+	run: async (bot: Client, command: ChatInputCommandInteraction) => {
 		await command.deferReply();
 
 		let { playerName, status } = await checkCommandPlayers(command);

@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, MessageEmbed } from "discord.js";
+import { Client, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { tracks } from "../../database";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import addTrack from "./subcommands/tracker/addTrack";
@@ -93,7 +93,11 @@ export default {
 			},
 		],
 	},
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		if (!command.member) return;
@@ -123,7 +127,7 @@ export default {
 			return status.join(",");
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle("Current BN trackers")
 			.setDescription(
 				`${guildTrackers

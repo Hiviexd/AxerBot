@@ -4,7 +4,7 @@ import {
 	Message,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
+	EmbedBuilder,
 	MessageSelectMenu,
 	SelectMenuInteraction,
 } from "discord.js";
@@ -83,7 +83,7 @@ export default {
 			  )
 			: 0;
 
-		const embed = new MessageEmbed();
+		const embed = new EmbedBuilder();
 		let modsSelector = new MessageActionRow().setComponents(
 			getModsSelector(handshakeId, mods)
 		);
@@ -464,7 +464,7 @@ export default {
 	// 	async function generateFor(beatmap: Beatmap) {
 	// 		if (!beatmapset.beatmaps)
 	// 			return {
-	// 				embed: new MessageEmbed(),
+	// 				embed: new EmbedBuilder(),
 	// 				buttons: new MessageActionRow(),
 	// 			};
 
@@ -518,7 +518,7 @@ export default {
 
 	// 		const pending_status = ["wip", "pending", "graveyard"];
 
-	// 		const embed = new MessageEmbed({
+	// 		const embed = new EmbedBuilder({
 	// 			title: `${beatmapset.artist} - ${beatmapset.title}`,
 	// 			url: `https://osu.ppy.sh/s/${beatmapset.id}`,
 	// 			fields: [
@@ -739,7 +739,7 @@ export default {
 	// reply: async (
 	// 	beatmapset: Beatmapset,
 	// 	beatmap_id: string,
-	// 	interaction: ContextMenuInteraction | CommandInteraction,
+	// 	interaction: ContextMenuInteraction | ChatInputCommandInteraction,
 	// 	mode: "osu" | "taiko" | "mania" | "fruits" | "",
 	// 	ephemeral?: boolean
 	// ) => {
@@ -762,7 +762,7 @@ export default {
 	// 	async function generateFor(beatmap: Beatmap) {
 	// 		if (!beatmapset.beatmaps)
 	// 			return {
-	// 				embed: new MessageEmbed(),
+	// 				embed: new EmbedBuilder(),
 	// 				buttons: new MessageActionRow(),
 	// 			};
 
@@ -816,7 +816,7 @@ export default {
 
 	// 		const pending_status = ["wip", "pending", "graveyard"];
 
-	// 		const embed = new MessageEmbed({
+	// 		const embed = new EmbedBuilder({
 	// 			title: `${beatmapset.artist} - ${beatmapset.title}`,
 	// 			url: `https://osu.ppy.sh/s/${beatmapset.id}`,
 	// 			fields: [

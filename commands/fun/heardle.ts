@@ -1,10 +1,10 @@
 import {
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Message,
 	MessageActionRow,
 	MessageAttachment,
-	MessageEmbed,
+	EmbedBuilder,
 	MessageSelectMenu,
 } from "discord.js";
 import axios from "axios";
@@ -55,7 +55,11 @@ export default {
 			},
 		],
 	},
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const action = command.options.get("action", true)
@@ -172,7 +176,7 @@ export default {
 
 			// 		const selected = interaction.values[0];
 			// 		if (selected == answer) {
-			// 			const embed = new MessageEmbed()
+			// 			const embed = new EmbedBuilder()
 			// 				.setAuthor({
 			// 					name: interaction.user.username,
 			// 					iconURL: interaction.user.avatarURL() || "",

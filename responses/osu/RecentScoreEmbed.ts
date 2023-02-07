@@ -1,9 +1,9 @@
 import axios from "axios";
 import {
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import { calculateScore } from "../../helpers/osu/performance/calculateScore";
 import getEmoji from "../../helpers/text/getEmoji";
@@ -19,7 +19,11 @@ import { GameMode } from "./../../types/game_mode";
 import { generateHitStatistics } from "../../helpers/osu/performance/generateHitStatistics";
 
 export default {
-	send: async (command: CommandInteraction, score: Score, user: User) => {
+	send: async (
+		command: ChatInputCommandInteraction,
+		score: Score,
+		user: User
+	) => {
 		if (!score.beatmap || !score.user || !score.beatmapset) return;
 
 		const score_beatmap_file = await axios(
@@ -44,7 +48,7 @@ export default {
 			return ` +${mods.join("")}`;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({
 				name: `Most recent ${abbreviation(
 					score.user.username

@@ -1,6 +1,6 @@
 //TODO: add the ability to remove your latest reminder and clear all of your reminders
 
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, ChatInputCommandInteraction, Message } from "discord.js";
 import * as database from "./../../database";
 import { consoleCheck } from "../../helpers/core/logger";
 import colors from "../../constants/colors";
@@ -36,7 +36,7 @@ export default {
 	interaction: true,
 	run: async (
 		bot: Client,
-		interaction: CommandInteraction,
+		interaction: ChatInputCommandInteraction,
 		args: string[]
 	) => {
 		await interaction.deferReply(); // ? prevent errors

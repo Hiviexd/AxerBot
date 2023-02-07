@@ -1,4 +1,4 @@
-import { ColorResolvable, Message, MessageEmbed } from "discord.js";
+import { ColorResolvable, Message, EmbedBuilder } from "discord.js";
 import relativeTime from "../../helpers/general/relativeTime";
 import ModhubFetcher from "../../helpers/modhub/ModhubFetcher";
 
@@ -31,8 +31,8 @@ export default async (url: URL, message: Message) => {
 		ranked: "#259bca",
 		rejected: "#d4152f",
 		waiting: "#f44336",
-        pending: "#fdcb58",
-        archived: "#9e9e9e"
+		pending: "#fdcb58",
+		archived: "#9e9e9e",
 	};
 
 	const emojis: { [key: string]: string } = {
@@ -43,15 +43,15 @@ export default async (url: URL, message: Message) => {
 		ranked: "🔵",
 		rejected: "🔴",
 		waiting: "🟠",
-        pending: "🟡",
-        archived: "⚫"
+		pending: "🟡",
+		archived: "⚫",
 	};
 
 	const queue = await ModhubFetcher.QueueFetcher.fetchQueue(
 		request.data.data._queue
 	);
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setAuthor({
 			name: `${request.data.data._owner_name} • ${
 				emojis[request.data.data.status]
@@ -71,7 +71,7 @@ export default async (url: URL, message: Message) => {
 		.setColor(colors[request.data.data.status])
 		.setFooter({
 			text: `Requested to ${queue.data.data.name}`,
-            iconURL: `https://a.ppy.sh/${queue.data.data._id}`,
+			iconURL: `https://a.ppy.sh/${queue.data.data._id}`,
 		})
 		.setTimestamp(request.data.data.date);
 

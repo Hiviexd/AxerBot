@@ -1,7 +1,8 @@
-import { ButtonInteraction, Client } from "discord.js";
-import sendQuotes from "../helpers/general/sendQuotes";
-import checkOsuURL from "../helpers/osu/url/checkOsuURL";
-import commandHandler from "../helpers/core/commandHandler";
+import {
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	Client,
+} from "discord.js";
 import addPrivateRoles from "../helpers/interactions/addPrivateRoles";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
 import osuInteractions from "../helpers/interactions/osuInteractions";
@@ -41,12 +42,12 @@ export default {
 				}
 			}
 
-			if (interaction.isMessageContextMenu()) {
+			if (interaction.isStringSelectMenu()) {
 				await interaction.deferReply({ ephemeral: true });
 				osuInteractions(interaction);
 			}
 
-			if (interaction.isCommand()) {
+			if (interaction.isChatInputCommand()) {
 				slashCommandHandler(bot, interaction);
 			}
 

@@ -1,4 +1,4 @@
-import { Client, CommandInteraction } from "discord.js";
+import { Client, ChatInputCommandInteraction } from "discord.js";
 import { numberToEmoji } from "../../helpers/text/numberToEmoji";
 import * as database from "./../../database";
 
@@ -13,7 +13,11 @@ export default {
 		type: 1,
 	},
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const guild = await database.guilds.findOne({ _id: command.guildId });

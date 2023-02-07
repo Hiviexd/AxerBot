@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import { tracks } from "../../../../database";
 import crypto from "crypto";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -12,7 +12,7 @@ export default {
 	help: {
 		description: "Remove a tracker for a channel",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		await command.deferReply();
 
 		if (!command.member || typeof command.member.permissions == "string")

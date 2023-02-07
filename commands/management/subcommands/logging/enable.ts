@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -10,7 +10,7 @@ export default {
 		description: "Enable and set up a channel for the logging system",
 		syntax: "/logging `set enable channel:#channel`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.guild || !command.member) return;
 
 		await command.deferReply();

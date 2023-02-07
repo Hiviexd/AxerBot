@@ -1,4 +1,7 @@
-import { CommandInteraction, CommandInteractionOption } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	ChatInputCommandInteractionOption,
+} from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
@@ -9,12 +12,11 @@ export default {
 	name: "channel",
 	group: "set",
 	help: {
-		description:
-			"Sets the channel for the system",
+		description: "Sets the channel for the system",
 		syntax: "/verification `set channel` `text_channel:<channel>`",
 		example: "/verification `set channel` `text_channel:#arrival`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;

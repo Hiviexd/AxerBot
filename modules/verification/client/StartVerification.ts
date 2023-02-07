@@ -2,7 +2,7 @@ import {
 	GuildMember,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -23,7 +23,7 @@ export default async (member: GuildMember) => {
 	const verification = await GenerateAuthToken(member);
 
 	if (verification.status != 200 || !verification.data) {
-		const error = new MessageEmbed({
+		const error = new EmbedBuilder({
 			title: "Wait...",
 			description: verification.message,
 			color: colors.orange,
@@ -89,7 +89,7 @@ export default async (member: GuildMember) => {
 	// 			);
 
 	// 		if (verification.status != 200 || !verification.data) {
-	// 			const error = new MessageEmbed({
+	// 			const error = new EmbedBuilder({
 	// 				title: "Wait...",
 	// 				description: verification.message,
 	// 				color: "#ea6112",

@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, GuildMember } from "discord.js";
+import { Client, ChatInputCommandInteraction, GuildMember } from "discord.js";
 
 export default {
 	name: "coinflip",
@@ -11,7 +11,11 @@ export default {
 		type: 1,
 	},
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 		let coin = Math.floor(Math.random() * 2);
 

@@ -2,7 +2,7 @@ import {
 	Client,
 	Message,
 	MessageCollector,
-	MessageEmbed,
+	EmbedBuilder,
 	User,
 } from "discord.js";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -34,7 +34,7 @@ export default {
 		);
 
 		function sendLeaderboard() {
-			const embed = new MessageEmbed({
+			const embed = new EmbedBuilder({
 				title: "Best players",
 				description: "",
 				footer: {

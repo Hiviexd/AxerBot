@@ -1,4 +1,4 @@
-import { Client, CommandInteraction } from "discord.js";
+import { Client, ChatInputCommandInteraction } from "discord.js";
 import colors from "../../constants/colors";
 import getWebsiteStatus from "./../../helpers/general/getWebsiteStatus";
 
@@ -15,7 +15,7 @@ export default {
 	},
 	run: async (
 		bot: Client,
-		interaction: CommandInteraction,
+		interaction: ChatInputCommandInteraction,
 		args: string[]
 	) => {
 		await interaction.deferReply();

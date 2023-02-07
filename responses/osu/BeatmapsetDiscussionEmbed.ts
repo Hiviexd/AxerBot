@@ -5,7 +5,7 @@ import {
 	MessageAttachment,
 	MessageButton,
 	MessageContextMenuInteraction,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -86,7 +86,7 @@ export default {
 				return `Timeline (${beatmapData.version})`;
 		}
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			description: replaceOsuTimestampsToURL(
 				truncateString(metadata.concat(post.posts[0].message), 1024)
 			),
@@ -190,7 +190,7 @@ export default {
 			post.beatmapsets[0].creator
 		}**](https://osu.ppy.sh/users/${post.beatmapsets[0].user_id})\n\n`;
 
-		let e = new MessageEmbed({
+		let e = new EmbedBuilder({
 			description: replaceOsuTimestampsToURL(
 				truncateString(metadata.concat(post.posts[0].message), 2048)
 			),

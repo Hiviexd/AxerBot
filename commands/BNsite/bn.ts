@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, ChatInputCommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotBNorNAT from "../../responses/qat/UserNotBNorNAT";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
@@ -33,7 +33,11 @@ export default {
 		],
 	},
 	category: "BNsite",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply(); // ? prevent errors
 
 		let { playerName, status } = await checkCommandPlayers(command);

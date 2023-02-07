@@ -1,4 +1,8 @@
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	GuildMember,
+	EmbedBuilder,
+} from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../../../constants/colors";
@@ -10,7 +14,7 @@ export default {
 		description: "log a user",
 		syntax: "/userlog `add` `<user>` `<reason>`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.guild || !command.member) return;
 
 		await command.deferReply();
@@ -54,7 +58,7 @@ export default {
 			$set: { user_logs: guild.user_logs },
 		});
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle("✅ User Logged")
 			.setColor(colors.green)
 			.addField("User", user)

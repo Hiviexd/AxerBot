@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, ChatInputCommandInteraction, Message } from "discord.js";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import OpenBNsEmbed from "../../responses/qat/OpenBNsEmbed";
@@ -43,7 +43,11 @@ export default {
 		],
 	},
 	category: "BNsite",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply(); // ? prevent errors
 
 		let gamemode: string | undefined = undefined;

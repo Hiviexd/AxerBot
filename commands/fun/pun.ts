@@ -1,4 +1,4 @@
-import { Client, Message, CommandInteraction } from "discord.js";
+import { Client, Message, ChatInputCommandInteraction } from "discord.js";
 import axios from "axios";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../constants/colors";
@@ -14,7 +14,11 @@ export default {
 	},
 	interaction: true,
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const config = {

@@ -5,7 +5,7 @@ import {
 import { ISlashCommandExecuteFunction } from "./SlashCommand";
 
 export class SlashCommandSubcommand {
-	private _executeFunction: ISlashCommandExecuteFunction;
+	private _executeFunction!: ISlashCommandExecuteFunction;
 	public builder = new SlashCommandSubcommandBuilder();
 
 	constructor(name: string, description: string) {

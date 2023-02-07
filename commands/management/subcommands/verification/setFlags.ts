@@ -1,4 +1,4 @@
-import { Message, CommandInteraction } from "discord.js";
+import { Message, ChatInputCommandInteraction } from "discord.js";
 import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
@@ -18,7 +18,7 @@ export default {
 			"`username, <enable|disable>`: Set the user's discord nickname to match their osu! username",
 		],
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;

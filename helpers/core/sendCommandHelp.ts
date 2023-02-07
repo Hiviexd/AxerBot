@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import parseMessagePlaceholderFromString from "../text/parseMessagePlaceholderFromString";
 import * as database from "./../../database";
 import colors from "./../../constants/colors";
@@ -8,7 +8,7 @@ export default async (command: any, message: Message) => {
 
 	if (!guild) return;
 
-	const embed = new MessageEmbed({
+	const embed = new EmbedBuilder({
 		title: `${guild.prefix}${command.name}`,
 		description: parseMessagePlaceholderFromString(
 			message,

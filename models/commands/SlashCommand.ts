@@ -3,7 +3,7 @@ import {
 	PermissionFlags,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommandSubcommand } from "./SlashCommandSubCommand";
+import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
 import { SlashCommandSubcommandGroup } from "./SlashCommandSubcommandGroup";
 
 export type ISlashCommandExecuteFunction = (
@@ -16,7 +16,7 @@ export type PartialSubcommandExecutionParam = {
 };
 
 export class SlashCommand {
-	private _executeFunction: ISlashCommandExecuteFunction;
+	private _executeFunction!: ISlashCommandExecuteFunction;
 	private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
 	private _subcommands: SlashCommandSubcommand[] = [];
 	public names: string[] = [];
@@ -34,11 +34,13 @@ export class SlashCommand {
 	 */
 	addSubcommandGroup(group: SlashCommandSubcommandGroup) {
 		this._subcommand_groups.push(group);
+		this.builder.addSubcommandGroup(group.builder);
 		return this;
 	}
 
 	addSubcommand(subcommand: SlashCommandSubcommand) {
 		this._subcommands.push(subcommand);
+		this.builder.addSubcommand(subcommand.builder);
 		return this;
 	}
 
@@ -91,5 +93,9 @@ export class SlashCommand {
 
 	run(interaction: ChatInputCommandInteraction) {
 		this._executeFunction(interaction);
+	}
+
+	toJSON() {
+		return this.builder.toJSON();
 	}
 }

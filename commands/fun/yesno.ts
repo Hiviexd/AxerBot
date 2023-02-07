@@ -1,4 +1,9 @@
-import { Client, Message, CommandInteraction, GuildMember } from "discord.js";
+import {
+	Client,
+	Message,
+	ChatInputCommandInteraction,
+	GuildMember,
+} from "discord.js";
 import { parseTextFile } from "../../helpers/text/processText";
 
 export default {
@@ -21,7 +26,11 @@ export default {
 	},
 	interaction: true,
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		//get question from options

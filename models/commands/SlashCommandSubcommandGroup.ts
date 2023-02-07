@@ -2,18 +2,20 @@ import {
 	ChatInputCommandInteraction,
 	SlashCommandSubcommandGroupBuilder,
 } from "discord.js";
-import { SlashCommandSubcommand } from "./SlashCommandSubCommand";
+import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
 
 export class SlashCommandSubcommandGroup {
 	private commands: SlashCommandSubcommand[] = [];
 	public builder = new SlashCommandSubcommandGroupBuilder();
 
-	constructor(name: string) {
+	constructor(name: string, description: string) {
 		this.builder.setName(name);
+		this.builder.setDescription(description);
 	}
 
 	addCommand(subcommand: SlashCommandSubcommand) {
 		this.commands.push(subcommand);
+		this.builder.addSubcommand(subcommand.builder);
 
 		return this;
 	}

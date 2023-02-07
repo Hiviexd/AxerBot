@@ -1,4 +1,4 @@
-import { Client, GuildMember, CommandInteraction } from "discord.js";
+import { Client, GuildMember, ChatInputCommandInteraction } from "discord.js";
 
 export default {
 	name: "roll",
@@ -19,7 +19,11 @@ export default {
 	},
 	interaction: true,
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		const dice =

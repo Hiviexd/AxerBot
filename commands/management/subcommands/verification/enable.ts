@@ -1,4 +1,7 @@
-import { CommandInteraction, CommandInteractionOption } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	ChatInputCommandInteractionOption,
+} from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import { ownerId } from "../../../../config.json";
@@ -12,7 +15,7 @@ export default {
 		description: "Enable the system manually",
 		syntax: "/verification `set enabled`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;
