@@ -35,6 +35,7 @@ import userlog from "./management/userLog";
 import minesweeper from "./fun/minesweeper";
 
 export const AxerCommands = [
+    heardle,
     ping,
     avatar,
     about,
@@ -44,6 +45,12 @@ export const AxerCommands = [
     player,
     mapsetrank,
     mapper,
+    yesno,
+    roll,
+    revolver,
+    pun,
+    owoify,
+    minesweeper,
 ];
 
 // export const commands: any = {

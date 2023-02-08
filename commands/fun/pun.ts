@@ -1,53 +1,51 @@
-import { Client, Message, ChatInputCommandInteraction } from "discord.js";
+import {
+    Client,
+    Message,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+} from "discord.js";
 import axios from "axios";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../constants/colors";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "pun",
-	help: {
-		description: "Get a random pun!",
-		syntax: "/pun",
-	},
-	config: {
-		type: 1,
-	},
-	interaction: true,
-	category: "fun",
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
+const pun = new SlashCommand(
+    ["pun", "joke"],
+    "Get a random pun!",
+    "fun",
+    false
+);
 
-		const config = {
-			headers: {
-				Accept: "application/json",
-				"user-agent": "Axerbot",
-			},
-		};
-		const url = "https://icanhazdadjoke.com/";
+pun.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		try {
-			const req = await axios.get(url, config);
-			command.editReply({
-				embeds: [
-					{
-						title: "🗿 Pun",
-						color: colors.blue,
-						description: req.data.joke,
-					},
-				],
-			});
-		} catch (e) {
-			command.editReply({
-				embeds: [
-					generateErrorEmbed(
-						`❌ A server error occured, try again later.`
-					),
-				],
-			});
-		}
-	},
-};
+    const config = {
+        headers: {
+            Accept: "application/json",
+            "user-agent": "Axerbot",
+        },
+    };
+    const url = "https://icanhazdadjoke.com/";
+
+    try {
+        const req = await axios.get(url, config);
+        command.editReply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("🗿 Pun")
+                    .setDescription(req.data.joke)
+                    .setColor(colors.blue),
+            ],
+        });
+    } catch (e) {
+        command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    `❌ A server error occured, try again later.`
+                ),
+            ],
+        });
+    }
+});
+
+export default pun;

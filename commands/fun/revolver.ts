@@ -1,42 +1,35 @@
-import { Client, ChatInputCommandInteraction } from "discord.js";
 import { numberToEmoji } from "../../helpers/text/numberToEmoji";
 import * as database from "./../../database";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "revolver",
-	help: {
-		description: "Russian Roulette, but with bigger numbers!",
-		syntax: "/revolver",
-	},
-	interaction: true,
-	config: {
-		type: 1,
-	},
-	category: "fun",
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
+const revolver = new SlashCommand(
+    "revolver",
+    "Russian Roulette, but with bigger numbers!",
+    "fun",
+    false
+);
 
-		const guild = await database.guilds.findOne({ _id: command.guildId });
-		if (!guild) return;
+revolver.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		let revolver = Math.floor(Math.random() * 6) + 1;
+    const guild = await database.guilds.findOne({ _id: command.guildId });
+    if (!guild) return;
 
-		if (revolver === 1) {
-			guild.fun.revolver = 0;
-			await database.guilds.findByIdAndUpdate(command.guildId, {
-				fun: guild.fun,
-			});
-			command.editReply(`💥 🔫`);
-		} else {
-			guild.fun.revolver++;
-			await database.guilds.findByIdAndUpdate(command.guildId, {
-				fun: guild.fun,
-			});
-			command.editReply(`${numberToEmoji(guild.fun.revolver)} 🔫`);
-		}
-	},
-};
+    let revolver = Math.floor(Math.random() * 6) + 1;
+
+    if (revolver === 1) {
+        guild.fun.revolver = 0;
+        await database.guilds.findByIdAndUpdate(command.guildId, {
+            fun: guild.fun,
+        });
+        command.editReply(`💥 🔫`);
+    } else {
+        guild.fun.revolver++;
+        await database.guilds.findByIdAndUpdate(command.guildId, {
+            fun: guild.fun,
+        });
+        command.editReply(`${numberToEmoji(guild.fun.revolver)} 🔫`);
+    }
+});
+
+export default revolver;

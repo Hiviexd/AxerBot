@@ -1,326 +1,245 @@
 import {
-	Client,
-	ChatInputCommandInteraction,
-	Message,
-	MessageActionRow,
-	MessageAttachment,
-	EmbedBuilder,
-	MessageSelectMenu,
+    Client,
+    ChatInputCommandInteraction,
+    AttachmentBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
 } from "discord.js";
 import axios from "axios";
-import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-import { users, heardles } from "../../database";
+
+import { heardles } from "../../database";
 import { Beatmapset } from "../../types/beatmap";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
-import moment from "moment";
-import relativeTime from "../../helpers/general/relativeTime";
 import crypto from "crypto";
 import truncateString from "../../helpers/text/truncateString";
 import { consoleLog, consoleCheck } from "../../helpers/core/logger";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "heardle",
-	help: {
-		description: "Guess the song!",
-		syntax: "/heardle",
-	},
-	category: "fun",
-	interaction: true,
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "action",
-				description: "Start or stop the current session?",
-				type: 3,
-				max_value: 1,
-				required: true,
-				choices: [
-					{
-						name: "start",
-						value: "start",
-					},
-					{
-						name: "stop",
-						value: "stop",
-					},
-				],
-			},
-			{
-				name: "difficulty",
-				description: "Song sort difficulty",
-				type: 4,
-				min_value: 1,
-				max_value: 100,
-			},
-		],
-	},
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
+const heardle = new SlashCommand("heardle", "Guess the song!", "fun", false);
 
-		const action = command.options.get("action", true)
-			? command.options.get("action", true)?.value
-			: "play_count";
+heardle.builder
+    .addStringOption((o) =>
+        o
+            .setName("action")
+            .setDescription("Start or stop the current section")
+            .addChoices(
+                {
+                    name: "start",
+                    value: "start",
+                },
+                {
+                    name: "stop",
+                    value: "stop",
+                }
+            )
+    )
+    .addIntegerOption((o) =>
+        o
+            .setName("difficulty")
+            .setDescription("Game difficulty")
+            .setMinValue(1)
+            .setMaxValue(100)
+    );
 
-		const _heardle = await heardles.findOne({ owner: command.user.id });
+heardle.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		if (!command.channel) return;
+    const action = command.options.get("action", true)
+        ? command.options.get("action", true)?.value
+        : "play_count";
 
-		function getID() {
-			return crypto.randomBytes(30).toString("hex");
-		}
+    const _heardle = await heardles.findOne({ owner: command.user.id });
 
-		if (action == "start") {
-			if (_heardle)
-				return command.editReply(
-					`You already have another heardle session running on <#${_heardle.channel}>! Please, stop the session and try again.`
-				);
+    if (!command.channel) return;
 
-			startHeardle();
-		}
+    function getID() {
+        return crypto.randomBytes(30).toString("hex");
+    }
 
-		if (action == "stop") {
-			if (!_heardle)
-				return await command.editReply(
-					":x: Wait... You don't have a heardle session running! Use `/heardle action:start` to start a session."
-				);
+    if (action == "start") {
+        if (_heardle)
+            return command.editReply(
+                `You already have another heardle session running on <#${_heardle.channel}>! Please, stop the session and try again.`
+            );
 
-			await heardles.deleteMany({ owner: command.user.id });
+        startHeardle();
+    }
 
-			await command.editReply(
-				":white_check_mark: Done! Use `/heardle action:start` to start another session."
-			);
-		}
+    if (action == "stop") {
+        if (!_heardle)
+            return await command.editReply(
+                ":x: Wait... You don't have a heardle session running! Use `/heardle action:start` to start a session."
+            );
 
-		async function startHeardle() {
-			let difficulty = command.options.getInteger("difficulty") || 1;
+        await heardles.deleteMany({ owner: command.user.id });
 
-			consoleLog(
-				`heardle`,
-				`Starting a new heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty}`
-			);
+        await command.editReply(
+            ":white_check_mark: Done! Use `/heardle action:start` to start another session."
+        );
+    }
 
-			const playedBeatmaps: number[] = [];
-			let validIndexes: number[] = [
-				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-				18, 19, 20, 21, 22, 23, 24,
-			];
+    async function startHeardle() {
+        let difficulty = command.options.getInteger("difficulty") || 1;
 
-			let answer = "";
-			let beatmaps: Beatmapset[] = [];
-			let answerIndex = -1;
-			let size = 1;
-			let actionRow = new MessageActionRow();
-			let attachment = new MessageAttachment(".", "Cant_Load.mp3");
-			const heardleId = `heardle|${getID()}`;
+        consoleLog(
+            `heardle`,
+            `Starting a new heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty}`
+        );
 
-			const sortedMaps = await updateHeardle();
-			const heardle = new heardles({
-				_id: heardleId,
-				owner: command.user.id,
-				difficulty,
-				indexes: validIndexes.filter((i) => i != answerIndex),
-				created_at: new Date(),
-				played: 1,
-				message: command.id,
-				beatmaps: beatmaps.map((b) => {
-					const _map = {};
+        const playedBeatmaps: number[] = [];
+        let validIndexes: number[] = [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23, 24,
+        ];
 
-					Object.assign(_map, {
-						id: b.id,
-						title: b.title,
-						artist: b.artist,
-						covers: b.covers,
-					});
+        let answer = "";
+        let beatmaps: Beatmapset[] = [];
+        let answerIndex = -1;
+        let size = 1;
+        let actionRow = new ActionRowBuilder<StringSelectMenuBuilder>();
+        let attachment = new AttachmentBuilder(new Buffer(""), {
+            name: "Cant_Load.mp3",
+        });
+        const heardleId = `heardle|${getID()}`;
 
-					return _map;
-				}),
-				date: new Date(),
-				map: sortedMaps[answerIndex],
-				channel: command.channel?.id,
-				guild: command.guildId,
-				answer,
-			});
-			await heardle.save();
+        const sortedMaps = await updateHeardle();
 
-			await command.editReply({
-				content: `**Song**: ${heardle.played}/25\n**Level**: ${difficulty}`,
-				components: [actionRow],
-				files: [attachment],
-			});
+        const heardle = new heardles({
+            _id: heardleId,
+            owner: command.user.id,
+            difficulty,
+            indexes: validIndexes.filter((i) => i != answerIndex),
+            created_at: new Date(),
+            played: 1,
+            message: command.id,
+            beatmaps: beatmaps.map((b) => {
+                const _map = {};
 
-			consoleCheck(
-				`heardle`,
-				`Heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty} | Started!`
-			);
+                Object.assign(_map, {
+                    id: b.id,
+                    title: b.title,
+                    artist: b.artist,
+                    covers: b.covers,
+                });
 
-			// bot.on("interactionCreate", async (interaction) => {
-			// 	if (interaction.isSelectMenu()) {
-			// 		if (interaction.customId != heardleId) return;
+                return _map;
+            }),
+            date: new Date(),
+            map: sortedMaps[answerIndex],
+            channel: command.channel?.id,
+            guild: command.guildId,
+            answer,
+        });
 
-			// 		await interaction.deferReply();
+        await heardle.save();
 
-			// 		if (!user) return;
+        await command.editReply({
+            content: `**Song**: ${heardle.played}/25\n**Level**: ${difficulty}`,
+            components: [actionRow],
+            files: [attachment],
+        });
 
-			// 		if (!active) {
-			// 			interaction.editReply("This sessions is ended.");
+        consoleCheck(
+            `heardle`,
+            `Heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty} | Started!`
+        );
 
-			// 			return;
-			// 		}
+        async function updateHeardle(): Promise<any> {
+            const b = await osuApi.fetch.featuredBeatmapsets(difficulty);
 
-			// 		attempts++;
+            if (b.status != 200 || !b.data) {
+                validIndexes = [
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                    17, 18, 19, 20, 21, 22, 23, 24,
+                ];
 
-			// 		const selected = interaction.values[0];
-			// 		if (selected == answer) {
-			// 			const embed = new EmbedBuilder()
-			// 				.setAuthor({
-			// 					name: interaction.user.username,
-			// 					iconURL: interaction.user.avatarURL() || "",
-			// 				})
-			// 				.setTitle(`✅ Correct answer!`)
-			// 				.addField(
-			// 					"Beatmap",
-			// 					`[${beatmaps[answerIndex].artist} - ${beatmaps[answerIndex].title}](https://osu.ppy.sh/s/${beatmaps[answerIndex].id})`
-			// 				)
-			// 				.addField("Attempts", `${attempts}`, true)
-			// 				.addField(
-			// 					"Time",
-			// 					`${relativeTime(new Date(), new Date(time))}`,
-			// 					true
-			// 				)
-			// 				.setFooter("Next map in 5 seconds...")
-			// 				.setImage(beatmaps[answerIndex].covers["cover@2x"])
-			// 				.setColor("#17ea64");
+                updateHeardle();
+                return [];
+            }
 
-			// 			await command.editReply({
-			// 				content: `Loading next map...`,
-			// 				embeds: [],
-			// 				files: [],
-			// 			});
+            b.data.beatmapsets.splice(25, 999);
 
-			// 			const reply = await interaction.editReply({
-			// 				content: `<@${interaction.user.id}>`,
-			// 				embeds: [embed],
-			// 			});
+            beatmaps = b.data.beatmapsets;
 
-			// 			setTimeout(() => {
-			// 				interaction.deleteReply();
-			// 				updateHeardle();
-			// 				attempts = 0;
-			// 			}, 5000);
+            const beatmapTitleSelection =
+                new StringSelectMenuBuilder().setCustomId(heardleId);
 
-			// 			return;
-			// 		} else {
-			// 			await command.editReply({
-			// 				content: "Nop, try again.",
-			// 			});
-			// 			interaction.deleteReply();
-			// 		}
-			// 	}
-			// });
+            const sortedBeatmaps = getBeatmapNames(beatmapTitleSelection);
 
-			async function updateHeardle(): Promise<any> {
-				const b = await osuApi.fetch.featuredBeatmapsets(difficulty);
+            answerIndex =
+                validIndexes[Math.floor(Math.random() * validIndexes.length)];
 
-				if (b.status != 200 || !b.data) {
-					validIndexes = [
-						0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-						16, 17, 18, 19, 20, 21, 22, 23, 24,
-					];
+            if (!sortedBeatmaps[answerIndex]) answerIndex = validIndexes[0];
 
-					updateHeardle();
-					return [];
-				}
+            answer = sortedBeatmaps[answerIndex].title;
+            playedBeatmaps.push(sortedBeatmaps[answerIndex].id);
 
-				b.data.beatmapsets.splice(25, 999);
+            actionRow =
+                new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                    beatmapTitleSelection
+                );
 
-				beatmaps = b.data.beatmapsets;
+            attachment = await getAudio(sortedBeatmaps[answerIndex].id);
 
-				const beatmapTitleSelection =
-					new MessageSelectMenu().setCustomId(heardleId);
+            return sortedBeatmaps;
+        }
 
-				const sortedBeatmaps = getBeatmapNames(beatmapTitleSelection);
+        async function getAudio(id: number) {
+            try {
+                const buffer = await axios(
+                    `https://b.ppy.sh/preview/${id}.mp3`,
+                    {
+                        responseType: "arraybuffer",
+                        headers: {
+                            accept: "audio/mp3",
+                        },
+                    }
+                );
 
-				answerIndex =
-					validIndexes[
-						Math.floor(Math.random() * validIndexes.length)
-					];
+                const attachment = new AttachmentBuilder(
+                    Buffer.from(buffer.data),
+                    {
+                        name: "Heardle.mp3",
+                    }
+                );
 
-				if (!sortedBeatmaps[answerIndex]) answerIndex = validIndexes[0];
+                return attachment;
+            } catch (e) {
+                command.editReply(
+                    "osu! website sucks, i can't load the beatmap preview. Please, start a new section."
+                );
 
-				answer = sortedBeatmaps[answerIndex].title;
-				playedBeatmaps.push(sortedBeatmaps[answerIndex].id);
+                return new AttachmentBuilder(".", {
+                    name: "osu_website_response.mp3",
+                });
+            }
+        }
 
-				actionRow = new MessageActionRow().setComponents(
-					beatmapTitleSelection
-				);
+        function getBeatmapNames(menu: StringSelectMenuBuilder) {
+            const sortedMaps = beatmaps;
 
-				attachment = await getAudio(sortedBeatmaps[answerIndex].id);
+            sortedMaps.sort((a, b) => {
+                if (a.title.toLowerCase() < b.title.toLowerCase()) {
+                    return -1;
+                }
+                if (a.title.toLowerCase() > b.title.toLowerCase()) {
+                    return 1;
+                }
 
-				return sortedBeatmaps;
-			}
+                return 0;
+            });
 
-			async function getAudio(id: number) {
-				try {
-					const buffer = await axios(
-						`https://b.ppy.sh/preview/${id}.mp3`,
-						{
-							responseType: "arraybuffer",
-							headers: {
-								accept: "audio/mp3",
-							},
-						}
-					);
+            menu.setOptions();
+            sortedMaps.forEach((map) => {
+                menu.addOptions({
+                    label: truncateString(`${map.title} - ${map.artist}`, 100),
+                    value: map.title,
+                });
+            });
 
-					const attachment = new MessageAttachment(
-						Buffer.from(buffer.data),
-						"Heardle.mp3"
-					);
+            return sortedMaps;
+        }
+    }
+});
 
-					return attachment;
-				} catch (e) {
-					command.editReply(
-						"osu! website sucks, i can't load the beatmap preview. Please, start a new section."
-					);
-
-					return new MessageAttachment(
-						".",
-						"osu_website_response.mp3"
-					);
-				}
-			}
-
-			function getBeatmapNames(menu: MessageSelectMenu) {
-				const sortedMaps = beatmaps;
-
-				sortedMaps.sort((a, b) => {
-					if (a.title.toLowerCase() < b.title.toLowerCase()) {
-						return -1;
-					}
-					if (a.title.toLowerCase() > b.title.toLowerCase()) {
-						return 1;
-					}
-
-					return 0;
-				});
-
-				menu.setOptions();
-				sortedMaps.forEach((map) => {
-					menu.addOptions({
-						label: truncateString(
-							`${map.title} - ${map.artist}`,
-							100
-						),
-						value: map.title,
-					});
-				});
-
-				return sortedMaps;
-			}
-		}
-	},
-};
+export default heardle;
