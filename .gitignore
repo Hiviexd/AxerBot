@@ -5,3 +5,4 @@ tests
 .enxexample
 dist
 cache
+cache/nominators.json
