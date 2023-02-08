@@ -1,4 +1,3 @@
-import { EmbedBuilder } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";

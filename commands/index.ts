@@ -47,6 +47,8 @@ export const AxerCommands = [
     recent,
     osuset,
     player,
+    mapsetrank,
+    mapper,
 ];
 
 // export const commands: any = {

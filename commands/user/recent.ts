@@ -1,21 +1,6 @@
-/**
- * ! Currently not indexed (unusable) until it's fully finished
- */
-import axios from "axios";
-import {
-    Client,
-    ChatInputCommandInteraction,
-    Message,
-    EmbedBuilder,
-} from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
-import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
-import getEmoji from "../../helpers/text/getEmoji";
 import RecentScoreEmbed from "../../responses/osu/RecentScoreEmbed";
-import { GameModeName } from "../../types/game_mode";
-import { Score } from "../../types/score";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 

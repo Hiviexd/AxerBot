@@ -1,16 +1,5 @@
-import {
-    Client,
-    ChatInputCommandInteraction,
-    Message,
-    EmbedBuilder,
-    ModalActionRowComponent,
-    TextInputComponent,
-} from "discord.js";
-import createNewGuild from "../../database/utils/createNewGuild";
 import createNewUser from "../../database/utils/createNewUser";
 import * as database from "./../../database";
-import parseMessagePlaceholderFromString from "../../helpers/text/parseMessagePlaceholderFromString";
-import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
