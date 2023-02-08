@@ -1,4 +1,10 @@
-import { Client, ChatInputCommandInteraction, Interaction } from "discord.js";
+import {
+	Client,
+	ChatInputCommandInteraction,
+	Interaction,
+	PermissionResolvable,
+	GuildMember,
+} from "discord.js";
 import { AxerCommands } from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
@@ -7,23 +13,48 @@ import createNewUser from "../../database/utils/createNewUser";
 import { ownerId } from "./../../config.json";
 import generateMissingPermsEmbed from "../text/embeds/generateMissingPermsEmbed";
 
+function checkMemberPermissions(
+	member: GuildMember,
+	permissions: PermissionResolvable[]
+) {
+	let pass = true;
+
+	if (!member) return false;
+
+	if (!permissions) return true;
+
+	permissions.forEach((permission) => {
+		if (!member.permissions.has(permission)) pass = false;
+	});
+
+	return pass;
+}
+
 export default async function commandHandler(
 	bot: Client,
 	event: ChatInputCommandInteraction
 ) {
-	if (
-		event.user.bot ||
-		!event.channel ||
-		event.channel.isDMBased() ||
-		!event.guild
-	)
-		return;
+	if (event.user.bot || !event.channel || !event.guild) return;
 
 	const targetCommand = AxerCommands.find((c) =>
 		c.names.includes(event.commandName)
 	);
 
-	if (!targetCommand) return; // Command not found error embed
+	if (!targetCommand) return console.log("0"); // Command not found error embed
+
+	if (!targetCommand.allowDM && event.channel.isDMBased())
+		return console.log("1"); // Command error message
+
+	if (targetCommand.permissions && !event.member) return console.log("2"); // This command can't be executed here!
+
+	if (
+		!event.channel.isDMBased &&
+		checkMemberPermissions(
+			event.member as GuildMember,
+			targetCommand.permissions
+		)
+	)
+		return console.log("3");
 
 	try {
 		if (event.options.getSubcommand())

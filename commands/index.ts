@@ -39,7 +39,7 @@ import editmessage from "./management/editMessage";
 import userlog from "./management/userLog";
 import minesweeper from "./fun/minesweeper";
 
-export const AxerCommands = [ping];
+export const AxerCommands = [ping, avatar, about];
 
 // export const commands: any = {
 // 	ping: ping,

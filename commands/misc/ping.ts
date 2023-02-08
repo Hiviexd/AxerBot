@@ -1,6 +1,6 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const ping = new SlashCommand(["ping"], "Pong?");
+const ping = new SlashCommand("ping", "Pong?", "misc", true);
 
 ping.setExecuteFunction(async (command) => {
 	await command.deferReply(); // ? prevent errors

@@ -1,6 +1,6 @@
 import {
 	ChatInputCommandInteraction,
-	PermissionFlags,
+	PermissionResolvable,
 	SlashCommandBuilder,
 } from "discord.js";
 import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
@@ -19,13 +19,42 @@ export class SlashCommand {
 	private _executeFunction!: ISlashCommandExecuteFunction;
 	private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
 	private _subcommands: SlashCommandSubcommand[] = [];
+	public permissions: PermissionResolvable[] = [];
+	public category = "misc";
+	public help = {};
+	public allowDM = false;
 	public names: string[] = [];
 	public builder = new SlashCommandBuilder();
 
-	constructor(name: string[], description: string) {
-		this.builder.setName(name[0]);
+	constructor(
+		name: string[] | string,
+		description: string,
+		category: string,
+		allowDM: boolean,
+		help?: { [key: string | number]: string | string[] },
+		permissions?: PermissionResolvable[]
+	) {
 		this.builder.setDescription(description);
-		this.names = name;
+
+		if (typeof name != "string") {
+			this.builder.setName(name[0]);
+			this.names = name as string[];
+		} else {
+			this.builder.setName(name as string);
+			this.names = [name as string];
+		}
+
+		this.help = Object.assign({ description: description }, help);
+
+		if (permissions) this.permissions = permissions;
+
+		this.category = category;
+
+		this.allowDM = allowDM;
+	}
+
+	setHelp(help: { [key: string | number]: string | string[] }) {
+		this.help = help;
 	}
 
 	/**
