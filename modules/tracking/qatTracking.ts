@@ -23,6 +23,8 @@ async function qatTracking(bot: Client) {
         )
     );
 
+    console.log(storedData);
+
     const liveData = await qatApi.fetch.allUsers();
     const differentData: QatUser[] = [];
 
