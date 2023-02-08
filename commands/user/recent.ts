@@ -3,10 +3,10 @@
  */
 import axios from "axios";
 import {
-	Client,
-	ChatInputCommandInteraction,
-	Message,
-	EmbedBuilder,
+    Client,
+    ChatInputCommandInteraction,
+    Message,
+    EmbedBuilder,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import getTraceParams from "../../helpers/commands/getTraceParams";
@@ -17,132 +17,162 @@ import RecentScoreEmbed from "../../responses/osu/RecentScoreEmbed";
 import { GameModeName } from "../../types/game_mode";
 import { Score } from "../../types/score";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
-import { ApplicationCommandOptionType } from "discord-api-types/v9";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "rs",
-	help: {
-		description: "Check statistics for a player",
-		syntax: "/rs `username` `?mode`",
-		example: "/rs `username:sebola` `mode:taiko`",
-	},
-	category: "osu",
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "username",
-				description: "By osu! username",
-				type: 3,
-				max_value: 1,
-			},
-			/*{
-				name: "usermention",
-				description: "By user mention (This doesn't ping the user)",
-				type: 6,
-				max_value: 1,
-			},*/
-			{
-				name: "mode",
-				description: "Gamemode info to view",
-				type: 3,
-				max_value: 1,
-				choices: [
-					{
-						name: "osu",
-						value: "osu",
-					},
-					{
-						name: "taiko",
-						value: "taiko",
-					},
-					{
-						name: "catch",
-						value: "fruits",
-					},
-					{
-						name: "mania",
-						value: "mania",
-					},
-				],
-			},
-			{
-				name: "passed",
-				description: "Include only passed scores?",
-				type: ApplicationCommandOptionType.Number,
-				max_value: 1,
-				choices: [
-					{
-						name: "yes",
-						value: 0,
-					},
-					{
-						name: "no",
-						value: 1,
-					},
-				],
-			},
-		],
-	},
-	interaction: true,
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
+const recent = new SlashCommand(
+    ["rs", "recent"],
+    "Get the most recent score of a player",
+    "osu",
+    false,
+    {
+        syntax: "/rs `username` `?mode`",
+        example: "/rs `username:sebola` `mode:taiko`",
+    }
+);
 
-		const modeInput = command.options.get("mode");
-		const mode = modeInput ? modeInput.value?.toString() : undefined;
-		const passed = command.options.getNumber("passed") || 1;
+recent.builder
+    .addStringOption((option) =>
+        option.setName("username").setDescription("Player username")
+    )
+    .addStringOption((option) =>
+        option
+            .setName("mode")
+            .setDescription("Game mode of the score")
+            .addChoices(
+                {
+                    name: "osu",
+                    value: "osu",
+                },
+                {
+                    name: "taiko",
+                    value: "taiko",
+                },
+                {
+                    name: "catch",
+                    value: "fruits",
+                },
+                {
+                    name: "mania",
+                    value: "mania",
+                }
+            )
+    );
 
-		let { playerName, status } = await checkCommandPlayers(command);
+recent.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		const player = await osuApi.fetch.user(playerName);
+    const modeInput = command.options.get("mode");
+    const mode = modeInput ? modeInput.value?.toString() : undefined;
+    const passed = command.options.getNumber("passed") || 1;
 
-		if (player.status != 200)
-			return command.editReply({
-				embeds: [UserNotFound],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+    let { playerName, status } = await checkCommandPlayers(command);
 
-		if (!player.data || !player.data.id)
-			return command.editReply({
-				embeds: [UserNotFound],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+    const player = await osuApi.fetch.user(playerName);
 
-		if (status != 200)
-			return command.editReply({
-				embeds: [UserNotFound],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+    if (player.status != 200)
+        return command.editReply({
+            embeds: [UserNotFound],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
 
-		const recent = await osuApi.fetch.userRecent(
-			player.data.id.toString(),
-			passed,
-			mode
-		);
+    if (!player.data || !player.data.id)
+        return command.editReply({
+            embeds: [UserNotFound],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
 
-		if (
-			!recent.data[0] ||
-			!recent.data[0].user ||
-			!recent.data[0].beatmapset ||
-			!recent.data[0].beatmap
-		)
-			return command.editReply({
-				content: `**${player.data.username}** doesn't have any recent scores`,
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
+    if (status != 200)
+        return command.editReply({
+            embeds: [UserNotFound],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
 
-		RecentScoreEmbed.send(command, recent.data[0], player.data);
-	},
-};
+    const recent = await osuApi.fetch.userRecent(
+        player.data.id.toString(),
+        passed,
+        mode
+    );
+
+    if (
+        !recent.data[0] ||
+        !recent.data[0].user ||
+        !recent.data[0].beatmapset ||
+        !recent.data[0].beatmap
+    )
+        return command.editReply({
+            content: `**${player.data.username}** doesn't have any recent scores`,
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
+
+    RecentScoreEmbed.send(command, recent.data[0], player.data);
+});
+
+export default recent;
+
+// export default {
+// 	name: "rs",
+// 	help: {
+// 		description: "Check statistics for a player",
+// 		syntax: "/rs `username` `?mode`",
+// 		example: "/rs `username:sebola` `mode:taiko`",
+// 	},
+// 	category: "osu",
+// 	config: {
+// 		type: 1,
+// 		options: [
+// 			{
+// 				name: "username",
+// 				description: "By osu! username",
+// 				type: 3,
+// 				max_value: 1,
+// 			},
+// 			/*{
+// 				name: "usermention",
+// 				description: "By user mention (This doesn't ping the user)",
+// 				type: 6,
+// 				max_value: 1,
+// 			},*/
+// 			{
+// 				name: "mode",
+// 				description: "Gamemode info to view",
+// 				type: 3,
+// 				max_value: 1,
+// 				choices: [
+
+// 				],
+// 			},
+// 			{
+// 				name: "passed",
+// 				description: "Include only passed scores?",
+// 				type: ApplicationCommandOptionType.Number,
+// 				max_value: 1,
+// 				choices: [
+// 					{
+// 						name: "yes",
+// 						value: 0,
+// 					},
+// 					{
+// 						name: "no",
+// 						value: 1,
+// 					},
+// 				],
+// 			},
+// 		],
+// 	},
+// 	interaction: true,
+// 	run: async (
+// 		bot: Client,
+// 		command: ChatInputCommandInteraction,
+// 		args: string[]
+// 	) => {
+
+// },
+// };

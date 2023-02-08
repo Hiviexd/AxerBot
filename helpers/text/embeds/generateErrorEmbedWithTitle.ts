@@ -9,9 +9,9 @@
 import { EmbedBuilder } from "discord.js";
 import colors from "../../../constants/colors";
 
-export default (response?: string): EmbedBuilder => {
+export default (title: string, response?: string): EmbedBuilder => {
 	return new EmbedBuilder({
-		title: "❌ Error",
+		title: title,
 		description: response || "There was an error executing this operation.",
 	}).setColor(colors.red);
 };

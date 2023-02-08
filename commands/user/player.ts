@@ -1,12 +1,82 @@
-import { Client, ChatInputCommandInteraction, Message } from "discord.js";
+import { EmbedBuilder } from "discord.js";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import getTraceParams from "../../helpers/commands/getTraceParams";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
-import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 import PlayerEmbed from "../../responses/osu/PlayerEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
-import colors from "../../constants/colors";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
+const player = new SlashCommand(
+    ["player", "profile"],
+    "Check statistics for a player",
+    "osu",
+    false,
+    {
+        syntax: "/player `<name>` `<-?mode>`",
+        example: "/player `username:Hivie` `mode:osu`",
+        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
+    }
+);
+
+player.builder
+    .addStringOption((o) =>
+        o.setName("username").setDescription("Username of the player")
+    )
+    .addStringOption((o) =>
+        o.setName("mode").setDescription("Profile game mode").addChoices(
+            {
+                name: "osu!",
+                value: "osu",
+            },
+            {
+                name: "osu!taiko",
+                value: "taiko",
+            },
+            {
+                name: "osu!catch",
+                value: "fruits",
+            },
+            {
+                name: "osu!mania",
+                value: "mania",
+            }
+        )
+    );
+
+player.setExecuteFunction(async (command) => {
+    await command.deferReply();
+
+    const mode = command.options.getString("mode") || undefined;
+
+    let { playerName, status } = await checkCommandPlayers(command);
+
+    const player = await osuApi.fetch.user(playerName, mode);
+
+    if (status != 200)
+        return command.editReply({
+            embeds: [UserNotFound],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
+
+    if (!player.data.is_active)
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    `${player.data.username} is inactive in this game mode`
+                ),
+            ],
+            allowedMentions: {
+                repliedUser: false,
+            },
+        });
+
+    return PlayerEmbed.reply(player, command, mode);
+});
+
+export default player;
+/*
 export default {
 	name: "player",
 	help: {
@@ -30,7 +100,7 @@ export default {
 				description: "By user mention (This doesn't ping the user)",
 				type: 6,
 				max_value: 1,
-			},*/
+			},
 			{
 				name: "mode",
 				description: "Gamemode info to view",
@@ -63,37 +133,7 @@ export default {
 		command: ChatInputCommandInteraction,
 		args: string[]
 	) => {
-		await command.deferReply();
-
-		const modeInput = command.options.get("mode");
-		const mode = modeInput ? modeInput.value?.toString() : undefined;
-
-		let { playerName, status } = await checkCommandPlayers(command);
-
-		const player = await osuApi.fetch.user(playerName, mode);
-
-		if (status != 200)
-			return command.editReply({
-				embeds: [UserNotFound],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
-
-		if (!player.data.is_active)
-			return command.editReply({
-				embeds: [
-					{
-						title: "Umm...",
-						description: `This user isn't active on this gamemode.`,
-						color: colors.orange,
-					},
-				],
-				allowedMentions: {
-					repliedUser: false,
-				},
-			});
-
-		return PlayerEmbed.reply(player, command, mode);
+		
 	},
 };
+*/

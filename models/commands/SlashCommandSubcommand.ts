@@ -1,44 +1,45 @@
 import {
-	ChatInputCommandInteraction,
-	PermissionResolvable,
-	SlashCommandSubcommandBuilder,
+    ChatInputCommandInteraction,
+    PermissionResolvable,
+    SlashCommandBuilder,
+    SlashCommandSubcommandBuilder,
 } from "discord.js";
 import { ISlashCommandExecuteFunction } from "./SlashCommand";
 
 export class SlashCommandSubcommand {
-	private _executeFunction!: ISlashCommandExecuteFunction;
-	public allowDM = false;
-	public help = {};
-	public permissions?: PermissionResolvable[];
-	public builder = new SlashCommandSubcommandBuilder();
+    private _executeFunction!: ISlashCommandExecuteFunction;
+    public allowDM = false;
+    public help = {};
+    public permissions?: PermissionResolvable[];
+    public builder = new SlashCommandSubcommandBuilder();
 
-	constructor(
-		name: string,
-		description: string,
-		allowDM: boolean,
-		help?: { [key: string | number]: string | string[] },
-		permissions?: PermissionResolvable[]
-	) {
-		this.builder.setName(name);
-		this.builder.setDescription(description);
-		this.allowDM = allowDM;
+    constructor(
+        name: string,
+        description: string,
+        allowDM: boolean,
+        help?: { [key: string | number]: string | string[] },
+        permissions?: PermissionResolvable[]
+    ) {
+        this.builder.setName(name);
+        this.builder.setDescription(description);
+        this.allowDM = allowDM;
 
-		this.help = Object.assign({ description: description }, help);
+        this.help = Object.assign({ description: description }, help);
 
-		if (permissions) this.permissions = permissions;
-	}
+        if (permissions) this.permissions = permissions;
+    }
 
-	setHelp(help: { [key: string | number]: string | string[] }) {
-		this.help = help;
-	}
+    setHelp(help: { [key: string | number]: string | string[] }) {
+        this.help = help;
+    }
 
-	setExecuteFunction(fn: ISlashCommandExecuteFunction) {
-		this._executeFunction = fn;
+    setExecuteFunction(fn: ISlashCommandExecuteFunction) {
+        this._executeFunction = fn;
 
-		return this;
-	}
+        return this;
+    }
 
-	run(interaction: ChatInputCommandInteraction) {
-		this._executeFunction(interaction);
-	}
+    run(interaction: ChatInputCommandInteraction) {
+        this._executeFunction(interaction);
+    }
 }
