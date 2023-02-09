@@ -75,7 +75,7 @@ export default async (member: GuildMember) => {
 
         // ! remove when verification is fixed
         const message =
-            "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.";
+            "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
 
         const embed = new MessageEmbed({
             title: "⚠️ Notice",
