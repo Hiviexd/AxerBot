@@ -180,7 +180,9 @@ export default {
 		const staticMapperProfileButton = new MessageButton()
 			.setLabel("Mapper profile")
 			.setStyle("LINK")
-			.setURL(`https://osu.ppy.sh/users/${beatmapset.creator}`);
+			.setURL(
+				`https://osu.ppy.sh/users/${encodeURI(beatmapset.creator)}`
+			);
 
 		const staticOsuDirectButton = new MessageButton()
 			.setStyle("LINK")
@@ -237,7 +239,10 @@ export default {
 				return Math.round(difficulty.beatmap.bpmMax);
 
 			function parseFloatError(value: number) {
-				if (value.toString().split(".")[1] && value.toString().split(".")[1].length > 2) {
+				if (
+					value.toString().split(".")[1] &&
+					value.toString().split(".")[1].length > 2
+				) {
 					return Math.round(value);
 				}
 
@@ -260,6 +265,8 @@ export default {
 
 			return `https://osu.ppy.sh/s/${beatmapset.id}`;
 		}
+
+		console.log(staticButtonsRow.components[0]);
 
 		async function selectDifficulty(
 			sum: boolean,
