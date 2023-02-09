@@ -237,7 +237,7 @@ export default {
 				return Math.round(difficulty.beatmap.bpmMax);
 
 			function parseFloatError(value: number) {
-				if (value.toString().split(".")[1].length > 2) {
+				if (value.toString().split(".")[1] && value.toString().split(".")[1].length > 2) {
 					return Math.round(value);
 				}
 
