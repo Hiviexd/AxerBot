@@ -1,8 +1,8 @@
 import {
-	GuildMember,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
+    GuildMember,
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -10,58 +10,60 @@ import GenerateAuthToken from "./GenerateAuthToken";
 import colors from "../../../constants/colors";
 
 export default async (member: GuildMember) => {
-	const guild_db = await guilds.findById(member.guild.id);
+    const guild_db = await guilds.findById(member.guild.id);
 
-	if (guild_db == null) return;
+    if (guild_db == null) return;
 
-	if (!guild_db.verification.enable) return;
+    if (!guild_db.verification.enable) return;
 
-	const user_dm = await member.user.createDM();
+    const user_dm = await member.user.createDM();
 
-	if (!user_dm) return;
+    if (!user_dm) return;
 
-	const verification = await GenerateAuthToken(member);
+    const verification = await GenerateAuthToken(member);
 
-	if (verification.status != 200 || !verification.data) {
-		const error = new MessageEmbed({
-			title: "Wait...",
-			description: verification.message,
-			color: colors.orange,
-		});
+    if (verification.status != 200 || !verification.data) {
+        const error = new MessageEmbed({
+            title: "Wait...",
+            description: verification.message,
+            color: colors.orange,
+        });
 
-		user_dm.send({
-			embeds: [error],
-		});
+        user_dm.send({
+            embeds: [error],
+        });
 
-		return;
-	}
+        return;
+    }
 
-	const verification_channel: any = member.client.guilds.cache
-		.get(member.guild.id)
-		?.channels.cache.get(guild_db.verification.channel);
+    const verification_channel: any = member.client.guilds.cache
+        .get(member.guild.id)
+        ?.channels.cache.get(guild_db.verification.channel);
 
-	if (!verification_channel || verification_channel.type != "GUILD_TEXT") {
-		return member.client.users.cache
-			.get(member.guild.ownerId)
-			?.send(
-				`The verification system isn't working because you didn't set any channel or the channel is deleted. ${member.user.tag} is waiting for the verification. Please, verify the user manually and fix the system.`
-			);
-	}
+    if (!verification_channel || verification_channel.type != "GUILD_TEXT") {
+        return member.client.users.cache
+            .get(member.guild.ownerId)
+            ?.send(
+                `The verification system isn't working because you didn't set any channel or the channel is deleted. ${member.user.tag} is waiting for the verification. Please, verify the user manually and fix the system.`
+            );
+    }
 
-	if (guild_db.verification.button) {
-		const buttons = new MessageActionRow();
+    if (guild_db.verification.button) {
+        const buttons = new MessageActionRow();
 
-		buttons.addComponents([
-			new MessageButton({
-				type: "BUTTON",
-				customId: `verification|${member.id}|${member.guild.id}`,
-				label: "Send verification link",
-				style: "SUCCESS",
-				emoji: "982656610285527114",
-			}),
-		]);
+        buttons.addComponents([
+            new MessageButton({
+                type: "BUTTON",
+                customId: `verification|${member.id}|${member.guild.id}`,
+                label: "Send verification link",
+                style: "SUCCESS",
+                emoji: "982656610285527114",
+            }),
+        ]);
 
-		verification_channel.send({
+        /*
+        * original code before the verification system broke
+        verification_channel.send({
 			content: parseMessagePlaceholderFromMember(
 				guild_db.verification.message,
 				member,
@@ -69,55 +71,30 @@ export default async (member: GuildMember) => {
 			),
 			components: [buttons],
 		});
-	} else {
-		verification_channel.send({
-			content: parseMessagePlaceholderFromMember(
-				guild_db.verification.message,
-				member,
-				guild_db
-			),
-		});
-	}
+        */
 
-	//? This is back from when we used PMs and reactions for verification
-	// .then((m: Message) => {
+        // ! remove when verification is fixed
+        const message =
+            "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
 
-	// 	collector.on("collect", () => {
-	// 		if (!user_dm)
-	// 			return verification_channel.send(
-	// 				`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and click on the button again.**)`
-	// 			);
+        const embed = new MessageEmbed({
+            title: "⚠️ Notice",
+            description: message,
+            color: colors.yellowBright,
+        });
 
-	// 		if (verification.status != 200 || !verification.data) {
-	// 			const error = new MessageEmbed({
-	// 				title: "Wait...",
-	// 				description: verification.message,
-	// 				color: "#ea6112",
-	// 			});
-
-	// 			user_dm.send({
-	// 				embeds: [error],
-	// 			});
-
-	// 			return;
-	// 		}
-
-	// 		member
-	// 			.send({
-	// 				embeds: [embed],
-	// 				components: [buttons],
-	// 			})
-
-	// 			.then(() => {
-	// 				verification_channel.send(
-	// 					`<@${member.id}> **Check your private messages.** (If you haven't recieved anything, please allow private messages from this server and click on the button again.)`
-	// 				);
-	// 			})
-	// 			.catch((e) => {
-	// 				verification_channel.send(
-	// 					`<@${member.id}> **Your private messages are disabled! Please, enable private messages from this server and click on the button again.**)`
-	// 				);
-	// 			});
-	// 	});
-	// });
+        verification_channel.send({
+            content: `<@${member.id}>`,
+            embeds: [embed],
+        });
+        // !
+    } else {
+        verification_channel.send({
+            content: parseMessagePlaceholderFromMember(
+                guild_db.verification.message,
+                member,
+                guild_db
+            ),
+        });
+    }
 };
