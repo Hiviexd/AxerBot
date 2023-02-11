@@ -1,4 +1,4 @@
-import { Client, MessageEmbed, CommandInteraction } from "discord.js";
+import { Client, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 import colors from "../../constants/colors";
 import axios from "axios";
 
@@ -32,7 +32,11 @@ export default {
 		],
 	},
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		let type = command.options.get("type")
@@ -43,7 +47,7 @@ export default {
 			axios(`https://uselessfacts.jsph.pl/today.json?language=en`)
 				.then(async (res) => {
 					const fact = res.data.text;
-					const embed = new MessageEmbed({
+					const embed = new EmbedBuilder({
 						title: "🌟 Fact of the Day",
 						description: fact.replace(/`/g, "'"),
 						color: colors.gold,
@@ -59,7 +63,7 @@ export default {
 				.get(`https://uselessfacts.jsph.pl/random.json?language=en`)
 				.then(async (res) => {
 					const fact = res.data.text;
-					const embed = new MessageEmbed({
+					const embed = new EmbedBuilder({
 						title: "📘 Random Fact",
 						description: fact.replace(/`/g, "'"),
 						color: colors.blue,

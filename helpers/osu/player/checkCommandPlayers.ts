@@ -1,7 +1,7 @@
-import { CommandInteraction, Message } from "discord.js";
+import { ChatInputCommandInteraction, Message } from "discord.js";
 import * as database from "../../../database";
 
-export default async (command: CommandInteraction) => {
+export default async (command: ChatInputCommandInteraction) => {
 	const usernameInput = command.options.getString("username", false);
 	const userInput = command.options.getUser("user", false);
 

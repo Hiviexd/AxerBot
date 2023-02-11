@@ -1,4 +1,4 @@
-import { Message, CommandInteraction } from "discord.js";
+import { Message, ChatInputCommandInteraction } from "discord.js";
 import { ownerId } from "../../../../config.json";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
@@ -9,12 +9,12 @@ export default {
 	name: "role",
 	group: "remove",
 	help: {
-		description: "Removes a role from the default verification role(s) of the server",
+		description:
+			"Removes a role from the default verification role(s) of the server",
 		syntax: "/verification `remove role` `target_role:<Role Id|Role Mention>`",
-		example:
-			"/verification `remove role` `target_role:@Verified`",
+		example: "/verification `remove role` `target_role:@Verified`",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member || !command.guild || !command.client.user) return;
 
 		if (typeof command.member?.permissions == "string") return;

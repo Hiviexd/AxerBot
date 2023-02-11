@@ -1,6 +1,6 @@
 import {
 	Client,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Modal,
 	TextInputComponent,
 	ModalActionRowComponent,
@@ -32,7 +32,11 @@ export default {
 	interaction: true,
 	category: "management",
 	permissions: ["MANAGE_MESSAGES"],
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		if (!command.member || !command.guild) return;
 
 		if (typeof command.member?.permissions == "string") return;
@@ -52,7 +56,10 @@ export default {
 			.setLabel("Message")
 			.setRequired(true);
 
-		const firstTextInput = new MessageActionRow<ModalActionRowComponent>().addComponents(textInput);
+		const firstTextInput =
+			new MessageActionRow<ModalActionRowComponent>().addComponents(
+				textInput
+			);
 
 		modal.addComponents(firstTextInput);
 		await command.showModal(modal);

@@ -1,10 +1,11 @@
 import {
 	Client,
-	CommandInteraction,
-	CommandInteractionOptionResolver,
+	ChatInputCommandInteraction,
 	Interaction,
+	PermissionResolvable,
+	GuildMember,
 } from "discord.js";
-import { commands } from "../../commands";
+import { AxerCommands } from "../../commands";
 import createNewGuild from "../../database/utils/createNewGuild";
 import * as database from "../../database";
 import checkCooldown from "../general/checkCooldown";
@@ -12,75 +13,126 @@ import createNewUser from "../../database/utils/createNewUser";
 import { ownerId } from "./../../config.json";
 import generateMissingPermsEmbed from "../text/embeds/generateMissingPermsEmbed";
 
+function checkMemberPermissions(
+	member: GuildMember,
+	permissions: PermissionResolvable[]
+) {
+	let pass = true;
+
+	if (!member) return false;
+
+	if (!permissions) return true;
+
+	permissions.forEach((permission) => {
+		if (!member.permissions.has(permission)) pass = false;
+	});
+
+	return pass;
+}
+
 export default async function commandHandler(
 	bot: Client,
-	interaction: CommandInteraction
+	event: ChatInputCommandInteraction
 ) {
-	if (interaction.user.bot) return;
-	if (interaction.channel?.type == "DM") return;
-	if (!interaction.guild) return;
-	let guild = await database.guilds.findOne({ _id: interaction.guildId });
+	if (event.user.bot || !event.channel || !event.guild) return;
 
-	const user = await database.users.findById(interaction.user.id);
+	const targetCommand = AxerCommands.find((c) =>
+		c.names.includes(event.commandName)
+	);
 
-	if (guild == null) guild = await createNewGuild(interaction.guild);
-	if (user == null) await createNewUser(interaction.user);
+	if (!targetCommand) return console.log("0"); // Command not found error embed
 
-	const requested_command = commands[interaction.commandName];
-	if (!requested_command) return interaction.reply("Command not found!");
+	if (!targetCommand.allowDM && event.channel.isDMBased())
+		return console.log("1"); // Command error message
 
-	if (requested_command) {
-		function checkPermissions() {
-			if (!requested_command.permissions) return true;
+	if (targetCommand.permissions && !event.member) return console.log("2"); // This command can't be executed here!
 
-			if (!interaction.member) return false;
-			if (typeof interaction.member.permissions == "string") return false;
+	if (
+		!event.channel.isDMBased &&
+		checkMemberPermissions(
+			event.member as GuildMember,
+			targetCommand.permissions
+		)
+	)
+		return console.log("3");
 
-			if (interaction.user.id == ownerId) return true;
-
-			return interaction.member.permissions.has(
-				requested_command.permissions,
-				true
-			);
-		}
-
-		if (!checkPermissions()) {
-			return interaction.reply({
-				embeds: [
-					generateMissingPermsEmbed(requested_command.permissions),
-				],
+	try {
+		if (event.options.getSubcommand())
+			return targetCommand.runSubcommand(event, {
+				name: event.options.getSubcommand(),
+				group: event.options.getSubcommandGroup(),
 			});
-		}
-
-		try {
-			let subcommand_group = "";
-
-			try {
-				subcommand_group = interaction.options.getSubcommandGroup();
-			} catch (e) {
-				void {};
-			}
-
-			if (subcommand_group) {
-				const subcommand = interaction.options.getSubcommand(true);
-
-				const requested_subcommand = requested_command.subcommands.find(
-					(c: any) =>
-						c.group == subcommand_group && c.name == subcommand
-				);
-
-				if (requested_subcommand)
-					return requested_subcommand.run(interaction, []);
-			}
-
-			requested_command.run(bot, interaction, []);
-		} catch (e) {
-			console.error(e);
-			interaction
-				.reply("Something is wrong, I can't run this command.")
-				.catch((e) => {
-					console.error(e);
-				});
-		}
+	} catch (e) {
+		void {};
 	}
+
+	targetCommand.run(event);
+
+	// if (interaction.user.bot) return;
+	// if (interaction.channel?.type == "DM") return;
+	// if (!interaction.guild) return;
+	// let guild = await database.guilds.findOne({ _id: interaction.guildId });
+
+	// const user = await database.users.findById(interaction.user.id);
+
+	// if (guild == null) guild = await createNewGuild(interaction.guild);
+	// if (user == null) await createNewUser(interaction.user);
+
+	// const requested_command = commands[interaction.commandName];
+	// if (!requested_command) return interaction.reply("Command not found!");
+
+	// if (requested_command) {
+	// 	function checkPermissions() {
+	// 		if (!requested_command.permissions) return true;
+
+	// 		if (!interaction.member) return false;
+	// 		if (typeof interaction.member.permissions == "string") return false;
+
+	// 		if (interaction.user.id == ownerId) return true;
+
+	// 		return interaction.member.permissions.has(
+	// 			requested_command.permissions,
+	// 			true
+	// 		);
+	// 	}
+
+	// 	if (!checkPermissions()) {
+	// 		return interaction.reply({
+	// 			embeds: [
+	// 				generateMissingPermsEmbed(requested_command.permissions),
+	// 			],
+	// 		});
+	// 	}
+
+	// 	try {
+	// 		let subcommand_group = "";
+
+	// 		try {
+	// 			subcommand_group = interaction.options.getSubcommandGroup();
+	// 		} catch (e) {
+	// 			void {};
+	// 		}
+
+	// 		if (subcommand_group) {
+	// 			const subcommand = interaction.options.getSubcommand(true);
+
+	// 			const requested_subcommand = requested_command.subcommands.find(
+	// 				(c: any) =>
+	// 					c.group == subcommand_group && c.name == subcommand
+	// 			);
+
+	// 			if (requested_subcommand)
+	// 				return requested_subcommand.run(interaction, []);
+	// 		}
+
+	// 		requested_command.run(bot, interaction, []);
+	// 	} catch (e) {
+	// 		console.error(e);
+	// 		interaction
+	// 			.reply("Something is wrong, I can't run this command.")
+	// 			.catch((e) => {
+	// 				console.error(e);
+	// 			});
+	// 	}
+	// }
 }

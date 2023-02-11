@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, MessageEmbed } from "discord.js";
+import { Client, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import * as database from "./../../database";
 import enable from "./subcommands/logging/enable";
 import disable from "./subcommands/logging/disable";
@@ -52,7 +52,11 @@ export default {
 			},
 		],
 	},
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 
 		if (!command.member || typeof command.member.permissions == "string")
@@ -61,7 +65,7 @@ export default {
 		let guild = await database.guilds.findById(command.guildId);
 		if (!guild) return;
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setTitle("⚙️ Logging Configuration")
 			.setColor(guild.logging.enabled ? colors.green : colors.red)
 			.addField(

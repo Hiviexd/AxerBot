@@ -1,4 +1,4 @@
-import { Client, CommandInteraction } from "discord.js";
+import { Client, ChatInputCommandInteraction } from "discord.js";
 
 export default {
 	name: "choose",
@@ -66,7 +66,11 @@ export default {
 		],
 	},
 	category: "fun",
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 		const choices: string[] = [];
 

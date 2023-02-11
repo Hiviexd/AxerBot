@@ -1,23 +1,11 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "ping",
-	help: {
-		description: "Pong?",
-		example: "/ping",
-	},
-	config: {
-		type: 1,
-	},
-	interaction: true,
-	category: "misc",
-	run: async (
-		bot: Client,
-		interaction: CommandInteraction,
-		args: string[]
-	) => {
-		await interaction.deferReply(); // ? prevent errors
+const ping = new SlashCommand("ping", "Pong?", "misc", true);
 
-		return interaction.editReply("`" + bot.ws.ping + " ms`");
-	},
-};
+ping.setExecuteFunction(async (command) => {
+	await command.deferReply(); // ? prevent errors
+
+	return command.editReply("`" + command.client.ws.ping + " ms`");
+});
+
+export default ping;

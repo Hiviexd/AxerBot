@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, ReactionCollector } from "discord.js";
+import { Client, Message, EmbedBuilder, ReactionCollector } from "discord.js";
 import { owners } from "../../config.json";
 import { Paginator } from "array-paginator";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
@@ -30,7 +30,7 @@ export default {
 			function generateFor(pageData: any[] | undefined) {
 				if (!pageData) return;
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(colors.blue)
 					.setTitle("Server List")
 					.setDescription(

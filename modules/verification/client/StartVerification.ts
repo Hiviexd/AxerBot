@@ -1,8 +1,8 @@
 import {
-    GuildMember,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
+	GuildMember,
+	MessageActionRow,
+	MessageButton,
+	EmbedBuilder,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";

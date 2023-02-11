@@ -1,64 +1,53 @@
-import { Client, CommandInteraction, Message } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapperEmbed from "../../responses/osu/MapperEmbed";
-import checkMessagePlayers from "../../helpers/osu/player/checkMessagePlayers";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "mapper",
-	help: {
-		description: "Displays mapper statistics of a user",
-		syntax: "/mapper `<user>`",
-		example:
-			"/mapper `Hivie`\n /mapper <@341321481390784512>\n /mapper `HEAVENLY MOON`",
-		note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-	},
-	category: "osu",
-	interaction: true,
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "username",
-				description: "By osu! username",
-				type: 3,
-				max_value: 1,
-			},
-			/*{
-				name: "usermention",
-				description: "By user mention (This doesn't ping the user)",
-				type: 6,
-				max_value: 1,
-			},*/
-		],
-	},
-	run: async (bot: Client, command: CommandInteraction) => {
-		await command.deferReply();
+const mapper = new SlashCommand(
+    "mapper",
+    "Displays mapper statistics of a user",
+    "osu",
+    false,
+    {
+        syntax: "/mapper `<user>`",
+        example:
+            "/mapper `Hivie`\n /mapper <@341321481390784512>\n /mapper `HEAVENLY MOON`",
+        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
+    }
+);
 
-		let { playerName, status } = await checkCommandPlayers(command);
+mapper.builder.addStringOption((o) =>
+    o.setName("username").setDescription("Mapper username")
+);
 
-		if (status != 200) return;
+mapper.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		const mapper = await osuApi.fetch.user(encodeURI(playerName));
+    let { playerName, status } = await checkCommandPlayers(command);
 
-		if (mapper.status != 200)
-			return command.editReply({
-				embeds: [UserNotFound],
-			});
+    if (status != 200) return;
 
-		const mapper_beatmaps = await osuApi.fetch.userBeatmaps(
-			mapper.data.id.toString()
-		);
+    const mapper = await osuApi.fetch.user(encodeURI(playerName));
 
-		if (mapper_beatmaps.status != 200) return;
+    if (mapper.status != 200)
+        return command.editReply({
+            embeds: [UserNotFound],
+        });
 
-		if (mapper_beatmaps.data.sets.length < 1)
-			return command.editReply({
-				embeds: [UserNotMapper],
-			});
+    const mapper_beatmaps = await osuApi.fetch.userBeatmaps(
+        mapper.data.id.toString()
+    );
 
-		MapperEmbed.reply(mapper, mapper_beatmaps, command);
-	},
-};
+    if (mapper_beatmaps.status != 200) return;
+
+    if (mapper_beatmaps.data.sets.length < 1)
+        return command.editReply({
+            embeds: [UserNotMapper],
+        });
+
+    MapperEmbed.reply(mapper, mapper_beatmaps, command);
+});
+
+export default mapper;

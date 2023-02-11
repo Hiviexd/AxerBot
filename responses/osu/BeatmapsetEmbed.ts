@@ -1,12 +1,12 @@
 import {
-    ButtonInteraction,
-    InteractionCollector,
-    Message,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
-    MessageSelectMenu,
-    SelectMenuInteraction,
+	ButtonInteraction,
+	InteractionCollector,
+	Message,
+	MessageActionRow,
+	MessageButton,
+	EmbedBuilder,
+	MessageSelectMenu,
+	SelectMenuInteraction,
 } from "discord.js";
 
 import {

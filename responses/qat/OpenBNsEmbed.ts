@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { QatAllUsersResponse, QatUser } from "../../types/qat";
 import getOpenBNsPerMode from "../../helpers/qat/getters/requestStatus/getOpenBNsPerMode";
 import colors from "../../constants/colors";
@@ -7,7 +7,7 @@ export default {
 	reply: (
 		qatAllUsers: QatAllUsersResponse,
 		gamemode: string | undefined,
-		command: CommandInteraction
+		command: ChatInputCommandInteraction
 	) => {
 		let openBNs: QatUser[] = [];
 
@@ -20,7 +20,7 @@ export default {
 			}
 		});
 
-		let e = new MessageEmbed().setColor(colors.qat);
+		let e = new EmbedBuilder().setColor(colors.qat);
 		//.setDescription(`According to the **[BN/NAT website](https://bn.mappersguild.com/)**`);
 
 		if (gamemode) {

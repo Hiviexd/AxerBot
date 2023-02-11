@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 const token = process.env.TOKEN;
 import "colors";
-import { Client, Intents, Message } from "discord.js";
+import { Client, IntentsBitField, Message } from "discord.js";
 import commandHandler from "./helpers/core/commandHandler";
 import "./helpers/osu/fetcher/startConnection";
 import keepAlive from "./server";
@@ -11,17 +11,17 @@ import eventHandler from "./helpers/core/eventHandler";
 import registerCommands from "./helpers/interactions/registerCommands";
 import { connectToBancho } from "./modules/bancho/client";
 
-export const bot = new Client({
-    intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.GUILD_MESSAGE_TYPING,
-        Intents.FLAGS.DIRECT_MESSAGES,
-        Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-        Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-    ],
+const bot = new Client({
+	intents: [
+		IntentsBitField.Flags.Guilds,
+		IntentsBitField.Flags.GuildMembers,
+		IntentsBitField.Flags.GuildMessages,
+		IntentsBitField.Flags.GuildMessageReactions,
+		IntentsBitField.Flags.GuildMessageTyping,
+		IntentsBitField.Flags.DirectMessageTyping,
+		IntentsBitField.Flags.DirectMessages,
+		IntentsBitField.Flags.DirectMessageReactions,
+	],
 });
 
 keepAlive();

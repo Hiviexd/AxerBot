@@ -1,4 +1,4 @@
-import { MessageEmbed, Message, PartialMessage } from "discord.js";
+import { EmbedBuilder, Message, PartialMessage } from "discord.js";
 import * as database from "../../database";
 import truncateString from "../../helpers/text/truncateString";
 import colors from "../../constants/colors";
@@ -40,7 +40,7 @@ export default async (
 
 		const edited = truncateString(newMessage.cleanContent, count);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(colors.blue)
 			.setAuthor({
 				name: newMessage.member.nickname

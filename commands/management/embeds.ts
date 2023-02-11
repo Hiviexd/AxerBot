@@ -1,4 +1,4 @@
-import { Client, Channel, CommandInteraction } from "discord.js";
+import { Client, Channel, ChatInputCommandInteraction } from "discord.js";
 import * as database from "../../database";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
@@ -54,7 +54,11 @@ export default {
 	},
 	category: "management",
 	permissions: ["MANAGE_CHANNELS"],
-	run: async (bot: Client, command: CommandInteraction, args: string[]) => {
+	run: async (
+		bot: Client,
+		command: ChatInputCommandInteraction,
+		args: string[]
+	) => {
 		await command.deferReply();
 		if (!command.guild) return;
 
@@ -237,7 +241,7 @@ export default {
 		// });
 		// function sendConfiguration() {
 		// 	if (!guild) return;
-		// 	const embed = new MessageEmbed()
+		// 	const embed = new EmbedBuilder()
 		// 		.setTitle("⚙ Current embeds configuration")
 		// 		.setDescription(
 		// 			`Use \`${guild.prefix}help embeds\` to see the how to configure embeds`

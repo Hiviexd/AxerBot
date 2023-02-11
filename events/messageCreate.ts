@@ -59,7 +59,7 @@ export default {
 				let canSendMessages = false;
 
 				botAsMember.roles.cache.forEach((r) => {
-					if (r.permissions.has("SEND_MESSAGES") == true)
+					if (r.permissions.has("SendMessages") == true)
 						canSendMessages = true;
 				});
 

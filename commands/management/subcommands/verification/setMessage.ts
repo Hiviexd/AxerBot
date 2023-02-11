@@ -1,6 +1,6 @@
 import {
 	Message,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 	Modal,
 	TextInputComponent,
 	ModalActionRowComponent,
@@ -24,7 +24,7 @@ export default {
 		placeholders: "`{member}` - a ping of the member that will be verified",
 		"example message": "Hello {member} and welcome to this server!",
 	},
-	run: async (command: CommandInteraction, args: string[]) => {
+	run: async (command: ChatInputCommandInteraction, args: string[]) => {
 		if (!command.member) return;
 
 		if (typeof command.member?.permissions == "string") return;

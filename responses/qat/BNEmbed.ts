@@ -1,6 +1,6 @@
 import { QatUserResponse, UserActivityResponse } from "../../types/qat";
 import { UserResponse } from "../../types/user";
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getUniqueMappersNumber from "../../helpers/qat/getters/mappers/getUniqueMappersNumber";
 import getTop3Mappers from "../../helpers/qat/getters/mappers/getTop3Mappers";
@@ -20,7 +20,7 @@ export default {
 		osuUser: UserResponse,
 		qatUser: QatUserResponse,
 		activity: UserActivityResponse,
-		command: CommandInteraction
+		command: ChatInputCommandInteraction
 	) => {
 		const usergroup = parseUsergroup(osuUser.data); // ? Get the highest usergroup
 
@@ -47,7 +47,7 @@ export default {
 			.join("")
 			.trim();
 
-		let e = new MessageEmbed()
+		let e = new EmbedBuilder()
 			.setAuthor({
 				name: `${osuUser.data.username} • BN${
 					qatUser.data.natDuration ? "/NAT" : ""

@@ -2,7 +2,7 @@ import {
 	Message,
 	MessageActionRow,
 	MessageContextMenuInteraction,
-	MessageEmbed,
+	EmbedBuilder,
 } from "discord.js";
 import { ParsedComment } from "../../helpers/osu/url/parseComment";
 import truncateString from "../../helpers/text/truncateString";
@@ -24,7 +24,7 @@ export default {
 			url: comment.url,
 		});
 
-		const embed = new MessageEmbed({
+		const embed = new EmbedBuilder({
 			author: {
 				name: comment.user.username,
 				iconURL: comment.user.avatar_url,
@@ -71,7 +71,7 @@ export default {
 			url: comment.url,
 		});
 
-		const embed = new MessageEmbed({
+		const embed = new EmbedBuilder({
 			author: {
 				name: comment.user.username,
 				iconURL: comment.user.avatar_url,

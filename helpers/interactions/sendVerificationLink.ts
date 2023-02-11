@@ -1,8 +1,8 @@
 import {
-    Interaction,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
+	Interaction,
+	MessageActionRow,
+	MessageButton,
+	EmbedBuilder,
 } from "discord.js";
 import { users, verifications } from "../../database";
 import createNewUser from "../../database/utils/createNewUser";
@@ -24,7 +24,6 @@ export default async (interaction: Interaction) => {
         });
 
     if (!interaction.guild) return;
-
     // if (await getWebsiteStatus("https://axer-auth.ppy.tn") === 502) return interaction.editReply({
     //     embeds: [generateErrorEmbed("The verification server is down. Please try again later, or contact a server moderator to manually verify you.")]
     // });
