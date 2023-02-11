@@ -9,6 +9,7 @@ import keepAlive from "./server";
 import { consoleCheck } from "./helpers/core/logger";
 import eventHandler from "./helpers/core/eventHandler";
 import registerCommands from "./helpers/interactions/registerCommands";
+import { connectToBancho } from "./modules/bancho/client";
 
 const bot = new Client({
 	intents: [
@@ -26,7 +27,8 @@ const bot = new Client({
 keepAlive();
 
 bot.login(token).then(() => {
-	eventHandler(bot);
-	registerCommands(bot);
-	consoleCheck("index.ts", "Running and listening to commands!");
+    connectToBancho();
+    eventHandler(bot);
+    registerCommands(bot);
+    consoleCheck("index.ts", "Running and listening to commands!");
 });

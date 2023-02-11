@@ -59,7 +59,7 @@ export default async function logServerLeaves(
 		);
 		if (!channel) return;
 
-		channel.send({ embeds: [embed] });
+		channel.send({ embeds: [embed] }).catch((e: any) => console.error(e));
 	} catch (e) {
 		console.error(e);
 	}
