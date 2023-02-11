@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, Collection, GuildMember } from "discord.js";
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
 import commandHandler from "../helpers/core/commandHandler";
@@ -14,6 +14,12 @@ export default {
 			if (message.channel.type === "DM") return;
 			if (!message.guild) return;
 
+			const messageChannel = message.guild.channels.cache.get(
+				message.channelId
+			);
+
+			if (!messageChannel) return;
+
 			const validChannelTypes = [
 				"GUILD_TEXT",
 				"GUILD_NEWS",
@@ -27,6 +33,14 @@ export default {
 			);
 
 			if (!botAsMember) return;
+
+			if (
+				!(messageChannel.members as Collection<string, GuildMember>)
+					.get(botAsMember.id)
+					?.permissions.has("SEND_MESSAGES")
+			)
+				return;
+
 			if (!botAsMember.permissions.has("SEND_MESSAGES")) return;
 
 			if (

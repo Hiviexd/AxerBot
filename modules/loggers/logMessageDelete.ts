@@ -61,7 +61,7 @@ export default async (message: Message<boolean> | PartialMessage) => {
 		);
 		if (!channel) return;
 
-		channel.send({ embeds: [embed] });
+		channel.send({ embeds: [embed] }).catch((e: any) => console.error(e));
 	} catch (e) {
 		console.error(e);
 	}
