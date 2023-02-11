@@ -16,25 +16,7 @@ export default async (member: GuildMember) => {
 
     if (!guild_db.verification.enable) return;
 
-    const user_dm = await member.user.createDM();
-
-    if (!user_dm) return;
-
     const verification = await GenerateAuthToken(member);
-
-    if (verification.status != 200 || !verification.data) {
-        const error = new MessageEmbed({
-            title: "Wait...",
-            description: verification.message,
-            color: colors.orange,
-        });
-
-        user_dm.send({
-            embeds: [error],
-        });
-
-        return;
-    }
 
     const verification_channel: any = member.client.guilds.cache
         .get(member.guild.id)
@@ -48,45 +30,56 @@ export default async (member: GuildMember) => {
             );
     }
 
+    if (verification.status != 200 || !verification.data) {
+        const error = new MessageEmbed({
+            title: "Something went wrong!",
+            description: verification.message,
+            color: colors.orange,
+        });
+
+        verification_channel.send({
+            embeds: [error],
+        });
+
+        return;
+    }
+
     if (guild_db.verification.button) {
         const buttons = new MessageActionRow();
 
         buttons.addComponents([
             new MessageButton({
                 type: "BUTTON",
-                customId: `verification|${member.id}|${member.guild.id}`,
+                customId: `verification|${member.id}|${verification.data._id}`,
                 label: "Send verification link",
                 style: "SUCCESS",
                 emoji: "982656610285527114",
             }),
         ]);
 
-        /*
-        * original code before the verification system broke
         verification_channel.send({
-			content: parseMessagePlaceholderFromMember(
-				guild_db.verification.message,
-				member,
-				guild_db
-			),
-			components: [buttons],
-		});
-        */
+            content: parseMessagePlaceholderFromMember(
+                guild_db.verification.message,
+                member,
+                guild_db
+            ),
+            components: [buttons],
+        });
 
         // ! remove when verification is fixed
-        const message =
-            "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
+        // const message =
+        //     "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
 
-        const embed = new MessageEmbed({
-            title: "⚠️ Notice",
-            description: message,
-            color: colors.yellowBright,
-        });
+        // const embed = new MessageEmbed({
+        //     title: "⚠️ Notice",
+        //     description: message,
+        //     color: colors.yellowBright,
+        // });
 
-        verification_channel.send({
-            content: `<@${member.id}>`,
-            embeds: [embed],
-        });
+        // verification_channel.send({
+        //     content: `<@${member.id}>`,
+        //     embeds: [embed],
+        // });
         // !
     } else {
         verification_channel.send({
