@@ -1,38 +1,23 @@
 import ping from "./misc/ping";
 import mapper from "./user/mapper";
-import choose from "./fun/choose";
 import yesno from "./fun/yesno";
-import coinflip from "./fun/coinflip";
 import roll from "./fun/roll";
 import revolver from "./fun/revolver";
 import owoify from "./fun/owoify";
 import pun from "./fun/pun";
-import purge from "./management/purge";
-import sendmessage from "./management/sendMessage";
 import osuset from "./user/osuset";
 import mapsetrank from "./user/mapsetrank";
-import help from "./misc/help";
-import quotes from "./management/quotes";
-import logging from "./management/logging";
 import player from "./user/player";
-import eval from "./dev/eval";
-import serverlist from "./dev/serverlist";
-import repeat from "./dev/repeat";
 import avatar from "./misc/avatar";
-import embeds from "./management/embeds";
 import recent from "./user/recent";
-import verification from "./management/verification";
-import fact from "./fun/fact";
 import reminder from "./misc/reminder";
-import bn from "./BNsite/bn";
 import about from "./misc/about";
-import openbns from "./BNsite/openbns";
 import heardle from "./fun/heardle";
-import qattrack from "./BNsite/tracking";
-import osutimestamps from "./management/osuTimestamps";
-import editmessage from "./management/editMessage";
-import userlog from "./management/userLog";
 import minesweeper from "./fun/minesweeper";
+import fact from "./fun/fact";
+import coinflip from "./fun/coinflip";
+import choose from "./fun/choose";
+import bntracker from "./BNsite/bntracker";
 
 export const AxerCommands = [
     heardle,
@@ -51,6 +36,10 @@ export const AxerCommands = [
     pun,
     owoify,
     minesweeper,
+    fact,
+    coinflip,
+    choose,
+    bntracker,
 ];
 
 // export const commands: any = {
