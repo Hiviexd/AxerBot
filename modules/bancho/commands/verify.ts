@@ -2,6 +2,7 @@ import { BanchoClient, PrivateMessage } from "bancho.js";
 import { verifications } from "./../../../database";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
 import validateVerificationRequirements from "../../../modules/verification/client/validateVerificationRequirements";
+import { consoleLog } from "../../../helpers/core/logger";
 
 export default {
     settings: {
@@ -14,6 +15,11 @@ export default {
         args: string[]
     ) {
         const code = Number(args[0]);
+
+        consoleLog(
+            "Verify Command",
+            `Command executed by ${pm.user.ircUsername} with code ${code}`
+        );
 
         if (isNaN(code))
             return pm.user.sendMessage("[BOT]: Invalid code provided!");

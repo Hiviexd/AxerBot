@@ -8,6 +8,7 @@ import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
 import GenerateAuthToken from "./GenerateAuthToken";
 import colors from "../../../constants/colors";
+import { consoleLog } from "helpers/core/logger";
 
 export default async (member: GuildMember) => {
     const guild_db = await guilds.findById(member.guild.id);
@@ -57,14 +58,21 @@ export default async (member: GuildMember) => {
             }),
         ]);
 
-        verification_channel.send({
-            content: parseMessagePlaceholderFromMember(
-                guild_db.verification.message,
-                member,
-                guild_db
-            ),
-            components: [buttons],
-        });
+        verification_channel
+            .send({
+                content: parseMessagePlaceholderFromMember(
+                    guild_db.verification.message,
+                    member,
+                    guild_db
+                ),
+                components: [buttons],
+            })
+            .then(() => {
+                consoleLog(
+                    "Verification",
+                    `Sent verification to ${member.user.tag} in ${member.guild.name}`
+                );
+            });
 
         // ! remove when verification is fixed
         // const message =

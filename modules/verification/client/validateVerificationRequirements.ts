@@ -6,6 +6,7 @@ import osuApi from "../../../helpers/osu/fetcher/osuApi";
 import { PrivateMessage } from "bancho.js";
 import { sendVerifiedEmbed } from "../../../responses/verification/sendVerifiedEmbed";
 import { sendLoggingEmbed } from "../../../responses/verification/sendLoggerEmbed";
+import { consoleCheck, consoleLog } from "../../../helpers/core/logger";
 
 export default async (
     user: User,
@@ -30,6 +31,11 @@ export default async (
                 status: 404,
                 message: "Member not found!",
             };
+
+        consoleLog(
+            "Verification",
+            `Validating user ${member.user.tag} in ${member.guild.name}`
+        );
 
         const guild_db = await guilds.findById(guild.id);
 
@@ -213,6 +219,11 @@ export default async (
 
         pm.user.sendMessage(
             `[BOT]: You're verified! Welcome to ${guild.name}.`
+        );
+
+        consoleCheck(
+            "Verification",
+            `User ${member.user.tag} verified in ${member.guild.name}`
         );
 
         return {
