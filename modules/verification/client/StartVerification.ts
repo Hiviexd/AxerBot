@@ -8,7 +8,7 @@ import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
 import GenerateAuthToken from "./GenerateAuthToken";
 import colors from "../../../constants/colors";
-import { consoleLog } from "helpers/core/logger";
+import { consoleLog } from "../../../helpers/core/logger";
 
 export default async (member: GuildMember) => {
     const guild_db = await guilds.findById(member.guild.id);
