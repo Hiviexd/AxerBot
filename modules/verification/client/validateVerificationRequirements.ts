@@ -47,7 +47,10 @@ export default async (
 
         if (guild_db.verification.targets.username) {
             member
-                .edit({ nick: user.username }, "AxerBot Verification System")
+                .edit({
+                    nick: user.username,
+                    reason: "AxerBot Verification System",
+                })
                 .catch(console.error); // ? Sync username to osu! username
         }
 

@@ -1,4 +1,4 @@
-import { Guild, GuildMember, MessageEmbed } from "discord.js";
+import { Guild, GuildMember, EmbedBuilder } from "discord.js";
 import moment from "moment";
 import { User } from "../../types/user";
 import { consoleError } from "../../helpers/core/logger";
@@ -60,7 +60,7 @@ export async function sendLoggingEmbed(
                 })
                 .join("\n");
 
-            const logEmbed = new MessageEmbed()
+            const logEmbed = new EmbedBuilder()
                 .setColor("#07f472")
                 .setAuthor({
                     name: member.nickname
@@ -70,31 +70,48 @@ export async function sendLoggingEmbed(
                 })
                 .setThumbnail(user.avatar_url)
                 .setDescription(`✅ ${member.user} has been verified!`)
-                .addField("User id", member.id, true)
-                .addField("User tag", member.user.tag, true)
-                .addField("\u200b", "\u200b", true)
-                .addField("osu! id", user.id.toString(), true)
-                .addField("osu! username", user.username, true)
-                .addField(
-                    "osu! profile",
-                    `[Link](https://osu.ppy.sh/users/${user.id})`,
-                    true
+                .addFields(
+                    { name: "User id", value: member.id, inline: true },
+                    { name: "User tag", value: member.user.tag, inline: true },
+                    { name: "\u200b", value: "\u200b", inline: true },
+                    {
+                        name: "osu! id",
+                        value: user.id.toString(),
+                        inline: true,
+                    },
+                    {
+                        name: "osu! username",
+                        value: user.username,
+                        inline: true,
+                    },
+                    {
+                        name: "osu! profile",
+                        value: `[Link](https://osu.ppy.sh/users/${user.id})`,
+                        inline: true,
+                    },
+                    {
+                        name: "osu! join date",
+                        value: `<t:${moment(user.join_date).format("X")}:f>`,
+                        inline: true,
+                    },
+                    {
+                        name: "Country",
+                        value: user.country ? user.country.name : "Unknown",
+                        inline: true,
+                    },
+                    {
+                        name: "User group(s)",
+                        value: usergroups ? usergroups : "-",
+                        inline: true,
+                    }
                 )
-                .addField(
-                    "osu! join date",
-                    `<t:${moment(user.join_date).format("X")}:f>`,
-                    true
-                )
-                .addField(
-                    "Country",
-                    user.country ? user.country.name : "Unknown",
-                    true
-                )
-                .addField("User group(s)", usergroups ? usergroups : "-", true)
                 .setTimestamp();
 
             accountHistory
-                ? logEmbed.addField("Account history", accountHistory)
+                ? logEmbed.addFields({
+                      name: "Account history",
+                      value: accountHistory,
+                  })
                 : null;
 
             logChannel.send({ embeds: [logEmbed] }).catch(console.error);

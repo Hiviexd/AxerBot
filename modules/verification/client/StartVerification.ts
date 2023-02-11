@@ -1,8 +1,9 @@
 import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
     GuildMember,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -32,11 +33,10 @@ export default async (member: GuildMember) => {
     }
 
     if (verification.status != 200 || !verification.data) {
-        const error = new MessageEmbed({
+        const error = new EmbedBuilder({
             title: "Something went wrong!",
             description: verification.message,
-            color: colors.orange,
-        });
+        }).setColor(colors.orange);
 
         verification_channel.send({
             embeds: [error],
@@ -46,14 +46,13 @@ export default async (member: GuildMember) => {
     }
 
     if (guild_db.verification.button) {
-        const buttons = new MessageActionRow();
+        const buttons = new ActionRowBuilder<ButtonBuilder>();
 
         buttons.addComponents([
-            new MessageButton({
-                type: "BUTTON",
+            new ButtonBuilder({
                 customId: `verification|${member.id}|${verification.data._id}`,
                 label: "Send verification link",
-                style: "SUCCESS",
+                style: ButtonStyle.Success,
                 emoji: "982656610285527114",
             }),
         ]);
