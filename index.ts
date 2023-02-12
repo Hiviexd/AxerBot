@@ -9,6 +9,7 @@ import { consoleCheck } from "./helpers/core/logger";
 import eventHandler from "./helpers/core/eventHandler";
 import registerCommands from "./helpers/interactions/registerCommands";
 import { connectToBancho } from "./modules/bancho/client";
+import { startAvatarListener } from "./modules/avatar/avatarManager";
 
 export const bot = new Client({
     intents: [
@@ -29,5 +30,6 @@ bot.login(token).then(() => {
     connectToBancho();
     eventHandler(bot);
     registerCommands(bot);
+    startAvatarListener(bot);
     consoleCheck("index.ts", "Running and listening to commands!");
 });

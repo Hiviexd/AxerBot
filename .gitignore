@@ -4,5 +4,6 @@ tests
 .env
 .enxexample
 dist
-cache
+#cache
 cache/nominators.json
+cache/avatarConfig.json
