@@ -50,16 +50,7 @@ about.setExecuteFunction(async (command) => {
             },
             {
                 name: "Status",
-                value: `Ping: \`${command.client.ws.ping} ms\`\nVerification: ${
-                    (await getWebsiteStatus("https://axer-auth.ppy.tn/")) ===
-                    502
-                        ? "❌"
-                        : "✅"
-                }\nLink conversion: ${
-                    (await getWebsiteStatus("https://axer-url.ppy.tn/")) === 502
-                        ? "❌"
-                        : "✅"
-                }`,
+                value: `Ping: \`${command.client.ws.ping} ms\``,
             }
         );
 
