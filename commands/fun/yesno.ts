@@ -10,7 +10,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const yesno = new SlashCommand(
     "yesno",
     "Yes or no? I can help you decide!",
-    "fun",
+    "Fun",
     false,
     {
         description: "Yes or no? I can help you decide!",

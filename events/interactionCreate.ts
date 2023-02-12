@@ -1,14 +1,9 @@
-import {
-    ButtonInteraction,
-    ChatInputCommandInteraction,
-    Client,
-} from "discord.js";
-import addPrivateRoles from "../helpers/interactions/addPrivateRoles";
-import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
-import osuInteractions from "../helpers/interactions/osuInteractions";
+import { ButtonInteraction, Client } from "discord.js";
+import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
-import heardle from "../modules/heardle/heardle";
+import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
 import beatmapDownloader from "../modules/downloader/beatmapDownloader";
+import heardle from "../modules/heardle/heardle";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 
 export default {
@@ -17,19 +12,13 @@ export default {
         bot.on("interactionCreate", async (interaction) => {
             //addPrivateRoles(interaction);
 
-            if (
-                (interaction as ButtonInteraction).customId &&
-                (interaction as ButtonInteraction).customId.includes(
-                    "handlerIgnore"
-                )
-            )
+            if (interaction.isAutocomplete()) {
+                helpAutocomplete(interaction);
                 return;
+            }
 
             if (interaction.isButton()) {
-                if (!interaction.customId.includes("beatmap_download")) {
-                    await interaction.deferReply({ ephemeral: true });
-                    sendVerificationLink(interaction);
-                }
+                sendVerificationLink(interaction);
 
                 if (interaction.customId.includes("beatmap_download")) {
                     beatmapDownloader(interaction);

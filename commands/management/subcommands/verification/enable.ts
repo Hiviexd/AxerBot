@@ -1,50 +1,37 @@
-import {
-	ChatInputCommandInteraction,
-	ChatInputCommandInteractionOption,
-} from "discord.js";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
+import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
-import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "enabled",
-	group: "set",
-	help: {
-		description: "Enable the system manually",
-		syntax: "/verification `set enabled`",
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		if (!command.member) return;
+const verificationSetEnabled = new SlashCommandSubcommand(
+    "enable",
+    "Enable the system manually",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageGuild]
+);
 
-		if (typeof command.member?.permissions == "string") return;
+verificationSetEnabled.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		await command.deferReply();
+    let guild = await guilds.findById(command.guildId);
+    if (!guild)
+        return command.editReply(
+            "This guild isn't validated, try again after some seconds.."
+        );
 
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
+    if (!guild.verification.channel)
+        return command.editReply(
+            ":x: You need to set a channel before enable the system!"
+        );
 
-		let guild = await guilds.findById(command.guildId);
-		if (!guild)
-			return command.editReply(
-				"This guild isn't validated, try again after some seconds.."
-			);
+    guild.verification.enable = true;
 
-		if (!guild.verification.channel)
-			return command.editReply(
-				":x: You need to set a channel before enable the system!"
-			);
+    await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		guild.verification.enable = true;
+    command.editReply({
+        embeds: [generateSuccessEmbed("✅ System enabled!")],
+    });
+});
 
-		await guilds.findByIdAndUpdate(command.guildId, guild);
-
-		command.editReply({
-			embeds: [generateSuccessEmbed("✅ System enabled!")],
-		});
-	},
-};
+export default verificationSetEnabled;

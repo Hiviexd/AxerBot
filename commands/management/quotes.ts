@@ -1,135 +1,61 @@
-import { Client, Message } from "discord.js";
+import { PermissionFlagsBits } from "discord.js";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import quotesToggle from "./subcommands/quotes/quotesToggle";
+import quotesStatus from "./subcommands/quotes/quotesStatus";
+import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandSubcommandGroup";
+import quotestSetType from "./subcommands/quotes/quotesSetType";
 import quotesSetList from "./subcommands/quotes/quotesSetList";
-import quotesGetStatus from "./subcommands/quotes/quotesGetStatus";
-import quotesSetCustom from "./subcommands/quotes/quotesSetCustom";
-import quotesSetDefault from "./subcommands/quotes/quotesSetDefault";
-import quotesSetDisabled from "./subcommands/quotes/quotesSetDisabled";
-import quotesSetWord from "./subcommands/quotes/quotesSetWord";
-import quotesGetList from "./subcommands/quotes/quotesGetList";
-import quotesAddWord from "./subcommands/quotes/quotesAddWord";
-import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
-import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
 import quotesSetChance from "./subcommands/quotes/quotesSetChance";
+import quotesSetWord from "./subcommands/quotes/quotesSetWord";
+import quotesBlockChannels from "./subcommands/quotes/quotesBlockChannels";
+import quotesAllowChannels from "./subcommands/quotes/quotesAllowChannels";
+import quotesAddWord from "./subcommands/quotes/quotesAddWord";
 
-export default {
-	name: "quotes",
-	help: {
-		description: "Configure the random quotes system",
-		syntax: "/quotes `<action>` `<value>`",
-		example: "/quotes `setcustom`\n /quotes `status`",
-		options: [
-			"`setcustom`",
-			"`setdefault`",
-			"`setdisabled`",
-			"`setlist`",
-			"`setword` `<word>`",
-			"`chance` `<size>`",
-			"`block` `<#channels>...`",
-			"`allow` `<#channels>...`",
-			"`add`",
-			"`status`",
-			"`viewlist`",
-		],
-	},
-	subcommands: [
-		quotesSetList,
-		quotesGetList,
-		quotesGetStatus,
-		quotesSetCustom,
-		quotesSetDefault,
-		quotesSetDisabled,
-		quotesSetWord,
-		quotesAddWord,
-		quotesBlockChannels,
-		quotesAllowChannels,
-		quotesSetChance,
-	],
-	category: "management",
-	permissions: ["MANAGE_GUILD"],
-	run: (bot: Client, message: Message, args: string[]) => {
-		if (!message.guild || !message.member) return;
+const quotes = new SlashCommand(
+    "quotes",
+    "Configure random quotes system",
+    "Management",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		// const action = args[1]; // /quotes set <argument>
-		// const getter = args[0]; // /quotes <something>
+quotes.addSubcommand(quotesToggle).addSubcommand(quotesStatus);
 
-		// if (!action && !getter)
-		// 	return message.channel.send({
-		// 		embeds: [CommandOptionInvalid],
-		// 	});
+const commandGroupSET = new SlashCommandSubcommandGroup(
+    "set",
+    "Set some value to the system"
+);
 
-		// /**
-		//  * * =========== ACTIONS
-		//  * * custom -> switch quotes mode to custom list
-		//  * * default -> switch quotes mode to default list
-		//  * * list -> switch quotes to list
-		//  * * disabled -> disables quote system
-		//  */
+commandGroupSET
+    .addCommand(quotestSetType)
+    .addCommand(quotesSetList)
+    .addCommand(quotesSetChance)
+    .addCommand(quotesSetWord);
 
-		// switch (getter) {
-		// 	case "status": {
-		// 		// code for returning current mode;
-		// 		quotesGetStatus.run(message);
-		// 		break;
-		// 	}
-		// 	case "viewlist": {
-		// 		// code for returning current mode;
-		// 		quotesGetList.run(message);
-		// 		break;
-		// 	}
-		// 	case "add": {
-		// 		quotesAddWord.run(message);
-		// 		break;
-		// 	}
-		// 	case "block": {
-		// 		quotesBlockChannels.run(message, args);
-		// 		break;
-		// 	}
-		// 	case "allow": {
-		// 		quotesAllowChannels.run(message, args);
-		// 		break;
-		// 	}
-		// 	case "set": {
-		// 		switch (action) {
-		// 			case "disabled": {
-		// 				quotesToggle.run(message, false);
-		// 				break;
-		// 			}
+const commandGroupBLOCK = new SlashCommandSubcommandGroup(
+    "block",
+    "Block some value to the system"
+);
 
-		// 			case "custom": {
-		// 				quotesSetCustom.run(message);
-		// 				break;
-		// 			}
+commandGroupBLOCK.addCommand(quotesBlockChannels);
 
-		// 			case "default": {
-		// 				quotesSetDefault.run(message);
-		// 				break;
-		// 			}
+const commandGroupALLOW = new SlashCommandSubcommandGroup(
+    "allow",
+    "Allow some value to the system"
+);
 
-		// 			case "list": {
-		// 				quotesSetList.run(message);
-		// 				break;
-		// 			}
+commandGroupALLOW.addCommand(quotesAllowChannels);
 
-		// 			case "word": {
-		// 				quotesSetWord.run(message, args[2]);
-		// 				break;
-		// 			}
+const commandGroupADD = new SlashCommandSubcommandGroup(
+    "add",
+    "Add some value to the system"
+);
 
-		// 			default: {
-		// 				// ? Runs if the option is invalid
-		// 				message.channel.send({
-		// 					embeds: [CommandOptionInvalid],
-		// 				});
-		// 			}
-		// 		}
-		// 		break;
-		// 	}
+commandGroupADD.addCommand(quotesAddWord);
 
-		// 	default: {
-		// 		message.channel.send({
-		// 			embeds: [CommandOptionInvalid],
-		// 		});
-		// 	}
-		// }
-	},
-};
+quotes
+    .addSubcommandGroup(commandGroupSET)
+    .addSubcommandGroup(commandGroupBLOCK)
+    .addSubcommandGroup(commandGroupADD)
+    .addSubcommandGroup(commandGroupALLOW);

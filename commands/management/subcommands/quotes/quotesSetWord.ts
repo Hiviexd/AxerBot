@@ -1,52 +1,51 @@
-import { Message } from "discord.js";
+import { PermissionFlagsBits } from "discord.js";
 import * as database from "../../../../database";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "./../../../../config.json";
-import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "quotes set word",
-	trigger: ["setword"],
-	help: {
-		description: "Sets a trigger word for the quotes system",
-		syntax: "/quotes `set` `word` `<new word>`",
-	},
-	run: async (message: Message, args: string[]) => {
-		const word = args.join(" ").trim();
+const quotesSetWord = new SlashCommandSubcommand(
+    "word",
+    "Sets a trigger word for the quotes system",
+    false,
+    {
+        syntax: "/quotes `set` `word` `<new word>`",
+    },
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		if (!message.member) return;
+quotesSetWord.builder.addStringOption((o) =>
+    o.setName("word").setDescription("New word").setRequired(true)
+);
 
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+quotesSetWord.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		if (word == "")
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ Please specify a word.")],
-			});
+    const word = command.options.getString("word", true);
 
-		let guild = await database.guilds.findById(message.guildId);
-		if (!guild) return;
+    if (word == "")
+        return command.editReply({
+            embeds: [generateErrorEmbed("❗ Please specify a word.")],
+        });
 
-		if (!message.guild) return;
+    let guild = await database.guilds.findById(command.guildId);
+    if (!guild) return;
 
-		guild.fun.enable = true;
-		guild.fun.word = word.toUpperCase();
+    if (!command.guild) return;
 
-		await database.guilds.updateOne(
-			{ _id: message.guildId },
-			{
-				fun: guild.fun,
-			}
-		);
+    guild.fun.enable = true;
+    guild.fun.word = word.toUpperCase();
 
-		message.channel.send({
-			embeds: [
-				generateSuccessEmbed(`✅ Trigger word set to \`${word}\`!`),
-			],
-		});
-	},
-};
+    await database.guilds.updateOne(
+        { _id: command.guildId },
+        {
+            fun: guild.fun,
+        }
+    );
+
+    command.editReply({
+        embeds: [generateSuccessEmbed(`✅ Trigger word set to \`${word}\`!`)],
+    });
+});
+
+export default quotesSetWord;

@@ -1,55 +1,64 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import {
+    ChannelType,
+    ChatInputCommandInteraction,
+    PermissionFlagsBits,
+} from "discord.js";
 import { tracks } from "../../../../database";
-import crypto from "crypto";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../../../config.json";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "tracker",
-	group: "remove",
-	help: {
-		description: "Remove a tracker for a channel",
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		await command.deferReply();
+const removeTracker = new SlashCommandSubcommand(
+    "remove",
+    "Remove a tracker for a channel",
+    false,
+    {
+        syntax: `/bntracker remove <#channel>`,
+    },
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		if (!command.member || typeof command.member.permissions == "string")
-			return;
+removeTracker.builder.addChannelOption((o) =>
+    o.setName("channel").setDescription("Tracker channel").setRequired(true)
+);
 
-		const channel = command.options.getChannel("channel", true);
+removeTracker.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		const actualTrack = await tracks.find({
-			guild: command.guildId,
-			channel: channel.id,
-			type: "qat",
-		});
+    if (!command.member || typeof command.member.permissions == "string")
+        return;
 
-		if (actualTrack.length == 0)
-			return command.editReply({
-				embeds: [
-					generateErrorEmbed("This channel doesn't have a tracker."),
-				],
-			});
+    const channel = command.options.getChannel("channel", true);
 
-		if (channel.type != "GUILD_TEXT")
-			return command.editReply({
-				embeds: [
-					generateErrorEmbed(
-						"You need to provide a valid text channel."
-					),
-				],
-			});
+    const actualTrack = await tracks.find({
+        guild: command.guildId,
+        channel: channel.id,
+        type: "qat",
+    });
 
-		await tracks.deleteMany({
-			guild: command.guildId,
-			channel: channel.id,
-			type: "qat",
-		});
+    if (actualTrack.length == 0)
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed("This channel doesn't have a tracker."),
+            ],
+        });
 
-		command.editReply({
-			embeds: [generateSuccessEmbed("Tracker removed!")],
-		});
-	},
-};
+    if (channel.type != ChannelType.GuildText)
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed("You need to provide a valid text channel."),
+            ],
+        });
+
+    await tracks.deleteMany({
+        guild: command.guildId,
+        channel: channel.id,
+        type: "qat",
+    });
+
+    command.editReply({
+        embeds: [generateSuccessEmbed("Tracker removed!")],
+    });
+});
+
+export default removeTracker;

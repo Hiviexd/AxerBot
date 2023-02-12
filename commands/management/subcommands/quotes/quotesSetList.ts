@@ -1,66 +1,70 @@
-import { Message, MessageAttachment } from "discord.js";
+import { PermissionFlagsBits } from "discord.js";
 import * as database from "../../../../database";
 import { parseTextFileAttachment } from "../../../../helpers/text/processText";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "./../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "quotes set list",
-	trigger: ["setlist"],
-	help: {
-		description: "Sets a custom list for the server quotes",
-		syntax: "/quotes `set` `list` `[Text File Attachment]`",
-	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+const quotesSetList = new SlashCommandSubcommand(
+    "list",
+    "Sets a custom list for the server quotes",
+    false,
+    {
+        syntax: "/quotes `set` `list` `[Text File Attachment]`",
+        note: "Quotes are split by line break.",
+    },
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		let guild = await database.guilds.findById(message.guildId);
-		if (!guild) return;
-		const file = message.attachments.first();
+quotesSetList.builder.addAttachmentOption((o) =>
+    o
+        .setName("text_file")
+        .setDescription("Text file with quotes")
+        .setRequired(true)
+);
 
-		if (!message.guild) return;
+quotesSetList.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		if (!file || file.contentType != "text/plain; charset=utf-8")
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ Please attach a text file.")],
-			});
+    let guild = await database.guilds.findById(command.guildId);
+    if (!guild) return;
+    const file = command.options.getAttachment("text_file", true);
 
-		// ? Prevent big files (It uses bytes)
-		if (file.size > 200000)
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❌ File is too big. Max size is 200KB."
-					),
-				],
-			});
+    if (!command.guild) return;
 
-		const list = await parseTextFileAttachment(file.url);
+    if (!file || file.contentType != "text/plain; charset=utf-8")
+        return command.editReply({
+            embeds: [generateErrorEmbed("❗ Please attach a text file.")],
+        });
 
-		if (list.length < 1)
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❌ File is empty.")],
-			});
+    // ? Prevent big files (It uses bytes)
+    if (file.size > 200000)
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed("❌ File is too big. Max size is 200KB."),
+            ],
+        });
 
-		guild.fun.enable = true;
-		guild.fun.phrases = list;
+    const list = await parseTextFileAttachment(file.url);
 
-		await database.guilds.findOneAndUpdate(
-			{ _id: message.guildId },
-			{
-				fun: guild.fun,
-			}
-		);
+    if (list.length < 1)
+        return command.editReply({
+            embeds: [generateErrorEmbed("❌ File is empty.")],
+        });
 
-		message.channel.send({
-			embeds: [generateSuccessEmbed("✅ Loaded the list!")],
-		});
-	},
-};
+    guild.fun.enable = true;
+    guild.fun.phrases = list;
+
+    await database.guilds.findOneAndUpdate(
+        { _id: command.guildId },
+        {
+            fun: guild.fun,
+        }
+    );
+
+    command.editReply({
+        embeds: [generateSuccessEmbed("✅ Loaded the list!")],
+    });
+});
+
+export default quotesSetList;

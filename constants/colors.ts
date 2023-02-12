@@ -1,16 +1,16 @@
 import { ColorResolvable } from "discord.js";
 
-const colors: { [key: string]: ColorResolvable } = {
-	green: "#1df27d",
-	yellow: "#ffc85a",
-	red: "#ff5050",
-	orange: "#ea6112",
-	pink: "#f45592",
-	blue: "#008cff",
-	yellowBright: "#ffff55",
-	gold: "#ffac00",
-	purple: "#5639ac",
-	qat: "#27b6b3",
+const colors = {
+    green: "#1df27d" as ColorResolvable,
+    yellow: "#ffc85a" as ColorResolvable,
+    red: "#ff5050" as ColorResolvable,
+    orange: "#ea6112" as ColorResolvable,
+    pink: "#f45592" as ColorResolvable,
+    blue: "#008cff" as ColorResolvable,
+    yellowBright: "#ffff55" as ColorResolvable,
+    gold: "#ffac00" as ColorResolvable,
+    purple: "#5639ac" as ColorResolvable,
+    qat: "#27b6b3" as ColorResolvable,
 };
 
 export default colors;

@@ -1,45 +1,32 @@
-import {
-	ChatInputCommandInteraction,
-	ChatInputCommandInteractionOption,
-} from "discord.js";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
+import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
-import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "disabled",
-	group: "set",
-	help: {
-		description: "Disable the system manually",
-		syntax: "/verification `set disabled`",
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		if (!command.member) return;
+const verificationSetDisabled = new SlashCommandSubcommand(
+    "disable",
+    "Disable the system manually",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageGuild]
+);
 
-		if (typeof command.member?.permissions == "string") return;
+verificationSetDisabled.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		await command.deferReply();
+    let guild = await guilds.findById(command.guildId);
+    if (!guild)
+        return command.editReply(
+            "This guild isn't validated, try again after some seconds.."
+        );
 
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
+    guild.verification.enable = false;
 
-		let guild = await guilds.findById(command.guildId);
-		if (!guild)
-			return command.editReply(
-				"This guild isn't validated, try again after some seconds.."
-			);
+    await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		guild.verification.enable = false;
+    command.editReply({
+        embeds: [generateSuccessEmbed("✅ System disabled!")],
+    });
+});
 
-		await guilds.findByIdAndUpdate(command.guildId, guild);
-
-		command.editReply({
-			embeds: [generateSuccessEmbed("✅ System disabled!")],
-		});
-	},
-};
+export default verificationSetDisabled;

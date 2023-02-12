@@ -1,67 +1,87 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    PermissionFlagsBits,
+} from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "log",
-	group: "remove",
-	help: {
-		description: "remove a log from a user",
-		syntax: "/userlog `remove` `<user>` `<logid>`",
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		if (!command.guild || !command.member) return;
+const userlogRemoveLog = new SlashCommandSubcommand(
+    "remove",
+    "Remove a member log",
+    false,
+    undefined,
+    [PermissionFlagsBits.ModerateMembers]
+);
 
-		await command.deferReply();
+userlogRemoveLog.builder
+    .addUserOption((o) =>
+        o.setName("username").setDescription("Target user").setRequired(true)
+    )
+    .addIntegerOption((o) =>
+        o.setName("logid").setDescription("Log id").setRequired(true)
+    );
 
-		const user = command.options.getString("username", true).toLowerCase();
-		const logid = command.options.getInteger("logid", true);
+userlogRemoveLog.setExecuteFunction(async (command) => {
+    if (!command.guild || !command.member) return;
 
-		let guild = await database.guilds.findById(command.guildId);
-		if (!guild) return;
+    await command.deferReply();
 
-		const userLogs = guild.user_logs.find((log) => log.username == user);
-		let reason = null;
+    const user = command.options.getUser("username", true).username;
+    const logid = command.options.getInteger("logid", true);
 
-		if (!userLogs) {
-			return command.editReply({
-				embeds: [generateErrorEmbed("User not found!")],
-			});
-		} else {
-			if (userLogs.logs.length < logid || logid < 1) {
-				return command.editReply({
-					embeds: [generateErrorEmbed("Log not found!")],
-				});
-			} else {
-				//sort userlogs by date from newest to oldest
-				userLogs.logs.sort((a, b) => {
-					return (
-						new Date(b.date || new Date()).valueOf() -
-						new Date(a.date || new Date()).valueOf()
-					);
-				});
+    let guild = await database.guilds.findById(command.guildId);
+    if (!guild) return;
 
-				reason = userLogs.logs[logid - 1].reason?.toString();
+    const userLogs = guild.user_logs.find((log) => log.username == user);
+    let reason = null;
 
-				userLogs.logs.splice(logid - 1, 1);
-			}
-		}
+    if (!userLogs) {
+        return command.editReply({
+            embeds: [generateErrorEmbed("User not found!")],
+        });
+    } else {
+        if (userLogs.logs.length < logid || logid < 1) {
+            return command.editReply({
+                embeds: [generateErrorEmbed("Log not found!")],
+            });
+        } else {
+            //sort userlogs by date from newest to oldest
+            userLogs.logs.sort((a, b) => {
+                return (
+                    new Date(b.date || new Date()).valueOf() -
+                    new Date(a.date || new Date()).valueOf()
+                );
+            });
 
-		await database.guilds.findByIdAndUpdate(command.guildId, {
-			$set: { user_logs: guild.user_logs },
-		});
+            reason = userLogs.logs[logid - 1].reason?.toString();
 
-		const embed = new EmbedBuilder()
-			.setTitle("🗑️ Removed Log")
-			.addField("User", user)
-			.addField("Reason", reason ? reason : "No reason provided")
-			.setFooter({
-				text: `${command.user.tag}`,
-				iconURL: command.user.displayAvatarURL(),
-			});
+            userLogs.logs.splice(logid - 1, 1);
+        }
+    }
 
-		return command.editReply({
-			embeds: [embed],
-		});
-	},
-};
+    await database.guilds.findByIdAndUpdate(command.guildId, {
+        $set: { user_logs: guild.user_logs },
+    });
+
+    const embed = new EmbedBuilder()
+        .setTitle("🗑️ Removed Log")
+        .addFields(
+            { name: "User", value: user },
+            {
+                name: "Reason",
+                value: reason ? reason : "No reason provided",
+            }
+        )
+        .setFooter({
+            text: `${command.user.tag}`,
+            iconURL: command.user.displayAvatarURL(),
+        });
+
+    return command.editReply({
+        embeds: [embed],
+    });
+});
+
+export default userlogRemoveLog;

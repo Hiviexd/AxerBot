@@ -9,7 +9,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const mapsetrank = new SlashCommand(
     ["mapsetrank", "mr"],
     "Displays beatmapset statistics of a user",
-    "osu",
+    "osu!",
     false,
     {
         example: "/mapsetrank `username:Hivie` `sort:favorites`\n/mapsetrank",

@@ -8,7 +8,7 @@ import removeReminder from "./subcommands/reminder/removeReminder";
 const reminder = new SlashCommand(
     "reminder",
     "Sets a reminder",
-    "misc",
+    "Miscellaneous",
     false,
     {
         syntax: "/reminder `<time>`\n/reminder `<time>` `<message>`",

@@ -1,125 +1,69 @@
-import { Message, ChatInputCommandInteraction } from "discord.js";
-import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
+import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
-import { ownerId } from "./../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "flag",
-	group: "set",
-	help: {
-		description:
-			"Set which data that will be replaced with the osu! user data.",
-		syntax: "/verification `set flags` `flag:<flag>` `status:<enable|disable>`",
-		example: "/verification `set flags` `flag:username` `status:enable`",
-		"avaliable flags": [
-			"`username, <enable|disable>`: Set the user's discord nickname to match their osu! username",
-		],
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		if (!command.member) return;
+const verificationSetFlags = new SlashCommandSubcommand(
+    "flag",
+    "Set which data that will be replaced with the osu! user data.",
+    false,
+    {
+        syntax: "/verification `set flags` `flag:<flag>` `status:<enable|disable>`",
+        example: "/verification `set flags` `flag:username` `status:enable`",
+        "avaliable flags": [
+            "`username, <enable|disable>`: Set the user's discord nickname to match their osu! username",
+        ],
+    },
+    [PermissionFlagsBits.ManageGuild]
+);
 
-		if (typeof command.member?.permissions == "string") return;
+verificationSetFlags.builder
+    .addStringOption((o) =>
+        o
+            .setName("flag")
+            .setDescription("What do you want to manage?")
+            .addChoices({
+                name: "username",
+                value: "username",
+            })
+    )
+    .addStringOption((o) =>
+        o.setName("status").setDescription("Set status").addChoices(
+            {
+                name: "enabled",
+                value: "true",
+            },
+            {
+                name: "disabled",
+                value: "false",
+            }
+        )
+    );
 
-		await command.deferReply();
+verificationSetFlags.setExecuteFunction(async (command) => {
+    if (!command.member) return;
 
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
+    if (typeof command.member?.permissions == "string") return;
 
-		const flag = command.options.getString("flag", true);
-		const status =
-			command.options.getString("status", true) == "true" ? true : false;
+    await command.deferReply();
 
-		let guild = await guilds.findById(command.guildId);
-		if (!guild)
-			return command.editReply(
-				"This guild isn't validated, try again after some seconds.."
-			);
+    const flag = command.options.getString("flag", true);
+    const status =
+        command.options.getString("status", true) == "true" ? true : false;
 
-		guild.verification.targets[flag] = status;
+    let guild = await guilds.findById(command.guildId);
+    if (!guild)
+        return command.editReply(
+            "This guild isn't validated, try again after some seconds.."
+        );
 
-		await guilds.findByIdAndUpdate(command.guildId, guild);
+    guild.verification.targets[flag] = status;
 
-		command.editReply({
-			embeds: [generateSuccessEmbed("✅ Flag updated!")],
-		});
+    await guilds.findByIdAndUpdate(command.guildId, guild);
 
-		// if (!message.member) return;
+    command.editReply({
+        embeds: [generateSuccessEmbed("✅ Flag updated!")],
+    });
+});
 
-		// if (
-		// 	!message.member.permissions.has("MANAGE_GUILD", true) &&
-		// 	message.author.id !== ownerId
-		// )
-		// 	return message.channel.send({ embeds: [MissingPermissions] });
-
-		// if (args.length < 1)
-		// 	return message.channel.send({ embeds: [CommandOptionInvalid] });
-
-		// let guild = await guilds.findById(message.guildId);
-		// if (!guild) return;
-
-		// const validFlags = ["username"];
-
-		// const flagsValues: any = {
-		// 	username: "boolean",
-		// };
-		// const flagsToUpdate: { target: string; value: any }[] = [];
-
-		// args.forEach((a) => {
-		// 	const flag = a.split(",");
-
-		// 	if (flag.length != 2) return;
-
-		// 	if (validFlags.includes(flag[0].toLowerCase())) {
-		// 		flagsToUpdate.push({
-		// 			target: flag[0].toLowerCase(),
-		// 			value: flag[1].toLowerCase(),
-		// 		});
-		// 	}
-		// });
-
-		// const clearFlags: any[] = [];
-
-		// flagsToUpdate.forEach((flag) => {
-		// 	switch (flagsValues[flag.target]) {
-		// 		case "boolean": {
-		// 			const booleans = ["true", "false"];
-		// 			if (!booleans.includes(flag.value)) return;
-
-		// 			clearFlags.push({
-		// 				target: flag.target,
-		// 				value: Boolean(flag.value),
-		// 			});
-
-		// 			break;
-		// 		}
-		// 	}
-		// });
-
-		// clearFlags.forEach((flag) => {
-		// 	if (!guild) return;
-
-		// 	guild.verification.targets[flag.target] = flag.value;
-		// });
-
-		// if (clearFlags.length < 1)
-		// 	return message.channel.send({
-		// 		embeds: [
-		// 			generateErrorEmbed(
-		// 				`❌ Invalid tags! Check if you're using the correct syntax using \`${guild.prefix}help verification flags\``
-		// 			),
-		// 		],
-		// 	});
-
-		// await guilds.findByIdAndUpdate(message.guildId, guild);
-
-		// message.channel.send({
-		// 	embeds: [generateSuccessEmbed("✅ Updated verification flags.")],
-		// });
-	},
-};
+export default verificationSetFlags;

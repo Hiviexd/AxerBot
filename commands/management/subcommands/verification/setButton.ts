@@ -1,56 +1,64 @@
-import {
-	ChatInputCommandInteraction,
-	ChatInputCommandInteractionOption,
-} from "discord.js";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
+import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
-import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "button",
-	group: "set",
-	help: {
-		description:
-			"Enable or disable the button to send the verification link.\nOnly reason to disable this is to only use the welcome message instead of the verification module",
-		syntax: "/verification `set button` `status:enabled|disabled`",
-	},
-	run: async (command: ChatInputCommandInteraction, args: string[]) => {
-		if (!command.member) return;
+const verificationSetButton = new SlashCommandSubcommand(
+    "button",
+    "Enable or disable verification interaction button",
+    false,
+    {
+        syntax: "/verification `set` `status`",
+        example: "/verification `set` `status:disabled`",
+    },
+    [PermissionFlagsBits.ManageGuild]
+);
 
-		if (typeof command.member?.permissions == "string") return;
+verificationSetButton.builder.addStringOption((o) =>
+    o
+        .setName("status")
+        .setDescription("Enable or disable the button")
+        .addChoices(
+            {
+                name: "enable",
+                value: "true",
+            },
+            {
+                name: "disable",
+                value: "false",
+            }
+        )
+);
 
-		await command.deferReply();
+verificationSetButton.setExecuteFunction(async (command) => {
+    if (typeof command.member?.permissions == "string") return;
 
-		if (
-			!command.member.permissions.has("MANAGE_GUILD", true) &&
-			command.user.id !== ownerId
-		)
-			return command.editReply({ embeds: [MissingPermissions] });
+    await command.deferReply();
 
-		let guild = await guilds.findById(command.guildId);
+    let guild = await guilds.findById(command.guildId);
 
-		if (!guild)
-			return command.editReply(
-				"This guild isn't validated, try again after some seconds.."
-			);
+    if (!guild)
+        return command.editReply(
+            "This guild isn't validated, try again after some seconds.."
+        );
 
-		const status = command.options.getString("status", true);
+    const status = command.options.getString("status", true);
 
-		status == "true"
-			? (guild.verification.button = true)
-			: (guild.verification.button = false);
+    status == "true"
+        ? (guild.verification.button = true)
+        : (guild.verification.button = false);
 
-		await guilds.findByIdAndUpdate(guild._id, guild);
+    await guilds.findByIdAndUpdate(guild._id, guild);
 
-		return command.editReply({
-			embeds: [
-				generateSuccessEmbed(
-					`The verification button has been ${
-						status == "true" ? "enabled" : "disabled"
-					}!`
-				),
-			],
-		});
-	},
-};
+    return command.editReply({
+        embeds: [
+            generateSuccessEmbed(
+                `The verification button has been ${
+                    status == "true" ? "enabled" : "disabled"
+                }!`
+            ),
+        ],
+    });
+});
+
+export default verificationSetButton;

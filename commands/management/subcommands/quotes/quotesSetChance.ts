@@ -1,72 +1,51 @@
-import { Message } from "discord.js";
+import { PermissionFlagsBits } from "discord.js";
 import * as database from "../../../../database";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "quotes chance",
-	trigger: ["chance"],
-	help: {
-		description:
-			"Set a chance between 1->100 to reply with a quote after the trigger word is detected",
-		syntax: "/quotes `chance` `<number>`",
-		example: "/quotes `chance` `50`",
-	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+const quotesSetChance = new SlashCommandSubcommand(
+    "chance",
+    "Set a chance between 1->100 to reply with a quote after the trigger word is detected",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		let guild = await database.guilds.findById(message.guildId);
-		if (!guild) return;
+quotesSetChance.builder.addIntegerOption((o) =>
+    o
+        .setName("chance")
+        .setDescription("Chance number (percentage)")
+        .setRequired(true)
+        .setMinValue(1)
+        .setMaxValue(100)
+);
 
-		if (!args[0])
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ Provide a chance between 1->100 to set."
-					),
-				],
-			});
+quotesSetChance.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		const chance = Number(args[0].replace("%", ""));
+    let guild = await database.guilds.findById(command.guildId);
+    if (!guild) return;
 
-		if (isNaN(chance))
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❌ Invalid value provided.")],
-			});
+    if (!command.guild) return;
 
-		if (chance > 100 || chance < 1)
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ Provide a chance between 1->100 to set."
-					),
-				],
-			});
+    const chance = command.options.getInteger("chance", true);
 
-		if (!message.guild) return;
+    guild.fun.chance = chance;
 
-		guild.fun.chance = chance;
+    await database.guilds.updateOne(
+        { _id: command.guildId },
+        {
+            fun: guild.fun,
+        }
+    );
 
-		await database.guilds.updateOne(
-			{ _id: message.guildId },
-			{
-				fun: guild.fun,
-			}
-		);
+    command.editReply({
+        embeds: [
+            generateSuccessEmbed(
+                `✅ Successfully set the chance to ${chance}%`
+            ),
+        ],
+    });
+});
 
-		message.channel.send({
-			embeds: [
-				generateSuccessEmbed(
-					`✅ Successfully set the chance to ${chance}%`
-				),
-			],
-		});
-	},
-};
+export default quotesSetChance;

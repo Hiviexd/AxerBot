@@ -1,8 +1,9 @@
 import {
-	GuildMember,
-	MessageActionRow,
-	MessageButton,
-	EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    GuildMember,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -32,11 +33,10 @@ export default async (member: GuildMember) => {
     }
 
     if (verification.status != 200 || !verification.data) {
-        const error = new MessageEmbed({
+        const error = new EmbedBuilder({
             title: "Something went wrong!",
             description: verification.message,
-            color: colors.orange,
-        });
+        }).setColor(colors.orange);
 
         verification_channel.send({
             embeds: [error],
@@ -46,14 +46,13 @@ export default async (member: GuildMember) => {
     }
 
     if (guild_db.verification.button) {
-        const buttons = new MessageActionRow();
+        const buttons = new ActionRowBuilder<ButtonBuilder>();
 
         buttons.addComponents([
-            new MessageButton({
-                type: "BUTTON",
+            new ButtonBuilder({
                 customId: `verification|${member.id}|${verification.data._id}`,
-                label: "Send verification link",
-                style: "SUCCESS",
+                label: "Start verification",
+                style: ButtonStyle.Success,
                 emoji: "982656610285527114",
             }),
         ]);
@@ -74,7 +73,7 @@ export default async (member: GuildMember) => {
                 );
             });
 
-        // ! remove when verification is fixed
+        // ! error for when verification breaks
         // const message =
         //     "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
 

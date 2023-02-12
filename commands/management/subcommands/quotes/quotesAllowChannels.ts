@@ -1,83 +1,76 @@
-import { Message } from "discord.js";
+import { ChannelType, PermissionFlagsBits } from "discord.js";
+
 import * as database from "../../../../database";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "./../../../../config.json";
-import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "quotes allow",
-	trigger: ["allow"],
-	help: {
-		description: "Remove a channel from blacklist.",
-		syntax: "/quotes `allow` `<#channels>`",
-	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+const quotesAllowChannels = new SlashCommandSubcommand(
+    "channel",
+    "Set channels that quotes can run. ",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+quotesAllowChannels.builder.addStringOption((o) =>
+    o
+        .setName("channels")
+        .setDescription(
+            'Channel names without # and split by comma. Use "all" to allow all channels'
+        )
+        .setRequired(true)
+);
 
-		let guild = await database.guilds.findById(message.guildId);
+quotesAllowChannels.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		if (!guild) return;
+    let guild = await database.guilds.findById(command.guildId);
 
-		if (!message.guild) return;
+    if (!command.guild) return;
+    if (!guild) return;
 
-		args.shift();
+    const channel = command.options.getString("channels", true);
 
-		if (!message.member?.permissions.has("MANAGE_CHANNELS", true))
-			return message.channel.send({ embeds: [MissingPermissions] });
+    let channels: string[] = [];
 
-		const channels = message.mentions.channels;
+    channel.split(",").forEach((channelName) => {
+        channelName = channelName.trim();
 
-		if (channels.size < 1)
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ Provide at least one channel to allow."
-					),
-				],
-			});
+        const requested = command.guild?.channels.cache.find(
+            (c) => c.name == channelName
+        );
 
-		let blacklist = guild.fun.blacklist.channels;
+        if (requested && requested.type == ChannelType.GuildText) {
+            channels.push(requested.id);
+        }
+    });
 
-		const added_channels: string[] = [];
-		channels.forEach((channel) => {
-			if (!message.guild?.channels.cache.find((c) => c.id == channel.id))
-				return;
+    if (channels[0] == "all") channels = ["all"];
 
-			if (
-				blacklist.includes(channel.id) &&
-				channel.type == "GUILD_TEXT"
-			) {
-				blacklist = blacklist.filter((c: any) => c != channel.id);
-				added_channels.push(channel.id);
-			}
-		});
+    let blacklist = guild.fun.blacklist.channels;
 
-		guild.fun.blacklist.channels = blacklist;
+    if (channels.length)
+        return generateErrorEmbed("Provide valid text channels!");
 
-		if (added_channels.length < 1)
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ No channels were added to the blacklist."
-					),
-				],
-			});
+    channels.forEach((channel) => {
+        if (
+            !blacklist.includes(channel) &&
+            !["all", "none"].includes(channel)
+        ) {
+            blacklist = blacklist.filter((l: string) => l != channel);
+        }
+    });
 
-		await database.guilds.findOneAndUpdate({ _id: message.guildId }, guild);
+    guild.fun.blacklist.channels = blacklist;
 
-		message.channel.send({
-			embeds: [
-				generateSuccessEmbed(
-					`✅ Done! Use \`${guild.prefix}quotes status\` to check`
-				),
-			],
-		});
-	},
-};
+    await database.guilds.findOneAndUpdate({ _id: command.guildId }, guild);
+
+    command.editReply({
+        embeds: [
+            generateSuccessEmbed(`✅ Done! Use \`/quotes status\` to check`),
+        ],
+    });
+});
+
+export default quotesAllowChannels;
