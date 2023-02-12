@@ -1,7 +1,8 @@
 import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
     Client,
-    MessageActionRow,
-    MessageButton,
     EmbedBuilder,
 } from "discord.js";
 import { tracks } from "../../database";
@@ -88,7 +89,7 @@ async function qatTracking(bot: Client) {
         };
         const modeIcons = bn.modes
             .map((mode: string) => {
-                return `${getEmoji(mode)} `;
+                return `${getEmoji(mode as keyof typeof getEmoji)} `;
             })
             .join("")
             .trim();
@@ -134,13 +135,13 @@ async function qatTracking(bot: Client) {
 
         const embed = new EmbedBuilder(texts[open ? "open" : "closed"]);
 
-        const buttons = new MessageActionRow();
-        const buttons2 = new MessageActionRow();
+        const buttons = new ActionRowBuilder<ButtonBuilder>();
+        const buttons2 = new ActionRowBuilder<ButtonBuilder>();
 
         if (!bn.requestStatus.includes("closed")) {
-            const dmButton = new MessageButton();
+            const dmButton = new ButtonBuilder();
             dmButton
-                .setStyle("LINK")
+                .setStyle(ButtonStyle.Link)
                 .setLabel("Send message (osu!)")
                 .setURL(`https://osu.ppy.sh/home/messages/users/${bn.osuId}`);
 
@@ -148,18 +149,18 @@ async function qatTracking(bot: Client) {
 
             if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
                 const siteName = new URL(bn.requestLink).hostname.split(".")[0];
-                const personalQueueButton = new MessageButton();
+                const personalQueueButton = new ButtonBuilder();
                 personalQueueButton
-                    .setStyle("LINK")
+                    .setStyle(ButtonStyle.Link)
                     .setLabel(`Personal queue (${siteName})`)
                     .setURL(bn.requestLink);
                 buttons.addComponents(personalQueueButton);
             }
 
             if (bn.requestStatus.includes("globalQueue")) {
-                const globalQueueButton = new MessageButton();
+                const globalQueueButton = new ButtonBuilder();
                 globalQueueButton
-                    .setStyle("LINK")
+                    .setStyle(ButtonStyle.Link)
                     .setLabel(`Global queue`)
                     .setURL(`https://bn.mappersguild.com/modrequests`);
                 buttons2.addComponents(globalQueueButton);
@@ -187,7 +188,7 @@ async function qatTracking(bot: Client) {
             return true;
         }
 
-        if (channel.isText() && allowSend()) {
+        if (channel.isTextBased() && allowSend()) {
             if (!bn.requestStatus.includes("closed")) {
                 return await channel
                     .send({

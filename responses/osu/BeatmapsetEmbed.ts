@@ -1,12 +1,13 @@
 import {
-	ButtonInteraction,
-	InteractionCollector,
-	Message,
-	MessageActionRow,
-	MessageButton,
-	EmbedBuilder,
-	MessageSelectMenu,
-	SelectMenuInteraction,
+    ButtonInteraction,
+    InteractionCollector,
+    Message,
+    EmbedBuilder,
+    SelectMenuInteraction,
+    StringSelectMenuBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
 } from "discord.js";
 
 import {
@@ -34,7 +35,7 @@ const mods = [
 ];
 
 function getModsSelector(handshakeId: string, selectedMods: string[]) {
-    const selector = new MessageSelectMenu()
+    const selector = new StringSelectMenuBuilder()
         .setCustomId(`${handshakeId}|mods|handlerIgnore`)
         .setPlaceholder("Mod selector")
         .setMinValues(0)
@@ -83,10 +84,11 @@ export default {
               )
             : 0;
 
-        const embed = new MessageEmbed();
-        let modsSelector = new MessageActionRow().setComponents(
-            getModsSelector(handshakeId, mods)
-        );
+        const embed = new EmbedBuilder();
+        let modsSelector =
+            new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                getModsSelector(handshakeId, mods)
+            );
 
         let beatmapDifficulty = calculateBeatmap(
             (
@@ -172,26 +174,25 @@ export default {
             return r.data.username;
         }
 
-        const embedButtonsRow = new MessageActionRow();
-        const staticButtonsRow = new MessageActionRow();
+        const embedButtonsRow = new ActionRowBuilder<ButtonBuilder>();
+        const staticButtonsRow = new ActionRowBuilder<ButtonBuilder>();
 
-        const staticMapperProfileButton = new MessageButton()
+        const staticMapperProfileButton = new ButtonBuilder()
             .setLabel("Mapper profile")
-            .setStyle("LINK")
+            .setStyle(ButtonStyle.Link)
             .setURL(
                 `https://osu.ppy.sh/users/${encodeURI(beatmapset.creator)}`
             );
 
-        const staticOsuDirectButton = new MessageButton()
-            .setStyle("LINK")
+        const staticOsuDirectButton = new ButtonBuilder()
+            .setStyle(ButtonStyle.Link)
             .setLabel("osu!direct")
             .setURL(
                 `https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[selectedDifficultyIndex].id}`
             );
 
-        const staticQuickDownloadButton = new MessageButton({
-            type: "BUTTON",
-            style: "SECONDARY",
+        const staticQuickDownloadButton = new ButtonBuilder({
+            style: ButtonStyle.Secondary,
             customId: `beatmap_download|${beatmapset.id}`,
             label: "Quick download",
             emoji: "1070892493333344297",
@@ -203,14 +204,14 @@ export default {
             staticQuickDownloadButton
         );
 
-        let embedBackButton = new MessageButton()
+        let embedBackButton = new ButtonBuilder()
             .setLabel("◀️")
-            .setStyle("PRIMARY")
+            .setStyle(ButtonStyle.Primary)
             .setCustomId(`${handshakeId}|back|handlerIgnore`)
             .setDisabled(selectedDifficultyIndex == 0);
 
-        let embedIndicatorButton = new MessageButton()
-            .setStyle("PRIMARY")
+        let embedIndicatorButton = new ButtonBuilder()
+            .setStyle(ButtonStyle.Primary)
             .setCustomId(`${handshakeId}|decorator`)
             .setLabel(
                 `${selectedDifficultyIndex + 1} of ${
@@ -218,9 +219,9 @@ export default {
                 }`
             );
 
-        let embedSkipButton = new MessageButton()
+        let embedSkipButton = new ButtonBuilder()
             .setLabel("▶️")
-            .setStyle("PRIMARY")
+            .setStyle(ButtonStyle.Primary)
             .setCustomId(`${handshakeId}|skip|handlerIgnore`)
             .setDisabled(
                 selectedDifficultyIndex + 1 == beatmapset.beatmaps.length
@@ -287,7 +288,7 @@ export default {
                 mods.join("")
             );
 
-            new MessageActionRow().setComponents(
+            new ActionRowBuilder().setComponents(
                 getModsSelector(handshakeId, mods)
             );
 
@@ -334,16 +335,16 @@ export default {
                 iconURL: `https://a.ppy.sh/${beatmapset.beatmaps[selectedDifficultyIndex].user_id}`,
             });
 
-            embedBackButton = new MessageButton()
+            embedBackButton = new ButtonBuilder()
                 .setLabel("◀️")
-                .setStyle("PRIMARY")
+                .setStyle(ButtonStyle.Primary)
                 .setCustomId(
                     `${handshakeId}|back|${crypto.randomUUID()}|handlerIgnore`
                 )
                 .setDisabled(selectedDifficultyIndex == 0);
 
-            embedIndicatorButton = new MessageButton()
-                .setStyle("PRIMARY")
+            embedIndicatorButton = new ButtonBuilder()
+                .setStyle(ButtonStyle.Primary)
                 .setCustomId(`${handshakeId}|decorator`)
                 .setLabel(
                     `${selectedDifficultyIndex + 1} of ${
@@ -351,9 +352,9 @@ export default {
                     }`
                 );
 
-            embedSkipButton = new MessageButton()
+            embedSkipButton = new ButtonBuilder()
                 .setLabel("▶️")
-                .setStyle("PRIMARY")
+                .setStyle(ButtonStyle.Primary)
                 .setCustomId(
                     `${handshakeId}|skip|${crypto.randomUUID()}|handlerIgnore`
                 )
@@ -433,9 +434,10 @@ export default {
                         ? ["NM"]
                         : interaction.values;
 
-                modsSelector = new MessageActionRow().setComponents(
-                    getModsSelector(handshakeId, interaction.values)
-                );
+                modsSelector =
+                    new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                        getModsSelector(handshakeId, interaction.values)
+                    );
 
                 selectDifficulty(true, interaction, true);
             }
@@ -467,8 +469,8 @@ export default {
     // 	async function generateFor(beatmap: Beatmap) {
     // 		if (!beatmapset.beatmaps)
     // 			return {
-    // 				embed: new MessageEmbed(),
-    // 				buttons: new MessageActionRow(),
+    // 				embed: new EmbedBuilder(),
+    // 				buttons: new ActionRowBuilder(),
     // 			};
 
     // 		const map = await axios(`https://osu.ppy.sh/osu/${beatmap.id}`);
@@ -576,9 +578,9 @@ export default {
     // 		};
     // 	}
 
-    // 	const buttons = new MessageActionRow();
+    // 	const buttons = new ActionRowBuilder();
     // 	buttons.addComponents([
-    // 		new MessageButton({
+    // 		new ButtonBuilder({
     // 			type: "BUTTON",
     // 			style: "LINK",
     // 			url: `https://osu.ppy.sh/users/${beatmapset.user_id}`,
@@ -598,7 +600,7 @@ export default {
 
     // 	// if (!stored_file.big) {
     // 	// 	buttons.addComponents([
-    // 	// 		new MessageButton({
+    // 	// 		new ButtonBuilder({
     // 	// 			type: "BUTTON",
     // 	// 			style: "LINK",
     // 	// 			url: stored_file.url,
@@ -610,15 +612,15 @@ export default {
     // 	const elements = await generateFor(beatmapset.beatmaps[index]);
 
     // 	buttons.addComponents([
-    // 		new MessageButton({
+    // 		new ButtonBuilder({
     // 			type: "BUTTON",
     // 			style: "LINK",
     // 			url: `https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[0].id}`,
     // 			label: "osu!direct",
     // 		}),
-    // 		new MessageButton({
+    // 		new ButtonBuilder({
     // 			type: "BUTTON",
-    // 			style: "PRIMARY",
+    // 			style: ButtonStyle.Primary,
     // 			customId: `beatmap_download|${beatmapset.id}`,
     // 			label: "Quick download",
     // 		}),
@@ -766,7 +768,7 @@ export default {
     // 		if (!beatmapset.beatmaps)
     // 			return {
     // 				embed: new MessageEmbed(),
-    // 				buttons: new MessageActionRow(),
+    // 				buttons: new ActionRowBuilder(),
     // 			};
 
     // 		const map = await axios(`https://osu.ppy.sh/osu/${beatmap.id}`);
@@ -871,7 +873,7 @@ export default {
     // 		};
     // 	}
 
-    // 	const buttons = new MessageActionRow();
+    // 	const buttons = new ActionRowBuilder();
     // 	buttons.addComponents([
     // 		new MessageButton({
     // 			type: "BUTTON",
@@ -892,7 +894,7 @@ export default {
     // 		}),
     // 		new MessageButton({
     // 			type: "BUTTON",
-    // 			style: "PRIMARY",
+    // 			style: ButtonStyle.Primary,
     // 			customId: `beatmap_download|${beatmapset.id}`,
     // 			label: "Quick download",
     // 		}),
