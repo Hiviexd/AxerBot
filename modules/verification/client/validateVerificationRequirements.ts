@@ -1,4 +1,4 @@
-import { guilds, verifications } from "../../../database";
+import { guilds, users, verifications } from "../../../database";
 import { bot } from "../../../";
 // import { sendVerifiedEmbed } from "./sendVerifiedEmbed";
 import { User, UserGroup } from "../../../types/user";
@@ -218,6 +218,14 @@ export default async (
 
         await verifications.deleteOne({
             _id: verificationId,
+        });
+
+        await users.findByIdAndUpdate(member.user.id, {
+            $set: {
+                osu: {
+                    username: user.id,
+                },
+            },
         });
 
         pm.user.sendMessage(
