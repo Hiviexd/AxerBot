@@ -11,6 +11,8 @@ import { verifications } from "../../database";
 export default async (interaction: Interaction) => {
     if (!interaction.isButton()) return;
 
+    await interaction.deferReply({ ephemeral: true });
+
     const targets = interaction.customId.split("|");
 
     if (targets[0] != "verification") return;
