@@ -1,14 +1,6 @@
-import {
-    Message,
-    ChatInputCommandInteraction,
-    PermissionFlagsBits,
-} from "discord.js";
-import CommandOptionInvalid from "../../../../responses/embeds/CommandOptionInvalid";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
+import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
-import { ownerId } from "./../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationSetFlags = new SlashCommandSubcommand(

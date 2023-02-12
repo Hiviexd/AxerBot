@@ -98,3 +98,5 @@ verificationSetMessage.setExecuteFunction(async (command) => {
         }
     );
 });
+
+export default verificationSetMessage;
