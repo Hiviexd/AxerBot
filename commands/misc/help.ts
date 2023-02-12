@@ -232,10 +232,12 @@ help.setExecuteFunction(async (command) => {
 
         mapEmbedFields(embed, targetCommand);
 
-        embed.addFields({
-            name: `${getEmoji("dot")} Subcommands`,
-            value: subcommands,
-        });
+        if (subcommands.trim() != "") {
+            embed.addFields({
+                name: `${getEmoji("dot")} Subcommands`,
+                value: subcommands,
+            });
+        }
 
         return command.editReply({
             embeds: [embed],
