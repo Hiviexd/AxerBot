@@ -1,103 +1,49 @@
-import {
-	Client,
-	Message,
-	ChatInputCommandInteraction,
-	TextBasedChannel,
-} from "discord.js";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import { ownerId } from "../../config.json";
-import generateConfirmationEmbed from "./../../helpers/text/embeds/generateConfirmationEmbed";
-import generateSuccessEmbed from "./../../helpers/text/embeds/generateSuccessEmbed";
+import { PermissionFlagsBits } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "purge",
-	help: {
-		description:
-			"Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
-		syntax: "/purge `<count>`",
-		example: "/purge `6`",
-	},
-	interaction: true,
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "amount",
-				description: "Amount of messages to delete",
-				required: true,
-				type: 4,
-				max_value: 98,
-				min_value: 1,
-			},
-		],
-	},
-	category: "management",
-	permissions: ["MANAGE_MESSAGES"],
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
+const purge = new SlashCommand(
+    ["purge", "clear"],
+    "Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
+    "management",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageMessages]
+);
 
-		let purge = (channel: any, amount: number) => {
-			channel.bulkDelete(amount + 1).catch((e: any) => {
-				command.editReply({
-					embeds: [
-						generateErrorEmbed(
-							e.httpStatus == 403
-								? "❌ I don't have `MANAGE_MESSAGES` permission to do this."
-								: "❌ Due to Discord Limitations, I cannot delete more than 98 messages, or messages older than 14 days."
-						),
-					],
-				});
-			});
-		};
+purge.builder.addIntegerOption((o) =>
+    o
+        .setName("amount")
+        .setDescription("How many messages?")
+        .setRequired(true)
+        .setMinValue(1)
+        .setMaxValue(98)
+);
 
-		if (!command.member) return;
+purge.setExecuteFunction(async (command) => {
+    await command.deferReply();
 
-		if (typeof command.member?.permissions == "string") return;
+    let purge = (channel: any, amount: number) => {
+        channel.bulkDelete(amount + 1).catch((e: any) => {
+            command.editReply({
+                embeds: [
+                    generateErrorEmbed(
+                        e.httpStatus == 403
+                            ? "❌ I don't have `MANAGE_MESSAGES` permission to do this."
+                            : "❌ Due to Discord Limitations, I cannot delete more than 98 messages, or messages older than 14 days."
+                    ),
+                ],
+            });
+        });
+    };
 
-		if (!command.channel || !command.channel.isText()) return;
+    if (!command.member) return;
 
-		const amount = command.options.getInteger("amount", true);
+    if (typeof command.member?.permissions == "string") return;
 
-		// generateConfirmationEmbed(
-		// 	message,
-		// 	purge,
-		// 	"This action **cannot** be undone, be careful."
-		// );
+    if (!command.channel || !command.channel.isTextBased()) return;
 
-		purge(command.channel, amount);
+    const amount = command.options.getInteger("amount", true);
 
-		// if (!message.member) return;
-		// if (
-		// 	!message.member.permissions.has("MANAGE_MESSAGES", true) && message.author.id !== ownerId)
-		// 	return message.channel.send({ embeds: [MissingPermissions] });
-		// var amount = parseInt(args[0]);
-		// if (!amount) {
-		// 	let msg = await message.channel.send({
-		// 		embeds: [
-		// 			generateErrorEmbed(
-		// 				"❗ Please specify the amount of messages you want me to delete."
-		// 			),
-		// 		],
-		// 	});
-		// 	return;
-		// }
-		// if (amount > 98 || amount < 1) {
-		// 	let msg = await message.channel.send({
-		// 		embeds: [
-		// 			generateErrorEmbed(
-		// 				"❗ Please specify an amount between 1 and 98."
-		// 			),
-		// 		],
-		// 	});
-		// 	return;
-		// }
-		// if (!message.guild) return;
-		// const channel: any = message.channel;
-		// generateConfirmationEmbed(message, purge, "This action **cannot** be undone, be careful.");
-	},
-};
+    purge(command.channel, amount);
+});

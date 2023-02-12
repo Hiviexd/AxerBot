@@ -19,9 +19,12 @@ import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
 import bntracker from "./BNsite/bntracker";
 import verificationCommand from "./management/verification";
+import userlog from "./management/userLog";
+import sendmessage from "./management/sendMessage";
 
 export const AxerCommands = [
     verificationCommand,
+    userlog,
     heardle,
     ping,
     avatar,
@@ -42,6 +45,7 @@ export const AxerCommands = [
     coinflip,
     choose,
     bntracker,
+    sendmessage,
 ];
 
 // export const commands: any = {

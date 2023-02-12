@@ -1,71 +1,68 @@
-import { Client, ChatInputCommandInteraction } from "discord.js";
+import {
+    Client,
+    ChatInputCommandInteraction,
+    PermissionFlagsBits,
+} from "discord.js";
 import * as database from "../../database";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import { SlashCommand } from "../../models/commands/SlashCommand";
 
-export default {
-	name: "osutimestamps",
-	category: "management",
-	help: {
-		description:
-			"Enable or disable the detection of osu! timestamps in messages",
-		syntax: "/osuTimestamps status:`<enable/disable>`",
-	},
-	interaction: true,
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "status",
-				type: 3,
-				description:
-					"Enable or disable the detection of osu! timestamps in messages",
-				max_value: 1,
-				required: true,
-				choices: [
-					{
-						name: "enable",
-						value: "true",
-					},
-					{
-						name: "disable",
-						value: "false",
-					},
-				],
-			},
-		],
-	},
-	permissions: ["MANAGE_CHANNELS"],
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		await command.deferReply();
-		if (!command.guild || !command.member) return;
-		if (typeof command.member?.permissions == "string") return;
+const osutimestamps = new SlashCommand(
+    "osutimestamps",
+    "Enable or disable the detection of osu! timestamps in messages",
+    "management",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		const guild = await database.guilds.findOne({ _id: command.guildId });
-		if (!guild) return;
+osutimestamps.builder.addStringOption((o) =>
+    o
+        .setName("status")
+        .setDescription(
+            "Enable or disable the detection of osu! timestamps in messages"
+        )
+        .setRequired(true)
+        .addChoices(
+            {
+                name: "enable",
+                value: "true",
+            },
+            {
+                name: "disable",
+                value: "false",
+            }
+        )
+);
 
-		const status = command.options.get("status")
-			? command.options.get("status")?.value == "true"
-			: true;
+osutimestamps.setExecuteFunction(async (command) => {
+    await command.deferReply();
+    if (!command.guild || !command.member) return;
+    if (typeof command.member?.permissions == "string") return;
 
-		guild.osuTimestamps = status;
+    const guild = await database.guilds.findOne({ _id: command.guildId });
+    if (!guild) return;
 
-		await database.guilds.updateOne(
-			{ _id: command.guildId },
-			{ $set: { osuTimestamps: status } }
-		);
+    const status = command.options.get("status")
+        ? command.options.get("status")?.value == "true"
+        : true;
 
-		return command.editReply({
-			embeds: [
-				generateSuccessEmbed(
-					`${
-						status ? "Enabled" : "Disabled"
-					} osu! timestamp detection in messages!`
-				),
-			],
-		});
-	},
-};
+    guild.osuTimestamps = status;
+
+    await database.guilds.updateOne(
+        { _id: command.guildId },
+        { $set: { osuTimestamps: status } }
+    );
+
+    return command.editReply({
+        embeds: [
+            generateSuccessEmbed(
+                `${
+                    status ? "Enabled" : "Disabled"
+                } osu! timestamp detection in messages!`
+            ),
+        ],
+    });
+});
+
+export default osutimestamps;
