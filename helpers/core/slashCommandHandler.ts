@@ -42,13 +42,13 @@ export default async function commandHandler(
     if (targetCommand.permissions && !event.member) return console.log("2"); // This command can't be executed here!
 
     if (
-        !event.channel.isDMBased &&
-        checkMemberPermissions(
+        !checkMemberPermissions(
             event.member as GuildMember,
             targetCommand.permissions
         )
-    )
+    ) {
         return console.log("3");
+    }
 
     try {
         if (event.options.getSubcommand())
