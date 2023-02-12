@@ -24,6 +24,12 @@ import sendmessage from "./management/sendMessage";
 import help from "./misc/help";
 import bn from "./BNsite/bn";
 import openbns from "./BNsite/openbns";
+import purge from "./management/purge";
+import quotes from "./management/quotes";
+import embeds from "./management/embeds";
+import osutimestamps from "./management/osuTimestamps";
+import editMessage from "./management/editMessage";
+import logging from "./management/logging";
 
 export const AxerCommands = [
     help,
@@ -52,6 +58,12 @@ export const AxerCommands = [
     choose,
     bntracker,
     sendmessage,
+    purge,
+    quotes,
+    embeds,
+    osutimestamps,
+    editMessage,
+    logging,
 ];
 
 // export const commands: any = {

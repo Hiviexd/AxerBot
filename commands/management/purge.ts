@@ -47,3 +47,5 @@ purge.setExecuteFunction(async (command) => {
 
     purge(command.channel, amount);
 });
+
+export default purge;

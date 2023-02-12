@@ -59,3 +59,5 @@ quotes
     .addSubcommandGroup(commandGroupBLOCK)
     .addSubcommandGroup(commandGroupADD)
     .addSubcommandGroup(commandGroupALLOW);
+
+export default quotes;
