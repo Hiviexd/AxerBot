@@ -75,18 +75,18 @@ function changeAvatar(currentIndex: number, client: Client) {
 }
 
 function createConfig(client: Client) {
-    writeFileSync(
-        path.resolve("./cache/avatarConfig.json"),
-        JSON.stringify({ filename: "1.jpg", replaced: new Date() }),
-        "utf8"
-    );
+    fallbackAvatar(client);
     consoleCheck("avatarManager", "Created avatar config file!");
 }
 
 function fallbackAvatar(client: Client) {
     consoleLog("AvatarManager", "Fallbacking avatar...");
 
-    createConfig(client);
+    writeFileSync(
+        path.resolve("./cache/avatarConfig.json"),
+        JSON.stringify({ filename: "1.jpg", replaced: new Date() }),
+        "utf8"
+    );
 
     return client.user
         ?.setAvatar(path.resolve("./avatars/1.jpg"))
