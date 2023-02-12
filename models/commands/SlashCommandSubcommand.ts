@@ -1,16 +1,19 @@
 import {
     ChatInputCommandInteraction,
+    GuildMember,
     PermissionResolvable,
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder,
 } from "discord.js";
 import { ISlashCommandExecuteFunction } from "./SlashCommand";
+import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
 export class SlashCommandSubcommand {
     private _executeFunction!: ISlashCommandExecuteFunction;
     public allowDM = false;
     public help: { [key: string]: string | string[] } = {};
-    public permissions?: PermissionResolvable[];
+    public permissions: PermissionResolvable[] = [];
     public builder = new SlashCommandSubcommandBuilder();
 
     constructor(
@@ -40,6 +43,17 @@ export class SlashCommandSubcommand {
     }
 
     run(interaction: ChatInputCommandInteraction) {
+        if (
+            !checkMemberPermissions(
+                interaction.member as GuildMember,
+                this.permissions
+            )
+        ) {
+            return interaction.reply({
+                embeds: [MissingPermissions],
+            });
+        }
+
         this._executeFunction(interaction);
     }
 }

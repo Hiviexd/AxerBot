@@ -2,23 +2,24 @@ import {
     ChatInputCommandInteraction,
     Client,
     GuildMember,
+    PermissionFlagsBits,
     PermissionResolvable,
 } from "discord.js";
 
 import { AxerCommands } from "../../commands";
 
-function checkMemberPermissions(
+export function checkMemberPermissions(
     member: GuildMember,
     permissions: PermissionResolvable[]
 ) {
-    let pass = true;
+    let pass = false;
 
     if (!member) return false;
 
-    if (!permissions) return true;
+    if (permissions.length == 0) return true;
 
     permissions.forEach((permission) => {
-        if (!member.permissions.has(permission)) pass = false;
+        if (member.permissions.has(permission)) pass = true;
     });
 
     return pass;
@@ -47,7 +48,7 @@ export default async function commandHandler(
             targetCommand.permissions
         )
     ) {
-        return console.log("3");
+        return;
     }
 
     try {
