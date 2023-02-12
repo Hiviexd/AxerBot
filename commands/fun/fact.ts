@@ -3,7 +3,7 @@ import colors from "../../constants/colors";
 import axios from "axios";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const fact = new SlashCommand("fact", "Get a random fact!", "fun", false, {
+const fact = new SlashCommand("fact", "Get a random fact!", "Fun", false, {
     syntax: "/fact",
     options: `\`today\`: Gets the fact of the day.`,
     example: `/fact\n /fact type:today`,

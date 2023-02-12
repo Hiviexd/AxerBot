@@ -5,7 +5,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const revolver = new SlashCommand(
     "revolver",
     "Russian Roulette, but with bigger numbers!",
-    "fun",
+    "Fun",
     false
 );
 

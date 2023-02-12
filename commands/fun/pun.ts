@@ -12,7 +12,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const pun = new SlashCommand(
     ["pun", "joke"],
     "Get a random pun!",
-    "fun",
+    "Fun",
     false
 );
 

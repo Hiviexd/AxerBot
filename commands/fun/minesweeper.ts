@@ -6,7 +6,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const minesweeper = new SlashCommand(
     "minesweeper",
     "Play a game of minesweeper! \nDefault settings are 9 x 9 grid, 10 mines.",
-    "fun",
+    "Fun",
     false,
     {
         syntax: "/minesweeper\n /minesweeper `<rows>` `<columns>` `<mines>`",

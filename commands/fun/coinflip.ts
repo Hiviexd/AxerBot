@@ -4,7 +4,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const coinflip = new SlashCommand(
     "coinflip",
     "Feeling lucky? Flip a coin!",
-    "fun",
+    "Fun",
     false
 );
 

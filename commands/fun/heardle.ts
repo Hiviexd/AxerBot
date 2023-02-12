@@ -15,7 +15,7 @@ import truncateString from "../../helpers/text/truncateString";
 import { consoleLog, consoleCheck } from "../../helpers/core/logger";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const heardle = new SlashCommand("heardle", "Guess the song!", "fun", false);
+const heardle = new SlashCommand("heardle", "Guess the song!", "Fun", false);
 
 heardle.builder
     .addStringOption((o) =>

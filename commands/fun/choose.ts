@@ -3,7 +3,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const choose = new SlashCommand(
     "choose",
     "I will choose for you!",
-    "fun",
+    "Fun",
     false,
     {
         syntax: "/choose `options:Banana or Cookie`",
