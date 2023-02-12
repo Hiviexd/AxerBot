@@ -7,7 +7,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const recent = new SlashCommand(
     ["rs", "recent"],
     "Get the most recent score of a player",
-    "osu",
+    "osu!",
     false,
     {
         syntax: "/rs `username` `?mode`",

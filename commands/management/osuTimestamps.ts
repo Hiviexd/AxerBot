@@ -10,7 +10,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const osutimestamps = new SlashCommand(
     "osutimestamps",
     "Enable or disable the detection of osu! timestamps in messages",
-    "management",
+    "Management",
     false,
     undefined,
     [PermissionFlagsBits.ManageChannels]

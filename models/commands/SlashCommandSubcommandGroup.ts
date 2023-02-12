@@ -1,38 +1,42 @@
 import {
-	ChatInputCommandInteraction,
-	SlashCommandSubcommandGroupBuilder,
+    ChatInputCommandInteraction,
+    SlashCommandSubcommandGroupBuilder,
 } from "discord.js";
 import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
 
 export class SlashCommandSubcommandGroup {
-	private commands: SlashCommandSubcommand[] = [];
-	public builder = new SlashCommandSubcommandGroupBuilder();
+    private commands: SlashCommandSubcommand[] = [];
+    public builder = new SlashCommandSubcommandGroupBuilder();
 
-	constructor(name: string, description: string) {
-		this.builder.setName(name);
-		this.builder.setDescription(description);
-	}
+    constructor(name: string, description: string) {
+        this.builder.setName(name);
+        this.builder.setDescription(description);
+    }
 
-	addCommand(subcommand: SlashCommandSubcommand) {
-		this.commands.push(subcommand);
-		this.builder.addSubcommand(subcommand.builder);
+    addCommand(subcommand: SlashCommandSubcommand) {
+        this.commands.push(subcommand);
+        this.builder.addSubcommand(subcommand.builder);
 
-		return this;
-	}
+        return this;
+    }
 
-	runCommand(
-		interaction: ChatInputCommandInteraction,
-		subcommand?: { name: string; group: string }
-	) {
-		const target = this.commands.find(
-			(c) =>
-				c.builder.name == subcommand?.name ||
-				(interaction.commandName && subcommand?.group) ||
-				interaction.options.getSubcommandGroup()
-		);
+    get subcommands() {
+        return this.commands;
+    }
 
-		if (!target) return;
+    runCommand(
+        interaction: ChatInputCommandInteraction,
+        subcommand?: { name: string; group: string }
+    ) {
+        const target = this.commands.find(
+            (c) =>
+                c.builder.name == subcommand?.name ||
+                (interaction.commandName && subcommand?.group) ||
+                interaction.options.getSubcommandGroup()
+        );
 
-		target.run(interaction);
-	}
+        if (!target) return;
+
+        target.run(interaction);
+    }
 }

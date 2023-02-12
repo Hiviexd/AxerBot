@@ -20,7 +20,7 @@ export class SlashCommand {
     private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
     private _subcommands: SlashCommandSubcommand[] = [];
     public permissions: PermissionResolvable[] = [];
-    public category = "misc";
+    public category = "Miscellaneous";
     public help = {};
     public allowDM = false;
     public names: string[] = [];
@@ -57,6 +57,14 @@ export class SlashCommand {
         this.help = help;
     }
 
+    get subcommands() {
+        return this._subcommands;
+    }
+
+    get subcommandGroups() {
+        return this._subcommand_groups;
+    }
+
     /**
      * You need to add commands to the group first!
      * This will be automated run by the handler.
@@ -75,6 +83,36 @@ export class SlashCommand {
 
     setExecuteFunction(fn: ISlashCommandExecuteFunction) {
         this._executeFunction = fn;
+    }
+
+    hasGroup(name: string) {
+        if (!this._subcommand_groups.find((g) => g.builder.name.includes(name)))
+            return {
+                result: false,
+                group: undefined,
+            };
+
+        return {
+            result: true,
+            group: this._subcommand_groups.find((g) =>
+                g.builder.name.includes(name)
+            ),
+        };
+    }
+
+    hasSubcommand(name: string) {
+        if (!this._subcommands.find((c) => c.builder.name.includes(name)))
+            return {
+                result: false,
+                command: undefined,
+            };
+
+        return {
+            result: true,
+            command: this._subcommands.find((c) =>
+                c.builder.name.includes(name)
+            ),
+        };
     }
 
     runSubcommand(

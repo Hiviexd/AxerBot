@@ -10,12 +10,18 @@ import slashCommandHandler from "../helpers/core/slashCommandHandler";
 import heardle from "../modules/heardle/heardle";
 import beatmapDownloader from "../modules/downloader/beatmapDownloader";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
+import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
 
 export default {
     name: "interactionCreate",
     execute(bot: Client) {
         bot.on("interactionCreate", async (interaction) => {
             //addPrivateRoles(interaction);
+
+            if (interaction.isAutocomplete()) {
+                helpAutocomplete(interaction);
+                return;
+            }
 
             if (
                 (interaction as ButtonInteraction).customId &&

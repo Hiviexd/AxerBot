@@ -16,7 +16,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const editMessage = new SlashCommand(
     "editmessage",
     "Edits one of the bot's messages",
-    "management",
+    "Management",
     false,
     {
         description: "Edits one of the bot's messages",

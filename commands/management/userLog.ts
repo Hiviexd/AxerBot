@@ -7,7 +7,7 @@ import userlogRemoveLog from "./subcommands/userLog/remove";
 const userlog = new SlashCommand(
     "userlog",
     "logs info about a user",
-    "management",
+    "Management",
     false,
     {
         description: "logs info about a user",

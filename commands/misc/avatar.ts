@@ -1,72 +1,72 @@
 import {
-	Client,
-	ChatInputCommandInteraction,
-	Message,
-	EmbedBuilder,
-	User,
+    Client,
+    ChatInputCommandInteraction,
+    Message,
+    EmbedBuilder,
+    User,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
 const avatar = new SlashCommand(
-	"avatar",
-	"Displays the avatar of the mentioned user or the author.",
-	"misc",
-	false,
-	{
-		description: "Displays the avatar of the mentioned user or the author.",
-		syntax: "/avatar <option>",
-		example: "/avatar\n /avatar @Hivie\n /avatar <userid>",
-	}
+    "avatar",
+    "Displays the avatar of the mentioned user or the author.",
+    "Miscellaneous",
+    false,
+    {
+        description: "Displays the avatar of the mentioned user or the author.",
+        syntax: "/avatar <option>",
+        example: "/avatar\n /avatar @Hivie\n /avatar <userid>",
+    }
 );
 
 avatar.builder
-	.addUserOption((option) =>
-		option.setName("user").setDescription("Get avatar by user")
-	)
-	.addStringOption((option) =>
-		option.setName("id").setDescription("Get avatar by user id")
-	);
+    .addUserOption((option) =>
+        option.setName("user").setDescription("Get avatar by user")
+    )
+    .addStringOption((option) =>
+        option.setName("id").setDescription("Get avatar by user id")
+    );
 
 avatar.setExecuteFunction(async (command) => {
-	await command.deferReply(); // ? prevent errors
+    await command.deferReply(); // ? prevent errors
 
-	let user: User | undefined = undefined;
-	const idInput = command.options.getString("id");
-	const userInput = command.options.getUser("user");
+    let user: User | undefined = undefined;
+    const idInput = command.options.getString("id");
+    const userInput = command.options.getUser("user");
 
-	if (idInput) {
-		try {
-			user = await command.client.users.fetch(idInput);
-		} catch (e) {
-			return command.editReply({ embeds: [UserNotFound] });
-		}
-	}
+    if (idInput) {
+        try {
+            user = await command.client.users.fetch(idInput);
+        } catch (e) {
+            return command.editReply({ embeds: [UserNotFound] });
+        }
+    }
 
-	if (userInput) {
-		try {
-			user = await command.client.users.fetch(userInput);
-		} catch (e) {
-			return command.editReply({ embeds: [UserNotFound] });
-		}
-	}
+    if (userInput) {
+        try {
+            user = await command.client.users.fetch(userInput);
+        } catch (e) {
+            return command.editReply({ embeds: [UserNotFound] });
+        }
+    }
 
-	if (!user) {
-		user = command.user;
-	}
+    if (!user) {
+        user = command.user;
+    }
 
-	const avatarEmbed = new EmbedBuilder()
-		.setColor(colors.purple)
-		.setTitle(`${user.tag}'s avatar`)
-		.setImage(user.displayAvatarURL({ extension: "png" }))
-		.setFooter({
-			text: `Requested by ${command.user.tag}`,
-			iconURL: command.user.displayAvatarURL({
-				extension: "png",
-			}),
-		});
-	command.editReply({ embeds: [avatarEmbed] }).catch(console.error);
+    const avatarEmbed = new EmbedBuilder()
+        .setColor(colors.purple)
+        .setTitle(`${user.tag}'s avatar`)
+        .setImage(user.displayAvatarURL({ extension: "png" }))
+        .setFooter({
+            text: `Requested by ${command.user.tag}`,
+            iconURL: command.user.displayAvatarURL({
+                extension: "png",
+            }),
+        });
+    command.editReply({ embeds: [avatarEmbed] }).catch(console.error);
 });
 
 export default avatar;
@@ -96,7 +96,7 @@ export default avatar;
 // 			},
 // 		],
 // 	},
-// 	category: "misc",
+// 	category: "Miscellaneous",
 // 	run: async (
 // 		bot: Client,
 // 		interaction: ChatInputCommandInteraction,

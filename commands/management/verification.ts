@@ -17,7 +17,7 @@ import verificationStatus from "./subcommands/verification/status";
 const verificationCommand = new SlashCommand(
     "verification",
     "Verify new server members automatically using their osu! data!",
-    "management",
+    "Management",
     false,
     {
         modules: `\`channel\`: Set the system channel

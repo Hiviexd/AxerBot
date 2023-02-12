@@ -21,8 +21,10 @@ import bntracker from "./BNsite/bntracker";
 import verificationCommand from "./management/verification";
 import userlog from "./management/userLog";
 import sendmessage from "./management/sendMessage";
+import help from "./misc/help";
 
 export const AxerCommands = [
+    help,
     verificationCommand,
     userlog,
     heardle,

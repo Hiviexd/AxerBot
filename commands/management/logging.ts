@@ -7,7 +7,7 @@ import loggingToggle from "./subcommands/logging/toggle";
 const logging = new SlashCommand(
     "logging",
     "Configure the logging system",
-    "management",
+    "Management",
     false,
     undefined,
     [PermissionFlagsBits.ManageGuild]

@@ -8,7 +8,7 @@ import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 const player = new SlashCommand(
     ["player", "profile"],
     "Check statistics for a player",
-    "osu",
+    "osu!",
     false,
     {
         syntax: "/player `<name>` `<-?mode>`",

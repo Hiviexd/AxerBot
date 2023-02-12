@@ -12,7 +12,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const embeds = new SlashCommand(
     "embeds",
     "configure where and which embed will be allowed in X channels",
-    "management",
+    "Management",
     false,
     {
         description:

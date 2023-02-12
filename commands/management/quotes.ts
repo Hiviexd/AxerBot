@@ -14,7 +14,7 @@ import quotesAddWord from "./subcommands/quotes/quotesAddWord";
 const quotes = new SlashCommand(
     "quotes",
     "Configure random quotes system",
-    "management",
+    "Management",
     false,
     undefined,
     [PermissionFlagsBits.ManageChannels]

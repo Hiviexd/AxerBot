@@ -8,7 +8,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const mapper = new SlashCommand(
     "mapper",
     "Displays mapper statistics of a user",
-    "osu",
+    "osu!",
     false,
     {
         syntax: "/mapper `<user>`",

@@ -14,7 +14,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const sendmessage = new SlashCommand(
     "sendmessage",
     "Sends a message to a specified channel",
-    "management",
+    "Management",
     false,
     {
         description: "Sends a message to a specified channel",

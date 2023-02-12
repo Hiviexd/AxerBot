@@ -6,7 +6,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const osuset = new SlashCommand(
     ["osuset", "link"],
     "Link your osu! account",
-    "osu",
+    "osu!",
     false,
     {
         description: "Sets your credentials so the bot recognizes you.",

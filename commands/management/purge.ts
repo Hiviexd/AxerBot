@@ -5,7 +5,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const purge = new SlashCommand(
     ["purge", "clear"],
     "Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
-    "management",
+    "Management",
     false,
     undefined,
     [PermissionFlagsBits.ManageMessages]
