@@ -1,58 +1,56 @@
-import { Message } from "discord.js";
+import { Message, PermissionFlagsBits } from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { ownerId } from "./../../../../config.json";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-export default {
-	name: "quotes add",
-	trigger: ["add"],
-	help: {
-		description: "Adds a new phrase to the server custom quotes list",
-		syntax: "/quotes `add` `<phrase>`",
-	},
-	run: async (message: Message, args: string[]) => {
-		if (!message.member) return;
+const quotesAddWord = new SlashCommandSubcommand(
+    "word",
+    "Adds a new phrase to the server custom quotes list",
+    false,
+    undefined,
+    [PermissionFlagsBits.ManageChannels]
+);
 
-		if (
-			!message.member.permissions.has("MANAGE_GUILD", true) &&
-			message.author.id !== ownerId
-		)
-			return message.channel.send({ embeds: [MissingPermissions] });
+quotesAddWord.builder.addStringOption((o) =>
+    o
+        .setName("phrase")
+        .setDescription("Phrase that you want to add")
+        .setRequired(true)
+);
 
-		let guild = await database.guilds.findById(message.guildId);
+quotesAddWord.setExecuteFunction(async (command) => {
+    let guild = await database.guilds.findById(command.guildId);
 
-		if (!guild) return;
+    if (!guild) return;
 
-		if (guild.fun.mode != "custom")
-			return message.channel.send({
-				embeds: [
-					generateErrorEmbed(
-						"❗ This server is not in custom quotes mode."
-					),
-				],
-			});
+    if (guild.fun.mode != "custom")
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "❗ This server is not in custom quotes mode."
+                ),
+            ],
+        });
 
-		// ? Prevent add blank spaces
-		if (args.length < 1 || args.join(" ").trim() == "")
-			return message.channel.send({
-				embeds: [generateErrorEmbed("❗ Provide a phrase to add.")],
-			});
+    if (!command.guild) return;
 
-		if (!message.guild) return;
+    const phrase = command.options.getString("phrase", true);
 
-		guild.fun.phrases.push(args.join(" "));
+    guild.fun.phrases.push(phrase);
 
-		await database.guilds.updateOne(
-			{ _id: message.guildId },
-			{
-				fun: guild.fun,
-			}
-		);
+    await database.guilds.updateOne(
+        { _id: command.guildId },
+        {
+            fun: guild.fun,
+        }
+    );
 
-		message.channel.send({
-			embeds: [generateSuccessEmbed(`✅ Phrase added!`)],
-		});
-	},
-};
+    command.editReply({
+        embeds: [generateSuccessEmbed(`✅ Phrase added!`)],
+    });
+});
+
+export default quotesAddWord;

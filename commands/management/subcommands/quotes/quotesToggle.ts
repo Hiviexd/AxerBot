@@ -1,26 +1,35 @@
 import { PermissionFlagsBits } from "discord.js";
+
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const quotesSetChance = new SlashCommandSubcommand(
-    "chance",
-    "Set a chance between 1->100 to reply with a quote after the trigger word is detected",
+const quotesToggle = new SlashCommandSubcommand(
+    "toggle",
+    "Disable or enable quotes system",
     false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );
 
-quotesSetChance.builder.addIntegerOption((o) =>
+quotesToggle.builder.addStringOption((o) =>
     o
-        .setName("chance")
-        .setDescription("Chance number (percentage)")
+        .setName("status")
+        .setDescription("Enable or disable?")
         .setRequired(true)
-        .setMinValue(1)
-        .setMaxValue(100)
+        .addChoices(
+            {
+                name: "Enable",
+                value: "enabled",
+            },
+            {
+                name: "Disable",
+                value: "disabled",
+            }
+        )
 );
 
-quotesSetChance.setExecuteFunction(async (command) => {
+quotesToggle.setExecuteFunction(async (command) => {
     await command.deferReply();
 
     let guild = await database.guilds.findById(command.guildId);
@@ -28,9 +37,9 @@ quotesSetChance.setExecuteFunction(async (command) => {
 
     if (!command.guild) return;
 
-    const chance = command.options.getInteger("chance", true);
+    const status = command.options.getString("status", true);
 
-    guild.fun.chance = chance;
+    guild.fun.enable = status == "enabled";
 
     await database.guilds.updateOne(
         { _id: command.guildId },
@@ -40,12 +49,8 @@ quotesSetChance.setExecuteFunction(async (command) => {
     );
 
     command.editReply({
-        embeds: [
-            generateSuccessEmbed(
-                `✅ Successfully set the chance to ${chance}%`
-            ),
-        ],
+        embeds: [generateSuccessEmbed(`✅ quotes system is ${status}.`)],
     });
 });
 
-export default quotesSetChance;
+export default quotesToggle;
