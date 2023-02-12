@@ -9,7 +9,7 @@ import { ISlashCommandExecuteFunction } from "./SlashCommand";
 export class SlashCommandSubcommand {
     private _executeFunction!: ISlashCommandExecuteFunction;
     public allowDM = false;
-    public help = {};
+    public help: { [key: string]: string | string[] } = {};
     public permissions?: PermissionResolvable[];
     public builder = new SlashCommandSubcommandBuilder();
 

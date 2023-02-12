@@ -22,9 +22,13 @@ import verificationCommand from "./management/verification";
 import userlog from "./management/userLog";
 import sendmessage from "./management/sendMessage";
 import help from "./misc/help";
+import bn from "./BNsite/bn";
+import openbns from "./BNsite/openbns";
 
 export const AxerCommands = [
     help,
+    bn,
+    openbns,
     verificationCommand,
     userlog,
     heardle,

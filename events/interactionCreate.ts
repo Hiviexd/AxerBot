@@ -1,16 +1,10 @@
-import {
-    ButtonInteraction,
-    ChatInputCommandInteraction,
-    Client,
-} from "discord.js";
-import addPrivateRoles from "../helpers/interactions/addPrivateRoles";
-import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
-import osuInteractions from "../helpers/interactions/osuInteractions";
-import slashCommandHandler from "../helpers/core/slashCommandHandler";
-import heardle from "../modules/heardle/heardle";
-import beatmapDownloader from "../modules/downloader/beatmapDownloader";
-import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
+import { ButtonInteraction, Client } from "discord.js";
 import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
+import slashCommandHandler from "../helpers/core/slashCommandHandler";
+import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
+import beatmapDownloader from "../modules/downloader/beatmapDownloader";
+import heardle from "../modules/heardle/heardle";
+import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 
 export default {
     name: "interactionCreate",
@@ -23,19 +17,8 @@ export default {
                 return;
             }
 
-            if (
-                (interaction as ButtonInteraction).customId &&
-                (interaction as ButtonInteraction).customId.includes(
-                    "handlerIgnore"
-                )
-            )
-                return;
-
             if (interaction.isButton()) {
-                if (!interaction.customId.includes("beatmap_download")) {
-                    await interaction.deferReply({ ephemeral: true });
-                    sendVerificationLink(interaction);
-                }
+                sendVerificationLink(interaction);
 
                 if (interaction.customId.includes("beatmap_download")) {
                     beatmapDownloader(interaction);

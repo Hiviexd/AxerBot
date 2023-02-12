@@ -51,7 +51,7 @@ export default async (member: GuildMember) => {
         buttons.addComponents([
             new ButtonBuilder({
                 customId: `verification|${member.id}|${verification.data._id}`,
-                label: "Send verification link",
+                label: "Start verification",
                 style: ButtonStyle.Success,
                 emoji: "982656610285527114",
             }),
@@ -73,7 +73,7 @@ export default async (member: GuildMember) => {
                 );
             });
 
-        // ! remove when verification is fixed
+        // ! error for when verification breaks
         // const message =
         //     "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
 

@@ -1,59 +1,46 @@
-import { Message, MessageContextMenuInteraction } from "discord.js";
+import { Message } from "discord.js";
+
+import qatApi from "../../../helpers/qat/fetcher/qatApi";
 import BeatmapsetDiscussionEmbed from "../../../responses/osu/BeatmapsetDiscussionEmbed";
 import osuApi from "../fetcher/osuApi";
 import getDiscussionURLParams from "./getDiscussionURLParams";
 import getTargetDiscussionPost from "./getTargetDiscussionPost";
-import qatApi from "../../../helpers/qat/fetcher/qatApi";
 
-export default async (
-	url: string,
-	message?: Message,
-	interaction?: MessageContextMenuInteraction
-) => {
-	const postInfo = getDiscussionURLParams(url);
+export default async (url: string, message?: Message) => {
+    const postInfo = getDiscussionURLParams(url);
 
-	if (postInfo.post == "") return;
+    if (postInfo.post == "") return;
 
-	const post = await osuApi.fetch.beatmapsetDiscussionPost(
-		postInfo.post,
-		postInfo.type
-	);
+    const post = await osuApi.fetch.beatmapsetDiscussionPost(
+        postInfo.post,
+        postInfo.type
+    );
 
-	if (post.status != 200) return;
+    if (post.status != 200) return;
 
-	const targetPost = getTargetDiscussionPost(postInfo, post);
+    const targetPost = getTargetDiscussionPost(postInfo, post);
 
-	if (!targetPost) return;
+    if (!targetPost) return;
 
-	const events = await qatApi.fetch.events(postInfo.beatmapset);
+    const events = await qatApi.fetch.events(postInfo.beatmapset);
 
-	const targetEvent = events.data
-		? events.data.find(
-				(e) =>
-					(e.discussionId == targetPost.discussions[0].id ||
-						e.content == targetPost.posts[0].message) &&
-					e.userId == targetPost.posts[0].user_id
-		  )
-		: undefined;
+    const targetEvent = events.data
+        ? events.data.find(
+              (e) =>
+                  (e.discussionId == targetPost.discussions[0].id ||
+                      e.content == targetPost.posts[0].message) &&
+                  e.userId == targetPost.posts[0].user_id
+          )
+        : undefined;
 
-	if (message) {
-		BeatmapsetDiscussionEmbed.send(
-			targetPost,
-			post.data,
-			postInfo.type,
-			targetEvent,
-			message,
-			url
-		);
-	}
-
-	if (interaction) {
-		BeatmapsetDiscussionEmbed.sendInteraction(
-			targetPost,
-			post.data,
-			postInfo.type,
-			interaction,
-			url
-		);
-	}
+    if (message) {
+        BeatmapsetDiscussionEmbed.send(
+            targetPost,
+            post.data,
+            postInfo.type,
+            targetEvent,
+            message,
+            url
+        );
+    }
 };

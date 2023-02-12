@@ -21,7 +21,7 @@ export class SlashCommand {
     private _subcommands: SlashCommandSubcommand[] = [];
     public permissions: PermissionResolvable[] = [];
     public category = "Miscellaneous";
-    public help = {};
+    public help: { [key: string]: string | string[] } = {};
     public allowDM = false;
     public names: string[] = [];
     public builder = new SlashCommandBuilder();

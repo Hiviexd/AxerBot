@@ -16,110 +16,117 @@ import parseResets from "../../helpers/qat/getters/resets/parseResets";
 // TODO: add BN finder count IF you're re-adding QA info
 
 export default {
-	reply: (
-		osuUser: UserResponse,
-		qatUser: QatUserResponse,
-		activity: UserActivityResponse,
-		command: ChatInputCommandInteraction
-	) => {
-		const usergroup = parseUsergroup(osuUser.data); // ? Get the highest usergroup
+    reply: (
+        osuUser: UserResponse,
+        qatUser: QatUserResponse,
+        activity: UserActivityResponse,
+        command: ChatInputCommandInteraction
+    ) => {
+        const usergroup = parseUsergroup(osuUser.data); // ? Get the highest usergroup
 
-		const latestNom =
-			activity.data.uniqueNominations[
-				activity.data.uniqueNominations.length - 1
-			];
+        const latestNom =
+            activity.data.uniqueNominations[
+                activity.data.uniqueNominations.length - 1
+            ];
 
-		let reqStatus = "";
-		if (qatUser.data.requestStatus.length > 0) {
-			if (qatUser.data.requestStatus.includes("closed")) {
-				reqStatus = "🔴 Closed";
-			} else {
-				reqStatus = `🟢 Open (${getRequestStatus(qatUser.data)})`;
-			}
-		} else {
-			reqStatus = "⚪ Unknown";
-		}
+        let reqStatus = "";
+        if (qatUser.data.requestStatus.length > 0) {
+            if (qatUser.data.requestStatus.includes("closed")) {
+                reqStatus = "🔴 Closed";
+            } else {
+                reqStatus = `🟢 Open (${getRequestStatus(qatUser.data)})`;
+            }
+        } else {
+            reqStatus = "⚪ Unknown";
+        }
 
-		const modeIcons = qatUser.data.modes
-			.map((mode: string) => {
-				return `${getEmoji(mode)} `;
-			})
-			.join("")
-			.trim();
+        const modeIcons = qatUser.data.modes
+            .map((mode: string) => {
+                return `${getEmoji(mode as keyof typeof getEmoji)} `;
+            })
+            .join("")
+            .trim();
 
-		let e = new EmbedBuilder()
-			.setAuthor({
-				name: `${osuUser.data.username} • BN${
-					qatUser.data.natDuration ? "/NAT" : ""
-				} info`,
-				url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
-				iconURL: usergroup.icon ? usergroup.icon : undefined,
-			})
-			.setThumbnail(osuUser.data.avatar_url)
-			.setColor(usergroup.colour)
-			.setDescription(
-				`showing **[${abbreviation(
-					osuUser.data.username
-				)}](https://bn.mappersguild.com/users?id=${
-					qatUser.data.id
-				})** ${modeIcons} BN website info from the last **90** days.`
-			)
-			.addField("Request Status", `${reqStatus}`, true);
+        let e = new EmbedBuilder()
+            .setAuthor({
+                name: `${osuUser.data.username} • BN${
+                    qatUser.data.natDuration ? "/NAT" : ""
+                } info`,
+                url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
+                iconURL: usergroup.icon ? usergroup.icon : undefined,
+            })
+            .setThumbnail(osuUser.data.avatar_url)
+            .setColor(usergroup.colour)
+            .setDescription(
+                `showing **[${abbreviation(
+                    osuUser.data.username
+                )}](https://bn.mappersguild.com/users?id=${
+                    qatUser.data.id
+                })** ${modeIcons} BN website info from the last **90** days.`
+            )
+            .addFields(
+                {
+                    name: "Request Status",
+                    value: `${reqStatus}`,
+                    inline: true,
+                },
+                {
+                    name: `BN${qatUser.data.natDuration ? "/NAT" : ""} for`,
+                    value: `${
+                        qatUser.data.natDuration
+                            ? `🟠 ${calculateDuration(
+                                  qatUser.data.natDuration
+                              )}\n`
+                            : ""
+                    }🟣 ${calculateDuration(qatUser.data.bnDuration)}`,
+                    inline: true,
+                }
+            );
 
-		e.addField(
-			`BN${qatUser.data.natDuration ? "/NAT" : ""} for`,
-			`${
-				qatUser.data.natDuration
-					? `🟠 ${calculateDuration(qatUser.data.natDuration)}\n`
-					: ""
-			}🟣 ${calculateDuration(qatUser.data.bnDuration)}`,
-			true
-		);
-
-		e.addFields(
-			{
-				name: "Mappers",
-				// sorry for whoever has to read this idk
-				value: `🗺️ ${getUniqueMappersNumber(activity).toString()} ${
-					getUniqueMappersNumber(activity)
-						? `(${Math.floor(
-								(getUniqueMappersNumber(activity) /
-									activity.data.uniqueNominations.length) *
-									100
-						  )}%)`
-						: ""
-				}`,
-				inline: true,
-			},
-			{
-				name: "Nominations",
-				value: `💭 ${activity.data.uniqueNominations.length.toString()} (90d)
+        e.addFields(
+            {
+                name: "Mappers",
+                // sorry for whoever has to read this idk
+                value: `🗺️ ${getUniqueMappersNumber(activity).toString()} ${
+                    getUniqueMappersNumber(activity)
+                        ? `(${Math.floor(
+                              (getUniqueMappersNumber(activity) /
+                                  activity.data.uniqueNominations.length) *
+                                  100
+                          )}%)`
+                        : ""
+                }`,
+                inline: true,
+            },
+            {
+                name: "Nominations",
+                value: `💭 ${activity.data.uniqueNominations.length.toString()} (90d)
                 💭 ${osuUser.data.nominated_beatmapset_count} (all)`,
-				inline: true,
-			},
-			/*{
+                inline: true,
+            },
+            /*{
 				// https://stackoverflow.com/a/66487097/16164887
 				name: "\u200b",
 				value: "\u200b",
 				inline: true,
 			},*/
-			{
-				name: "Resets Received",
-				value: `${parseResets(
-					activity.data.nominationsDisqualified,
-					activity.data.nominationsPopped
-				)}`,
-				inline: true,
-			},
-			{
-				name: "Resets Given",
-				value: `${parseResets(
-					activity.data.disqualifications,
-					activity.data.pops
-				)}`,
-				inline: true,
-			},
-			/*{
+            {
+                name: "Resets Received",
+                value: `${parseResets(
+                    activity.data.nominationsDisqualified,
+                    activity.data.nominationsPopped
+                )}`,
+                inline: true,
+            },
+            {
+                name: "Resets Given",
+                value: `${parseResets(
+                    activity.data.disqualifications,
+                    activity.data.pops
+                )}`,
+                inline: true,
+            },
+            /*{
 				name: "\u200b",
 				value: "\u200b",
 				inline: true,
@@ -139,51 +146,51 @@ export default {
 				value: "\u200b",
 				inline: true,
 			},*/
-			{
-				name: "Top Mappers",
-				value: `${getTop3Mappers(activity).toString()}`,
-				inline: true,
-			},
-			{
-				name: "Top Genres",
-				value: `${getTop3Genres(activity).toString()}`,
-				inline: true,
-			},
-			{
-				name: "Top Languages",
-				value: `${getTop3Languages(activity).toString()}`,
-				inline: true,
-			}
-		);
+            {
+                name: "Top Mappers",
+                value: `${getTop3Mappers(activity).toString()}`,
+                inline: true,
+            },
+            {
+                name: "Top Genres",
+                value: `${getTop3Genres(activity).toString()}`,
+                inline: true,
+            },
+            {
+                name: "Top Languages",
+                value: `${getTop3Languages(activity).toString()}`,
+                inline: true,
+            }
+        );
 
-		if (latestNom) {
-			let nomMessage = latestNom.content
-				? latestNom.content.replace(/\r?\n|\r/g, " ")
-				: "";
-			//truncate nomMessage
-			if (nomMessage.length > 60) {
-				nomMessage = nomMessage.substring(0, 57) + "...";
-			}
+        if (latestNom) {
+            let nomMessage = latestNom.content
+                ? latestNom.content.replace(/\r?\n|\r/g, " ")
+                : "";
+            //truncate nomMessage
+            if (nomMessage.length > 60) {
+                nomMessage = nomMessage.substring(0, 57) + "...";
+            }
 
-			e.addField(
-				"Latest Nomination",
-				`[${latestNom.artistTitle}](https://osu.ppy.sh/beatmapsets/${latestNom.beatmapsetId})`,
-				true
-			).setImage(
-				`https://assets.ppy.sh/beatmaps/${latestNom.beatmapsetId}/covers/cover.jpg`
-			);
+            e.addFields({
+                name: "Latest Nomination",
+                value: `[${latestNom.artistTitle}](https://osu.ppy.sh/beatmapsets/${latestNom.beatmapsetId})`,
+                inline: true,
+            }).setImage(
+                `https://assets.ppy.sh/beatmaps/${latestNom.beatmapsetId}/covers/cover.jpg`
+            );
 
-			// only load footer when there's a nom message
-			if (latestNom.content) {
-				e.setFooter({
-					text: `${osuUser.data.username} "${nomMessage}"`,
-					iconURL: osuUser.data.avatar_url,
-				});
-			}
-		}
+            // only load footer when there's a nom message
+            if (latestNom.content) {
+                e.setFooter({
+                    text: `${osuUser.data.username} "${nomMessage}"`,
+                    iconURL: osuUser.data.avatar_url,
+                });
+            }
+        }
 
-		command.editReply({
-			embeds: [e],
-		});
-	},
+        command.editReply({
+            embeds: [e],
+        });
+    },
 };

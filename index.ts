@@ -3,7 +3,6 @@ dotenv.config();
 const token = process.env.TOKEN;
 import "colors";
 import { Client, IntentsBitField, Message } from "discord.js";
-import commandHandler from "./helpers/core/commandHandler";
 import "./helpers/osu/fetcher/startConnection";
 import keepAlive from "./server";
 import { consoleCheck } from "./helpers/core/logger";

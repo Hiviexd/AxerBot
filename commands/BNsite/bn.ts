@@ -63,3 +63,5 @@ bn.setExecuteFunction(async (command) => {
 
     BNEmbed.reply(osuUser, qatUser, qatUserActivity, command);
 });
+
+export default bn;
