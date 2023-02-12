@@ -32,8 +32,9 @@ function getNextAvatar(currentIndex: number) {
     };
 }
 
-function getCurrentAvatarStatus() {
-    if (!existsSync(path.resolve("./cache/avatarConfig.json"))) createConfig();
+function getCurrentAvatarStatus(client: Client) {
+    if (!existsSync(path.resolve("./cache/avatarConfig.json")))
+        createConfig(client);
 
     return JSON.parse(
         readFileSync(path.resolve("./cache/avatarConfig.json"), "utf8")
@@ -73,7 +74,7 @@ function changeAvatar(currentIndex: number, client: Client) {
         });
 }
 
-function createConfig() {
+function createConfig(client: Client) {
     writeFileSync(
         path.resolve("./cache/avatarConfig.json"),
         JSON.stringify({ filename: "1.jpg", replaced: new Date() }),
@@ -83,7 +84,10 @@ function createConfig() {
 }
 
 function fallbackAvatar(client: Client) {
-    createConfig();
+    consoleLog("AvatarManager", "Fallbacking avatar...");
+
+    createConfig(client);
+
     return client.user
         ?.setAvatar(path.resolve("./avatars/1.jpg"))
         .catch((e: any) => {
@@ -95,9 +99,7 @@ function fallbackAvatar(client: Client) {
 }
 
 function checkForAvatarChange(client: Client) {
-    consoleLog("avatarManager", "Checking for avatar change...");
-
-    const currentAvatar = getCurrentAvatarStatus();
+    const currentAvatar = getCurrentAvatarStatus(client);
 
     const avatarIndex = getAvatarsList().findIndex(
         (a) => a == currentAvatar.filename
@@ -109,12 +111,12 @@ function checkForAvatarChange(client: Client) {
     if (relativeDate(new Date(currentAvatar.replaced), new Date()) >= 1) {
         changeAvatar(avatarIndex, client);
     } else {
-        consoleLog("avatarManager", "No avatar change available...");
+        void {};
     }
 }
 
 export function startAvatarListener(client: Client) {
     setInterval(() => {
         checkForAvatarChange(client);
-    }, 60000); //checks for avatar change every minute
+    }, 5000); //checks for avatar change every minute
 }
