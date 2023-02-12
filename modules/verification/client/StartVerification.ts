@@ -72,22 +72,6 @@ export default async (member: GuildMember) => {
                     `Sent verification to ${member.user.tag} in ${member.guild.name}`
                 );
             });
-
-        // ! error for when verification breaks
-        // const message =
-        //     "Hello! Unfortunately, we're currently experiencing temporary issues with our verification system.\nPlease ping a **server admin/moderator** and post your osu! profile to get verified.\n\nFor server admins, if you want to use your custom welcome message instead of this warning, please use `/verification set button status:disabled` for now. Further updates about this will be posted in the bot's [Discord server](https://discord.gg/MAsnz96qGy).";
-
-        // const embed = new MessageEmbed({
-        //     title: "⚠️ Notice",
-        //     description: message,
-        //     color: colors.yellowBright,
-        // });
-
-        // verification_channel.send({
-        //     content: `<@${member.id}>`,
-        //     embeds: [embed],
-        // });
-        // !
     } else {
         verification_channel.send({
             content: parseMessagePlaceholderFromMember(
