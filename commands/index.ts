@@ -18,8 +18,10 @@ import fact from "./fun/fact";
 import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
 import bntracker from "./BNsite/bntracker";
+import verificationCommand from "./management/verification";
 
 export const AxerCommands = [
+    verificationCommand,
     heardle,
     ping,
     avatar,

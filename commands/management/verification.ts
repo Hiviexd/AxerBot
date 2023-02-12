@@ -14,7 +14,7 @@ import verificationSetFlags from "./subcommands/verification/setFlags";
 import verificationSetMessage from "./subcommands/verification/setMessage";
 import verificationStatus from "./subcommands/verification/status";
 
-const verification = new SlashCommand(
+const verificationCommand = new SlashCommand(
     "verification",
     "Verify new server members automatically using their osu! data!",
     "management",
@@ -32,9 +32,9 @@ const verification = new SlashCommand(
     []
 );
 
-verification.addSubcommand(verificationStatus);
-verification.addSubcommand(verificationSetDisabled);
-verification.addSubcommand(verificationSetEnabled);
+verificationCommand.addSubcommand(verificationStatus);
+verificationCommand.addSubcommand(verificationSetDisabled);
+verificationCommand.addSubcommand(verificationSetEnabled);
 
 const commandGroupSET = new SlashCommandSubcommandGroup(
     "set",
@@ -67,9 +67,9 @@ commandGroupREMOVE
     .addCommand(verificationRemoveRole)
     .addCommand(verificationRemoveGroupRole);
 
-verification
+verificationCommand
     .addSubcommandGroup(commandGroupADD)
     .addSubcommandGroup(commandGroupREMOVE)
     .addSubcommandGroup(commandGroupSET);
 
-export default verification;
+export default verificationCommand;

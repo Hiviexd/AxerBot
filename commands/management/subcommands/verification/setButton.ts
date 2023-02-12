@@ -4,12 +4,12 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationSetButton = new SlashCommandSubcommand(
-    "channel",
-    "Sets the channel for the system",
+    "button",
+    "Enable or disable verification interaction button",
     false,
     {
-        syntax: "/verification `set channel` `text_channel:<channel>`",
-        example: "/verification `set channel` `text_channel:#arrival`",
+        syntax: "/verification `set` `status`",
+        example: "/verification `set` `status:disabled`",
     },
     [PermissionFlagsBits.ManageGuild]
 );
