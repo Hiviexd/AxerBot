@@ -25,7 +25,7 @@ export default async (member: GuildMember) => {
         .get(member.guild.id)
         ?.channels.cache.get(guild_db.verification.channel);
 
-    if (!verification_channel || verification_channel.type != ChannelType.GuildText ) {
+    if (!verification_channel || verification_channel.type != ChannelType.GuildText) {
         consoleLog(
             "Verification",
             `Verification channel is not set or deleted in ${member.guild.name}`
