@@ -15,6 +15,7 @@ import { Beatmapset } from "../../types/beatmap";
 import colors from "../../constants/colors";
 
 export default async (input: StringSelectMenuInteraction) => {
+    if (!input.customId.includes("heardle")) return;
     consoleLog(
         `heardle`,
         `Processing heardle for ${input.user.tag} (${input.user.id}) on ${input.guild?.name} (${input.guildId}) | ${input.customId}`
