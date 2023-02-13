@@ -118,5 +118,5 @@ function checkForAvatarChange(client: Client) {
 export function startAvatarListener(client: Client) {
     setInterval(() => {
         checkForAvatarChange(client);
-    }, 5000); //checks for avatar change every minute
+    }, 5000); //checks for avatar change every 5 seconds
 }

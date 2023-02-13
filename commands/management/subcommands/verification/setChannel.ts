@@ -27,17 +27,19 @@ verificationSetChannel.setExecuteFunction(async (command) => {
     if (channel.type != ChannelType.GuildText)
         return command.editReply({
             embeds: [
-                generateErrorEmbed(
-                    "❗ You need to provide a **TEXT** channel."
-                ),
+                generateErrorEmbed("You need to provide a **TEXT** channel."),
             ],
         });
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     guild.verification.enable = true;
     guild.verification.channel = channel.id;
@@ -45,7 +47,7 @@ verificationSetChannel.setExecuteFunction(async (command) => {
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("✅ Set the verification channel.")],
+        embeds: [generateSuccessEmbed("Verification channel is set!")],
     });
 });
 

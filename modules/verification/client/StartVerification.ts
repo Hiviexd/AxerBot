@@ -4,6 +4,7 @@ import {
     ButtonStyle,
     EmbedBuilder,
     GuildMember,
+    ChannelType,
 } from "discord.js";
 import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
@@ -24,12 +25,25 @@ export default async (member: GuildMember) => {
         .get(member.guild.id)
         ?.channels.cache.get(guild_db.verification.channel);
 
-    if (!verification_channel || verification_channel.type != "GUILD_TEXT") {
+    if (!verification_channel || verification_channel.type != ChannelType.GuildText ) {
+        consoleLog(
+            "Verification",
+            `Verification channel is not set or deleted in ${member.guild.name}`
+        );
         return member.client.users.cache
             .get(member.guild.ownerId)
-            ?.send(
-                `The verification system isn't working because you didn't set any channel or the channel is deleted. ${member.user.tag} is waiting for the verification. Please, verify the user manually and fix the system.`
-            );
+            ?.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("⚠️ Verification system alert")
+                        .setColor(colors.yellowBright)
+                        .setDescription(
+                            `The verification system in your server \`${member.guild.name}\` is not working properly. It's possible that you didn't set any valid channel or the channel is deleted.
+                            \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                            Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
+                        ),
+                ],
+            });
     }
 
     if (verification.status != 200 || !verification.data) {

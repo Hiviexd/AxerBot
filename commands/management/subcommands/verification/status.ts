@@ -76,7 +76,7 @@ verificationStatus.setExecuteFunction(async (command) => {
 						command.member,
 						guild.verification.message
 					),
-					*/
+				*/
             },
         ],
     }).setColor(guild.verification.enable ? colors.green : colors.red);

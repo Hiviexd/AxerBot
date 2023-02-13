@@ -37,9 +37,13 @@ verificationSetMessage.setExecuteFunction(async (command) => {
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     const modalId = crypto.randomBytes(15).toString("hex").slice(10);
     const modal = new ModalBuilder()
@@ -71,9 +75,13 @@ verificationSetMessage.setExecuteFunction(async (command) => {
 
             let guild = await guilds.findById(command.guildId);
             if (!guild)
-                return interaction.editReply(
-                    "This guild isn't validated, try again after some seconds.."
-                );
+                return command.editReply({
+                    embeds: [
+                        generateErrorEmbed(
+                            "This guild isn't validated yet, try again after a few seconds.."
+                        ),
+                    ],
+                });
 
             guild.verification.message = message;
 
@@ -92,7 +100,7 @@ verificationSetMessage.setExecuteFunction(async (command) => {
                 );
 
             interaction.editReply({
-                embeds: [generateSuccessEmbed("Message changed!")],
+                embeds: [generateSuccessEmbed("Welcome message changed!")],
                 components: [previewButtonActionRow],
             });
         }

@@ -1,6 +1,7 @@
 import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationRemoveRankRole = new SlashCommandSubcommand(
@@ -77,15 +78,21 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     if (
         !guild.verification.targets.rank_roles ||
         guild.verification.targets.rank_roles.length == 0
     )
-        return command.editReply("You need to add a role before!");
+        return command.editReply({
+            embeds: [generateErrorEmbed("No rank roles found.")],
+        });
 
     const index = guild.verification.targets.rank_roles.find(
         (r: any) =>
@@ -97,14 +104,16 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
     );
 
     if (index == -1)
-        return command.editReply("Role not found! Check the params");
+        return command.editReply({
+            embeds: [generateErrorEmbed("Rank role not found.")],
+        });
 
     guild.verification.targets.rank_roles.splice(index, 1);
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("✅ Role removed!")],
+        embeds: [generateSuccessEmbed("Rank role removed!")],
     });
 });
 

@@ -79,9 +79,13 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     const botAsMember = await command.guild.members.fetch(
         command.client.user.id
@@ -117,7 +121,7 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("✅ Role added!")],
+        embeds: [generateSuccessEmbed("Rank role added!")],
     });
 });
 

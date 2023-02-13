@@ -1,6 +1,7 @@
 import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationSetFlags = new SlashCommandSubcommand(
@@ -53,16 +54,20 @@ verificationSetFlags.setExecuteFunction(async (command) => {
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     guild.verification.targets[flag] = status;
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("✅ Flag updated!")],
+        embeds: [generateSuccessEmbed("Flag updated!")],
     });
 });
 

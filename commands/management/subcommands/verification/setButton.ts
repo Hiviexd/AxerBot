@@ -1,6 +1,7 @@
 import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationSetButton = new SlashCommandSubcommand(
@@ -38,9 +39,13 @@ verificationSetButton.setExecuteFunction(async (command) => {
     let guild = await guilds.findById(command.guildId);
 
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     const status = command.options.getString("status", true);
 
@@ -53,7 +58,7 @@ verificationSetButton.setExecuteFunction(async (command) => {
     return command.editReply({
         embeds: [
             generateSuccessEmbed(
-                `The verification button has been ${
+                `Verification button ${
                     status == "true" ? "enabled" : "disabled"
                 }!`
             ),
