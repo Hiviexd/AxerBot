@@ -18,8 +18,6 @@ userlogList.builder.addUserOption((o) =>
 );
 
 userlogList.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.member || typeof command.member.permissions == "string")
         return;
 

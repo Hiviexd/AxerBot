@@ -30,7 +30,7 @@ avatar.builder
     );
 
 avatar.setExecuteFunction(async (command) => {
-    await command.deferReply(); // ? prevent errors
+    // ? prevent errors
 
     let user: User | undefined = undefined;
     const idInput = command.options.getString("id");

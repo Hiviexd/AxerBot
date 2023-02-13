@@ -13,8 +13,6 @@ const info = new SlashCommandSubcommand(
 );
 
 info.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.member) return;
 
     const guildTrackers = await tracks.find({

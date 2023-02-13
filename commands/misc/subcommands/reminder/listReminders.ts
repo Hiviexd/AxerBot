@@ -19,8 +19,6 @@ export const listReminders = new SlashCommandSubcommand(
 // };
 
 listReminders.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const user = await users.findById(command.user.id);
 
     if (!user) return;

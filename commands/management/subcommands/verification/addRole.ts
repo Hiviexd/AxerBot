@@ -20,8 +20,6 @@ verificationAddRole.builder.addRoleOption((o) =>
 );
 
 verificationAddRole.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.guild) return;
 
     const role = command.options.getRole("target_role", true);

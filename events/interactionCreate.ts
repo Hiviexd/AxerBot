@@ -30,6 +30,7 @@ export default {
             }
 
             if (interaction.isChatInputCommand()) {
+                await interaction.deferReply();
                 slashCommandHandler(bot, interaction);
             }
         });

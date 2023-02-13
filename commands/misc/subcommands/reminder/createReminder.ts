@@ -26,7 +26,7 @@ createReminder.builder
     );
 
 createReminder.setExecuteFunction(async (command) => {
-    await command.deferReply(); // ? prevent errors
+    // ? prevent errors
 
     if (!command.guild) return;
 

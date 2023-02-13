@@ -31,8 +31,6 @@ help.builder.addStringOption((o) =>
 );
 
 help.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const input = command.options.getString("command");
 
     if (!input) return sendGeneralHelp();

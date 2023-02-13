@@ -17,8 +17,6 @@ const pun = new SlashCommand(
 );
 
 pun.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const config = {
         headers: {
             Accept: "application/json",

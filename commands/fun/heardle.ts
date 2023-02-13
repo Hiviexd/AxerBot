@@ -42,8 +42,6 @@ heardle.builder
     );
 
 heardle.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const action = command.options.get("action", true)
         ? command.options.get("action", true)?.value
         : "play_count";

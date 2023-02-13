@@ -61,7 +61,6 @@ embeds.builder
     );
 
 embeds.setExecuteFunction(async (command) => {
-    await command.deferReply();
     if (!command.guild) return;
 
     if (!command.member || !command.guild) return;

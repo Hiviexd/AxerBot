@@ -58,8 +58,6 @@ addTracker.builder
     );
 
 addTracker.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.member || typeof command.member.permissions == "string")
         return;
 

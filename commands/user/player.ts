@@ -43,8 +43,6 @@ player.builder
     );
 
 player.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const mode = command.options.getString("mode") || undefined;
 
     let { playerName, status } = await checkCommandPlayers(command);

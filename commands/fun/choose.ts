@@ -15,7 +15,6 @@ choose.builder.addStringOption((o) =>
 );
 
 choose.setExecuteFunction(async (command) => {
-    await command.deferReply();
     const choices = command.options.getString("options", true);
     const choicesString = choices.split(" or ");
 

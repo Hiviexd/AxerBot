@@ -30,8 +30,6 @@ quotesToggle.builder.addStringOption((o) =>
 );
 
 quotesToggle.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let guild = await database.guilds.findById(command.guildId);
     if (!guild) return;
 

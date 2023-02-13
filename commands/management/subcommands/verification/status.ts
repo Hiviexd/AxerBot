@@ -12,8 +12,6 @@ const verificationStatus = new SlashCommandSubcommand(
 );
 
 verificationStatus.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.member || typeof command.member.permissions == "string")
         return;
 

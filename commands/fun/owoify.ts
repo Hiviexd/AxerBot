@@ -14,8 +14,6 @@ owoify.builder.addStringOption((o) =>
 );
 
 owoify.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const text = command.options.getString("text", true);
 
     command.editReply(owo(text));

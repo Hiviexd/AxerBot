@@ -43,8 +43,6 @@ osuset.builder
     );
 
 osuset.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let user = await database.users.findOne({ _id: command.user.id });
 
     if (user == null) await createNewUser(command.user);

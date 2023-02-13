@@ -68,8 +68,6 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
 
     if (typeof command.member?.permissions == "string") return;
 
-    await command.deferReply();
-
     const minRank = command.options.getInteger("min_rank", true);
     const maxRank = command.options.getInteger("max_rank", true);
     const role = command.options.getRole("role", true);

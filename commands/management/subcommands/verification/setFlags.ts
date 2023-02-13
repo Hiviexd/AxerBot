@@ -46,8 +46,6 @@ verificationSetFlags.setExecuteFunction(async (command) => {
 
     if (typeof command.member?.permissions == "string") return;
 
-    await command.deferReply();
-
     const flag = command.options.getString("flag", true);
     const status =
         command.options.getString("status", true) == "true" ? true : false;

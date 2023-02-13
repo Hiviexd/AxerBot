@@ -23,8 +23,6 @@ mapper.builder.addStringOption((o) =>
 );
 
 mapper.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let { playerName, status } = await checkCommandPlayers(command);
 
     if (status != 200) return;

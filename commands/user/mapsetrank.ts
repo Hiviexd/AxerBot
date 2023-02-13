@@ -38,8 +38,6 @@ mapsetrank.builder
     );
 
 mapsetrank.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let sort = command.options.get("sort")
         ? command.options.get("sort")?.value
         : "play_count";

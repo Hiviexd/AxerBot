@@ -22,8 +22,6 @@ verificationRemoveRole.builder.addRoleOption((o) =>
 verificationRemoveRole.setExecuteFunction(async (command) => {
     if (!command.guild || !command.client.user) return;
 
-    await command.deferReply();
-
     const role = command.options.getRole("target_role", true);
 
     let guild = await guilds.findById(command.guildId);

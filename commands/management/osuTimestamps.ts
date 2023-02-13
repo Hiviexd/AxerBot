@@ -36,7 +36,6 @@ osutimestamps.builder.addStringOption((o) =>
 );
 
 osutimestamps.setExecuteFunction(async (command) => {
-    await command.deferReply();
     if (!command.guild || !command.member) return;
     if (typeof command.member?.permissions == "string") return;
 

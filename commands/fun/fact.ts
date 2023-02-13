@@ -23,8 +23,6 @@ fact.builder.addStringOption((o) =>
 );
 
 fact.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let type = command.options.getString("type") ?? "random";
 
     if (type == "today") {

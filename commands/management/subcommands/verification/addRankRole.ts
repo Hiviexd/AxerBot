@@ -67,8 +67,6 @@ verificationAddRankRole.builder
     );
 
 verificationAddRankRole.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.guild) return;
 
     const minRank = command.options.getInteger("min_rank", true);

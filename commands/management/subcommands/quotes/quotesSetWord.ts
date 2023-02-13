@@ -19,8 +19,6 @@ quotesSetWord.builder.addStringOption((o) =>
 );
 
 quotesSetWord.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const word = command.options.getString("word", true);
 
     if (word == "")

@@ -21,8 +21,6 @@ purge.builder.addIntegerOption((o) =>
 );
 
 purge.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let purge = (channel: any, amount: number) => {
         channel.bulkDelete(amount + 1).catch((e: any) => {
             command.editReply({

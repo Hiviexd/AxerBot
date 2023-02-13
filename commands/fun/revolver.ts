@@ -10,8 +10,6 @@ const revolver = new SlashCommand(
 );
 
 revolver.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const guild = await database.guilds.findOne({ _id: command.guildId });
     if (!guild) return;
 

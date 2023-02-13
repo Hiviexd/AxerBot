@@ -116,8 +116,6 @@ verificationRemoveGroupRole.builder
     );
 
 verificationRemoveGroupRole.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const group = command.options.getString("group", true);
     const role = command.options.getRole("role", true);
     const mode = command.options.getString("mode", true);

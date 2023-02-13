@@ -9,7 +9,6 @@ const coinflip = new SlashCommand(
 );
 
 coinflip.setExecuteFunction(async (command) => {
-    await command.deferReply();
     let coin = Math.floor(Math.random() * 2);
 
     //return nothing if command.member isn't GuildMember

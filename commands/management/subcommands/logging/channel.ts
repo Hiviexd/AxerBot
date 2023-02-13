@@ -18,8 +18,6 @@ loggingChannel.builder.addChannelOption((o) =>
 loggingChannel.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    await command.deferReply();
-
     const channel = await command.options.getChannel("channel", true);
 
     let guild = await database.guilds.findById(command.guildId);

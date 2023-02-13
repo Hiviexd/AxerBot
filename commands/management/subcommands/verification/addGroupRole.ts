@@ -114,8 +114,6 @@ verificationAddGroupRole.builder
     );
 
 verificationAddGroupRole.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     if (!command.guild) return;
 
     const group = command.options.getString("group", true);

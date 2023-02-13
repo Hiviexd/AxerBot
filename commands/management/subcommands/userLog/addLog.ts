@@ -31,8 +31,6 @@ userlogAddLog.builder
 userlogAddLog.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    await command.deferReply();
-
     const user = command.options.getUser("username", true).username;
     const reason = command.options.getString("reason", true);
 

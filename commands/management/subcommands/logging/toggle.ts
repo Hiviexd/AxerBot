@@ -32,8 +32,6 @@ loggingToggle.builder.addStringOption((o) =>
 loggingToggle.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    await command.deferReply();
-
     const state = command.options.getString("state", true);
 
     let guild = await database.guilds.findById(command.guildId);

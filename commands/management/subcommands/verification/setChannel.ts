@@ -20,8 +20,6 @@ verificationSetChannel.builder.addChannelOption((o) =>
 );
 
 verificationSetChannel.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const channel = command.options.getChannel("channel", true);
 
     if (channel.type != ChannelType.GuildText)

@@ -7,7 +7,6 @@ const roll = new SlashCommand("roll", "Roll a dice!", "Fun", false, {
 });
 
 roll.setExecuteFunction(async (command) => {
-    await command.deferReply();
     const dice =
         (command.options.getInteger("value")
             ? command.options.getInteger("value")

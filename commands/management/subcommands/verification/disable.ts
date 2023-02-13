@@ -13,8 +13,6 @@ const verificationSetDisabled = new SlashCommandSubcommand(
 );
 
 verificationSetDisabled.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({

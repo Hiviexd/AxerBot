@@ -34,8 +34,6 @@ verificationSetButton.builder.addStringOption((o) =>
 verificationSetButton.setExecuteFunction(async (command) => {
     if (typeof command.member?.permissions == "string") return;
 
-    await command.deferReply();
-
     let guild = await guilds.findById(command.guildId);
 
     if (!guild)

@@ -11,8 +11,6 @@ const about = new SlashCommand(
 );
 
 about.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const info = {
         bot: {
             invite: "https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands",

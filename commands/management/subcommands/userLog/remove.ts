@@ -26,8 +26,6 @@ userlogRemoveLog.builder
 userlogRemoveLog.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    await command.deferReply();
-
     const user = command.options.getUser("username", true).username;
     const logid = command.options.getInteger("logid", true);
 

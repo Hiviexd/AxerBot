@@ -39,8 +39,6 @@ minesweeper.builder
     );
 
 minesweeper.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const rows = command.options.getInteger("rows") ?? 9;
     const columns = command.options.getInteger("columns") ?? 9;
     const mines = command.options.getInteger("mines") ?? 10;

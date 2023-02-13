@@ -32,7 +32,7 @@ openbns.builder.addStringOption((o) =>
 );
 
 openbns.setExecuteFunction(async (command) => {
-    await command.deferReply(); // ? prevent errors
+    // ? prevent errors
 
     let gamemode: string | undefined = undefined;
 

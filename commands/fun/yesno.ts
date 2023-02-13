@@ -24,8 +24,6 @@ yesno.builder.addStringOption((o) =>
 );
 
 yesno.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     //get question from options
     const question = command.options.getString("question");
 

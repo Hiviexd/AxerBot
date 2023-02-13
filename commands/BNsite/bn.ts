@@ -22,7 +22,7 @@ bn.builder.addStringOption((o) =>
 );
 
 bn.setExecuteFunction(async (command) => {
-    await command.deferReply(); // ? prevent errors
+    // ? prevent errors
 
     let { playerName, status } = await checkCommandPlayers(command);
 

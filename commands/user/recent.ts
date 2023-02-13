@@ -44,8 +44,6 @@ recent.builder
     );
 
 recent.setExecuteFunction(async (command) => {
-    await command.deferReply();
-
     const modeInput = command.options.get("mode");
     const mode = modeInput ? modeInput.value?.toString() : undefined;
     const passed = command.options.getNumber("passed") || 1;
