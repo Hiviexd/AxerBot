@@ -1,8 +1,7 @@
 import {
     ChannelType,
     Client,
-    Collection,
-    GuildMember,
+    GuildChannelResolvable,
     PermissionFlagsBits,
 } from "discord.js";
 
@@ -13,54 +12,23 @@ export default {
     name: "messageCreate",
     execute(bot: Client) {
         bot.on("messageCreate", async (message) => {
-            if (message.author === bot.user) return;
-            if (message.channel.type != ChannelType.GuildText) return;
-            if (!message.guild) return;
-
-            const messageChannel = message.guild.channels.cache.get(
-                message.channelId
-            );
-
-            if (!messageChannel) return;
-
-            const botAsMember = message.guild.members.cache.get(
-                bot.user?.id || ""
-            );
-
-            if (!botAsMember) return;
+            if (message.author.bot || !bot.user) return;
 
             if (
-                !(messageChannel.members as Collection<string, GuildMember>)
-                    .get(botAsMember.id)
-                    ?.permissions.has(PermissionFlagsBits.SendMessages)
+                ![ChannelType.GuildText, ChannelType.DM].includes(
+                    message.channel.type
+                )
             )
                 return;
 
-            if (!botAsMember.permissions.has(PermissionFlagsBits.SendMessages))
-                return;
-
             if (
-                !message.channel
-                    .permissionsFor(botAsMember, true)
-                    .has(PermissionFlagsBits.SendMessages) ||
-                (!getPermissionForRoles() &&
-                    !message.channel
-                        .permissionsFor(botAsMember, true)
-                        .has(PermissionFlagsBits.SendMessages))
+                message.guild &&
+                !message.guild.members.cache
+                    .get(bot.user.id)
+                    ?.permissionsIn(message.channel as GuildChannelResolvable)
+                    .has(PermissionFlagsBits.SendMessages)
             )
                 return;
-
-            function getPermissionForRoles() {
-                if (!botAsMember) return false;
-                let canSendMessages = false;
-
-                botAsMember.roles.cache.forEach((r) => {
-                    if (r.permissions.has("SendMessages") == true)
-                        canSendMessages = true;
-                });
-
-                return canSendMessages;
-            }
 
             sendQuotes(message, bot);
             checkOsuURL(message);

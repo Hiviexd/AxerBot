@@ -22,6 +22,7 @@ export const bot = new Client({
         IntentsBitField.Flags.DirectMessageTyping,
         IntentsBitField.Flags.DirectMessages,
         IntentsBitField.Flags.DirectMessageReactions,
+        IntentsBitField.Flags.DirectMessageTyping,
     ],
 });
 
