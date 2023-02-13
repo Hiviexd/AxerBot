@@ -158,7 +158,10 @@ export class SlashCommand {
                 )}`
             );
 
-        targetGroup.runCommand(interaction);
+        targetGroup.runCommand(
+            interaction,
+            interaction.options.getSubcommand()
+        );
     }
 
     run(interaction: ChatInputCommandInteraction) {

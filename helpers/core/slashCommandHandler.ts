@@ -52,7 +52,7 @@ export default async function commandHandler(
     }
 
     try {
-        if (event.options.getSubcommand())
+        if (event.options.getSubcommand() || event.options.getSubcommandGroup())
             return targetCommand.runSubcommand(event, {
                 name: event.options.getSubcommand(),
                 group: event.options.getSubcommandGroup(),

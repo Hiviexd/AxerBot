@@ -24,16 +24,8 @@ export class SlashCommandSubcommandGroup {
         return this.commands;
     }
 
-    runCommand(
-        interaction: ChatInputCommandInteraction,
-        subcommand?: { name: string; group: string }
-    ) {
-        const target = this.commands.find(
-            (c) =>
-                c.builder.name == subcommand?.name ||
-                (interaction.commandName && subcommand?.group) ||
-                interaction.options.getSubcommandGroup()
-        );
+    runCommand(interaction: ChatInputCommandInteraction, subcommand: string) {
+        const target = this.commands.find((c) => c.builder.name == subcommand);
 
         if (!target) return;
 
