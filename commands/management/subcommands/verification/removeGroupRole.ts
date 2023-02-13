@@ -124,9 +124,13 @@ verificationRemoveGroupRole.setExecuteFunction(async (command) => {
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
-        return command.editReply(
-            "This guild isn't validated, try again after some seconds.."
-        );
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    "This guild isn't validated yet, try again after a few seconds.."
+                ),
+            ],
+        });
 
     const targetRole = {
         id: role.id,
@@ -152,11 +156,7 @@ verificationRemoveGroupRole.setExecuteFunction(async (command) => {
 
     if (!targetRoleObject)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    "I can't find a role with these parameters."
-                ),
-            ],
+            embeds: [generateErrorEmbed("Role not found.")],
         });
 
     guild.verification.targets.group_roles =
@@ -170,7 +170,7 @@ verificationRemoveGroupRole.setExecuteFunction(async (command) => {
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("✅ Role removed!")],
+        embeds: [generateSuccessEmbed("Group role removed!")],
     });
 });
 
