@@ -1,4 +1,4 @@
-import { ButtonInteraction, Client } from "discord.js";
+import { Client } from "discord.js";
 import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
@@ -20,15 +20,9 @@ export default {
             if (interaction.isButton()) {
                 sendVerificationLink(interaction);
 
-                if (interaction.customId.includes("beatmap_download")) {
-                    beatmapDownloader(interaction);
-                }
+                beatmapDownloader(interaction);
 
-                if (
-                    interaction.customId.includes("verificationpreviewmessage")
-                ) {
-                    previewVerificationMessage(interaction);
-                }
+                previewVerificationMessage(interaction);
             }
 
             if (interaction.isStringSelectMenu()) {

@@ -8,9 +8,9 @@ import { guilds } from "../../../database";
 import parseMessagePlaceholderFromMember from "../../../helpers/text/parseMessagePlaceholderFromMember";
 
 export default async (interaction: ButtonInteraction) => {
-    interaction.deferred
-        ? undefined
-        : await interaction.deferReply({ ephemeral: true });
+    if (!interaction.customId.includes("verificationpreviewmessage")) return;
+
+    await interaction.deferReply({ ephemeral: true });
 
     const interactionAuthor = interaction.customId.split("|").pop();
 

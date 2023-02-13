@@ -9,7 +9,6 @@ import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import osuApi from "./../../helpers/osu/fetcher/osuApi";
 
 export default async (button: ButtonInteraction) => {
-    await button.deferReply({ ephemeral: true });
     const targets = button.customId.split("|");
     if (targets[0].trim() != "beatmap_download") return;
 
