@@ -223,7 +223,7 @@ export default async (
         await users.findByIdAndUpdate(member.user.id, {
             $set: {
                 osu: {
-                    username: user.id,
+                    username: user.id.toString(),
                 },
             },
         });

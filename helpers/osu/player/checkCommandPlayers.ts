@@ -1,47 +1,52 @@
-import { ChatInputCommandInteraction, Message } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
+
 import * as database from "../../../database";
 
 export default async (command: ChatInputCommandInteraction) => {
-	const usernameInput = command.options.getString("username", false);
-	const userInput = command.options.getUser("user", false);
+    const usernameInput = command.options.getString("username", false);
+    const userInput = command.options.getUser("user", false);
 
-	console.log(usernameInput);
+    let playerName = "";
 
-	let playerName = "";
+    if (usernameInput) {
+        playerName = usernameInput;
+    }
 
-	if (usernameInput) {
-		playerName = usernameInput;
-	}
+    if (userInput) {
+        const u = await database.users.findOne({
+            _id: userInput.id,
+        });
 
-	if (userInput) {
-		const u = await database.users.findOne({
-			_id: userInput.id,
-		});
+        if (u != null)
+            playerName =
+                u.osu.username.toString() != undefined
+                    ? u.osu.username.toString()
+                    : "";
+    }
 
-		if (u != null)
-			playerName = u.osu.username != undefined ? u.osu.username : "";
-	}
+    if (!userInput && !usernameInput) {
+        const u = await database.users.findOne({
+            _id: command.user.id,
+        });
 
-	if (!userInput && !usernameInput) {
-		const u = await database.users.findOne({
-			_id: command.user.id,
-		});
+        if (u != null)
+            playerName =
+                u.osu.username.toString() != undefined
+                    ? u.osu.username.toString()
+                    : "";
+    }
 
-		if (u != null)
-			playerName = u.osu.username != undefined ? u.osu.username : "";
-	}
+    if (playerName.toString().trim() == "") {
+        command.editReply("❗ Provide a valid user.");
 
-	if (playerName.trim() == "") {
-		command.editReply("❗ Provide a valid user.");
+        return {
+            status: 404,
+            playerName: "",
+        };
+    }
 
-		return {
-			status: 404,
-			playerName: "",
-		};
-	}
-
-	return {
-		status: 200,
-		playerName: playerName,
-	};
+    return {
+        status: 200,
+        playerName: playerName,
+    };
 };
