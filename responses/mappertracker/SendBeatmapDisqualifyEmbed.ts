@@ -3,12 +3,9 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
-    GuildTextBasedChannel,
 } from "discord.js";
 import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
-import colors from "../../constants/colors";
-import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { bot } from "../..";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
@@ -49,7 +46,7 @@ export async function SendBeatmapDisqualifyEmbed(
             name: `${nomUser?.username || "deleted_user"}`,
             iconURL: `https://a.ppy.sh/${nomUser?.id}`,
         })
-        .setTitle(`💔 Beatmap disqualified`)
+        .setTitle(`💔 Disqualified`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${
                 beatmapset.data.title
@@ -60,9 +57,6 @@ export async function SendBeatmapDisqualifyEmbed(
             }`
         )
         .setColor("#CC2C2C")
-        .setFooter({
-            text: `Posted by ${nomUser?.username || "Unknown User"}`,
-        })
         .setTimestamp(new Date(nom?.createdAt || new Date()))
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 

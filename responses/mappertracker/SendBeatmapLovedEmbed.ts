@@ -23,7 +23,7 @@ export async function sendBeatmapLovedEmbed(
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
-        .setTitle(`💝 Beatmap loved`)
+        .setTitle(`💝 Loved`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n`.concat(
                 generateBeatmapDescription()
@@ -31,7 +31,7 @@ export async function sendBeatmapLovedEmbed(
         )
         .setTimestamp(new Date(beatmapset.data.last_updated))
         .setColor("#f45592")
-        .setThumbnail(beatmapset.data.covers["cover@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     function generateBeatmapDescription() {
         const diffs = beatmapset.data.beatmaps;

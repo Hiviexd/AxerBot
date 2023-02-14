@@ -30,12 +30,13 @@ export async function sendBeatmapFavoriteEmbed(
                 beatmapset.data.recent_favourites[0].username || "Unknown User",
             iconURL: `https://a.ppy.sh/${beatmapset.data.recent_favourites[0].id}`,
         })
-        .setTitle(`❤️ New favorite`)
+        .setTitle(`💟 New Favorite`)
         .setDescription(
-            `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\nBeatmap has ${beatmapset.data.favourite_count} favorite(s) now!`
+            `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\nBeatmap has \`${beatmapset.data.favourite_count}\` ${beatmapset.data.favourite_count === 1 ? "favorite" : "favorites"} now!`
         )
         .setColor(colors.pink)
-        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
+        .setTimestamp();
 
     const guild = bot.guilds.cache.get(tracker.guild);
 

@@ -49,7 +49,7 @@ export async function SendBeatmapQualifyEmbed(
             name: `${nomUser?.username || "deleted_user"}`,
             iconURL: `https://a.ppy.sh/${nomUser?.id}`,
         })
-        .setTitle(`❤️ Qualified beatmap`)
+        .setTitle(`❤️ Qualified`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${
                 beatmapset.data.title
@@ -66,7 +66,7 @@ export async function SendBeatmapQualifyEmbed(
             }) ${nom?.content || "No comment provided..."}`
         )
         .setColor("#ff4b63")
-        .setThumbnail(beatmapset.data.covers["cover@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     async function fetchNominator(id: number) {
         const u = await osuApi.fetch.user(id.toString());
