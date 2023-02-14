@@ -23,7 +23,7 @@ export async function sendBeatmapGraveyardEmbed(
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
-        .setTitle(`🪦 Beatmap graveyarded`)
+        .setTitle(`🪦 Graveyarded`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${
                 beatmapset.data.title
@@ -35,7 +35,7 @@ export async function sendBeatmapGraveyardEmbed(
                 new Date(beatmapset.data.last_updated).getTime() / 1000
             )}:R> and it's graveyarded now...`
         )
-        .setThumbnail(beatmapset.data.covers["cover@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
 
     const guild = bot.guilds.cache.get(tracker.guild);
 

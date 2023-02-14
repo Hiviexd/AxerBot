@@ -49,7 +49,7 @@ export async function SendBeatmapNominationEmbed(
             name: `${nomUser?.username || "deleted_user"}`,
             iconURL: `https://a.ppy.sh/${nomUser?.id}`,
         })
-        .setTitle(`💭 Nomination`)
+        .setTitle(`💭 Nominated`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${
                 beatmapset.data.title
@@ -60,9 +60,6 @@ export async function SendBeatmapNominationEmbed(
             }`
         )
         .setColor("#27b6b3")
-        .setFooter({
-            text: `Posted by ${nomUser?.username || "Unknown User"}`,
-        })
         .setTimestamp(new Date(nom?.createdAt || new Date()))
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 

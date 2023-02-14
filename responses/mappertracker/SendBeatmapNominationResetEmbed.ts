@@ -60,9 +60,6 @@ export async function SendBeatmapNominationResetEmbed(
             }`
         )
         .setColor("#CC2C2C")
-        .setFooter({
-            text: `Posted by ${nomUser?.username || "Unknown User"}`,
-        })
         .setTimestamp(new Date(nom?.createdAt || new Date()))
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 

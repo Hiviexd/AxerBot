@@ -36,7 +36,7 @@ export async function sendBeatmapHypeEmbed(
             name: hypeAuthor.data.username || "Unknown User",
             iconURL: `https://a.ppy.sh/${hypeAuthor.data.id}`,
         })
-        .setTitle(`${getEmoji("hype")} Hype`)
+        .setTitle(`${getEmoji("hype")} New Hype`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${
                 beatmapset.data.title
@@ -46,10 +46,7 @@ export async function sendBeatmapHypeEmbed(
                 hype.message || "No comment provided..."
             }`
         )
-        .setColor("#3295ff")
-        .setFooter({
-            text: `Posted by ${hypeAuthor.data.username || "Unknown User"}`,
-        })
+        .setColor("#3399cc")
         .setTimestamp(new Date(hype.created_at) || new Date())
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
