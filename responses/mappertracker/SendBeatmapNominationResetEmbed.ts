@@ -31,8 +31,11 @@ export async function SendBeatmapNominationResetEmbed(
         )
         .find(
             (n) =>
-                n.type == "nomination_reset" &&
-                n.userId == beatmapset.data.current_nominations[0].user_id
+                (n.type == "nomination_reset" &&
+                    n.userId ==
+                        beatmapset.data.current_nominations[1].user_id) ||
+                (n.type == "nomination_reset" &&
+                    n.userId == beatmapset.data.current_nominations[0].user_id)
         );
 
     const nomUser = await fetchNominator(

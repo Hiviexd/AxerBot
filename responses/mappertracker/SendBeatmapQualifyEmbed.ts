@@ -35,8 +35,11 @@ export async function SendBeatmapQualifyEmbed(
         )
         .find(
             (n) =>
-                n.type == "qualify" &&
-                n.userId == beatmapset.data.current_nominations[1].user_id
+                (n.type == "qualify" &&
+                    n.userId ==
+                        beatmapset.data.current_nominations[1].user_id) ||
+                (n.type == "qualify" &&
+                    n.userId == beatmapset.data.current_nominations[0].user_id)
         );
 
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
@@ -48,7 +51,11 @@ export async function SendBeatmapQualifyEmbed(
         })
         .setTitle(`❤️ Qualified beatmap`)
         .setDescription(
-            `[${
+            `**[${beatmapset.data.artist} - ${
+                beatmapset.data.title
+            }](${url})**\n Mapped by [${
+                beatmapset.data.creator
+            }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n[${
                 (
                     await fetchNominator(
                         beatmapset.data.current_nominations[1].user_id
