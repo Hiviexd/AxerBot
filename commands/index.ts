@@ -1,54 +1,57 @@
-import ping from "./misc/ping";
-import mapper from "./user/mapper";
+// ? General
+import ping from "./general/ping";
+import avatar from "./general/avatar";
+import reminder from "./general/reminder";
+import about from "./general/about";
+import help from "./general/help";
+
+// ? Fun
 import yesno from "./fun/yesno";
 import roll from "./fun/roll";
 import revolver from "./fun/revolver";
 import owoify from "./fun/owoify";
 import pun from "./fun/pun";
-import osuset from "./user/osuset";
-import mapsetrank from "./user/mapsetrank";
-import player from "./user/player";
-import avatar from "./misc/avatar";
-import recent from "./user/recent";
-import reminder from "./misc/reminder";
-import about from "./misc/about";
 import heardle from "./fun/heardle";
 import minesweeper from "./fun/minesweeper";
 import fact from "./fun/fact";
 import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
-import bntracker from "./BNsite/bntracker";
+
+// ? Management
 import verificationCommand from "./management/verification";
 import userlog from "./management/userLog";
 import sendmessage from "./management/sendMessage";
-import help from "./misc/help";
-import bn from "./BNsite/bn";
-import openbns from "./BNsite/openbns";
 import purge from "./management/purge";
 import quotes from "./management/quotes";
 import embeds from "./management/embeds";
 import osutimestamps from "./management/osuTimestamps";
 import editMessage from "./management/editMessage";
 import logging from "./management/logging";
-import mappertracker from "./mappertracker/mappertracker";
+
+// ? osu!
+import mapper from "./osu/mapper";
+import osuset from "./osu/osuset";
+import mapsetrank from "./osu/mapsetrank";
+import player from "./osu/player";
+import recent from "./osu/recent";
+import mappertracker from "./osu/mappertracker";
+
+// ? bnsite
+import bntracker from "./bnsite/bntracker";
+import bn from "./bnsite/bn";
+import openbns from "./bnsite/openbns";
 
 export const AxerCommands = [
-    mappertracker,
+
+    // ? General
     help,
-    bn,
-    openbns,
-    verificationCommand,
-    userlog,
     heardle,
     ping,
     avatar,
     about,
     reminder,
-    recent,
-    osuset,
-    player,
-    mapsetrank,
-    mapper,
+
+    // ? Fun
     yesno,
     roll,
     revolver,
@@ -58,7 +61,10 @@ export const AxerCommands = [
     fact,
     coinflip,
     choose,
-    bntracker,
+
+    // ? Management
+    verificationCommand,
+    userlog,
     sendmessage,
     purge,
     quotes,
@@ -66,47 +72,17 @@ export const AxerCommands = [
     osutimestamps,
     editMessage,
     logging,
-];
 
-// export const commands: any = {
-// 	ping: ping,
-// 	mapper: mapper,
-// 	choose: choose,
-// 	yesno: yesno,
-// 	participant: participant,
-// 	spectator: spectator,
-// 	purge: purge,
-// 	sendmessage: sendmessage,
-// 	osuset: osuset,
-// 	mapsetrank: mapsetrank,
-// 	help: help,
-// 	//setprefix: setprefix,
-// 	quotes: quotes,
-// 	cooldown: cooldown,
-// 	logging: logging,
-// 	player: player,
-// 	eval: eval,
-// 	avatar: avatar,
-// 	serverlist: serverlist,
-// 	coinflip: coinflip,
-// 	roll: roll,
-// 	revolver: revolver,
-// 	owoify: owoify,
-// 	pun: pun,
-// 	fact: fact,
-// 	repeat: repeat,
-// 	embeds: embeds,
-// 	rs: recent,
-// 	verification: verification,
-// 	resetroles: resetRoles,
-// 	reminder: reminder,
-// 	bn: bn,
-// 	about: about,
-// 	openbns: openbns,
-// 	heardle: heardle,
-// 	bntrack: qattrack,
-// 	osutimestamps: osutimestamps,
-// 	editmessage: editmessage,
-// 	userlog: userlog,
-// 	minesweeper: minesweeper,
-// };
+    // ? osu!
+    mappertracker,
+    recent,
+    osuset,
+    player,
+    mapsetrank,
+    mapper,
+
+    // ? bnsite
+    bn,
+    openbns,
+    bntracker,
+];

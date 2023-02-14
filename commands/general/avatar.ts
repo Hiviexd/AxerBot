@@ -12,7 +12,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const avatar = new SlashCommand(
     "avatar",
     "Displays the avatar of the mentioned user or the author.",
-    "Miscellaneous",
+    "General",
     false,
     {
         description: "Displays the avatar of the mentioned user or the author.",
@@ -96,7 +96,7 @@ export default avatar;
 // 			},
 // 		],
 // 	},
-// 	category: "Miscellaneous",
+// 	category: "General",
 // 	run: async (
 // 		bot: Client,
 // 		interaction: ChatInputCommandInteraction,

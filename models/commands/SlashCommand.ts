@@ -23,7 +23,7 @@ export class SlashCommand {
     private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
     private _subcommands: SlashCommandSubcommand[] = [];
     public permissions: PermissionResolvable[] = [];
-    public category = "Miscellaneous";
+    public category = "General";
     public help: { [key: string]: string | string[] } = {};
     public allowDM = false;
     public names: string[] = [];

@@ -12,7 +12,7 @@ import { generateStepEmbedWithChoices } from "../../../helpers/commands/generate
 import crypto from "crypto";
 import { tracks } from "../../../database";
 import generateSuccessEmbed from "../../../helpers/text/embeds/generateSuccessEmbed";
-import { MapperTrackerType } from "../mappertracker";
+import { MapperTrackerType } from "../../osu/mappertracker";
 import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed";
 
 const mappertrackerNewTracker = new SlashCommandSubcommand(

@@ -4,7 +4,7 @@ import { tracks } from "../../../database";
 import { SlashCommandSubcommand } from "../../../models/commands/SlashCommandSubcommand";
 import colors from "../../../constants/colors";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
-import { MapperTrackerType } from "../mappertracker";
+import { MapperTrackerType } from "../../osu/mappertracker";
 
 const mappertrackerListTracker = new SlashCommandSubcommand(
     "list",

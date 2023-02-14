@@ -15,7 +15,7 @@ import { SlashCommandSubcommand } from "../../models/commands/SlashCommandSubcom
 const help = new SlashCommand(
     ["help", "commands"],
     "Need help?",
-    "Miscellaneous",
+    "General",
     true,
     {
         syntax: "/help command:<command>",
@@ -305,7 +305,7 @@ export default help;
 
 // export default {
 //     name: "help",
-//     category: "Miscellaneous",
+//     category: "General",
 //     help: {
 //         description: "Need help?",
 //         syntax: "/help <command?> <group?> <subcommand?>",
