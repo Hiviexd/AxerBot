@@ -52,6 +52,7 @@ const emojis = {
     dot: "<:dot:1074363965221638154>",
     small_dot: "<:small_dot:1074364293044252702>",
     infopink: "<:infopink:1074371513869934613>",
+    hype: "<:hype:957733964712394812>",
 };
 
 export default (emoji: keyof typeof emojis) => {
