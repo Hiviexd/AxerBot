@@ -227,7 +227,7 @@ export interface Beatmapset extends BeatmapsetCompactBase {
     ranked_date?: Timestamp;
     source?: string;
     storyboard: boolean;
-    submitted_date?: Timestamp;
+    submitted_date: Timestamp;
     tags: string;
 
     has_favourited: boolean;

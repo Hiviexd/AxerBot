@@ -8,6 +8,7 @@ import {
     BeatmapsetDiscussionVote,
     BeatmapsetDiscussionVoteResponse,
     BeatmapsetDiscussion,
+    Beatmap,
 } from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 import {
@@ -15,6 +16,7 @@ import {
     OsuAuthenticator,
     OsuOfficialDownloader,
 } from "./downloader/beatmap";
+import { IHTTPResponse } from "../../../types/http";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {
@@ -370,8 +372,56 @@ export async function BeatmapPreview(
     }
 }
 
+export async function basicUserBeatmap(
+    user_id: string | number,
+    type: string,
+    limit?: number,
+    offset?: number
+) {
+    try {
+        consoleLog(
+            "beatmap fetcher",
+            `fetching basic user beatmaps data for ${user_id}`
+        );
+
+        const req = await axios(
+            `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${type}?limit=${
+                limit || 500
+            }&offset=${offset || 0}`,
+            {
+                headers: {
+                    authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+                    accept: "audio/mp3",
+                },
+            }
+        );
+
+        const res = req.data;
+
+        consoleCheck(
+            "beatmap fetcher",
+            `basid user beatmaps data for ${user_id} found!`
+        );
+
+        return {
+            status: 200,
+            data: res,
+        } as IHTTPResponse<Beatmapset[]>;
+    } catch (error) {
+        consoleCheck("beatmap fetcher", `basid user beatmaps error:`);
+        console.error(error);
+
+        return {
+            status: 500,
+            data: null,
+        } as IHTTPResponse<null>;
+    }
+}
+
 export async function userBeatmaps(
-    user_id: string
+    user_id: string | number,
+    limit?: number,
+    offset?: number
 ): Promise<UserBeatmapetsResponse> {
     try {
         consoleLog(
@@ -389,7 +439,9 @@ export async function userBeatmaps(
 
             search_types.forEach(async (status) => {
                 let b = await axios(
-                    `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${status}?limit=500`,
+                    `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${status}?limit=${
+                        limit || 500
+                    }&offset=${offset || 0}`,
                     {
                         headers: {
                             "Content-Type": "application/json",

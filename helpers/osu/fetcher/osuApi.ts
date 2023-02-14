@@ -1,4 +1,5 @@
 import {
+    basicUserBeatmap,
     beatmap,
     beatmapset,
     beatmapsetDiscussion,
@@ -24,6 +25,7 @@ export default {
         beatmapsetDiscussionVotes: beatmapsetDiscussionVotes,
         discussionEvents: fetchBeatmapEvents,
         user: user,
+        basicUserBeatmaps: basicUserBeatmap,
         userBeatmaps: userBeatmaps,
         userRecent: userRecent,
         comment: comment,

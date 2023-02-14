@@ -1,11 +1,17 @@
 import { UserResponse } from "../../types/user";
-import { UserBeatmapetsResponse } from "../../types/beatmap";
+import {
+    Beatmap,
+    Beatmapset,
+    UserBeatmapetsResponse,
+} from "../../types/beatmap";
 import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
+import osuApi from "../../helpers/osu/fetcher/osuApi";
+import parseDate from "../../helpers/text/parseDate";
 
 export default {
-    send: (
+    send: async (
         user: UserResponse,
         beatmaps: UserBeatmapetsResponse,
         message: Message
@@ -18,6 +24,39 @@ export default {
             Number(user.data.pending_beatmapset_count) +
             Number(user.data.graveyard_beatmapset_count);
 
+        const mostOldBeatmap = await fetchOldestBeatmap();
+
+        async function fetchOldestBeatmap() {
+            const status = ["graveyard", "pending", "ranked", "loved"];
+            const statusStringObject: { [key: string]: string } = {
+                graveyard: "graveyard_beatmapset_count",
+                pending: "pending_beatmapset_count",
+                loved: "loved_beatmapset_count",
+                ranked: "ranked_and_approved_beatmapset_count",
+            };
+
+            const maps: Beatmapset[] = [];
+
+            for (const s of status) {
+                const b = await osuApi.fetch.basicUserBeatmaps(
+                    user.data.id,
+                    s,
+                    1,
+                    ((user.data as any)[statusStringObject[s]] as number) - 1
+                );
+
+                if (b.data && b.status == 200) maps.push(b.data[0]);
+            }
+
+            maps.sort(
+                (a, b) =>
+                    new Date(a.submitted_date).valueOf() -
+                    new Date(b.submitted_date).valueOf()
+            );
+
+            return maps[0];
+        }
+
         let e = new EmbedBuilder({
             thumbnail: {
                 url: `https://a.ppy.sh/${user.data.id}`,
@@ -26,7 +65,14 @@ export default {
             fields: [
                 {
                     name: "Mapping for",
-                    value: getMappingAge(beatmaps),
+                    value: parseDate(
+                        new Date(
+                            new Date().getTime() -
+                                new Date(
+                                    mostOldBeatmap.submitted_date
+                                ).getTime()
+                        )
+                    ),
                 },
                 {
                     name: "Followers",
@@ -87,6 +133,39 @@ export default {
             Number(user.data.pending_beatmapset_count) +
             Number(user.data.graveyard_beatmapset_count);
 
+        const mostOldBeatmap = await fetchOldestBeatmap();
+
+        async function fetchOldestBeatmap() {
+            const status = ["graveyard", "pending", "ranked", "loved"];
+            const statusStringObject: { [key: string]: string } = {
+                graveyard: "graveyard_beatmapset_count",
+                pending: "pending_beatmapset_count",
+                loved: "loved_beatmapset_count",
+                ranked: "ranked_and_approved_beatmapset_count",
+            };
+
+            const maps: Beatmapset[] = [];
+
+            for (const s of status) {
+                const b = await osuApi.fetch.basicUserBeatmaps(
+                    user.data.id,
+                    s,
+                    1,
+                    ((user.data as any)[statusStringObject[s]] as number) - 1
+                );
+
+                if (b.data && b.status == 200) maps.push(b.data[0]);
+            }
+
+            maps.sort(
+                (a, b) =>
+                    new Date(a.submitted_date).valueOf() -
+                    new Date(b.submitted_date).valueOf()
+            );
+
+            return maps[0];
+        }
+
         let e = new EmbedBuilder({
             thumbnail: {
                 url: `https://a.ppy.sh/${user.data.id}`,
@@ -95,7 +174,14 @@ export default {
             fields: [
                 {
                     name: "Mapping for",
-                    value: getMappingAge(beatmaps),
+                    value: parseDate(
+                        new Date(
+                            new Date().getTime() -
+                                new Date(
+                                    mostOldBeatmap.submitted_date
+                                ).getTime()
+                        )
+                    ),
                 },
                 {
                     name: "Followers",
