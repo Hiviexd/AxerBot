@@ -89,8 +89,7 @@ export default {
             description: replaceOsuTimestampsToURL(
                 truncateString(metadata.concat(post.posts[0].message), 1024)
             ),
-            color: embedDecoration.color,
-            title: embedDecoration.title,
+
             thumbnail: {
                 url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
             },
@@ -105,7 +104,9 @@ export default {
                 text: `${getPostLocation()}`,
             },
             timestamp: new Date(post.posts[0].created_at),
-        });
+        })
+            .setTitle(embedDecoration.title)
+            .setColor(embedDecoration.color);
 
         const buttons = new ActionRowBuilder<ButtonBuilder>();
 
