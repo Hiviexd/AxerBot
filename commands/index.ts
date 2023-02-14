@@ -37,12 +37,11 @@ import recent from "./osu/recent";
 import mappertracker from "./osu/mappertracker";
 
 // ? bnsite
-import bntracker from "./bnsite/bntracker";
-import bn from "./bnsite/bn";
-import openbns from "./bnsite/openbns";
+import bntracker from "./BNsite/bntracker";
+import bn from "./BNsite/bn";
+import openbns from "./BNsite/openbns";
 
 export const AxerCommands = [
-
     // ? General
     help,
     heardle,
