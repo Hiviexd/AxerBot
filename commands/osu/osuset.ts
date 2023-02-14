@@ -1,5 +1,5 @@
 import createNewUser from "../../database/utils/createNewUser";
-import * as database from "./../../database";
+import * as database from "../../database";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
