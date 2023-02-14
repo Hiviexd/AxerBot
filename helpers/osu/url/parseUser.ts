@@ -17,7 +17,8 @@ export default async (url: string, message?: Message) => {
         .filter((u: any) => u.osu.username != undefined)
         .filter(
             (u: any) =>
-                u.osu.username.toLowerCase() == user.data.username.toLowerCase()
+                u.osu.username.toString().toLowerCase() ==
+                user.data.username.toString().toLowerCase()
         )[0];
 
     function getUserParams(url: string) {
