@@ -89,7 +89,6 @@ export default {
             description: replaceOsuTimestampsToURL(
                 truncateString(metadata.concat(post.posts[0].message), 1024)
             ),
-
             thumbnail: {
                 url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
             },
