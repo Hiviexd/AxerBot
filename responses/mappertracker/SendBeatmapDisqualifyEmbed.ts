@@ -31,8 +31,11 @@ export async function SendBeatmapDisqualifyEmbed(
         )
         .find(
             (n) =>
-                n.type == "disqualify" &&
-                n.userId == beatmapset.data.current_nominations[0].user_id
+                (n.type == "disqualify" &&
+                    n.userId ==
+                        beatmapset.data.current_nominations[1].user_id) ||
+                (n.type == "disqualify" &&
+                    n.userId == beatmapset.data.current_nominations[0].user_id)
         );
 
     const nomUser = await fetchNominator(
