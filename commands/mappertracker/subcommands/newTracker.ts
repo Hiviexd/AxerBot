@@ -13,6 +13,7 @@ import crypto from "crypto";
 import { tracks } from "../../../database";
 import generateSuccessEmbed from "../../../helpers/text/embeds/generateSuccessEmbed";
 import { MapperTrackerType } from "../mappertracker";
+import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed";
 
 const mappertrackerNewTracker = new SlashCommandSubcommand(
     "new",
@@ -90,6 +91,10 @@ mappertrackerNewTracker.setExecuteFunction(async (command) => {
                 value: MapperTrackerType.NewHype,
             },
             {
+                label: "Beatmap Favorite",
+                value: MapperTrackerType.BeatmapFavorite,
+            },
+            {
                 label: "Beatmap Revive",
                 value: MapperTrackerType.BeatmapRevive,
             },
@@ -126,10 +131,20 @@ mappertrackerNewTracker.setExecuteFunction(async (command) => {
         "📑 Select data to track",
         "Please select one of the options below",
         selectMenu
-    ).then((values) => {
-        if (!values.data) return;
-        createTracker(values.data);
-    });
+    )
+        .then((values) => {
+            if (!values.data) return;
+            createTracker(values.data);
+        })
+        .catch((e) => {
+            return command.editReply({
+                embeds: [
+                    generateErrorEmbed(
+                        "Don't leave me waiting here! Please, do your things during the correct time."
+                    ),
+                ],
+            });
+        });
 
     async function createTracker(targets: string[]) {
         const trackerId = crypto.randomBytes(15).toString("hex");

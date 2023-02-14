@@ -4,6 +4,7 @@ import { tracks } from "../../../database";
 import { SlashCommandSubcommand } from "../../../models/commands/SlashCommandSubcommand";
 import colors from "../../../constants/colors";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
+import { MapperTrackerType } from "../mappertracker";
 
 const mappertrackerListTracker = new SlashCommandSubcommand(
     "list",
@@ -15,6 +16,19 @@ const mappertrackerListTracker = new SlashCommandSubcommand(
 
 mappertrackerListTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
+
+    const targetTypes = {
+        favorite: "Favorites",
+        revive: "Beatmap Revive",
+        hype: "Hype",
+        new: "New Beatmap",
+        ranked: "Ranked Beatmap",
+        qualify: "Qualified Beatmap",
+        dq: "Disqualified Beatmap",
+        nom: "Nomination",
+        loved: "Beatmap Loved",
+        graveyard: "Beatmap Graveyard",
+    };
 
     const allTrackers = await tracks.find({
         guild: command.guildId,
@@ -28,7 +42,12 @@ mappertrackerListTracker.setExecuteFunction(async (command) => {
             text = text.concat(
                 `__**#${i + 1} | ${await getUsername(
                     allTrackers[i].userId || ""
-                )}**__\n<#${allTrackers[i].channel}>\n\n`
+                )}**__\n<#${allTrackers[i].channel}> [${(
+                    allTrackers[i]
+                        .targetsArray as unknown as MapperTrackerType[]
+                )
+                    .map((target) => targetTypes[target])
+                    .join(", ")}]\n\n`
             );
         }
 

@@ -14,6 +14,7 @@ import { SendBeatmapNominationResetEmbed } from "../../responses/mappertracker/S
 import { SendBeatmapDisqualifyEmbed } from "../../responses/mappertracker/SendBeatmapDisqualifyEmbed";
 import { SendBeatmapNominationEmbed } from "../../responses/mappertracker/SendBeatmapNominationEmbed";
 import { sendBeatmapHypeEmbed } from "../../responses/mappertracker/SendBeatmapHypeEmbed";
+import { sendBeatmapFavoriteEmbed } from "../../responses/mappertracker/SendBeatmapFavoriteEmbed";
 
 export interface IMapperTracker {
     _id: string;
@@ -109,7 +110,7 @@ async function checkTracker(tracker: IMapperTracker) {
 function compareData(
     tracker: IMapperTracker,
     currentBeatmaps: Beatmapset[],
-    storedData: Beatmapset[]
+    storedData: CompressedBeatmapset[]
 ) {
     currentBeatmaps.forEach((map) => {
         const currentBeatmap = {
@@ -223,6 +224,13 @@ function compareData(
             )
                 return sendBeatmapLovedEmbed(currentBeatmap, tracker);
         } // Status change
+
+        if (
+            currentBeatmap.favorites > referentStoredBeatmap.favorites &&
+            tracker.targetsArray.includes(MapperTrackerType.BeatmapFavorite)
+        ) {
+            return sendBeatmapFavoriteEmbed(currentBeatmap, tracker);
+        }
     });
 
     updateUserStoredData(currentBeatmaps);

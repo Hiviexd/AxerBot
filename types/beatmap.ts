@@ -31,6 +31,22 @@ export type BeatmapHypes = {
     required: number;
 };
 
+export type BeatmapRecentFavorites = {
+    avatar_url: string;
+    country_code: string;
+    default_group: string;
+    id: number;
+    is_active: boolean;
+    is_bot: boolean;
+    is_deleted: boolean;
+    is_online: boolean;
+    is_supporter: boolean;
+    last_visit: Date;
+    pm_friends_only: boolean;
+    profile_colour: null;
+    username: string;
+};
+
 export interface BeatmapsetCompactBase {
     artist: string;
     artist_unicode: string;
@@ -57,7 +73,7 @@ export interface BeatmapsetCompactBase {
     language?: string;
     nominations: BeatmapNominations;
     ratings?: number[];
-    recent_favourites?: unknown;
+    recent_favourites: BeatmapRecentFavorites[];
     related_users?: unknown;
     user?: User;
 }

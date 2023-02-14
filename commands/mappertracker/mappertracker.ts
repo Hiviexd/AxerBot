@@ -5,6 +5,7 @@ import mappertrackerListTracker from "./subcommands/listTracker";
 import mappertrackerRemoveTracker from "./subcommands/removeTracker";
 
 export enum MapperTrackerType {
+    BeatmapFavorite = "favorite",
     BeatmapRevive = "revive",
     NewHype = "hype",
     NewBeatmap = "new",
