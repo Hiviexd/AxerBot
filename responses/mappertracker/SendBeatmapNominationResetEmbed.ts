@@ -39,7 +39,7 @@ export async function SendBeatmapNominationResetEmbed(
         beatmapset.data.current_nominations[0].user_id
     );
 
-    const url = `https://osu.ppy.sh/s/${beatmapset.data.user_id}`;
+    const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
@@ -61,7 +61,7 @@ export async function SendBeatmapNominationResetEmbed(
             text: `Posted by ${nomUser?.username || "Unknown User"}`,
         })
         .setTimestamp(new Date(nom?.createdAt || new Date()))
-        .setThumbnail(beatmapset.data.covers["list@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     async function fetchNominator(id: number) {
         const u = await osuApi.fetch.user(id.toString());

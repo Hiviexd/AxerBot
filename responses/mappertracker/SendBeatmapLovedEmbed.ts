@@ -20,7 +20,7 @@ export async function sendBeatmapLovedEmbed(
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
-    const url = `https://osu.ppy.sh/s/${beatmapset.data.user_id}`;
+    const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setTitle(`💝 Beatmap loved`)

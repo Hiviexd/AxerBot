@@ -22,7 +22,7 @@ export async function sendBeatmapFavoriteEmbed(
 
     console.log(beatmapset.data.recent_favourites);
 
-    const url = `https://osu.ppy.sh/s/${beatmapset.data.user_id}`;
+    const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
@@ -35,7 +35,7 @@ export async function sendBeatmapFavoriteEmbed(
             `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\nBeatmap has ${beatmapset.data.favourite_count} favorite(s) now!`
         )
         .setColor(colors.pink)
-        .setThumbnail(beatmapset.data.covers["list@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     const guild = bot.guilds.cache.get(tracker.guild);
 

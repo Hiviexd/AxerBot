@@ -29,7 +29,7 @@ export async function sendBeatmapHypeEmbed(
 
     const hypeAuthor = await osuApi.fetch.user(hype?.user_id.toString());
 
-    const url = `https://osu.ppy.sh/s/${beatmapset.data.user_id}`;
+    const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
@@ -51,7 +51,7 @@ export async function sendBeatmapHypeEmbed(
             text: `Posted by ${hypeAuthor.data.username || "Unknown User"}`,
         })
         .setTimestamp(new Date(hype.created_at) || new Date())
-        .setThumbnail(beatmapset.data.covers["list@2x"]);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     const guild = bot.guilds.cache.get(tracker.guild);
 

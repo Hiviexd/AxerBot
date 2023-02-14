@@ -39,7 +39,7 @@ export async function SendBeatmapQualifyEmbed(
                 n.userId == beatmapset.data.current_nominations[1].user_id
         );
 
-    const url = `https://osu.ppy.sh/s/${beatmapset.data.user_id}`;
+    const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
