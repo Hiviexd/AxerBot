@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 const token = process.env.TOKEN;
+
 import "colors";
 import { Client, IntentsBitField, Message } from "discord.js";
 import "./helpers/osu/fetcher/startConnection";
@@ -11,6 +12,7 @@ import registerCommands from "./helpers/interactions/registerCommands";
 import { connectToBancho } from "./modules/bancho/client";
 import { startAvatarListener } from "./modules/avatar/avatarManager";
 import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManager";
+import fs from "fs";
 
 export const bot = new Client({
     intents: [
@@ -28,6 +30,7 @@ export const bot = new Client({
 });
 
 keepAlive();
+if (!fs.existsSync("./cache")) fs.mkdirSync("./cache");
 
 bot.login(token).then(() => {
     connectToBancho();

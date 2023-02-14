@@ -4,9 +4,9 @@ import getWebsiteStatus from "./../../helpers/general/getWebsiteStatus";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
 const about = new SlashCommand(
-    ["about", "botinfo", "status"],
+    ["about", "info", "status"],
     "Get information about the bot.",
-    "Miscellaneous",
+    "General",
     true
 );
 
