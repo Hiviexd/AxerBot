@@ -102,7 +102,6 @@ async function qatTracking(bot: Client) {
                 thumbnail: {
                     url: `https://a.ppy.sh/${bn.osuId}`,
                 },
-                color: colors.green,
                 description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`,
                 fields: [
                     {
@@ -125,7 +124,6 @@ async function qatTracking(bot: Client) {
                 thumbnail: {
                     url: `https://a.ppy.sh/${bn.osuId}`,
                 },
-                color: colors.red,
                 description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`,
                 footer: footer,
             },
@@ -133,7 +131,9 @@ async function qatTracking(bot: Client) {
 
         const open = bn.requestStatus.includes("closed") ? false : true;
 
-        const embed = new EmbedBuilder(texts[open ? "open" : "closed"]);
+        const embed = new EmbedBuilder(
+            texts[open ? "open" : "closed"]
+        ).setColor(open ? colors.green : colors.red);
 
         const buttons = new ActionRowBuilder<ButtonBuilder>();
         const buttons2 = new ActionRowBuilder<ButtonBuilder>();
