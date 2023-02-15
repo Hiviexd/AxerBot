@@ -469,7 +469,7 @@ export default {
             }
         });
 
-        if (target as ChatInputCommandInteraction) {
+        if ((target as ChatInputCommandInteraction).commandId) {
             (target as ChatInputCommandInteraction).editReply({
                 embeds: [embed],
                 components: [staticButtonsRow, modsSelector, embedButtonsRow],
