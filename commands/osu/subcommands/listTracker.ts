@@ -14,6 +14,15 @@ const mappertrackerListTracker = new SlashCommandSubcommand(
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );
 
+interface IMapperTracker {
+    _id: string;
+    targetsArray: string[];
+    userId: string;
+    channel: string;
+    guild: string;
+    type: "mapper";
+}
+
 mappertrackerListTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
 
@@ -30,19 +39,23 @@ mappertrackerListTracker.setExecuteFunction(async (command) => {
         graveyard: "Beatmap Graveyard",
     };
 
-    const allTrackers = await tracks.find({
+    const allTrackers = (await tracks.find({
         guild: command.guildId,
         type: "mapper",
-    });
+    })) as unknown as IMapperTracker[];
+
+    const users = await osuApi.fetch.users(allTrackers.map((t) => t.userId));
 
     async function mapTrackers() {
         let text = "";
 
         for (let i = 0; i < allTrackers.length; i++) {
             text = text.concat(
-                `__**#${i + 1} | ${await getUsername(
-                    allTrackers[i].userId || ""
-                )}**__\n<#${allTrackers[i].channel}> [${(
+                `__**#${i + 1} | ${
+                    users.data.find(
+                        (u) => u.id.toString() == allTrackers[i].userId
+                    )?.username
+                }**__\n<#${allTrackers[i].channel}> [${(
                     allTrackers[i]
                         .targetsArray as unknown as MapperTrackerType[]
                 )

@@ -18,7 +18,7 @@ export enum MapperTrackerType {
 }
 
 const mappertracker = new SlashCommand(
-    ["mappertracker"],
+    ["mappertracker", "maptracker"],
     "Track mapper beatmap events",
     "osu!",
     false,
