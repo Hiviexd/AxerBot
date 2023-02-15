@@ -41,7 +41,7 @@ removeReminder.setExecuteFunction(async (command) => {
         });
 
     if (index > reminders.length || index < 1)
-        return command.reply({
+        return command.editReply({
             embeds: [
                 generateErrorEmbed(
                     "That is not a valid reminder index! Use /reminder list to get a reminder index"
@@ -64,7 +64,7 @@ removeReminder.setExecuteFunction(async (command) => {
             value: reminderMessage,
         });
 
-    return command.reply({ embeds: [embed] });
+    return command.editReply({ embeds: [embed] });
 });
 
 export default removeReminder;
