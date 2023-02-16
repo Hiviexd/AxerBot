@@ -27,6 +27,7 @@ export class SlashCommand {
     public help: { [key: string]: string | string[] } = {};
     public allowDM = false;
     public names: string[] = [];
+    public hasModal = false;
     public builder = new SlashCommandBuilder();
 
     constructor(
@@ -35,7 +36,8 @@ export class SlashCommand {
         category: string,
         allowDM: boolean,
         help?: { [key: string | number]: string | string[] },
-        permissions?: PermissionResolvable[]
+        permissions?: PermissionResolvable[],
+        hasModal?: boolean
     ) {
         this.builder.setDescription(description);
 
@@ -52,6 +54,8 @@ export class SlashCommand {
         if (permissions) this.permissions = permissions;
 
         this.category = category;
+
+        this.hasModal = hasModal || false;
 
         this.allowDM = allowDM;
     }
@@ -164,7 +168,9 @@ export class SlashCommand {
         );
     }
 
-    run(interaction: ChatInputCommandInteraction) {
+    async run(interaction: ChatInputCommandInteraction) {
+        if (!this.hasModal) await interaction.deferReply();
+
         if (
             !checkMemberPermissions(
                 interaction.member as GuildMember,

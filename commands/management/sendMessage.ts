@@ -21,7 +21,8 @@ const sendmessage = new SlashCommand(
         syntax: "/sendmessage `<channel>`",
         example: "/sendmessage `#general`",
     },
-    [PermissionFlagsBits.ManageMessages]
+    [PermissionFlagsBits.ManageMessages],
+    true
 );
 
 sendmessage.builder.addChannelOption((o) =>
