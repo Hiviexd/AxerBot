@@ -46,7 +46,7 @@ export default async (
             };
 
         if (guild_db.verification.targets.username) {
-            member
+            await member
                 .edit({
                     nick: user.username,
                     reason: "AxerBot Verification System",
