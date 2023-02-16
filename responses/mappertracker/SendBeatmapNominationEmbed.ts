@@ -31,10 +31,10 @@ export async function SendBeatmapNominationEmbed(
         )
         .find(
             (n) =>
-                (n.type == "nomination" &&
+                (n.type == "nominate" &&
                     n.userId ==
                         beatmapset.data.current_nominations[1].user_id) ||
-                (n.type == "nomination" &&
+                (n.type == "nominate" &&
                     n.userId == beatmapset.data.current_nominations[0].user_id)
         );
 
@@ -88,8 +88,10 @@ export async function SendBeatmapNominationEmbed(
         return u.data;
     }
 
-    channel.send({
-        embeds: [embed],
-        components: [buttonsActionRow],
-    });
+    channel
+        .send({
+            embeds: [embed],
+            components: [buttonsActionRow],
+        })
+        .catch(console.error);
 }

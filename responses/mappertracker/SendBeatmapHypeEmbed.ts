@@ -67,8 +67,10 @@ export async function sendBeatmapHypeEmbed(
 
     buttonsActionRow.addComponents(beatmapPageButton);
 
-    channel.send({
-        embeds: [embed],
-        components: [buttonsActionRow],
-    });
+    channel
+        .send({
+            embeds: [embed],
+            components: [buttonsActionRow],
+        })
+        .catch(console.error);
 }

@@ -35,7 +35,7 @@ export async function sendBeatmapGraveyardEmbed(
                 new Date(beatmapset.data.last_updated).getTime() / 1000
             )}:R> and it's graveyarded now...`
         )
-        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
 
     const guild = bot.guilds.cache.get(tracker.guild);
 
@@ -54,8 +54,10 @@ export async function sendBeatmapGraveyardEmbed(
 
     buttonsActionRow.addComponents(beatmapPageButton);
 
-    channel.send({
-        embeds: [embed],
-        components: [buttonsActionRow],
-    });
+    channel
+        .send({
+            embeds: [embed],
+            components: [buttonsActionRow],
+        })
+        .catch(console.error);
 }
