@@ -8,7 +8,7 @@ const map = new SlashCommand(
     ["map", "calculate"],
     "Send beatmap info of a beatmap with pp",
     "osu!",
-    false
+    true
 );
 
 map.builder

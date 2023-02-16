@@ -5,7 +5,7 @@ const coinflip = new SlashCommand(
     "coinflip",
     "Feeling lucky? Flip a coin!",
     "Fun",
-    false
+    true
 );
 
 coinflip.setExecuteFunction(async (command) => {

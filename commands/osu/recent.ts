@@ -8,7 +8,7 @@ const recent = new SlashCommand(
     ["rs", "recent"],
     "Get the most recent score of a player",
     "osu!",
-    false,
+    true,
     {
         syntax: "/rs `username` `?mode`",
         example: "/rs `username:sebola` `mode:taiko`",

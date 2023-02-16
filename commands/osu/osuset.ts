@@ -7,7 +7,7 @@ const osuset = new SlashCommand(
     ["osuset", "link"],
     "Link your osu! account",
     "osu!",
-    false,
+    true,
     {
         description: "Sets your credentials so the bot recognizes you.",
         syntax: "/osuset `<field>` `<value>`",

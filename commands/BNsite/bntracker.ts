@@ -8,7 +8,7 @@ const bntracker = new SlashCommand(
     "bntracker",
     "Track nominators' request status from the BN website",
     "BNSite",
-    false,
+    true,
     {
         syntax: "/bntrack <add|remove|status>",
     },

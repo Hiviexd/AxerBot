@@ -9,12 +9,7 @@ import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const pun = new SlashCommand(
-    ["pun", "joke"],
-    "Get a random pun!",
-    "Fun",
-    false
-);
+const pun = new SlashCommand(["pun", "joke"], "Get a random pun!", "Fun", true);
 
 pun.setExecuteFunction(async (command) => {
     const config = {

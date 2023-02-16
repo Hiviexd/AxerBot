@@ -9,7 +9,7 @@ const mapper = new SlashCommand(
     "mapper",
     "Displays mapper statistics of a user",
     "osu!",
-    false,
+    true,
     {
         syntax: "/mapper `<user>`",
         example:
