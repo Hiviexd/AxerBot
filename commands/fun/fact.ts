@@ -1,9 +1,10 @@
-import { Client, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
-import colors from "../../constants/colors";
 import axios from "axios";
+import { EmbedBuilder } from "discord.js";
+
+import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const fact = new SlashCommand("fact", "Get a random fact!", "Fun", false, {
+const fact = new SlashCommand("fact", "Get a random fact!", "Fun", true, {
     syntax: "/fact",
     options: `\`today\`: Gets the fact of the day.`,
     example: `/fact\n /fact type:today`,

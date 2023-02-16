@@ -7,7 +7,7 @@ const openbns = new SlashCommand(
     "openbns",
     "Displays a list of currently open BNs/NATs based on data from the BN website",
     "BNSite",
-    false
+    true
 );
 
 openbns.builder.addStringOption((o) =>

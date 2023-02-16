@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const roll = new SlashCommand("roll", "Roll a dice!", "Fun", false, {
+const roll = new SlashCommand("roll", "Roll a dice!", "Fun", true, {
     syntax: "/roll `<value>`",
     example: "/roll\n/roll `727`\n/roll `dubs and I ping @everyone`\n",
 });

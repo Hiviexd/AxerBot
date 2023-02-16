@@ -6,7 +6,7 @@ const owoify = new SlashCommand(
     ["owoify", "owotext"],
     "Turn your text into owo text!\n I'm not sorry.",
     "Fun",
-    false
+    true
 );
 
 owoify.builder.addStringOption((o) =>

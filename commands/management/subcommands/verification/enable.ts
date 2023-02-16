@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationSetEnabled = new SlashCommandSubcommand(
     "enable",
     "Enable the system manually",
-    false,
     undefined,
     [PermissionFlagsBits.ManageGuild]
 );

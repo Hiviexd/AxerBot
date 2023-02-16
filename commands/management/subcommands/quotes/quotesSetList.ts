@@ -8,7 +8,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesSetList = new SlashCommandSubcommand(
     "list",
     "Sets a custom list for the server quotes",
-    false,
     {
         syntax: "/quotes `set` `list` `[Text File Attachment]`",
         note: "Quotes are split by line break.",

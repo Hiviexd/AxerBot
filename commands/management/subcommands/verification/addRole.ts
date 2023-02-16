@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationAddRole = new SlashCommandSubcommand(
     "role",
     "Adds a role to the default verification role(s) of the server",
-    false,
     {
         syntax: "/verification `add` `role` `target_role:<Role>`",
         example: "/verification `add` `role` `target_role:@Verified`",

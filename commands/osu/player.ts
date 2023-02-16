@@ -9,7 +9,7 @@ const player = new SlashCommand(
     ["player", "profile"],
     "Check statistics for a player",
     "osu!",
-    false,
+    true,
     {
         syntax: "/player `<name>` `<-?mode>`",
         example: "/player `username:Hivie` `mode:osu`",

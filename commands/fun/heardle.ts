@@ -32,6 +32,7 @@ heardle.builder
                     value: "stop",
                 }
             )
+            .setRequired(true)
     )
     .addIntegerOption((o) =>
         o

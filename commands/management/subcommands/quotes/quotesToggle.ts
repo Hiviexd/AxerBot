@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesToggle = new SlashCommandSubcommand(
     "toggle",
     "Disable or enable quotes system",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

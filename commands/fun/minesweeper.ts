@@ -7,7 +7,7 @@ const minesweeper = new SlashCommand(
     "minesweeper",
     "Play a game of minesweeper! \nDefault settings are 9 x 9 grid, 10 mines.",
     "Fun",
-    false,
+    true,
     {
         syntax: "/minesweeper\n /minesweeper `<rows>` `<columns>` `<mines>`",
         example:

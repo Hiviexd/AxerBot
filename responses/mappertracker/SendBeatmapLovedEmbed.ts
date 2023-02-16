@@ -74,8 +74,10 @@ export async function sendBeatmapLovedEmbed(
 
     buttonsActionRow.addComponents(beatmapPageButton);
 
-    channel.send({
-        embeds: [embed],
-        components: [buttonsActionRow],
-    });
+    channel
+        .send({
+            embeds: [embed],
+            components: [buttonsActionRow],
+        })
+        .catch(console.error);
 }

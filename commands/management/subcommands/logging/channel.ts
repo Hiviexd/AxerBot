@@ -6,7 +6,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const loggingChannel = new SlashCommandSubcommand(
     "channel",
     "Set system channel",
-    false,
     undefined,
     [PermissionFlagsBits.ManageGuild]
 );

@@ -32,7 +32,15 @@ export async function sendBeatmapFavoriteEmbed(
         })
         .setTitle(`💟 New Favorite`)
         .setDescription(
-            `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\nBeatmap has \`${beatmapset.data.favourite_count}\` ${beatmapset.data.favourite_count === 1 ? "favorite" : "favorites"} now!`
+            `**[${beatmapset.data.artist} - ${
+                beatmapset.data.title
+            }](${url})**\n Mapped by [${
+                beatmapset.data.creator
+            }](https://osu.ppy.sh/users/${
+                beatmapset.data.user_id
+            })\n\nBeatmap has \`${beatmapset.data.favourite_count}\` ${
+                beatmapset.data.favourite_count === 1 ? "favorite" : "favorites"
+            } now!`
         )
         .setColor(colors.pink)
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
@@ -55,8 +63,10 @@ export async function sendBeatmapFavoriteEmbed(
 
     buttonsActionRow.addComponents(beatmapPageButton);
 
-    channel.send({
-        embeds: [embed],
-        components: [buttonsActionRow],
-    });
+    channel
+        .send({
+            embeds: [embed],
+            components: [buttonsActionRow],
+        })
+        .catch(console.error);
 }

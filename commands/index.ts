@@ -40,6 +40,7 @@ import mappertracker from "./osu/mappertracker";
 import bntracker from "./BNsite/bntracker";
 import bn from "./BNsite/bn";
 import openbns from "./BNsite/openbns";
+import map from "./osu/map";
 
 export const AxerCommands = [
     // ? General
@@ -79,6 +80,7 @@ export const AxerCommands = [
     player,
     mapsetrank,
     mapper,
+    map,
 
     // ? bnsite
     bn,

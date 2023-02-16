@@ -44,8 +44,7 @@ The bot also interacts with osu!'s API v2 and [the BN/NAT Management website](ht
 ## Usage
 
 - invite the bot.
-- type `-help` to see a list of all available commands; Use `-help <command>` to see how a specific command works.
-- if the `-` prefix doesn't suit you, feel free to change it via the `-setprefix` command.
+- type `/help` to see a list of all available commands; Use `/help <command>` to see how a specific command works.
 
 from this step onwards, you can set up any of these following systems as a server owner/manager:
 

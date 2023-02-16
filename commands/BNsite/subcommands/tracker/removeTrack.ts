@@ -11,7 +11,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const removeTracker = new SlashCommandSubcommand(
     "remove",
     "Remove a tracker for a channel",
-    false,
     {
         syntax: `/bntracker remove <#channel>`,
     },

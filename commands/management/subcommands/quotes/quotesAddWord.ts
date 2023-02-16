@@ -9,7 +9,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesAddWord = new SlashCommandSubcommand(
     "word",
     "Adds a new phrase to the server custom quotes list",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

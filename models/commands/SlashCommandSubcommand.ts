@@ -15,17 +15,19 @@ export class SlashCommandSubcommand {
     public help: { [key: string]: string | string[] } = {};
     public permissions: PermissionResolvable[] = [];
     public builder = new SlashCommandSubcommandBuilder();
+    public hasModal: boolean;
 
     constructor(
         name: string,
         description: string,
-        allowDM: boolean,
         help?: { [key: string | number]: string | string[] },
-        permissions?: PermissionResolvable[]
+        permissions?: PermissionResolvable[],
+        hasModal?: boolean
     ) {
         this.builder.setName(name);
         this.builder.setDescription(description);
-        this.allowDM = allowDM;
+
+        this.hasModal = hasModal || false;
 
         this.help = Object.assign({ description: description }, help);
 
@@ -42,7 +44,9 @@ export class SlashCommandSubcommand {
         return this;
     }
 
-    run(interaction: ChatInputCommandInteraction) {
+    async run(interaction: ChatInputCommandInteraction) {
+        if (!this.hasModal) await interaction.deferReply();
+
         if (
             !checkMemberPermissions(
                 interaction.member as GuildMember,

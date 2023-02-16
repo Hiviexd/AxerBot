@@ -8,7 +8,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesAllowChannels = new SlashCommandSubcommand(
     "channel",
     "Set channels that quotes can run. ",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

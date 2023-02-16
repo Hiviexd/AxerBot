@@ -6,7 +6,6 @@ import colors from "../../../../constants/colors";
 const loggingStatus = new SlashCommandSubcommand(
     "status",
     "Displays system settings",
-    false,
     undefined,
     [PermissionFlagsBits.ManageGuild]
 );

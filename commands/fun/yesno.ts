@@ -11,7 +11,7 @@ const yesno = new SlashCommand(
     "yesno",
     "Yes or no? I can help you decide!",
     "Fun",
-    false,
+    true,
     {
         description: "Yes or no? I can help you decide!",
         syntax: "/yesno `option`",

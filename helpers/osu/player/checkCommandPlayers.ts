@@ -17,7 +17,7 @@ export default async (command: ChatInputCommandInteraction) => {
             _id: userInput.id,
         });
 
-        if (u != null)
+        if (u != null && u.osu.username)
             playerName =
                 u.osu.username.toString() != undefined
                     ? u.osu.username.toString()
@@ -29,7 +29,7 @@ export default async (command: ChatInputCommandInteraction) => {
             _id: command.user.id,
         });
 
-        if (u != null)
+        if (u != null && u.osu.username)
             playerName =
                 u.osu.username.toString() != undefined
                     ? u.osu.username.toString()

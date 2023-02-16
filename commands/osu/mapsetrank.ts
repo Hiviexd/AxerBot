@@ -10,7 +10,7 @@ const mapsetrank = new SlashCommand(
     ["mapsetrank", "mr"],
     "Displays beatmapset statistics of a user",
     "osu!",
-    false,
+    true,
     {
         example: "/mapsetrank `username:Hivie` `sort:favorites`\n/mapsetrank",
         note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",

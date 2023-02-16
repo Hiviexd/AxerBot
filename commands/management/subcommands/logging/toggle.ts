@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const loggingToggle = new SlashCommandSubcommand(
     "toggle",
     "Enable or disable logging system",
-    false,
     undefined,
     [PermissionFlagsBits.ManageGuild]
 );

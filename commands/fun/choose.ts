@@ -4,7 +4,7 @@ const choose = new SlashCommand(
     "choose",
     "I will choose for you!",
     "Fun",
-    false,
+    true,
     {
         syntax: "/choose `options:Banana or Cookie`",
     }

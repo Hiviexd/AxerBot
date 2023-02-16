@@ -8,7 +8,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationAddGroupRole = new SlashCommandSubcommand(
     "grouprole",
     "Sets the roles that users with X usergroups will recieve",
-    false,
     {
         syntax: "/verification `add grouprole` `group:<Group Name>` `role:<Role Id|Role Mention>` `[modes_1:<modes> ...]`",
         groups: [

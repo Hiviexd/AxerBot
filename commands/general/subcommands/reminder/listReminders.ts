@@ -6,17 +6,8 @@ import generateErrorEmbedWithTitle from "helpers/text/embeds/generateErrorEmbedW
 
 export const listReminders = new SlashCommandSubcommand(
     "list",
-    "Shows your currently active reminders",
-    false
+    "Shows your currently active reminders"
 );
-
-// const reminder = {
-//     time: new Date().getTime() + time,
-//     creationTime: new Date().getTime(),
-//     message: message_,
-//     channel: command.channel.id,
-//     guild: command.guild.id,
-// };
 
 listReminders.setExecuteFunction(async (command) => {
     const user = await users.findById(command.user.id);

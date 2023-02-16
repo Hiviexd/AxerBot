@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationRemoveGroupRole = new SlashCommandSubcommand(
     "grouprole",
     "Remove a group role from the system",
-    false,
     {
         syntax: "/verification `remove grouprole` `group:<Group Name>` `role:<Role>` `[mode:<modes>]`",
         "how it works":

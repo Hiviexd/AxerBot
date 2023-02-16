@@ -12,6 +12,8 @@ import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon"
 import { bot } from "../..";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
+import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
+import { User } from "../../types/user";
 
 export async function SendBeatmapQualifyEmbed(
     map: CompressedBeatmapset,
@@ -24,7 +26,7 @@ export async function SendBeatmapQualifyEmbed(
     const qatData = await qatApi.fetch.events(beatmapset.data.id.toString());
 
     const nomUser = await fetchNominator(
-        beatmapset.data.current_nominations[0].user_id
+        beatmapset.data.current_nominations[1].user_id
     );
 
     const nom = qatData.data
@@ -37,16 +39,16 @@ export async function SendBeatmapQualifyEmbed(
             (n) =>
                 (n.type == "qualify" &&
                     n.userId ==
-                        beatmapset.data.current_nominations[1].user_id) ||
+                        beatmapset.data.current_nominations[0].user_id) ||
                 (n.type == "qualify" &&
-                    n.userId == beatmapset.data.current_nominations[0].user_id)
+                    n.userId == beatmapset.data.current_nominations[1].user_id)
         );
 
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
-            name: `${nomUser?.username || "deleted_user"}`,
+            name: `${`${nomUser?.username}` || "deleted_user"}`,
             iconURL: `https://a.ppy.sh/${nomUser?.id}`,
         })
         .setTitle(`❤️ Qualified`)
@@ -55,15 +57,9 @@ export async function SendBeatmapQualifyEmbed(
                 beatmapset.data.title
             }](${url})**\n Mapped by [${
                 beatmapset.data.creator
-            }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n[${
-                (
-                    await fetchNominator(
-                        beatmapset.data.current_nominations[1].user_id
-                    )
-                )?.username || "deleted_user"
-            }](https://osu.ppy.sh/users/${
-                beatmapset.data.current_nominations[1].user_id
-            }) ${nom?.content || "No comment provided..."}`
+            }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n${
+                nom?.content || "No comment provided..."
+            }`
         )
         .setColor("#ff4b63")
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);

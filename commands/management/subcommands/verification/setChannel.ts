@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationSetChannel = new SlashCommandSubcommand(
     "channel",
     "Sets the channel for the system",
-    false,
     {
         syntax: "/verification `set channel` `text_channel:<channel>`",
         example: "/verification `set channel` `text_channel:#arrival`",

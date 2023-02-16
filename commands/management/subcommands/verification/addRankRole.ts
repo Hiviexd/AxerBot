@@ -10,7 +10,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationAddRankRole = new SlashCommandSubcommand(
     "rankrole",
     "Add roles to users in a rank range",
-    false,
     {
         syntax: "/verification `add rankrole` `role: @role` `min_rank:number` `max_rank:number` `gamemode: <Gamemode>` `rank_type: <Rank Type>`",
         gamemode: ["`osu!`", "`osu!taiko`", "`osu!catch`", "`osu!mania`"],

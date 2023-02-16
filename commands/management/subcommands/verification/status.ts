@@ -6,7 +6,6 @@ import { guilds } from "../../../../database";
 const verificationStatus = new SlashCommandSubcommand(
     "status",
     "Display all parameters of this module",
-    false,
     {},
     [PermissionFlagsBits.ManageGuild]
 );

@@ -23,7 +23,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationSetMessage = new SlashCommandSubcommand(
     "message",
     "Set the message that will be sent on the system channel (will open a popup that takes text input)",
-    false,
     {
         syntax: "/verification `set message`",
         placeholders: "`{member}` - a ping of the member that will be verified",
