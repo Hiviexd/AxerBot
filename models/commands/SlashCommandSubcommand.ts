@@ -20,14 +20,12 @@ export class SlashCommandSubcommand {
     constructor(
         name: string,
         description: string,
-        allowDM: boolean,
         help?: { [key: string | number]: string | string[] },
         permissions?: PermissionResolvable[],
         hasModal?: boolean
     ) {
         this.builder.setName(name);
         this.builder.setDescription(description);
-        this.allowDM = allowDM;
 
         this.hasModal = hasModal || false;
 

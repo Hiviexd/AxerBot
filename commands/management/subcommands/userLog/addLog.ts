@@ -12,7 +12,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const userlogAddLog = new SlashCommandSubcommand(
     "new",
     "Add a new log to a member",
-    false,
     undefined,
     [PermissionFlagsBits.ModerateMembers]
 );

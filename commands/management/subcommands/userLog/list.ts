@@ -9,7 +9,6 @@ import { guilds } from "../../../../database";
 const userlogList = new SlashCommandSubcommand(
     "list",
     "List all logs from a user",
-    false,
     undefined
 );
 

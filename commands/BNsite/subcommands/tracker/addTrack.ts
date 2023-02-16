@@ -12,7 +12,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const addTracker = new SlashCommandSubcommand(
     "add",
     "Create a new tracker",
-    false,
     {
         syntax: "/bntracker add `channel:#channel` `status:open|closed|both` `mode:osu|taiko|catch|mania`",
         example:

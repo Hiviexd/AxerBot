@@ -6,7 +6,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesSetChance = new SlashCommandSubcommand(
     "chance",
     "Set a chance between 1->100 to reply with a quote after the trigger word is detected",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

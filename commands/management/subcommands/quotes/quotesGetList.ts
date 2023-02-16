@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesCustomFile = new SlashCommandSubcommand(
     "customfile",
     "Send custom list file for download",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

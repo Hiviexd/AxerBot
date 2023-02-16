@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationRemoveRankRole = new SlashCommandSubcommand(
     "rankrole",
     "Remove a rank role from the system",
-    false,
     {
         syntax: "/verification `remove rankrole` `role: @role` `min_rank:number` `max_rank:number` `gamemode: <Gamemode>` `rank_type: <Rank Type>`",
         gamemode: ["`osu!`", "`osu!taiko`", "`osu!catch`", "`osu!mania`"],

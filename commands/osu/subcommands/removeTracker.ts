@@ -8,7 +8,6 @@ import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed"
 const mappertrackerRemoveTracker = new SlashCommandSubcommand(
     "remove",
     "List all mapper trackers",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );

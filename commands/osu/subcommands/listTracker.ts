@@ -9,7 +9,6 @@ import { MapperTrackerType } from "../../osu/mappertracker";
 const mappertrackerListTracker = new SlashCommandSubcommand(
     "list",
     "List all mapper trackers",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );

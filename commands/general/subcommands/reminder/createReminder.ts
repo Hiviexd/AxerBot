@@ -7,8 +7,7 @@ import { consoleCheck } from "../../../../helpers/core/logger";
 
 export const createReminder = new SlashCommandSubcommand(
     "new",
-    "create a new reminder",
-    false
+    "create a new reminder"
 );
 
 createReminder.builder

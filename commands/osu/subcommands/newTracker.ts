@@ -18,7 +18,6 @@ import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed"
 const mappertrackerNewTracker = new SlashCommandSubcommand(
     "new",
     "Create a new mapper tracker",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );

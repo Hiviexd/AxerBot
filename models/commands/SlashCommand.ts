@@ -51,7 +51,10 @@ export class SlashCommand {
 
         this.help = Object.assign({ description: description }, help);
 
-        if (permissions) this.permissions = permissions;
+        if (permissions) {
+            this.permissions = permissions;
+            this.builder.setDMPermission(this.allowDM);
+        }
 
         this.category = category;
 

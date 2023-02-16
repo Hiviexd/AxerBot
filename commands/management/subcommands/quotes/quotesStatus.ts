@@ -6,7 +6,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesStatus = new SlashCommandSubcommand(
     "status",
     "Display info about system configuration",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

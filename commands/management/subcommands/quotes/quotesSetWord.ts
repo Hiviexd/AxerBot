@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotesSetWord = new SlashCommandSubcommand(
     "word",
     "Sets a trigger word for the quotes system",
-    false,
     {
         syntax: "/quotes `set` `word` `<new word>`",
     },

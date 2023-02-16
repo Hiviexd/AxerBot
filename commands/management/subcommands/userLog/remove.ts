@@ -10,7 +10,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const userlogRemoveLog = new SlashCommandSubcommand(
     "remove",
     "Remove a member log",
-    false,
     undefined,
     [PermissionFlagsBits.ModerateMembers]
 );

@@ -7,7 +7,6 @@ import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmb
 const info = new SlashCommandSubcommand(
     "info",
     "List all active trackers in the server",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

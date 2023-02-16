@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationSetFlags = new SlashCommandSubcommand(
     "flag",
     "Set which data that will be replaced with the osu! user data.",
-    false,
     {
         syntax: "/verification `set flags` `flag:<flag>` `status:<enable|disable>`",
         example: "/verification `set flags` `flag:username` `status:enable`",

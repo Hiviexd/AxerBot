@@ -16,8 +16,7 @@ interface IReminder {
 
 const removeReminder = new SlashCommandSubcommand(
     "remove",
-    "remove a reminder",
-    false
+    "remove a reminder"
 );
 
 removeReminder.builder.addIntegerOption((option) =>

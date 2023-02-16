@@ -6,7 +6,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const quotestSetType = new SlashCommandSubcommand(
     "type",
     "Change quotes system list to default list or custom list",
-    false,
     undefined,
     [PermissionFlagsBits.ManageChannels]
 );

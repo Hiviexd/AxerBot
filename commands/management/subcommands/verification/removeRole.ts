@@ -7,7 +7,6 @@ import { PermissionFlagsBits } from "discord.js";
 const verificationRemoveRole = new SlashCommandSubcommand(
     "role",
     "Removes a role from the default verification role(s) of the server",
-    false,
     {
         syntax: "/verification `remove role` `target_role:<Role Id|Role Mention>`",
         example: "/verification `remove role` `target_role:@Verified`",

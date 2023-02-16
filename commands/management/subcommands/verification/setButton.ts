@@ -7,7 +7,6 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 const verificationSetButton = new SlashCommandSubcommand(
     "button",
     "Enable or disable verification interaction button",
-    false,
     {
         syntax: "/verification `set` `status`",
         example: "/verification `set` `status:disabled`",
