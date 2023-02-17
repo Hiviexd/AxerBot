@@ -33,11 +33,11 @@ export default async (interaction: Interaction) => {
 
     const embed = new EmbedBuilder({
         title: "🔍 Verify your account",
-        description: `To verify with your osu! your account, use \`!verify <code>\` [here](https://osu.ppy.sh/home/messages/users/${process.env.IRC_OSU_ID})`,
+        description: `To verify with your osu! account, send the command below [here](https://osu.ppy.sh/home/messages/users/${process.env.IRC_OSU_ID})`,
         fields: [
             {
-                name: "Your code is:",
-                value: targetVerification.code,
+                name: "Copy and paste this:",
+                value: `\`!verify ${targetVerification.code}\``,
             },
         ],
         thumbnail: {
