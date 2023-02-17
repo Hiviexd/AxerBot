@@ -134,9 +134,9 @@ function compareData(
 
         if (
             !referentStoredBeatmap &&
-            tracker.targetsArray.includes(MapperTrackerType.DisqualifiedBeatmap)
+            tracker.targetsArray.includes(MapperTrackerType.NewBeatmap)
         )
-            return sendNewBeatmapEmbed(currentBeatmap, tracker); // New beatmap\
+            sendNewBeatmapEmbed(currentBeatmap, tracker); // New beatmap\
 
         if (!referentStoredBeatmap) return;
 
@@ -151,7 +151,7 @@ function compareData(
                     MapperTrackerType.DisqualifiedBeatmap
                 )
             )
-                return SendBeatmapNominationResetEmbed(currentBeatmap, tracker);
+                SendBeatmapNominationResetEmbed(currentBeatmap, tracker);
 
             if (
                 currentBeatmap.nominations_summary.current == 2 &&
@@ -159,7 +159,7 @@ function compareData(
                     MapperTrackerType.QualifiedBeatmap
                 )
             )
-                return SendBeatmapQualifyEmbed(currentBeatmap, tracker);
+                SendBeatmapQualifyEmbed(currentBeatmap, tracker);
 
             if (
                 (currentBeatmap.nominations_summary.current || 0) == 0 &&
@@ -169,7 +169,7 @@ function compareData(
                     MapperTrackerType.DisqualifiedBeatmap
                 )
             )
-                return SendBeatmapDisqualifyEmbed(currentBeatmap, tracker);
+                SendBeatmapDisqualifyEmbed(currentBeatmap, tracker);
 
             if (
                 (currentBeatmap.nominations_summary.current || 0) == 1 &&
@@ -179,7 +179,7 @@ function compareData(
                     MapperTrackerType.BeatmapNomination
                 )
             )
-                return SendBeatmapNominationEmbed(currentBeatmap, tracker);
+                SendBeatmapNominationEmbed(currentBeatmap, tracker);
         }
 
         if (
@@ -192,7 +192,7 @@ function compareData(
                     referentStoredBeatmap.hype?.current &&
                 tracker.targetsArray.includes(MapperTrackerType.NewHype)
             )
-                return sendBeatmapHypeEmbed(currentBeatmap, tracker);
+                sendBeatmapHypeEmbed(currentBeatmap, tracker);
         }
 
         if (referentStoredBeatmap.status != currentBeatmap.status) {
@@ -202,13 +202,13 @@ function compareData(
                     MapperTrackerType.BeatmapGraveyard
                 )
             )
-                return sendBeatmapGraveyardEmbed(currentBeatmap, tracker);
+                sendBeatmapGraveyardEmbed(currentBeatmap, tracker);
 
             if (
                 currentBeatmap.status == "ranked" &&
                 tracker.targetsArray.includes(MapperTrackerType.RankedBeatmap)
             )
-                return sendBeatmapRankedEmbed(currentBeatmap, tracker);
+                sendBeatmapRankedEmbed(currentBeatmap, tracker);
 
             if (
                 currentBeatmap.status == "qualified" &&
@@ -216,20 +216,20 @@ function compareData(
                     MapperTrackerType.QualifiedBeatmap
                 )
             )
-                return SendBeatmapQualifyEmbed(currentBeatmap, tracker);
+                SendBeatmapQualifyEmbed(currentBeatmap, tracker);
 
             if (
                 currentBeatmap.status == "loved" &&
                 tracker.targetsArray.includes(MapperTrackerType.BeatmapLoved)
             )
-                return sendBeatmapLovedEmbed(currentBeatmap, tracker);
+                sendBeatmapLovedEmbed(currentBeatmap, tracker);
         } // Status change
 
         if (
             currentBeatmap.favorites > referentStoredBeatmap.favorites &&
             tracker.targetsArray.includes(MapperTrackerType.BeatmapFavorite)
         ) {
-            return sendBeatmapFavoriteEmbed(currentBeatmap, tracker);
+            sendBeatmapFavoriteEmbed(currentBeatmap, tracker);
         }
     });
 
