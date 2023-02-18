@@ -1,8 +1,8 @@
 import { PermissionFlagsBits } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import mappertrackerNewTracker from "./subcommands/newTracker";
-import mappertrackerListTracker from "./subcommands/listTracker";
-import mappertrackerRemoveTracker from "./subcommands/removeTracker";
+import mappertrackerNewTracker from "./subcommands/maptracker/newTracker";
+import mappertrackerListTracker from "./subcommands/maptracker/listTracker";
+import mappertrackerRemoveTracker from "./subcommands/maptracker/removeTracker";
 
 export enum MapperTrackerType {
     BeatmapFavorite = "favorite",

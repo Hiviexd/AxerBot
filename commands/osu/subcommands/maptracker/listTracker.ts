@@ -1,10 +1,10 @@
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
-import { tracks } from "../../../database";
-import { SlashCommandSubcommand } from "../../../models/commands/SlashCommandSubcommand";
-import colors from "../../../constants/colors";
-import osuApi from "../../../helpers/osu/fetcher/osuApi";
-import { MapperTrackerType } from "../../osu/mappertracker";
+import { tracks } from "../../../../database";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import colors from "../../../../constants/colors";
+import osuApi from "../../../../helpers/osu/fetcher/osuApi";
+import { MapperTrackerType } from "../../mappertracker";
 
 const mappertrackerListTracker = new SlashCommandSubcommand(
     "list",
