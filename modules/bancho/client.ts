@@ -17,7 +17,9 @@ export const bancho = new BanchoClient({
 
 bancho.on("PM", (pm) => {
     if (pm.user.ircUsername == process.env.IRC_USERNAME) return;
-    const args = pm.message.split(" ");
+    if (pm.content[0] != "!") return;
+
+    const args = pm.content.split(" ");
 
     const commandName = args.splice(0, 1)[0].slice(1);
 
