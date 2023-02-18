@@ -97,7 +97,7 @@ export default async (member: GuildMember) => {
         buttons.addComponents([
             new ButtonBuilder({
                 customId: `verification|${member.id}|${verification.data._id}`,
-                label: "Start verification",
+                label: "Send verification",
                 style: ButtonStyle.Success,
                 emoji: "982656610285527114",
             }),
