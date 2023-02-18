@@ -91,41 +91,31 @@ export default async (member: GuildMember) => {
         return;
     }
 
-    if (guild_db.verification.button) {
-        const buttons = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = new ActionRowBuilder<ButtonBuilder>();
 
-        buttons.addComponents([
-            new ButtonBuilder({
-                customId: `verification|${member.id}|${verification.data._id}`,
-                label: "Send verification",
-                style: ButtonStyle.Success,
-                emoji: "982656610285527114",
-            }),
-        ]);
+    buttons.addComponents([
+        new ButtonBuilder({
+            customId: `verification|${member.id}|${verification.data._id}`,
+            label: "Send verification",
+            style: ButtonStyle.Success,
+            emoji: "982656610285527114",
+        }),
+    ]);
 
-        verification_channel
-            .send({
-                content: parseMessagePlaceholderFromMember(
-                    guild_db.verification.message,
-                    member,
-                    guild_db
-                ),
-                components: [buttons],
-            })
-            .then(() => {
-                consoleLog(
-                    "Verification",
-                    `Sent verification to ${member.user.tag} in ${member.guild.name}`
-                );
-            })
-            .catch(console.error);
-    } else {
-        verification_channel.send({
+    verification_channel
+        .send({
             content: parseMessagePlaceholderFromMember(
                 guild_db.verification.message,
                 member,
                 guild_db
             ),
-        });
-    }
+            components: guild_db.verification.button ? [buttons] : [],
+        })
+        .then(() => {
+            consoleLog(
+                "Verification",
+                `Sent verification to ${member.user.tag} in ${member.guild.name}`
+            );
+        })
+        .catch(console.error);
 };
