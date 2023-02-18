@@ -11,8 +11,6 @@ export const bancho = new BanchoClient({
     password: process.env.IRC_PASSWORD || "",
     port: Number(process.env.IRC_PORT) || 6667,
     apiKey: process.env.OSU_API_KEY,
-    limiterTimespan: 10000,
-    limiterPrivate: 10000,
 });
 
 bancho.on("PM", (pm) => {
