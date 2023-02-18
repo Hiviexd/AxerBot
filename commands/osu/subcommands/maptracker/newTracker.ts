@@ -4,16 +4,16 @@ import {
     PermissionFlagsBits,
     StringSelectMenuBuilder,
 } from "discord.js";
-import { SlashCommandSubcommand } from "../../../models/commands/SlashCommandSubcommand";
-import osuApi from "../../../helpers/osu/fetcher/osuApi";
-import UserNotFound from "../../../responses/embeds/UserNotFound";
-import generateErrorEmbedWithTitle from "../../../helpers/text/embeds/generateErrorEmbedWithTitle";
-import { generateStepEmbedWithChoices } from "../../../helpers/commands/generateStepEmbedWithChoices";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import osuApi from "../../../../helpers/osu/fetcher/osuApi";
+import UserNotFound from "../../../../responses/embeds/UserNotFound";
+import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
+import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 import crypto from "crypto";
-import { tracks } from "../../../database";
-import generateSuccessEmbed from "../../../helpers/text/embeds/generateSuccessEmbed";
-import { MapperTrackerType } from "../../osu/mappertracker";
-import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed";
+import { tracks } from "../../../../database";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { MapperTrackerType } from "../../../osu/mappertracker";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 const mappertrackerNewTracker = new SlashCommandSubcommand(
     "new",

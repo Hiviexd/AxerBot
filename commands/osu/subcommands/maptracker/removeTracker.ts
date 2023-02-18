@@ -1,9 +1,9 @@
 import { PermissionFlagsBits } from "discord.js";
 
-import { tracks } from "../../../database";
-import generateSuccessEmbed from "../../../helpers/text/embeds/generateSuccessEmbed";
-import { SlashCommandSubcommand } from "../../../models/commands/SlashCommandSubcommand";
-import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed";
+import { tracks } from "../../../../database";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
 const mappertrackerRemoveTracker = new SlashCommandSubcommand(
     "remove",
