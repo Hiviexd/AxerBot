@@ -69,7 +69,7 @@ export async function sendBeatmapRankedEmbed(
     const beatmapPageButton = new ButtonBuilder()
         .setLabel("Beatmap page")
         .setStyle(ButtonStyle.Link)
-        .setURL(`https://a.ppy.sh/${beatmapset.data.user_id}`);
+        .setURL(url);
 
     buttonsActionRow.addComponents(beatmapPageButton);
 
