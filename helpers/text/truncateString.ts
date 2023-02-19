@@ -1,7 +1,10 @@
-export default (string: string, size: number) => {
-	if (string.length <= size) return string;
+export default (string: string, size: number, ellipsis?: boolean) => {
+    if (string.length <= size) return string;
 
-	return (
-		string.slice(0, size - "... **[truncated]**".length) + "... **[truncated]**"
-	);
+    if (ellipsis) return string.slice(0, size - "...".length) + "...";
+
+    return (
+        string.slice(0, size - "... **[truncated]**".length) +
+        "... **[truncated]**"
+    );
 };
