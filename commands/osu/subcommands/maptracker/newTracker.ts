@@ -137,6 +137,7 @@ mappertrackerNewTracker.setExecuteFunction(async (command) => {
         })
         .catch((e) => {
             return command.editReply({
+                content: "",
                 embeds: [
                     generateErrorEmbed(
                         "Don't leave me waiting here! Please, do your things during the correct time."
@@ -158,6 +159,7 @@ mappertrackerNewTracker.setExecuteFunction(async (command) => {
         });
 
         command.editReply({
+            content: "",
             embeds: [generateSuccessEmbed("Tracker created!")],
         });
     }
