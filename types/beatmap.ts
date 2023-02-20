@@ -21,7 +21,7 @@ export interface Covers {
  * https://osu.ppy.sh/docs/index.html#beatmapsetcompact
  */
 
-export interface SearchResponse {
+export interface BeatmapsetSearchResponse {
     beatmapsets: Beatmapset[];
     search: {
         sort: "relevance_desc";
