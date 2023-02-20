@@ -134,17 +134,11 @@ searchBeatmap.builder
 
 searchBeatmap.setExecuteFunction(async (command) => {
     const query = command.options.getString("query", true);
-    const starRating = command.options.getString("star_rating") || "";
+    let starRating = command.options.getString("star_rating") || "";
     const genre = command.options.getString("genre") || "";
     const mode = command.options.getString("mode") || "";
     const status = command.options.getString("status") || "";
     const language = command.options.getString("language") || "";
-
-    if (
-        starRating.split("<").length == 3 ||
-        starRating.split(">").length == 3
-    ) {
-    }
 
     if (starRating && ![">", "<"].includes(starRating[0]))
         return command.editReply({
@@ -180,7 +174,7 @@ searchBeatmap.setExecuteFunction(async (command) => {
     const embed = new EmbedBuilder()
         .setColor(colors.yellow)
         .setTitle(`🔎 Beatmap search results for "${query}"`)
-        .setDescription(truncateString(generateDescription(), 4096))
+        .setDescription(truncateString(generateDescription(), 4096, true))
         .setFooter({
             text: `Displaying ${beatmapsets.length} of ${searchData.data.total} results`,
         });
@@ -248,7 +242,9 @@ searchBeatmap.setExecuteFunction(async (command) => {
                 (m, i) =>
                     `**#${i + 1} |** [${m.artist} - ${m.title} by **${
                         m.creator
-                    }**](https://osu.ppy.sh/s/${m.id}) [${getModes(m)}]`
+                    }**](https://osu.ppy.sh/s/${m.id}) (${
+                        m.status
+                    }) [${getModes(m)}]`
             )
             .join("\n");
 
