@@ -188,9 +188,15 @@ searchBeatmap.setExecuteFunction(async (command) => {
         .addOptions(
             beatmapsets.map((m, i) => {
                 return {
-                    label: `#${i + 1} | ${m.artist} - ${m.title} by ${
-                        m.creator
-                    }`,
+                    label: truncateString(
+                        `#${i + 1} | ${truncateString(
+                            `${m.artist} - ${m.title}`,
+                            70,
+                            true
+                        )} by ${m.creator}`,
+                        100,
+                        true
+                    ),
                     value: m.id.toString(),
                 };
             })
