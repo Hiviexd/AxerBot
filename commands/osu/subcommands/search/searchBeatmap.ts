@@ -248,9 +248,7 @@ searchBeatmap.setExecuteFunction(async (command) => {
                 (m, i) =>
                     `**#${i + 1} |** [${m.artist} - ${m.title} by **${
                         m.creator
-                    }**](https://osu.ppy.sh/s/${m.id}) (${
-                        m.status
-                    }) [${getModes(m)}]`
+                    }**](https://osu.ppy.sh/s/${m.id}) [${getModes(m)}]`
             )
             .join("\n");
 
