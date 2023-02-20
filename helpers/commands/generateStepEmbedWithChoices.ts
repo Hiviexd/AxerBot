@@ -21,19 +21,22 @@ export async function generateStepEmbedWithChoices(
     command: CommandInteraction,
     title: string,
     description: string,
-    selectMenu: StringSelectMenuBuilder
+    selectMenu: StringSelectMenuBuilder,
+    _embed?: EmbedBuilder
 ) {
     const promise: Promise<IStepWithMenuPromise> = new Promise(
         (resolve, reject) => {
             const handshakeId = crypto.randomUUID();
 
-            const embed = new EmbedBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setColor(colors.yellow)
-                .setFooter({
-                    text: "You have 1 minute to choose!",
-                });
+            const embed =
+                _embed ??
+                new EmbedBuilder()
+                    .setTitle(title)
+                    .setDescription(description)
+                    .setColor(colors.yellow)
+                    .setFooter({
+                        text: "You have 1 minute to choose!",
+                    });
 
             const collector = new InteractionCollector(command.client, {
                 channel: command.channel as TextBasedChannel,

@@ -269,7 +269,7 @@ export default {
                 }
 
                 if (value.toString().split(".").length != 0)
-                    return value.toFixed(2);
+                    return value.toFixed(0);
 
                 return value;
             }
@@ -399,6 +399,7 @@ export default {
 
                 msg.edit({
                     embeds: [embed],
+                    content: "",
                     components: [
                         staticButtonsRow,
                         modsSelector,
@@ -472,6 +473,7 @@ export default {
         if ((target as ChatInputCommandInteraction).commandId) {
             (target as ChatInputCommandInteraction).editReply({
                 embeds: [embed],
+                content: "",
                 components: [staticButtonsRow, modsSelector, embedButtonsRow],
                 allowedMentions: {
                     repliedUser: false,
@@ -480,6 +482,7 @@ export default {
         } else {
             target.reply({
                 embeds: [embed],
+                content: "",
                 components: [staticButtonsRow, modsSelector, embedButtonsRow],
                 allowedMentions: {
                     repliedUser: false,

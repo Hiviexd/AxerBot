@@ -41,6 +41,7 @@ import bntracker from "./BNsite/bntracker";
 import bn from "./BNsite/bn";
 import openbns from "./BNsite/openbns";
 import map from "./osu/map";
+import search from "./osu/search";
 
 export const AxerCommands = [
     // ? General
@@ -81,6 +82,7 @@ export const AxerCommands = [
     mapsetrank,
     mapper,
     map,
+    search,
 
     // ? bnsite
     bn,

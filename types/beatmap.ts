@@ -21,6 +21,18 @@ export interface Covers {
  * https://osu.ppy.sh/docs/index.html#beatmapsetcompact
  */
 
+export interface SearchResponse {
+    beatmapsets: Beatmapset[];
+    search: {
+        sort: "relevance_desc";
+    };
+    recommended_difficulty?: number;
+    error?: string;
+    total: number;
+    cursor: null;
+    cursor_string?: string;
+}
+
 export type BeatmapNominations = {
     current: number;
     required: number;

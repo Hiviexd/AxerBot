@@ -9,6 +9,7 @@ import {
     BeatmapsetDiscussionVoteResponse,
     BeatmapsetDiscussion,
     Beatmap,
+    BeatmapsetSearchResponse,
 } from "../../../types/beatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 import {
@@ -17,6 +18,11 @@ import {
     OsuOfficialDownloader,
 } from "./downloader/beatmap";
 import { IHTTPResponse } from "../../../types/http";
+import {
+    BeatmapGenre,
+    BeatmapLanguage,
+} from "../../../commands/osu/subcommands/search/searchBeatmap";
+import { HTTPResponse } from "../../../types/qat";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {
@@ -71,6 +77,58 @@ export async function beatmapset(
         const res = req.data;
 
         consoleCheck("beatmap fetcher", `Beatmapset ${beatmapset_id} found!`);
+
+        return {
+            status: 200,
+            data: res,
+        };
+    } catch (e: any) {
+        consoleError("beatmap fetcher", "Wtf an error:");
+        console.error(e);
+
+        return {
+            status: 500,
+            data: e,
+        };
+    }
+}
+
+export async function searchBeatmapset(
+    query: string,
+    mode?: string,
+    status?: string,
+    stars?: string,
+    genre?: BeatmapGenre,
+    language?: BeatmapLanguage
+): Promise<HTTPResponse<BeatmapsetSearchResponse>> {
+    try {
+        consoleLog("beatmap fetcher", `Searching beatmapsets "${query}"`);
+
+        const url = new URL("https://osu.ppy.sh/api/v2/beatmapsets/search");
+
+        url.searchParams.set("g", genre || "");
+        url.searchParams.set("l", language || "");
+        url.searchParams.set("s", status || "");
+        url.searchParams.set("m", mode || "");
+
+        if (stars) {
+            url.searchParams.set("query", `${query} stars${stars}`);
+        } else {
+            url.searchParams.set("query", `${query}`);
+        }
+
+        const req = await axios(url.href, {
+            headers: {
+                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+            },
+        });
+
+        const res = req.data;
+
+        consoleCheck(
+            "beatmap fetcher",
+            `Searching beatmapsets "${query}" results found!`
+        );
 
         return {
             status: 200,
