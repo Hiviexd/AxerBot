@@ -132,6 +132,7 @@ export default {
             Number(user.data.loved_beatmapset_count) +
             Number(user.data.pending_beatmapset_count) +
             Number(user.data.graveyard_beatmapset_count);
+        const devs = ["15821708", "14102976"];
 
         const mostOldBeatmap = await fetchOldestBeatmap();
 
@@ -166,11 +167,23 @@ export default {
             return maps[0];
         }
 
+        function getTitle() {
+            if (!user.data.title) return undefined;
+
+            if (user.data.title) return `*${user.data.title}*`;
+
+            if (user.data.title && devs.includes(user.data.id.toString()))
+                return `*${user.data.title} / AxerBot Developer*`;
+
+            if (devs.includes(user.data.id.toString()))
+                return `AxerBot Developer`;
+        }
+
         let e = new EmbedBuilder({
             thumbnail: {
                 url: `https://a.ppy.sh/${user.data.id}`,
             },
-            description: user.data.title ? `*${user.data.title}*` : undefined,
+            description: getTitle(),
             fields: [
                 {
                     name: "Mapping for",
