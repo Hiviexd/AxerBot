@@ -118,21 +118,21 @@ resizebg.setExecuteFunction(async (command) => {
         },
         medium: {
             blur: 10,
-            x: -15,
-            y: -15,
+            x: -10,
+            y: -10,
             size: 1.05,
         },
         big: {
             blur: 15,
-            x: -35,
-            y: -35,
+            x: -20,
+            y: -20,
             size: 1.1,
         },
     };
 
     if (!attachment.width || !attachment.height) return;
 
-    if (attachment.width > 1920 || attachment.height > 1080)
+    if (attachment.width > 1920 || attachment.height > 1920)
         return command.editReply({
             embeds: [generateErrorEmbed("Max image size is `1920x1080`")],
         });
