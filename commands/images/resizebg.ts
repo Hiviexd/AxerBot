@@ -95,12 +95,16 @@ resizebg.setExecuteFunction(async (command) => {
     const attachment = command.options.getAttachment("base", true);
     const shadowSettings = command.options.getString("shadow_size", true);
     const percentage = Number(command.options.getString("base_size", true));
-    const backgroundBrightness =
-        command.options.getInteger("background_brightness", true) / 100;
+    let backgroundBrightness =
+        1 - command.options.getInteger("background_brightness", true) / 100;
+
     const sizing = command.options
         .getString("output_size", true)
         .split(",")
         .map((s) => Number(s));
+
+    if (command.options.getInteger("background_brightness", true) == 100)
+        backgroundBrightness = 1;
 
     const shadowPresets: {
         [key: string]: {
