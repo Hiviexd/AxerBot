@@ -168,15 +168,15 @@ export default {
         }
 
         function getTitle() {
-            if (!user.data.title) return undefined;
-
-            if (user.data.title) return `*${user.data.title}*`;
-
             if (user.data.title && devs.includes(user.data.id.toString()))
                 return `*${user.data.title} / AxerBot Developer*`;
 
+            if (user.data.title) return `*${user.data.title}*`;
+
             if (devs.includes(user.data.id.toString()))
                 return `AxerBot Developer`;
+
+            if (!user.data.title) return undefined;
         }
 
         let e = new EmbedBuilder({
