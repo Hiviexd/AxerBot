@@ -33,9 +33,9 @@ export async function SendBeatmapNominationEmbed(
             (n) =>
                 (n.type == "nominate" &&
                     n.userId ==
-                        beatmapset.data.current_nominations[1].user_id) ||
+                        beatmapset.data.current_nominations[0].user_id) ||
                 (n.type == "nominate" &&
-                    n.userId == beatmapset.data.current_nominations[0].user_id)
+                    n.userId == beatmapset.data.current_nominations[1].user_id)
         );
 
     const nomUser = await fetchNominator(
