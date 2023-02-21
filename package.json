@@ -4,6 +4,7 @@
 	"description": "general-purpose bot that doubles down as a retard",
 	"main": "index.ts",
 	"dependencies": {
+		"@jimp/plugin-shadow": "^0.22.4",
 		"@kionell/osu-pp-calculator": "^3.2.9",
 		"@types/express": "^4.17.13",
 		"@types/moment": "^2.13.0",
