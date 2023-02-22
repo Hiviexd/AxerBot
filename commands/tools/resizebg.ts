@@ -7,7 +7,7 @@ import { AttachmentBuilder } from "discord.js";
 export const resizebg = new SlashCommand(
     "resizebg",
     "Transform a square image to a 16:9 image",
-    "images",
+    "Tools",
     true
 );
 
@@ -83,7 +83,7 @@ resizebg.builder
         o
             .setName("background_brightness")
             .setDescription(
-                "Overlay image shadow size  (use negative values to darker background)"
+                "Overlay image shadow size (use negative values to darker background)"
             )
             .setMinValue(0)
             .setMaxValue(100)

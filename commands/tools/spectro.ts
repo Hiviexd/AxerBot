@@ -5,13 +5,14 @@ import crypto from "crypto";
 import axios from "axios";
 import ffmpeg from "fluent-ffmpeg";
 import { readFileSync, unlinkSync } from "fs";
-import { AttachmentBuilder } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import colors from "../../constants/colors";
 
 const spectrum = new SlashCommand(
     "spectro",
-    "Generate mp3 frequency spectrum graph",
-    "osu!",
+    "Generate a frequency spectrogram from an audio file.",
+    "Tools",
     true
 );
 
@@ -31,7 +32,7 @@ spectrum.setExecuteFunction(async (command) => {
                 generateErrorEmbed(
                     `Invalid audio type! Audio type must be ${mimes
                         .map((m) => `\`${m}\``)
-                        .join(",")}`
+                        .join(", ")}`
                 ),
             ],
         });
@@ -45,11 +46,15 @@ spectrum.setExecuteFunction(async (command) => {
         responseType: "stream",
     });
 
+    const progressEmbed = new EmbedBuilder()
+        .setDescription("Generating spectro, this can take a while...")
+        .setColor(colors.yellowBright);
+
     command.editReply({
-        content: "Generating spectro, this can take a while...",
+        embeds: [progressEmbed],
     });
 
-    let bitrate = "?? kb/s";
+    let bitrate = "?? kbps";
 
     try {
         const f = ffmpeg(audioFile.data);
@@ -86,9 +91,15 @@ spectrum.setExecuteFunction(async (command) => {
                         name: "image.jpg",
                     });
 
+                    const successEmbed = new EmbedBuilder()
+                        .setDescription(
+                            `Spectro for \`${audioFileData.name}\` generated!`
+                        )
+                        .setColor(colors.green);
+
                     command
                         .editReply({
-                            content: `Spectro for \`${audioFileData.name}\` generated!`,
+                            embeds: [successEmbed],
                             files: [attachment],
                         })
                         .then(() => {
@@ -110,7 +121,7 @@ spectrum.setExecuteFunction(async (command) => {
     } catch (e) {
         console.error(e);
         return command.editReply({
-            embeds: [generateErrorEmbed("Something went wrong! Sorry.")],
+            embeds: [generateErrorEmbed("Something went wrong! Try again.")],
         });
     }
 });
