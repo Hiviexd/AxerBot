@@ -30,7 +30,13 @@ export const bot = new Client({
 });
 
 keepAlive();
+
+// ? create missing folders
 if (!fs.existsSync("./cache")) fs.mkdirSync("./cache");
+if (!fs.existsSync("./temp/spectro/audio"))
+    fs.mkdirSync("./temp/spectro/audio", { recursive: true });
+if (!fs.existsSync("./temp/spectro/images"))
+    fs.mkdirSync("./temp/spectro/images", { recursive: true });
 
 bot.login(token).then(() => {
     connectToBancho();
