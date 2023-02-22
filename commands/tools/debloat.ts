@@ -2,7 +2,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 import path from "path";
 import ffmpeg from "fluent-ffmpeg";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-import { unlinkSync, readFileSync } from "fs";
+import { unlinkSync, readFileSync, mkdirSync, existsSync } from "fs";
 import crypto from "crypto";
 import { AttachmentBuilder, EmbedBuilder } from "discord.js";
 import axios from "axios";
@@ -90,6 +90,9 @@ debloat.setExecuteFunction(async (command) => {
         embeds: [progressEmbed],
     });
 
+    if (!existsSync(path.resolve(`./temp/debloater/`)))
+        mkdirSync(path.resolve(`./temp/debloater/`));
+
     try {
         const audioFile = await axios(attachment.url, {
             responseType: "stream",
@@ -102,7 +105,9 @@ debloat.setExecuteFunction(async (command) => {
         if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
-        f.audioBitrate(bitRate).saveToFile(`./temp/debloater/${filename}`);
+        f.audioBitrate(bitRate).saveToFile(
+            path.resolve(`./temp/debloater/${filename}`)
+        );
 
         f.on("end", () => {
             if (!attachment.contentType) return;
@@ -121,7 +126,7 @@ debloat.setExecuteFunction(async (command) => {
                     files: [result],
                 })
                 .then(() => {
-                    unlinkSync(`./temp/debloater/${filename}`);
+                    unlinkSync(path.resolve(`./temp/debloater/${filename}`));
                 });
         });
     } catch (e) {
