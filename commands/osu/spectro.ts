@@ -26,8 +26,6 @@ spectrum.setExecuteFunction(async (command) => {
 
     const mimes = ["audio/ogg", "audio/wav", "audio/x-wav", "audio/mpeg"];
 
-    console.log(audioFileData.contentType);
-
     if (!mimes.includes(audioFileData.contentType || ""))
         return command.editReply({
             embeds: [
