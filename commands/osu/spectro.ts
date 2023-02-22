@@ -57,7 +57,7 @@ spectrum.setExecuteFunction(async (command) => {
                         path.resolve(`./temp/spectro/images/${fileId}.png`)
                     );
                     const chart = await loadImage(image);
-                    ctx.drawImage(chart, 100, 0, 840, 480, -25, -30, 840, 480);
+                    ctx.drawImage(chart, 100, 0, 840, 480, 0, -30, 840, 480);
 
                     const attachment = new AttachmentBuilder(
                         canvas.toBuffer(),
