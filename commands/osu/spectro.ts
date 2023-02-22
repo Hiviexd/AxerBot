@@ -51,7 +51,7 @@ spectrum.setExecuteFunction(async (command) => {
                 ]);
 
                 pythonProcess.on("exit", async () => {
-                    const canvas = createCanvas(600, 440);
+                    const canvas = createCanvas(620, 440);
                     const ctx = canvas.getContext("2d");
                     const image = readFileSync(
                         path.resolve(`./temp/spectro/images/${fileId}.png`)
