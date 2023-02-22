@@ -7,8 +7,8 @@ import {
 import { BanchoCommands } from "./commands";
 
 export const bancho = new BanchoClient({
-    username: process.env.IRC_USERNAME || "",
-    password: process.env.IRC_PASSWORD || "",
+    username: process.env.IRC_USERNAME || "eae",
+    password: process.env.IRC_PASSWORD || "eae",
     port: Number(process.env.IRC_PORT) || 6667,
     apiKey: process.env.OSU_API_KEY,
 });

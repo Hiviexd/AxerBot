@@ -80,8 +80,6 @@ spectrum.setExecuteFunction(async (command) => {
                     bitrate,
                 ]);
 
-                console.log(d);
-
                 pythonProcess.on("exit", async () => {
                     const image = readFileSync(
                         path.resolve(`./temp/spectro/images/${fileId}.png`)
@@ -95,6 +93,8 @@ spectrum.setExecuteFunction(async (command) => {
                         .setDescription(
                             `Spectro for \`${audioFileData.name}\` generated!`
                         )
+                        .setTitle("✅ Spectro")
+                        .setImage("attachment://image.jpg")
                         .setColor(colors.green);
 
                     command
@@ -114,7 +114,7 @@ spectrum.setExecuteFunction(async (command) => {
                                         `./temp/spectro/audio/${fileId}.wav`
                                     )
                                 );
-                            }, 30000);
+                            }, 10000);
                         });
                 });
             });

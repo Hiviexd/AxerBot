@@ -46,6 +46,7 @@ import search from "./osu/search";
 //? tools
 import { resizebg } from "./tools/resizebg";
 import spectro from "./tools/spectro";
+import debloat from "./tools/debloat";
 
 export const AxerCommands = [
     // ? General
@@ -96,4 +97,5 @@ export const AxerCommands = [
     // ? tools
     resizebg,
     spectro,
+    debloat,
 ];
