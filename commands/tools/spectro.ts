@@ -90,12 +90,12 @@ spectrum.setExecuteFunction(async (command) => {
                     });
 
                     const successEmbed = new EmbedBuilder()
+                        .setTitle("📉 Spectro")
                         .setDescription(
                             `Spectro for \`${audioFileData.name}\` generated!`
                         )
-                        .setTitle("✅ Spectro")
                         .setImage("attachment://image.jpg")
-                        .setColor(colors.green);
+                        .setColor(colors.blue);
 
                     command
                         .editReply({

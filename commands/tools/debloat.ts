@@ -10,8 +10,8 @@ import colors from "../../constants/colors";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 
 const debloat = new SlashCommand(
-    "debloat",
-    "Re-encode audio file to another bit-rate",
+    ["debloat", "reencode"],
+    "Re-encode an mp3 with a different bitrate",
     "Tools",
     true
 );
@@ -20,29 +20,29 @@ debloat.builder
     .addAttachmentOption((o) =>
         o
             .setName("audio")
-            .setDescription("Audio file to de-bloat")
+            .setDescription("Audio file to re-encode")
             .setRequired(true)
     )
     .addStringOption((o) =>
         o
-            .setName("bit_rate")
-            .setDescription("Output bitrate")
+            .setName("target_bitrate")
+            .setDescription("Target bitrate")
             .setRequired(true)
             .addChoices(
                 {
-                    name: "192Kbps",
+                    name: "192kbps",
                     value: "192k",
                 },
                 {
-                    name: "160Kbps",
+                    name: "160kbps",
                     value: "160k",
                 },
                 {
-                    name: "144Kbps",
+                    name: "144kbps",
                     value: "144k",
                 },
                 {
-                    name: "128Kbps",
+                    name: "128kbps",
                     value: "128k",
                 }
             )
@@ -50,16 +50,13 @@ debloat.builder
 
 debloat.setExecuteFunction(async (command) => {
     const attachment = command.options.getAttachment("audio", true);
-    const bitRate = command.options.getString("bit_rate", true);
+    const bitrate = command.options.getString("target_bitrate", true);
 
     if (!attachment.attachment) return;
 
-    const mimes = ["audio/ogg", "audio/wav", "audio/x-wav", "audio/mpeg"];
+    const mimes = ["audio/mpeg"];
 
     const mimeNames: { [key: string]: string } = {
-        "audio/ogg": "ogg",
-        "audio/wav": "wav",
-        "audio/x-wav": "wav",
         "audio/mpeg": "mp3",
     };
 
@@ -70,9 +67,7 @@ debloat.setExecuteFunction(async (command) => {
         return command.editReply({
             embeds: [
                 generateErrorEmbed(
-                    `Invalid audio type! Audio type must be ${mimes
-                        .map((m) => `\`${m}\``)
-                        .join(", ")}`
+                    `Invalid audio type! Audio type must be \`mp3\``
                 ),
             ],
         });
@@ -83,7 +78,7 @@ debloat.setExecuteFunction(async (command) => {
         });
 
     const progressEmbed = new EmbedBuilder()
-        .setDescription("De-bloating audio... This can take a while...")
+        .setDescription("Re-encoding audio... This can take a while...")
         .setColor(colors.yellowBright);
 
     command.editReply({
@@ -105,7 +100,7 @@ debloat.setExecuteFunction(async (command) => {
         if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
-        f.audioBitrate(bitRate).saveToFile(
+        f.audioBitrate(bitrate).saveToFile(
             path.resolve(`./temp/debloater/${filename}`)
         );
 
@@ -117,12 +112,16 @@ debloat.setExecuteFunction(async (command) => {
             );
 
             const result = new AttachmentBuilder(file, {
-                name: `debloated_${attachment.name}`,
+                name: `${attachment.name}`,
             });
 
             command
                 .editReply({
-                    embeds: [generateSuccessEmbed("Audio de-bloated!")],
+                    embeds: [
+                        generateSuccessEmbed(
+                            `Audio re-encoded to \`${bitrate}bps\`!`
+                        ),
+                    ],
                     files: [result],
                 })
                 .then(() => {
