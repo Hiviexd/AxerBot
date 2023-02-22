@@ -35,7 +35,7 @@ spectrum.setExecuteFunction(async (command) => {
     try {
         const f = ffmpeg(audioFile.data);
 
-        if (process.env.OS == "win32") {
+        if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
         f.toFormat("wav")
@@ -51,13 +51,13 @@ spectrum.setExecuteFunction(async (command) => {
                 ]);
 
                 pythonProcess.on("exit", async () => {
-                    const canvas = createCanvas(580, 440);
+                    const canvas = createCanvas(600, 440);
                     const ctx = canvas.getContext("2d");
                     const image = readFileSync(
                         path.resolve(`./temp/spectro/images/${fileId}.png`)
                     );
                     const chart = await loadImage(image);
-                    ctx.drawImage(chart, 100, 0, 840, 480, -45, -30, 840, 480);
+                    ctx.drawImage(chart, 100, 0, 840, 480, -25, -30, 840, 480);
 
                     const attachment = new AttachmentBuilder(
                         canvas.toBuffer(),
