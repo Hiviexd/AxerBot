@@ -6,7 +6,6 @@ import axios from "axios";
 import ffmpeg from "fluent-ffmpeg";
 import { readFileSync, unlinkSync } from "fs";
 import { AttachmentBuilder } from "discord.js";
-import { createCanvas, loadImage } from "canvas";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 const spectrum = new SlashCommand(
@@ -50,23 +49,33 @@ spectrum.setExecuteFunction(async (command) => {
         content: "Generating spectro, this can take a while...",
     });
 
+    let bitrate = "?? kb/s";
+
     try {
         const f = ffmpeg(audioFile.data);
 
         if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
-        f.toFormat("wav")
+
+        f.toFormat("wav");
+
+        f.on("codecData", function (codecinfo) {
+            bitrate = codecinfo.audio_details[4];
+        })
 
             .save(`./temp/spectro/audio/${fileId}.wav`)
             .on("error", (err) => {
                 console.log("An error occurred: " + err.message);
             })
-            .on("end", () => {
+            .on("end", (d) => {
                 const pythonProcess = spawn("python3", [
                     "./helpers/audio/spectrogram.py",
                     `${fileId}.wav`,
+                    bitrate,
                 ]);
+
+                console.log(d);
 
                 pythonProcess.on("exit", async () => {
                     const image = readFileSync(

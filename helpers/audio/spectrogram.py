@@ -1,4 +1,3 @@
-import spectro
 import sys
 import os
 import pathlib
@@ -10,11 +9,10 @@ from mutagen.mp3 import MP3
 from pydub import AudioSegment
 from rich.console import Console
 from scipy import signal
-import io
-import base64
 
 flname = sys.argv[1]
 path = os.path.abspath(os.path.join("temp/spectro/audio/", flname))
+bitrate = sys.argv[2]
 imgname = flname.replace(".wav", ".png")
 
 
@@ -27,6 +25,9 @@ def show(
     outfile: Optional[str] = None,
 ):
     track = AudioSegment.from_file(filename)
+
+    # print(audioParams)
+    # bitrate = audio.getframerate() *
 
     assert track.channels is not None
     out = numpy.array(track.get_array_of_samples()).reshape(-1, track.channels)
@@ -68,7 +69,7 @@ def show(
             norm=colors.LogNorm(vmin=min_freq, vmax=Sxx.max()),
             shading="auto",
         )
-        plt.title(f"Channel {k + 1}")
+        plt.title(f"Channel {k + 1} | {track.frame_rate} Hz | {bitrate}")
         if k == 0:
             plt.ylabel("Frequency [Hz]")
         plt.xlabel("Time [sec]")
