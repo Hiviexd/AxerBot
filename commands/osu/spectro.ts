@@ -24,6 +24,19 @@ spectrum.setExecuteFunction(async (command) => {
     const audioFileData = command.options.getAttachment("audio", true);
     const fileId = crypto.randomBytes(10).toString("hex");
 
+    const mimes = ["audio/ogg", "audio/wav", "audio/mp3"];
+
+    if (!mimes.includes(audioFileData.contentType || ""))
+        return command.editReply({
+            embeds: [
+                generateErrorEmbed(
+                    `Invalid audio type! Audio type must be ${mimes
+                        .map((m) => `\`${m}\``)
+                        .join(",")}`
+                ),
+            ],
+        });
+
     const audioFile = await axios(audioFileData.url, {
         responseType: "stream",
     });
