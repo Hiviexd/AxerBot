@@ -26,6 +26,11 @@ spectrum.setExecuteFunction(async (command) => {
 
     const mimes = ["audio/ogg", "audio/wav", "audio/mpeg"];
 
+    if (audioFileData.size > 10000)
+        return command.editReply({
+            embeds: [generateErrorEmbed(`Max file size must be 10mb!`)],
+        });
+
     if (!mimes.includes(audioFileData.contentType || ""))
         return command.editReply({
             embeds: [
