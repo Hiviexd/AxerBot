@@ -1,5 +1,3 @@
-//TODO: add the ability to remove your latest reminder and clear all of your reminders
-
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import listReminders from "./subcommands/reminder/listReminders";
 import createReminder from "./subcommands/reminder/createReminder";
