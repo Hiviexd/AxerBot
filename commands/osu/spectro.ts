@@ -26,11 +26,6 @@ spectrum.setExecuteFunction(async (command) => {
 
     const mimes = ["audio/ogg", "audio/wav", "audio/mpeg"];
 
-    if (audioFileData.size > 1e+7)
-        return command.editReply({
-            embeds: [generateErrorEmbed(`Max file size must be 10mb or less!`)],
-        });
-
     if (!mimes.includes(audioFileData.contentType || ""))
         return command.editReply({
             embeds: [
@@ -40,6 +35,11 @@ spectrum.setExecuteFunction(async (command) => {
                         .join(",")}`
                 ),
             ],
+        });
+
+    if (audioFileData.size > 1e7)
+        return command.editReply({
+            embeds: [generateErrorEmbed(`Max file size must be 10mb or less!`)],
         });
 
     const audioFile = await axios(audioFileData.url, {
