@@ -45,7 +45,7 @@ spectrum.setExecuteFunction(async (command) => {
                 console.log("An error occurred: " + err.message);
             })
             .on("end", () => {
-                const pythonProcess = spawn("python", [
+                const pythonProcess = spawn("python3", [
                     "./helpers/audio/spectrogram.py",
                     `${fileId}.wav`,
                 ]);
