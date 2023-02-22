@@ -24,7 +24,9 @@ spectrum.setExecuteFunction(async (command) => {
     const audioFileData = command.options.getAttachment("audio", true);
     const fileId = crypto.randomBytes(10).toString("hex");
 
-    const mimes = ["audio/ogg", "audio/wav", "audio/mpeg"];
+    const mimes = ["audio/ogg", "audio/wav", "audio/x-wav", "audio/mpeg"];
+
+    console.log(audioFileData.contentType);
 
     if (!mimes.includes(audioFileData.contentType || ""))
         return command.editReply({
