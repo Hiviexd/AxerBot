@@ -28,7 +28,8 @@ const verificationSetMessage = new SlashCommandSubcommand(
         placeholders: "`{member}` - a ping of the member that will be verified",
         "example message": "Hello {member} and welcome to this server!",
     },
-    [PermissionFlagsBits.ManageGuild]
+    [PermissionFlagsBits.ManageGuild],
+    true
 );
 
 verificationSetMessage.setExecuteFunction(async (command) => {

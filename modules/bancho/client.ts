@@ -38,7 +38,10 @@ export function connectToBancho() {
     bancho
         .connect()
         .then((bancho) => {
-            consoleCheck("BanchoClient", "Connected to bancho!");
+            consoleCheck(
+                "BanchoClient",
+                `Connected to bancho as ${process.env.IRC_USERNAME}!`
+            );
         })
         .catch((e) => {
             consoleError("BanchoClient", `${e}`);

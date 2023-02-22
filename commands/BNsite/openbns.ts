@@ -6,7 +6,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const openbns = new SlashCommand(
     "openbns",
     "Displays a list of currently open BNs/NATs based on data from the BN website",
-    "BNSite",
+    "BN website",
     true
 );
 

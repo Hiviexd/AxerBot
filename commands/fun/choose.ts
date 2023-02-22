@@ -6,7 +6,7 @@ const choose = new SlashCommand(
     "Fun",
     true,
     {
-        syntax: "/choose `options:Banana or Cookie`",
+        syntax: "/choose `options:banana or cookies`",
     }
 );
 
@@ -15,8 +15,9 @@ choose.builder.addStringOption((o) =>
 );
 
 choose.setExecuteFunction(async (command) => {
-    const choices = command.options.getString("options", true);
-    const choicesString = choices.split(" or ");
+    const choicesString = command.options.getString("options", true);
+
+    const choices = choicesString.split(" or ");
 
     const randomChoice = choices[Math.floor(Math.random() * choices.length)];
 

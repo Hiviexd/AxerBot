@@ -10,7 +10,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 const bn = new SlashCommand(
     ["bn", "nat"],
     "Displays nominator data of a BN/NAT from the last 90 days",
-    "BNSite",
+    "BN website",
     true,
     {
         note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",

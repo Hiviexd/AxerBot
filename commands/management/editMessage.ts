@@ -120,7 +120,7 @@ editMessage.setExecuteFunction(async (command) => {
                     interaction.followUp({
                         embeds: [
                             generateSuccessEmbed(
-                                "✅ Message edited successfully."
+                                "Message edited successfully."
                             ),
                         ],
                         ephemeral: true,
@@ -130,7 +130,7 @@ editMessage.setExecuteFunction(async (command) => {
             interaction.followUp({
                 embeds: [
                     generateErrorEmbed(
-                        "❗ Please specify a valid text channel/message ID."
+                        "Please specify a valid text channel/message ID."
                     ),
                 ],
                 ephemeral: true,

@@ -82,7 +82,7 @@ sendmessage.setExecuteFunction(async (command) => {
             await guild_channel.send(message).then(() => {
                 interaction.followUp({
                     embeds: [
-                        generateSuccessEmbed("✅ Message sent successfully."),
+                        generateSuccessEmbed("Message sent successfully."),
                     ],
                     ephemeral: true,
                 });
@@ -90,9 +90,7 @@ sendmessage.setExecuteFunction(async (command) => {
         } else {
             interaction.followUp({
                 embeds: [
-                    generateErrorEmbed(
-                        "❗ Please specify a valid text channel."
-                    ),
+                    generateErrorEmbed("Please specify a valid text channel."),
                 ],
                 ephemeral: true,
             });

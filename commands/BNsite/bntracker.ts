@@ -7,7 +7,7 @@ import info from "./subcommands/tracker/info";
 const bntracker = new SlashCommand(
     "bntracker",
     "Track nominators' request status from the BN website",
-    "BNSite",
+    "BN website",
     true,
     {
         syntax: "/bntrack <add|remove|status>",
