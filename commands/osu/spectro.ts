@@ -68,7 +68,7 @@ spectrum.setExecuteFunction(async (command) => {
 
                     command
                         .editReply({
-                            content: `${command.user} Spectro for \`${attachment.name}\` generated!`,
+                            content: `${command.user} Spectro for \`${audioFileData.name}\` generated!`,
                             files: [attachment],
                         })
                         .then(() => {
