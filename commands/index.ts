@@ -43,6 +43,7 @@ import openbns from "./BNsite/openbns";
 import map from "./osu/map";
 import search from "./osu/search";
 import { resizebg } from "./images/resizebg";
+import spectro from "./osu/spectro";
 
 export const AxerCommands = [
     // ? General
@@ -84,6 +85,7 @@ export const AxerCommands = [
     mapper,
     map,
     search,
+    spectro,
 
     // ? bnsite
     bn,

@@ -104,6 +104,9 @@ resizebg.setExecuteFunction(async (command) => {
         .map((s) => Number(s));
 
     if (command.options.getInteger("background_brightness", true) == 100)
+        backgroundBrightness = 0;
+
+    if (command.options.getInteger("background_brightness", true) == 0)
         backgroundBrightness = 1;
 
     const shadowPresets: {
