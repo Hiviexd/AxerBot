@@ -27,7 +27,7 @@ async function qatTracking(bot: Client) {
     const liveData = await qatApi.fetch.allUsers();
     const differentData: QatUser[] = [];
 
-    if (storedData.length == 0)
+    if (!storedData || storedData.length == 0)
         return writeFileSync(
             path.resolve(__dirname + "/../../cache/nominators.json"),
             JSON.stringify(liveData),
