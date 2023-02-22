@@ -10,6 +10,8 @@ from mutagen.mp3 import MP3
 from pydub import AudioSegment
 from rich.console import Console
 from scipy import signal
+import io
+import base64
 
 flname = sys.argv[1]
 path = os.path.abspath(os.path.join("temp/spectro/audio/", flname))
@@ -71,10 +73,7 @@ def show(
             plt.ylabel("Frequency [Hz]")
         plt.xlabel("Time [sec]")
         plt.colorbar()
-    if outfile is None:
-        plt.show()
-    else:
-        plt.savefig(outfile, transparent=True, bbox_inches="tight")
+        plt.savefig(outfile, transparent=False, bbox_inches="tight")
 
 
 def check(path, **kwargs):

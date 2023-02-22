@@ -69,22 +69,13 @@ spectrum.setExecuteFunction(async (command) => {
                 ]);
 
                 pythonProcess.on("exit", async () => {
-                    const canvas = createCanvas(650, 460);
-                    const ctx = canvas.getContext("2d");
                     const image = readFileSync(
                         path.resolve(`./temp/spectro/images/${fileId}.png`)
                     );
-                    const chart = await loadImage(image);
-                    ctx.fillStyle = "#313338";
-                    ctx.fillRect(0, 0, 650, 460);
-                    ctx.drawImage(chart, 93, 0, 850, 480, 0, -33, 840, 480);
 
-                    const attachment = new AttachmentBuilder(
-                        canvas.toBuffer(),
-                        {
-                            name: "image.jpg",
-                        }
-                    );
+                    const attachment = new AttachmentBuilder(image, {
+                        name: "image.jpg",
+                    });
 
                     command
                         .editReply({
