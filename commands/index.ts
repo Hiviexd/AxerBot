@@ -16,6 +16,7 @@ import minesweeper from "./fun/minesweeper";
 import fact from "./fun/fact";
 import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
+import rps from "./fun/rps";
 
 // ? Management
 import verificationCommand from "./management/verification";
@@ -67,6 +68,7 @@ export const AxerCommands = [
     fact,
     coinflip,
     choose,
+    rps,
 
     // ? Management
     verificationCommand,
