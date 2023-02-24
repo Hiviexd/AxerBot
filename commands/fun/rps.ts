@@ -122,7 +122,6 @@ rps.setExecuteFunction(async (command) => {
         embed.setDescription(`${abbreviation(opponent.username)} turn!`);
 
         command.editReply({
-            content: `<@${playerTurnId}>`,
             embeds: [embed],
         });
     }
@@ -146,6 +145,8 @@ rps.setExecuteFunction(async (command) => {
             scissors: 2,
         };
 
+        const emojis = ["🪨", "📄", "✂️"];
+
         if (user.choice == opponent.choice) return sendResult(`Tie!`);
 
         if (
@@ -154,12 +155,16 @@ rps.setExecuteFunction(async (command) => {
             3
         ) {
             return sendResult(
-                `<@${user.user}> Won with ${user.choice} vs ${opponent.choice}!`
+                `<@${user.user}> Won with ${emojis[values[user.choice]]} vs ${
+                    emojis[values[opponent.choice]]
+                }!`
             );
         }
 
         return sendResult(
-            `<@${opponent.user}> Won with ${opponent.choice} vs ${user.choice}!`
+            `<@${opponent.user}> Won with ${
+                emojis[values[opponent.choice]]
+            } vs ${emojis[values[user.choice]]}!`
         );
     }
 
@@ -168,7 +173,7 @@ rps.setExecuteFunction(async (command) => {
         embeds: [embed],
         components: [buttonsRow],
         allowedMentions: {
-            users: [opponent.id, command.user.id],
+            users: [opponent.id],
         },
     });
 });
