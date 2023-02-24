@@ -11,7 +11,6 @@ export default {
     execute(bot: Client) {
         bot.on("interactionCreate", async (interaction) => {
             //addPrivateRoles(interaction);
-
             if (interaction.isAutocomplete()) {
                 helpAutocomplete(interaction);
                 return;

@@ -53,7 +53,6 @@ export class SlashCommand {
 
         if (permissions) {
             this.permissions = permissions;
-            this.builder.setDMPermission(this.allowDM);
         }
 
         this.category = category;
@@ -61,6 +60,7 @@ export class SlashCommand {
         this.hasModal = hasModal || false;
 
         this.allowDM = allowDM;
+        this.builder.setDMPermission(this.allowDM);
     }
 
     setHelp(help: { [key: string | number]: string | string[] }) {
@@ -175,14 +175,19 @@ export class SlashCommand {
         if (!this.hasModal) await interaction.deferReply();
 
         if (
+            this.permissions.length != 0 &&
             !checkMemberPermissions(
                 interaction.member as GuildMember,
                 this.permissions
             )
         ) {
-            return interaction.reply({
-                embeds: [MissingPermissions],
-            });
+            return interaction.deferred
+                ? interaction.editReply({
+                      embeds: [MissingPermissions],
+                  })
+                : interaction.reply({
+                      embeds: [MissingPermissions],
+                  });
         }
 
         this._executeFunction(interaction);

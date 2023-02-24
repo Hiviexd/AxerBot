@@ -1,4 +1,5 @@
 import {
+    ChannelType,
     ChatInputCommandInteraction,
     Client,
     GuildMember,
@@ -7,6 +8,8 @@ import {
 } from "discord.js";
 
 import { AxerCommands } from "../../commands";
+import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
 export function checkMemberPermissions(
     member: GuildMember,
@@ -29,7 +32,7 @@ export default async function commandHandler(
     bot: Client,
     event: ChatInputCommandInteraction
 ) {
-    if (event.user.bot || !event.channel || !event.guild) return;
+    if (event.user.bot) return;
 
     const targetCommand = AxerCommands.find((c) =>
         c.names.includes(event.commandName)
@@ -37,18 +40,43 @@ export default async function commandHandler(
 
     if (!targetCommand) return console.log("0"); // Command not found error embed
 
-    if (!targetCommand.allowDM && event.channel.isDMBased())
-        return console.log("1"); // Command error message
+    if (!targetCommand.allowDM && !event.channel)
+        return event.reply({
+            embeds: [
+                generateErrorEmbed(
+                    "You need to run this command in a guild aaa!"
+                ),
+            ],
+        }); // Command error message
 
-    if (targetCommand.permissions && !event.member) return console.log("2"); // This command can't be executed here!
+    if (!targetCommand.allowDM && event.channel?.type == ChannelType.DM)
+        return event.reply({
+            embeds: [
+                generateErrorEmbed(
+                    "You need to run this command in a guild bbb!"
+                ),
+            ],
+        }); // Command error message
+
+    if (targetCommand.permissions.length != 0 && !event.member)
+        return event.reply({
+            embeds: [
+                generateErrorEmbed(
+                    "You need to run this command in a guild ccc!"
+                ),
+            ],
+        });
 
     if (
+        targetCommand.permissions.length != 0 &&
         !checkMemberPermissions(
             event.member as GuildMember,
             targetCommand.permissions
         )
     ) {
-        return;
+        return event.reply({
+            embeds: [MissingPermissions],
+        });
     }
 
     try {
