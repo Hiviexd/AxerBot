@@ -257,3 +257,9 @@ export type CountryCodes = {
     zm: "Zambia";
     zw: "Zimbabwe";
 };
+
+export interface IGuildFlagLeaderboard {
+    name: string;
+    id: string;
+    score: number;
+}

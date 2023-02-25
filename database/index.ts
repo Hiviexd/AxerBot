@@ -9,6 +9,7 @@ import heardle from "./schemas/heardle";
 import track from "./schemas/track";
 import addScoreEmbedConfiguration from "./migrations/addScoreEmbedConfiguration";
 import verification from "./schemas/verification";
+import addFlagsLeaderboard from "./migrations/addFlagsLeaderboard";
 
 consoleLog("database", "Starting database connection...");
 
@@ -27,6 +28,7 @@ mongoose.connect(
         // addBNsiteToCooldown();
         //addButtonToGuildVerification()
         //addScoreEmbedConfiguration();
+        //addFlagsLeaderboard();
     }
 );
 
