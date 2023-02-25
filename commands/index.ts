@@ -17,6 +17,7 @@ import fact from "./fun/fact";
 import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
 import rps from "./fun/rps";
+import guesstheflag from "./fun/gtf";
 
 // ? Management
 import verificationCommand from "./management/verification";
@@ -69,6 +70,7 @@ export const AxerCommands = [
     coinflip,
     choose,
     rps,
+    guesstheflag,
 
     // ? Management
     verificationCommand,
