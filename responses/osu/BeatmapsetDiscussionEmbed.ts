@@ -12,7 +12,7 @@ import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostE
 import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
 import truncateString from "../../helpers/text/truncateString";
 import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
-import replaceOsuTimestampsToURL from "../../helpers/text/replaceOsuTimestampsToURL";
+import parseOsuTimestamps from "../../helpers/text/parseOsuTimestamps";
 import getEmoji from "../../helpers/text/getEmoji";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { QatEvent } from "types/qat";
@@ -86,7 +86,7 @@ export default {
         }
 
         let e = new EmbedBuilder({
-            description: replaceOsuTimestampsToURL(
+            description: parseOsuTimestamps(
                 truncateString(metadata.concat(post.posts[0].message), 1024)
             ),
             thumbnail: {
