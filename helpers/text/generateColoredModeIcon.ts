@@ -5,10 +5,7 @@ export default (mode: string, starRating: number) => {
 
     switch (true) {
         case starRating < 2:
-            return getEmoji(
-                ("easy" +
-                    mode[0]) as keyof typeof getEmoji as keyof typeof getEmoji
-            );
+            return getEmoji(("easy" + mode[0]) as keyof typeof getEmoji);
         case starRating < 2.7:
             return getEmoji(("normal" + mode[0]) as keyof typeof getEmoji);
         case starRating < 4:
@@ -19,8 +16,10 @@ export default (mode: string, starRating: number) => {
             return getEmoji(("expert" + mode[0]) as keyof typeof getEmoji);
         case starRating < 8:
             return getEmoji(("expertplus" + mode[0]) as keyof typeof getEmoji);
-        case starRating >= 8:
+        case starRating < 9:
             return getEmoji(("hell" + mode[0]) as keyof typeof getEmoji);
+        case starRating >= 9:
+            return getEmoji(("black" + mode[0]) as keyof typeof getEmoji);
         default:
             return getEmoji(mode as keyof typeof getEmoji);
     }
