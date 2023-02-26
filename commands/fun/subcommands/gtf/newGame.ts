@@ -124,6 +124,13 @@ gtfNewGame.setExecuteFunction(async (command) => {
             if (index != -1) leaderboard[index].score = score;
         }
 
+        if (!currentPosition) {
+            leaderboard.push({
+                userId: command.user.id,
+                score: score,
+            });
+        }
+
         leaderboard.sort((a, b) => (b.score || 0) - (a.score || 0));
 
         leaderboard = leaderboard.slice(0, 10);
