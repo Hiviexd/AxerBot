@@ -23,7 +23,7 @@ gtfLeaderboard.setExecuteFunction(async (command) => {
 
     leaderboard.sort((a, b) => (b.score || 0) - (a.score || 0));
 
-    leaderboard = leaderboard.slice(0, 9);
+    leaderboard = leaderboard.slice(0, 10);
 
     const embed = new EmbedBuilder()
         .setTitle("🏅 Top 10 players of this server")

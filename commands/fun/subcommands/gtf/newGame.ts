@@ -86,7 +86,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
     function rightAnswerEmbed(score: number, lifes: number) {
         const embed = new EmbedBuilder()
             .setTitle(`Correct answer!`)
-            .setDescription(`Next game will start in 5 seconds...`)
+            .setDescription(`Next game will start in 3 seconds...`)
             .setColor(colors.green)
             .addFields(
                 {
@@ -112,29 +112,21 @@ gtfNewGame.setExecuteFunction(async (command) => {
 
         leaderboard.sort((a, b) => (b.score || 0) - (a.score || 0));
 
-        const currentPosition = leaderboard.findIndex(
+        const currentPosition = leaderboard.find(
             (s) => s.userId == command.user.id
         );
 
-        let position =
-            leaderboard.length -
-            leaderboard.filter((u) => (u.score || 0) < score).length;
+        if (currentPosition && (currentPosition.score || 0) < score) {
+            const index = leaderboard.findIndex(
+                (s) => s.userId == command.user.id
+            );
 
-        if (position > 0) position = position - 1;
-        if (position < 0) position = 0;
-
-        if (position > 20) return;
-
-        if (currentPosition != -1) {
-            leaderboard.splice(currentPosition, 1);
+            if (index != -1) leaderboard[index].score = score;
         }
 
-        leaderboard.splice(position, 0, {
-            userId: command.user.id,
-            score: score,
-        });
+        leaderboard.sort((a, b) => (b.score || 0) - (a.score || 0));
 
-        guild.flaglb = leaderboard;
+        leaderboard = leaderboard.slice(0, 10);
 
         await guilds.findByIdAndUpdate(guild.id, {
             $set: {
@@ -169,7 +161,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
         const embed = new EmbedBuilder()
             .setTitle("🌍 Guess the flag")
             .setImage(`https://flagcdn.com/w320/${turn.code}.png`)
-            .setDescription("What's the name of this flag country?")
+            .setDescription("What's the country name of this flag?")
             .setColor(colors.yellow);
 
         return command
@@ -223,7 +215,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
                             .then(() => {
                                 setTimeout(() => {
                                     sendGame();
-                                }, 5000);
+                                }, 3000);
                             })
                             .catch(console.error);
                     })
@@ -242,7 +234,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
                             .then(() => {
                                 setTimeout(() => {
                                     sendGame();
-                                }, 5000);
+                                }, 3000);
                             })
                             .catch(console.error);
                     })
