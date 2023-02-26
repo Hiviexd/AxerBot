@@ -1,4 +1,4 @@
-import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { EmbedBuilder, PermissionFlagsBits, Role, APIRole } from "discord.js";
 import { guilds } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../../../constants/colors";
@@ -81,6 +81,21 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
     const roleRemove4 = command.options.getRole("role_remove_4");
     const roleRemove5 = command.options.getRole("role_remove_5");
 
+    const roleAddInputs = [roleAdd1, roleAdd2, roleAdd3, roleAdd4, roleAdd5];
+    const roleRemoveInputs = [roleRemove1, roleRemove2, roleRemove3, roleRemove4, roleRemove5];
+
+    function sanitizeRoles(roleInputs: (Role | APIRole | null)[]) {
+        const r: string[] = [];
+
+        for (const role of roleInputs) {
+            if (role) {
+                r.push(role.id);
+            }
+        }
+        
+        return r;
+    }
+
     if (!roleAdd1 && !roleRemove1) {
         return command.editReply({
             embeds: [
@@ -108,48 +123,10 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
         });
     }
 
-    function sanitizeRoleAdditions() {
-        const r: string[] = [];
-        const roleAddInputs = [
-            roleAdd1,
-            roleAdd2,
-            roleAdd3,
-            roleAdd4,
-            roleAdd5,
-        ];
-
-        for (const role of roleAddInputs) {
-            if (role) {
-                r.push(role.id);
-            }
-        }
-
-        return r;
-    }
-
-    function sanitizeRoleRemovals() {
-        const r: string[] = [];
-        const roleRemoveInputs = [
-            roleRemove1,
-            roleRemove2,
-            roleRemove3,
-            roleRemove4,
-            roleRemove5,
-        ];
-
-        for (const role of roleRemoveInputs) {
-            if (role) {
-                r.push(role.id);
-            }
-        }
-
-        return r;
-    }
-
     roles.push({
         name: name,
-        roles_add: sanitizeRoleAdditions(),
-        roles_remove: sanitizeRoleRemovals(),
+        roles_add: sanitizeRoles(roleAddInputs),
+        roles_remove: sanitizeRoles(roleRemoveInputs),
     });
 
     await guilds.findByIdAndUpdate(guild._id, {
@@ -170,14 +147,14 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
             {
                 name: "Roles to add",
                 value:
-                    sanitizeRoleAdditions()
+                    sanitizeRoles(roleAddInputs)
                         .map((r) => `<@&${r}>`)
                         .join(", ") || "*None*",
             },
             {
                 name: "Roles to remove",
                 value:
-                    sanitizeRoleRemovals()
+                    sanitizeRoles(roleRemoveInputs)
                         .map((r) => `<@&${r}>`)
                         .join(", ") || "*None*",
             }
