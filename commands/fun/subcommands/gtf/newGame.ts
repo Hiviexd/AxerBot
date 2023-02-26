@@ -151,8 +151,6 @@ gtfNewGame.setExecuteFunction(async (command) => {
             )
             .setColor(colors.red);
 
-        if (command.guild) updateGuildLeaderboard();
-
         command
             .fetchReply()
             .then((msg) => {
@@ -195,6 +193,8 @@ gtfNewGame.setExecuteFunction(async (command) => {
     }
 
     function createCollector() {
+        if (command.guild) updateGuildLeaderboard();
+
         const collector = new InteractionCollector(command.client, {
             channel: command.channel as TextChannelResolvable,
             guild: command.guild as GuildResolvable,
