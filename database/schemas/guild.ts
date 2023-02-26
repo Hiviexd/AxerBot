@@ -138,6 +138,7 @@ export default new Schema({
             },
         },
     },
+    role_presets: [{ name: String, roles_add: Array, roles_remove: Array }],
     flaglb: [{ userId: String, score: Number }],
     messages: {
         type: Object,

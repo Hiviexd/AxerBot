@@ -15,7 +15,7 @@ const userlogRemoveLog = new SlashCommandSubcommand(
 );
 
 userlogRemoveLog.builder
-    .addUserOption((o) =>
+    .addStringOption((o) =>
         o.setName("username").setDescription("Target user").setRequired(true)
     )
     .addIntegerOption((o) =>
@@ -25,7 +25,7 @@ userlogRemoveLog.builder
 userlogRemoveLog.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    const user = command.options.getUser("username", true).username;
+    const user = command.options.getString("username", true);
     const logid = command.options.getInteger("logid", true);
 
     let guild = await database.guilds.findById(command.guildId);
