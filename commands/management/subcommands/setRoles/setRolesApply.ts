@@ -1,4 +1,4 @@
-import { EmbedBuilder, PermissionFlagsBits, Role } from "discord.js";
+import { EmbedBuilder, GuildMember, PermissionFlagsBits, Role } from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
@@ -70,12 +70,18 @@ setRolesAdd.setExecuteFunction(async (command) => {
     rolesToRemove.length ? member.roles.remove(rolesToRemove as Role[]) : null;
     setTimeout(() => {
         rolesToAdd.length ? member.roles.add(rolesToAdd as Role[]) : null;
-    }, 500);
+    }, 750);
+
+    const commandMember = command.member as GuildMember;
 
     const embed = new EmbedBuilder()
         .setTitle("✅ Success")
-        .setDescription(`Role preset applied successfully!`)
+        .setDescription(`Role preset applied on ${member}!`)
         .setColor(colors.green)
+        .setFooter({
+            text: `${commandMember.nickname || command.user.username}`,
+            iconURL: command.user.displayAvatarURL(),
+        })
         .addFields(
             {
                 name: "Name",
