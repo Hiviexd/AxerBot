@@ -211,7 +211,7 @@ export default {
             .setStyle(ButtonStyle.Link)
             .setLabel("osu!direct")
             .setURL(
-                `https://axer-url.ppy.tn/dl/${beatmapset.beatmaps[selectedDifficultyIndex].id}`
+                `https://axer-url.vercel.app/api/direct?map=${beatmapset.beatmaps[selectedDifficultyIndex].id}`
             );
 
         const staticQuickDownloadButton = new ButtonBuilder({

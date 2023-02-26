@@ -6,23 +6,18 @@ export default (rawText: string) => {
     if (!timestamps) return rawText;
 
     let parsed = rawText;
+
     for (const timestamp of timestamps) {
         const res = TIMESTAMP.exec(timestamp);
         TIMESTAMP.lastIndex = 0;
         if (!res) continue;
 
-        /*
-        * ? old code that replaced timestamps with links
-		let url = `[${timestamp}](https://axer-url.ppy.tn/edit/${res[1]}:${res[2]}:${res[3]}`;
+        let url = `https://axer-url.vercel.app/api/edit?time=${res[1]}:${res[2]}:${res[3]}`;
 
-		if (res[4]) url += `-${res[4]}`;
-		url += ")";
-        */
+        if (res[4]) url += `-${res[4]}`;
+        url += "";
 
-        // ? replace timestamps with codeblocks for better visibility
-        const url = `\`${timestamp.trim()}\` `;
-
-        parsed = parsed.replace(timestamp, url);
+        parsed = parsed.replace(timestamp, `[${timestamp}](${url})`);
     }
 
     return parsed;

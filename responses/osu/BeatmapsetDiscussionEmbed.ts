@@ -113,7 +113,7 @@ export default {
             buttons.addComponents([
                 new ButtonBuilder({
                     style: ButtonStyle.Link,
-                    url: `https://axer-url.ppy.tn/dl/${beatmap.data.beatmaps[0].id}`,
+                    url: `https://axer-url.vercel.app/api/direct?map=${beatmap.data.beatmaps[0].id}`,
                     label: "osu!direct",
                 }),
                 new ButtonBuilder({
