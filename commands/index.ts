@@ -29,6 +29,7 @@ import embeds from "./management/embeds";
 import osutimestamps from "./management/osuTimestamps";
 import editMessage from "./management/editMessage";
 import logging from "./management/logging";
+import setRoles from "./management/setRoles";
 
 // ? osu!
 import mapper from "./osu/mapper";
@@ -82,6 +83,7 @@ export const AxerCommands = [
     osutimestamps,
     editMessage,
     logging,
+    setRoles,
 
     // ? osu!
     mappertracker,
