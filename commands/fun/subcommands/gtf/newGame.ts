@@ -203,7 +203,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
         collector.on("collect", (select: StringSelectMenuInteraction) => {
             if (select.type != InteractionType.MessageComponent) return;
             if (select.customId != gameData) return;
-            select.deferUpdate();
+            select.deferUpdate().catch(console.error);
             collector.stop();
 
             if (select.values[0] != turn.code) {
