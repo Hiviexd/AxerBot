@@ -17,11 +17,8 @@ const userlogAddLog = new SlashCommandSubcommand(
 );
 
 userlogAddLog.builder
-    .addUserOption((o) =>
-        o
-            .setName("username")
-            .setDescription("User to moderate")
-            .setRequired(true)
+    .addStringOption((o) =>
+        o.setName("username").setDescription("User to log").setRequired(true)
     )
     .addStringOption((o) =>
         o.setName("reason").setDescription("Log description").setRequired(true)
@@ -30,7 +27,7 @@ userlogAddLog.builder
 userlogAddLog.setExecuteFunction(async (command) => {
     if (!command.guild || !command.member) return;
 
-    const user = command.options.getUser("username", true).username;
+    const user = command.options.getString("username", true);
     const reason = command.options.getString("reason", true);
 
     if (reason.length > 1000) {

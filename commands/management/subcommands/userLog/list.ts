@@ -12,7 +12,7 @@ const userlogList = new SlashCommandSubcommand(
     undefined
 );
 
-userlogList.builder.addUserOption((o) =>
+userlogList.builder.addStringOption((o) =>
     o.setName("username").setDescription("User to get logs").setRequired(true)
 );
 
