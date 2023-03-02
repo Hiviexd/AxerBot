@@ -38,7 +38,7 @@ import mapsetrank from "./osu/mapsetrank";
 import player from "./osu/player";
 import recent from "./osu/recent";
 import mappertracker from "./osu/mappertracker";
-import chess from "./fun/chess";
+//import chess from "./fun/chess";
 
 // ? bnsite
 import bntracker from "./BNsite/bntracker";
@@ -74,7 +74,7 @@ export const AxerCommands = [
     choose,
     rps,
     guesstheflag,
-    chess,
+    //chess,
 
     // ? Management
     verificationCommand,
