@@ -38,6 +38,7 @@ import mapsetrank from "./osu/mapsetrank";
 import player from "./osu/player";
 import recent from "./osu/recent";
 import mappertracker from "./osu/mappertracker";
+import chess from "./fun/chess";
 
 // ? bnsite
 import bntracker from "./BNsite/bntracker";
@@ -50,6 +51,7 @@ import search from "./osu/search";
 import { resizebg } from "./tools/resizebg";
 import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
+import addsilent from "./tools/addsilence";
 
 export const AxerCommands = [
     // ? General
@@ -72,6 +74,7 @@ export const AxerCommands = [
     choose,
     rps,
     guesstheflag,
+    chess,
 
     // ? Management
     verificationCommand,
@@ -104,4 +107,5 @@ export const AxerCommands = [
     resizebg,
     spectro,
     debloat,
+    addsilent,
 ];

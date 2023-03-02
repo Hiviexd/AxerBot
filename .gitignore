@@ -9,4 +9,9 @@ dist
 cache/*
 
 #temp
-temp/*
+temp/audios/*.mp3
+temp/debloater/*.wav
+temp/debloater/*.ogg
+temp/debloater/*.mp3
+temp/spectro/audio/*.wav
+temp/spectro/images/*.png
