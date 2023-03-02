@@ -91,7 +91,7 @@ addsilent.setExecuteFunction(async (command) => {
                 .editReply({
                     embeds: [
                         generateSuccessEmbed(
-                            `Added \`${duration} seconds\` of delay at the begin of your audio`
+                            `Added \`${duration} seconds\` of delay at the beginning of your audio`
                         ),
                     ],
                     files: [audioAttachment],
