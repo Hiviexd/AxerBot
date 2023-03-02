@@ -8,6 +8,7 @@ import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
 import { SlashCommandSubcommandGroup } from "./SlashCommandSubcommandGroup";
 import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
+import { consoleLog } from "../../helpers/core/logger";
 
 export type ISlashCommandExecuteFunction = (
     interaction: ChatInputCommandInteraction
@@ -140,6 +141,11 @@ export class SlashCommand {
 
         if (!target) return;
 
+        consoleLog(
+            "CommandHandler",
+            `Executing command ${interaction.commandName} ${target.builder.name}`
+        );
+
         target.run(interaction);
     }
 
@@ -172,6 +178,11 @@ export class SlashCommand {
     }
 
     async run(interaction: ChatInputCommandInteraction) {
+        consoleLog(
+            "CommandHandler",
+            `Executing command ${interaction.commandName}`
+        );
+
         if (!this.hasModal) await interaction.deferReply();
 
         if (

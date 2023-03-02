@@ -3,6 +3,7 @@ import {
     SlashCommandSubcommandGroupBuilder,
 } from "discord.js";
 import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
+import { consoleLog } from "../../helpers/core/logger";
 
 export class SlashCommandSubcommandGroup {
     private commands: SlashCommandSubcommand[] = [];
@@ -28,6 +29,11 @@ export class SlashCommandSubcommandGroup {
         const target = this.commands.find((c) => c.builder.name == subcommand);
 
         if (!target) return;
+
+        consoleLog(
+            "CommandHandler",
+            `Executing command ${interaction.commandName} ${this.builder.name} ${target.builder.name}`
+        );
 
         target.run(interaction);
     }
