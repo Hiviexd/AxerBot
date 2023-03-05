@@ -37,10 +37,12 @@ export async function sendNewBeatmapEmbed(
 
         if (!diffs) return "This beatmapset has no difficulties...";
 
+        const total = diffs.length;
+
         diffs.sort((a, b) => b.difficulty_rating - a.difficulty_rating);
         diffs.splice(3, 9999);
 
-        let description = `Displaying ${diffs.length} of ${beatmapset.data.beatmaps?.length} difficulties:\n`;
+        let description = `Displaying ${diffs.length} of ${total} difficulties:\n`;
 
         diffs.forEach((difficulty) => {
             description = description.concat(
