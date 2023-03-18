@@ -39,8 +39,18 @@ export async function generateBeatmapVideo(
 
         ctx.drawImage(bg, 0, 0);
 
-        // const title = truncateCanvasText(ctx, beatmapset.title, 380);
-        // const artist = truncateCanvasText(ctx, beatmapset.artist, 380);
+        const title = truncateCanvasText(
+            ctx,
+            beatmapset.title,
+            380,
+            "600 40px Quicksand"
+        );
+        const artist = truncateCanvasText(
+            ctx,
+            beatmapset.artist,
+            380,
+            "400 25px Quicksand"
+        );
 
         ctx.fillStyle = "#00000050";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -49,17 +59,17 @@ export async function generateBeatmapVideo(
         ctx.fillStyle = "#ffffff";
 
         ctx.fillText(
-            beatmapset.title,
+            title,
             10,
-            20 + ctx.measureText(beatmapset.title).actualBoundingBoxAscent
+            20 + ctx.measureText(title).actualBoundingBoxAscent
         );
 
         ctx.font = "400 25px Quicksand";
         ctx.fillStyle = "#cccccc";
         ctx.fillText(
-            beatmapset.artist,
-            10 + ctx.measureText(beatmapset.title).actualBoundingBoxLeft,
-            55 + ctx.measureText(beatmapset.title).actualBoundingBoxAscent
+            artist,
+            10 + ctx.measureText(title).actualBoundingBoxLeft,
+            55 + ctx.measureText(title).actualBoundingBoxAscent
         );
 
         const canvasStream = bufferToStream(canvas.toBuffer());

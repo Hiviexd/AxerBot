@@ -3,8 +3,10 @@ import { CanvasRenderingContext2D } from "canvas";
 export function truncateCanvasText(
     c: CanvasRenderingContext2D,
     text: string,
-    maxWidth: number
+    maxWidth: number,
+    fontSize: string
 ) {
+    c.font = fontSize;
     var width = c.measureText(text).width;
     var ellipsis = "…";
     var ellipsisWidth = c.measureText(ellipsis).width;
