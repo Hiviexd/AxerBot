@@ -16,6 +16,7 @@ import { guilds } from "../../../../database";
 import { randomizeArray } from "../../../../helpers/transform/randomizeArray";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { CountryCodes } from "../../../../types/flags";
+import abbreviation from "../../../../helpers/text/abbreviation";
 
 const gtfNewGame = new SlashCommandSubcommand("start", "Start a new game");
 
@@ -25,14 +26,25 @@ gtfNewGame.setExecuteFunction(async (command) => {
     let score = 0;
     let lifes = 5;
     let turn = getRandomFlag();
+    let messageId = "";
+
     const gameData = JSON.stringify({
         user: command.user.id,
         id: crypto.randomBytes(10).toString("hex"),
     });
 
-    command.editReply({
-        content: "Starting a new game...",
-    });
+    command
+        .editReply({
+            content: "_ _",
+        })
+        .then(() => {
+            command.deleteReply().then(() => {
+                command.channel?.send("Starting new game...").then((d) => {
+                    messageId = d.id;
+                    sendGame();
+                });
+            });
+        });
 
     function getRandomFlag() {
         const code =
@@ -150,9 +162,8 @@ gtfNewGame.setExecuteFunction(async (command) => {
             )
             .setColor(colors.red);
 
-        command
-            .fetchReply()
-            .then((msg) => {
+        getMessage()
+            ?.then((msg) => {
                 msg.edit({
                     content: "",
                     components: [],
@@ -171,11 +182,10 @@ gtfNewGame.setExecuteFunction(async (command) => {
             .setDescription("What's the country name of this flag?")
             .setColor(colors.yellow);
 
-        return command
-            .fetchReply()
-            .then((msg) => {
+        return getMessage()
+            ?.then((msg) => {
                 msg.edit({
-                    content: "",
+                    content: `**${abbreviation(command.user.username)} game**`,
                     components: [
                         new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
                             getSelectMenuFor(turn.code)
@@ -211,9 +221,8 @@ gtfNewGame.setExecuteFunction(async (command) => {
 
                 if (lifes == 0) return sendGameOver();
 
-                command
-                    .fetchReply()
-                    .then((msg) => {
+                getMessage()
+                    ?.then((msg) => {
                         msg.edit({
                             content: "",
                             components: [],
@@ -230,9 +239,8 @@ gtfNewGame.setExecuteFunction(async (command) => {
             } else {
                 score += 1;
 
-                command
-                    .fetchReply()
-                    .then((msg) => {
+                getMessage()
+                    ?.then((msg) => {
                         msg.edit({
                             content: "",
                             components: [],
@@ -250,7 +258,9 @@ gtfNewGame.setExecuteFunction(async (command) => {
         });
     }
 
-    sendGame();
+    function getMessage() {
+        return command.channel?.messages.fetch(messageId);
+    }
 });
 
 export default gtfNewGame;
