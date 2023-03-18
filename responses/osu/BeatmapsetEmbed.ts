@@ -10,6 +10,7 @@ import {
     ButtonStyle,
     ChatInputCommandInteraction,
     TextBasedChannelResolvable,
+    AttachmentBuilder,
 } from "discord.js";
 
 import {
@@ -26,9 +27,15 @@ import timeString from "../../helpers/text/timeString";
 import crypto from "crypto";
 import moment from "moment";
 import { getUserId } from "../../helpers/commands/getUserId";
-import e from "express";
+import { unlinkSync } from "fs";
 import { GameModeName } from "../../types/game_mode";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import {
+    IBeatmapVideo,
+    generateBeatmapVideo,
+} from "../../helpers/video/generateBeatmapVideo";
+import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
+import path from "path";
 
 const mods = [
     { name: "EZ", emoji: "1071874648112910436" },
@@ -87,11 +94,107 @@ export default {
         try {
             if (!beatmapset.beatmaps) return;
 
+            const handshakeId = crypto.randomUUID();
+            let isWaitingVideo = false;
+            let video: IBeatmapVideo | undefined | null;
+
+            generateBeatmapVideo(beatmapset)
+                .then((data) => {
+                    video = data;
+
+                    if (isWaitingVideo) {
+                        sendVideo();
+                    }
+                })
+                .catch((e) => {
+                    console.error(e);
+                    video = null;
+                });
+
             beatmapset.beatmaps.sort(
                 (a, b) => a.difficulty_rating - b.difficulty_rating
             );
 
-            const handshakeId = crypto.randomUUID();
+            const backToDataEmbedButton = new ButtonBuilder()
+                .setLabel("◀️ Back")
+                .setStyle(ButtonStyle.Primary)
+                .setCustomId(`${handshakeId}|backToData|handlerIgnore`);
+
+            const goToPreviewButton = new ButtonBuilder()
+                .setLabel("📺 Preview")
+                .setStyle(ButtonStyle.Secondary)
+                .setCustomId(`${handshakeId}|goToVideo|handlerIgnore`);
+
+            function sendWaitingVideo() {
+                const actionRow =
+                    new ActionRowBuilder<ButtonBuilder>().setComponents(
+                        backToDataEmbedButton
+                    );
+
+                const embed = generateWaitEmbed(
+                    "Hold on!",
+                    "We're working on this preview"
+                );
+
+                if ((target as ChatInputCommandInteraction).commandId) {
+                    (target as ChatInputCommandInteraction).editReply({
+                        embeds: [embed],
+                        content: "",
+                        components: [actionRow],
+                        files: [],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    });
+                } else {
+                    target.reply({
+                        embeds: [embed],
+                        content: "",
+                        files: [],
+                        components: [actionRow],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    });
+                }
+            }
+
+            function sendVideo() {
+                if (!video) return sendWaitingVideo();
+
+                const attachment = new AttachmentBuilder(
+                    path.resolve(video.filePath),
+                    {
+                        name: "Preview.mp4",
+                    }
+                );
+
+                const actionRow =
+                    new ActionRowBuilder<ButtonBuilder>().setComponents(
+                        backToDataEmbedButton
+                    );
+
+                if ((target as ChatInputCommandInteraction).commandId) {
+                    (target as ChatInputCommandInteraction).editReply({
+                        files: [attachment],
+                        content: "",
+                        components: [actionRow],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    });
+                } else {
+                    target.reply({
+                        files: [attachment],
+                        content: "",
+                        components: [actionRow],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    });
+                }
+            }
+
             let mods = _mods ?? ["NM"];
 
             let selectedDifficultyIndex = beatmap_id
@@ -224,14 +327,15 @@ export default {
             const staticQuickDownloadButton = new ButtonBuilder({
                 style: ButtonStyle.Secondary,
                 customId: `beatmap_download|${beatmapset.id}`,
-                label: "Quick download",
+                label: "Download",
                 emoji: "1070892493333344297",
             });
 
             staticButtonsRow.addComponents(
                 staticMapperProfileButton,
                 staticOsuDirectButton,
-                staticQuickDownloadButton
+                staticQuickDownloadButton,
+                goToPreviewButton
             );
 
             let embedBackButton = new ButtonBuilder()
@@ -413,6 +517,7 @@ export default {
                     msg.edit({
                         embeds: [embed],
                         content: "",
+                        files: [],
                         components: [
                             staticButtonsRow,
                             modsSelector,
@@ -435,6 +540,12 @@ export default {
                 }
             );
 
+            interactionCollector.on("end", () => {
+                if (!video) return;
+
+                unlinkSync(video.filePath);
+            });
+
             interactionCollector.on("collect", (interaction) => {
                 if (!beatmapset.beatmaps) return;
 
@@ -444,6 +555,17 @@ export default {
                     if (handshake != handshakeId) return;
 
                     const action = interaction.customId.split("|")[1];
+
+                    if (action == "goToVideo") {
+                        if (isWaitingVideo) return sendWaitingVideo();
+
+                        sendVideo();
+                    }
+
+                    if (action == "backToData") {
+                        selectedDifficultyIndex -= 1;
+                        selectDifficulty(true, interaction);
+                    }
 
                     try {
                         interaction.deferUpdate();
@@ -490,6 +612,7 @@ export default {
                 (target as ChatInputCommandInteraction).editReply({
                     embeds: [embed],
                     content: "",
+                    files: [],
                     components: [
                         staticButtonsRow,
                         modsSelector,
@@ -502,6 +625,7 @@ export default {
             } else {
                 target.reply({
                     embeds: [embed],
+                    files: [],
                     content: "",
                     components: [
                         staticButtonsRow,
@@ -520,6 +644,8 @@ export default {
                 (target as ChatInputCommandInteraction).editReply({
                     embeds: [generateErrorEmbed("Something went wrong")],
                     content: "",
+                    files: [],
+                    components: [],
                     allowedMentions: {
                         repliedUser: false,
                     },
@@ -528,6 +654,8 @@ export default {
                 target.reply({
                     embeds: [generateErrorEmbed("Something went wrong")],
                     content: "",
+                    files: [],
+                    components: [],
                     allowedMentions: {
                         repliedUser: false,
                     },
