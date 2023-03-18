@@ -534,7 +534,7 @@ export default {
                 target.client,
                 {
                     channel: target.channel as TextBasedChannelResolvable,
-                    time: 60000,
+                    time: 300000,
                     filter: (i: ButtonInteraction | SelectMenuInteraction) =>
                         i.user.id == getUserId(target),
                 }
