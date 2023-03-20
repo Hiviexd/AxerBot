@@ -17,8 +17,6 @@ import colors from "../../constants/colors";
 async function qatTracking(bot: Client) {
     const allTracks = await tracks.find({ type: "qat" });
 
-    const liveData = await qatApi.fetch.allUsers();
-
     let storedData = JSON.parse(
         readFileSync(
             path.resolve(__dirname + "/../../cache/nominators.json"),
@@ -26,21 +24,15 @@ async function qatTracking(bot: Client) {
         )
     );
 
+    const liveData = await qatApi.fetch.allUsers();
     const differentData: QatUser[] = [];
 
-    if (!storedData || storedData.length == 0) {
-        writeFileSync(
+    if (!storedData || storedData.length == 0)
+        return writeFileSync(
             path.resolve(__dirname + "/../../cache/nominators.json"),
-            JSON.stringify([liveData]),
+            JSON.stringify(liveData),
             "utf8"
         );
-
-        setTimeout(async () => {
-            await qatTracking(bot);
-        }, 30000); // ? checks every 30 seconds
-
-        return;
-    }
 
     // dickwads and people who don't want to be tracked go here
     const blacklistedBNs = [9487458, 10959501, 33599, 3558897];
