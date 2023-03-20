@@ -4,6 +4,14 @@ import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapperEmbed from "../../responses/osu/MapperEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { MapperCard } from "../../models/images/MapperCard";
+import {
+    ActionRowBuilder,
+    AttachmentBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+} from "discord.js";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
 const mapper = new SlashCommand(
     "mapper",
@@ -45,7 +53,38 @@ mapper.setExecuteFunction(async (command) => {
             embeds: [UserNotMapper],
         });
 
-    MapperEmbed.reply(mapper, mapper_beatmaps, command);
+    const image = new MapperCard(mapper.data.id, mapper_beatmaps);
+    image
+        .render()
+        .then((image) => {
+            if (!image) return;
+
+            const att = new AttachmentBuilder(image);
+
+            const buttons = new ActionRowBuilder<ButtonBuilder>().setComponents(
+                new ButtonBuilder()
+                    .setLabel("Mapper Profile")
+                    .setStyle(ButtonStyle.Link)
+                    .setURL(`https://osu.ppy.sh/users/${mapper.data.id}`),
+                new ButtonBuilder()
+                    .setLabel("Latest Beatmap")
+                    .setStyle(ButtonStyle.Link)
+                    .setURL(
+                        `https://osu.ppy.sh/beatmapses/${mapper_beatmaps.data.last.id}`
+                    )
+            );
+
+            command.editReply({
+                files: [att],
+                components: [buttons],
+            });
+        })
+        .catch((e) => {
+            console.error(e);
+            command.editReply({
+                embeds: [generateErrorEmbed("Something went wrong!")],
+            });
+        });
 });
 
 export default mapper;
