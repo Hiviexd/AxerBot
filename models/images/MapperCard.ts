@@ -17,6 +17,7 @@ import {
     BeatmapsetResponse,
     UserBeatmapetsResponse,
 } from "../../types/beatmap";
+import config from "../../config.json";
 
 export class MapperCard {
     private user_data!: User | null;
@@ -38,6 +39,7 @@ export class MapperCard {
         loved: "https://cdn.discordapp.com/attachments/959908232736952420/1087122302979813517/Vector.png",
         pending:
             "https://cdn.discordapp.com/attachments/959908232736952420/1087122453790212096/circle-question-solid_1.png",
+        kudosu: "https://cdn.discordapp.com/attachments/959908232736952420/1087416316614426714/Vector_1.png",
     };
 
     constructor(user_id: string | number, beatmapsets: UserBeatmapetsResponse) {
@@ -112,6 +114,7 @@ export class MapperCard {
 
         const followersIcon = await loadImage(this.icons.followers);
         const subscribersIcon = await loadImage(this.icons.subscribers);
+        const kudosuIcon = await loadImage(this.icons.kudosu);
 
         this.ctx.beginPath();
         this.ctx.fillStyle = "#292126";
@@ -124,18 +127,27 @@ export class MapperCard {
 
         this.ctx.drawImage(followersIcon, 50, 180);
         this.ctx.drawImage(subscribersIcon, 106, 180);
+        this.ctx.drawImage(kudosuIcon, 162, 180);
         this.ctx.fillText("Followers and Subscribers", 40, 143 + 15);
 
         this.ctx.font = "500 10px Quicksand";
         this.ctx.fillText(
-            (this.user_data.follower_count || "0").toString(),
+            (this.user_data.follower_count || "0").toLocaleString("en-US"),
             69,
             181 + 10
         );
 
         this.ctx.fillText(
-            (this.user_data.mapping_follower_count || "0").toString(),
+            (this.user_data.mapping_follower_count || "0").toLocaleString(
+                "en-US"
+            ),
             126,
+            181 + 10
+        );
+
+        this.ctx.fillText(
+            (this.user_data.kudosu.available || "0").toLocaleString("en-US"),
+            185,
             181 + 10
         );
 
@@ -177,9 +189,13 @@ export class MapperCard {
             73 + 25
         );
 
-        if (this.user_data.title) {
+        if (
+            this.user_data.title ||
+            config.ownersOsu.includes(this.user_id.toString())
+        ) {
             this.ctx.font = "400 15px Quicksand";
-            this.ctx.fillStyle = this.user_data.profile_colour as string;
+            this.ctx.fillStyle =
+                this.user_data.profile_colour || (group.colour as string);
 
             const ignoreUsergroups = [
                 "Nomination Assessment Team",
@@ -187,13 +203,25 @@ export class MapperCard {
                 "Global Moderator",
             ];
 
-            let title = this.user_data.title;
+            let title = this.user_data.title || "";
 
             if (title.includes("/"))
                 title = title
                     .split("/")
                     .filter((v, i) => !ignoreUsergroups.includes(v.trim()))
                     .join("/");
+
+            if (
+                this.user_data.title &&
+                config.ownersOsu.includes(this.user_id.toString())
+            )
+                title = `${title} / AxerBot Developer`;
+
+            if (
+                config.ownersOsu.includes(this.user_id.toString()) &&
+                !this.user_data.title
+            )
+                title = "AxerBot Developer";
 
             this.ctx.fillText(
                 truncateCanvasText(
