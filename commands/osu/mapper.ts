@@ -70,7 +70,7 @@ mapper.setExecuteFunction(async (command) => {
                     .setLabel("Latest Beatmap")
                     .setStyle(ButtonStyle.Link)
                     .setURL(
-                        `https://osu.ppy.sh/beatmapses/${mapper_beatmaps.data.last.id}`
+                        `https://osu.ppy.sh/beatmapsets/${mapper_beatmaps.data.last.id}`
                     )
             );
 
