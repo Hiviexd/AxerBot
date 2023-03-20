@@ -17,27 +17,14 @@ import colors from "../../constants/colors";
 async function qatTracking(bot: Client) {
     const allTracks = await tracks.find({ type: "qat" });
 
-    let storedData;
     const liveData = await qatApi.fetch.allUsers();
 
-    try {
-        storedData = JSON.parse(
-            readFileSync(
-                path.resolve(__dirname + "/../../cache/nominators.json"),
-                "utf8"
-            )
-        );
-    } catch (e) {
-        storedData = [];
-
-        writeFileSync(
+    let storedData = JSON.parse(
+        readFileSync(
             path.resolve(__dirname + "/../../cache/nominators.json"),
-            JSON.stringify([liveData]),
             "utf8"
-        );
-
-        storedData = [liveData];
-    }
+        )
+    );
 
     const differentData: QatUser[] = [];
 
