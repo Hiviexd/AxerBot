@@ -81,6 +81,8 @@ export class MapperCard {
         await this.fetch();
         if (!this.user_data) return;
 
+        this.loadFonts();
+
         await this.renderBackground();
         await this.renderFollowersAndSubs();
         await this.renderStats();
