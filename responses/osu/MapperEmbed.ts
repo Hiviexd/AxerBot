@@ -9,6 +9,7 @@ import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
 import osuApi from "../../helpers/osu/fetcher/osuApi";
 import parseDate from "../../helpers/text/parseDate";
+import { fetchOldestBeatmap } from "../../helpers/osu/player/fetchOldestBeatmap";
 
 export default {
     send: async (
@@ -134,38 +135,7 @@ export default {
             Number(user.data.graveyard_beatmapset_count);
         const devs = ["15821708", "14102976"];
 
-        const mostOldBeatmap = await fetchOldestBeatmap();
-
-        async function fetchOldestBeatmap() {
-            const status = ["graveyard", "pending", "ranked", "loved"];
-            const statusStringObject: { [key: string]: string } = {
-                graveyard: "graveyard_beatmapset_count",
-                pending: "pending_beatmapset_count",
-                loved: "loved_beatmapset_count",
-                ranked: "ranked_and_approved_beatmapset_count",
-            };
-
-            const maps: Beatmapset[] = [];
-
-            for (const s of status) {
-                const b = await osuApi.fetch.basicUserBeatmaps(
-                    user.data.id,
-                    s,
-                    1,
-                    ((user.data as any)[statusStringObject[s]] as number) - 1
-                );
-
-                if (b.data && b.status == 200) maps.push(b.data[0]);
-            }
-
-            maps.sort(
-                (a, b) =>
-                    new Date(a.submitted_date).valueOf() -
-                    new Date(b.submitted_date).valueOf()
-            );
-
-            return maps[0];
-        }
+        const mostOldBeatmap = await fetchOldestBeatmap(user.data);
 
         function getTitle() {
             if (user.data.title && devs.includes(user.data.id.toString()))

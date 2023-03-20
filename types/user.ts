@@ -4,7 +4,7 @@ import { ColorResolvable } from "discord.js";
 import { Beatmapset } from "./beatmap";
 
 export interface UserCompactCover {
-    custom_url: null | unknown;
+    custom_url: null | string;
     url: string;
     id: string;
 }
@@ -202,21 +202,21 @@ export interface UserCompactBase {
     follower_count?: number;
     mapping_follower_count?: number;
     friends?: unknown;
-    graveyard_beatmapset_count?: number;
-    ranked_and_approved_beatmapset_count?: number;
+    graveyard_beatmapset_count: number;
+    ranked_and_approved_beatmapset_count: number;
     groups?: UserGroup[];
-    loved_beatmapset_count?: number;
+    loved_beatmapset_count: number;
     monthly_playcounts?: UserMonthlyPlaycount[];
     page?: unknown;
-    pending_beatmapset_count?: unknown;
+    pending_beatmapset_count: number;
     previous_usernames?: unknown;
     rank_history?: {
         data?: number[];
     };
-    ranked_beatmapset_count?: unknown;
-    guest_beatmapset_count?: number;
-    nominated_beatmapset_count?: number;
-    replays_watched_counts?: unknown;
+    ranked_beatmapset_count: unknown;
+    guest_beatmapset_count: number;
+    nominated_beatmapset_count: number;
+    replays_watched_counts: unknown;
     scores_best_count?: number;
     scores_first_count?: number;
     scores_recent_count?: number;
