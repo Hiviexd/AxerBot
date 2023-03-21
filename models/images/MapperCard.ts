@@ -31,7 +31,7 @@ export class MapperCard {
         subscribers:
             "https://cdn.discordapp.com/attachments/959908232736952420/1087122142967107675/bell-solid_1.png",
         total_mapped:
-            "https://cdn.discordapp.com/attachments/959908232736952420/1087122387163689060/file-pen-solid_3.png",
+            "https://cdn.discordapp.com/attachments/959908232736952420/1087773942871244850/map-solid_1.png",
         gd: "https://cdn.discordapp.com/attachments/959908232736952420/1087122243684933662/user-group-solid_1.png",
         ranked: "https://cdn.discordapp.com/attachments/959908232736952420/1087122340829212752/image_7.png",
         nominated:
@@ -128,7 +128,7 @@ export class MapperCard {
         this.ctx.drawImage(followersIcon, 50, 180);
         this.ctx.drawImage(subscribersIcon, 106, 180);
         this.ctx.drawImage(kudosuIcon, 162, 180);
-        this.ctx.fillText("Followers and Subscribers", 40, 143 + 15);
+        this.ctx.fillText("Followers / Subscribers / Kudosu", 40, 143 + 15);
 
         this.ctx.font = "500 10px Quicksand";
         this.ctx.fillText(
@@ -157,23 +157,103 @@ export class MapperCard {
     private async renderProfile() {
         if (!this.user_data) return;
 
+        const group = parseUsergroup(this.user_data);
+
         const image = await loadImage(`https://a.ppy.sh/${this.user_id}`);
 
         const flag = await loadImage(
-            `https://flagcdn.com/h24/${(
+            `https://purecatamphetamine.github.io/country-flag-icons/3x2/${(
                 this.user_data?.country_code || "br"
-            ).toLowerCase()}.jpg`
+            ).toUpperCase()}.svg`
         );
 
-        const group = parseUsergroup(this.user_data);
+        const positions = {
+            with_title: {
+                username: {
+                    x: 144,
+                    y: 58,
+                },
+                flag: {
+                    x: 144,
+                    y: 107,
+                },
+                country: {
+                    x: 175,
+                    y: 107,
+                },
+                title: {
+                    x: 144,
+                    y: 85,
+                },
+            },
+            default: {
+                username: {
+                    x: 144,
+                    y: 70,
+                },
+                flag: {
+                    x: 144,
+                    y: 100,
+                },
+                country: {
+                    x: 175,
+                    y: 100,
+                },
+                title: {
+                    x: 0,
+                    y: 0,
+                },
+            },
+        };
+
+        const ignoreUsergroups = [
+            "Nomination Assessment Team",
+            "Beatmap Nominators",
+            "Global Moderator",
+        ];
+
+        this.user_data.title = this.user_data.title || "";
+
+        if (this.user_data.title.includes("/"))
+            this.user_data.title = this.user_data.title
+                .split("/")
+                .filter((v, i) => !ignoreUsergroups.includes(v.trim()))
+                .join("/");
+
+        if (
+            this.user_data.title &&
+            config.ownersOsu.includes(this.user_id.toString())
+        )
+            this.user_data.title =
+                `${this.user_data.title} / AxerBot Developer`.trim();
+
+        if (
+            config.ownersOsu.includes(this.user_id.toString()) &&
+            !this.user_data.title
+        )
+            this.user_data.title = "AxerBot Developer";
+
+        if (!this.user_data.profile_colour)
+            this.user_data.profile_colour = group.colour as string;
+
+        function getPositions(user: User) {
+            if (user.title) return positions.with_title;
+
+            return positions.default;
+        }
 
         this.ctx.fillStyle = this.user_data.title
             ? this.user_data.profile_colour
             : (group.colour as string);
         this.ctx.fillRect(0, 0, 5, this.canvas.height);
 
-        this.roundedImage(147, 50, flag.width, flag.height, 5);
-        this.ctx.drawImage(flag, 147, 50);
+        const flag_position = getPositions(this.user_data).flag;
+        const username_position = getPositions(this.user_data).username;
+        const country_position = getPositions(this.user_data).country;
+        const title_position = getPositions(this.user_data).title;
+
+        this.roundedImage(flag_position.x, flag_position.y, 25, 17, 5);
+        this.ctx.drawImage(flag, flag_position.x, flag_position.y, 25, 17);
         this.ctx.restore();
 
         this.ctx.fillStyle = "#ffffff";
@@ -185,8 +265,26 @@ export class MapperCard {
                 180,
                 "25px"
             ),
-            146,
-            73 + 25
+            username_position.x,
+            username_position.y + 25
+        );
+
+        this.roundedImage(40, 40, 94, 94, 10);
+        this.ctx.drawImage(image, 40, 40, 94, 94);
+        this.ctx.restore();
+
+        this.ctx.font = "400 15px Quicksand";
+        this.ctx.fillStyle = "#FFFFFF";
+
+        this.ctx.fillText(
+            truncateCanvasText(
+                this.ctx,
+                this.user_data.country.name || "unknown",
+                150,
+                "15px"
+            ),
+            country_position.x,
+            country_position.y + 15
         );
 
         if (
@@ -197,47 +295,17 @@ export class MapperCard {
             this.ctx.fillStyle =
                 this.user_data.profile_colour || (group.colour as string);
 
-            const ignoreUsergroups = [
-                "Nomination Assessment Team",
-                "Beatmap Nominators",
-                "Global Moderator",
-            ];
-
-            let title = this.user_data.title || "";
-
-            if (title.includes("/"))
-                title = title
-                    .split("/")
-                    .filter((v, i) => !ignoreUsergroups.includes(v.trim()))
-                    .join("/");
-
-            if (
-                this.user_data.title &&
-                config.ownersOsu.includes(this.user_id.toString())
-            )
-                title = `${title} / AxerBot Developer`;
-
-            if (
-                config.ownersOsu.includes(this.user_id.toString()) &&
-                !this.user_data.title
-            )
-                title = "AxerBot Developer";
-
             this.ctx.fillText(
                 truncateCanvasText(
                     this.ctx,
-                    title || "Unknown Title",
+                    this.user_data.title || "Unknown Title",
                     180,
                     "15px"
                 ),
-                145,
-                106 + 13
+                title_position.x,
+                title_position.y + 15
             );
         }
-
-        this.roundedImage(40, 40, 94, 94, 10);
-        this.ctx.drawImage(image, 40, 40, 94, 94);
-        this.ctx.restore();
 
         return true;
     }
