@@ -99,9 +99,6 @@ export class MapperCard {
         return new Promise((resolve, reject) => {
             if (!this.user_data) return reject(new Error("Invalid user data"));
 
-            this.ctx.fillStyle = "#000000dd";
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
             axios(this.user_data.cover.custom_url || "", {
                 responseType: "arraybuffer",
             })
@@ -109,6 +106,7 @@ export class MapperCard {
                     loadImage(r.data)
                         .then((image) => {
                             this.fillImage(image);
+                            this.renderBackgroundOverlay();
                             resolve(true);
                         })
                         .catch(reject);
@@ -119,11 +117,17 @@ export class MapperCard {
                     )
                         .then((image) => {
                             this.fillImage(image);
+                            this.renderBackgroundOverlay();
                             resolve(true);
                         })
                         .catch(reject);
                 });
         });
+    }
+
+    private renderBackgroundOverlay() {
+        this.ctx.fillStyle = "#000000dd";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     private async renderFollowersAndSubs() {
