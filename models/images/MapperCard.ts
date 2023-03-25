@@ -18,6 +18,7 @@ import {
     UserBeatmapetsResponse,
 } from "../../types/beatmap";
 import config from "../../config.json";
+import axios from "axios";
 
 export class MapperCard {
     private user_data!: User | null;
@@ -95,18 +96,34 @@ export class MapperCard {
     }
 
     private async renderBackground() {
-        if (!this.user_data) return;
+        return new Promise((resolve, reject) => {
+            if (!this.user_data) return reject(new Error("Invalid user data"));
 
-        const image = await loadImage(
-            this.user_data.cover.custom_url ||
-                "https://raw.githubusercontent.com/ppy/osu-resources/master/osu.Game.Resources/Textures/Headers/news.png"
-        );
+            this.ctx.fillStyle = "#000000dd";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.fillImage(image);
-        this.ctx.fillStyle = "#000000dd";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        return true;
+            axios(this.user_data.cover.custom_url || "", {
+                responseType: "arraybuffer",
+            })
+                .then((r) => {
+                    loadImage(r.data)
+                        .then((image) => {
+                            this.fillImage(image);
+                            resolve(true);
+                        })
+                        .catch(reject);
+                })
+                .catch(() => {
+                    loadImage(
+                        "https://raw.githubusercontent.com/ppy/osu-resources/master/osu.Game.Resources/Textures/Headers/news.png"
+                    )
+                        .then((image) => {
+                            this.fillImage(image);
+                            resolve(true);
+                        })
+                        .catch(reject);
+                });
+        });
     }
 
     private async renderFollowersAndSubs() {
@@ -146,7 +163,7 @@ export class MapperCard {
         );
 
         this.ctx.fillText(
-            (this.user_data.kudosu.available || "0").toLocaleString("en-US"),
+            (this.user_data.kudosu.total || "0").toLocaleString("en-US"),
             185,
             181 + 10
         );
@@ -449,9 +466,19 @@ export class MapperCard {
         const container = createCanvas(250, 40);
         const containerCtx = container.getContext("2d");
 
-        const banner = await loadImage(this.beatmapsets.data.last.covers.cover);
+        try {
+            const banner = await loadImage(
+                this.beatmapsets.data.last.covers.cover
+            );
 
-        this.fillImage(banner, containerCtx);
+            this.fillImage(banner, containerCtx);
+        } catch (e) {
+            const banner = await loadImage(
+                "https://cdn.discordapp.com/attachments/959908232736952420/1089218606631501824/default-bg.7594e945.png"
+            );
+
+            this.fillImage(banner, containerCtx);
+        }
 
         containerCtx.fillStyle = "#00000080";
         containerCtx.fillRect(0, 0, container.width, container.height);
