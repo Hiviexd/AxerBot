@@ -50,7 +50,7 @@ burningtext.setExecuteFunction(async (command) => {
     } catch (e) {
         console.error(e);
         return command.editReply({
-            embeds: [generateErrorEmbed("Something went wrong, try again later.")],
+            embeds: [generateErrorEmbed("Something went wrong, either the API is down or you're trying to use non alphanumeric characters.")],
         });
     }
 });
