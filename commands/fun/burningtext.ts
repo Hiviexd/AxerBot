@@ -1,6 +1,6 @@
 import axios from "axios";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import { AttachmentBuilder, EmbedBuilder } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 import colors from "../../constants/colors";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 
@@ -44,24 +44,13 @@ burningtext.setExecuteFunction(async (command) => {
             name: "flame.gif",
         });
 
-        const embed = new EmbedBuilder()
-            .setTitle("🔥 Your burning text is ready!")
-            .setColor(colors.pink)
-            .setImage("attachment://flame.gif")
-            .setFooter({
-                text: `Requested by ${command.user.tag}`,
-                iconURL: command.user.avatarURL() || "",
-            })
-            .setTimestamp();
-
         return command.editReply({
-            embeds: [embed],
             files: [attachment],
         });
     } catch (e) {
         console.error(e);
         return command.editReply({
-            embeds: [generateErrorEmbed("Something went wrong!")],
+            embeds: [generateErrorEmbed("Something went wrong, try again later.")],
         });
     }
 });
