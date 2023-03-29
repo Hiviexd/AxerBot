@@ -1,4 +1,9 @@
-import { Client } from "discord.js";
+import {
+    ApplicationCommandType,
+    Client,
+    ComponentType,
+    InteractionType,
+} from "discord.js";
 import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
@@ -10,26 +15,38 @@ export default {
     name: "interactionCreate",
     execute(bot: Client) {
         bot.on("interactionCreate", async (interaction) => {
-            //addPrivateRoles(interaction);
-            if (interaction.isAutocomplete()) {
+            // ============ Autocomplete
+            if (
+                interaction.type ==
+                InteractionType.ApplicationCommandAutocomplete
+            ) {
                 helpAutocomplete(interaction);
                 return;
             }
 
-            if (interaction.isButton()) {
-                sendVerificationLink(interaction);
+            if (interaction.type == InteractionType.MessageComponent) {
+                // ============ Buttons
+                if (interaction.componentType == ComponentType.Button) {
+                    sendVerificationLink(interaction);
 
-                beatmapDownloader(interaction);
+                    beatmapDownloader(interaction);
 
-                previewVerificationMessage(interaction);
+                    previewVerificationMessage(interaction);
+                }
+
+                // ============ String Select Menu
+                if (interaction.componentType == ComponentType.StringSelect) {
+                    heardle(interaction);
+                }
             }
 
-            if (interaction.isStringSelectMenu()) {
-                heardle(interaction);
-            }
-
-            if (interaction.isChatInputCommand()) {
-                slashCommandHandler(bot, interaction);
+            if (interaction.type == InteractionType.ApplicationCommand) {
+                // ============ Chat input
+                if (
+                    interaction.commandType == ApplicationCommandType.ChatInput
+                ) {
+                    slashCommandHandler(bot, interaction);
+                }
             }
         });
     },

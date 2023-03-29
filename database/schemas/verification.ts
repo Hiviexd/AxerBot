@@ -13,6 +13,10 @@ export default new Schema({
         type: String,
         required: true,
     },
+    target_channel: {
+        type: String,
+        required: false,
+    },
     code: {
         type: String,
         required: true,
@@ -20,5 +24,9 @@ export default new Schema({
     createdAt: {
         type: Date,
         required: true,
+    },
+    type: {
+        type: String,
+        default: "verification",
     },
 });

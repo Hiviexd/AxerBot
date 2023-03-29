@@ -1,6 +1,7 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     EmbedBuilder,
     Interaction,
@@ -8,7 +9,7 @@ import {
 import colors from "../../constants/colors";
 import { verifications } from "../../database";
 
-export default async (interaction: Interaction) => {
+export default async (interaction: ButtonInteraction) => {
     if (!interaction.isButton()) return;
 
     const targets = interaction.customId.split("|");
@@ -17,19 +18,11 @@ export default async (interaction: Interaction) => {
 
     await interaction.deferReply({ ephemeral: true });
 
-    if (interaction.user.id != targets[1])
-        return interaction.editReply({
-            content: `**You're not allowed to use this!**`,
-        });
-
-    if (!interaction.guild) return;
+    if (interaction.user.id != targets[1]) if (!interaction.guild) return;
 
     let targetVerification = await verifications.findById(targets[2]);
 
-    if (!targetVerification)
-        return interaction.editReply({
-            content: `**You don't have any pending verification here... If this is an error, leave and join the server again!**`,
-        });
+    if (!targetVerification) return;
 
     const embed = new EmbedBuilder({
         title: "🔍 Verify your account",
@@ -41,7 +34,7 @@ export default async (interaction: Interaction) => {
             },
         ],
         thumbnail: {
-            url: interaction.guild.iconURL() || "",
+            url: interaction.guild?.iconURL() || "",
         },
     }).setColor(colors.yellow);
 
@@ -54,8 +47,9 @@ export default async (interaction: Interaction) => {
         }),
     ]);
 
-    interaction.editReply({
+    interaction.followUp({
         embeds: [embed],
         components: [buttons],
+        ephemeral: true,
     });
 };

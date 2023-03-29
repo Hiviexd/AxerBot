@@ -3,6 +3,11 @@ import { verifications } from "./../../../database";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
 import validateVerificationRequirements from "../../../modules/verification/client/validateVerificationRequirements";
 import { consoleLog } from "../../../helpers/core/logger";
+import {
+    IVerificationObject,
+    VerificationType,
+} from "../../verification/client/GenerateAuthToken";
+import { validateVerificationSync } from "../../verification/client/validateVerificationSync";
 
 export default {
     settings: {
@@ -21,31 +26,39 @@ export default {
             `Command executed by ${pm.user.ircUsername} with code ${code}`
         );
 
-        if (isNaN(code))
-            return pm.user.sendMessage("[BOT]: Invalid code provided!");
+        if (isNaN(code)) return pm.user.sendMessage("Invalid code provided!");
 
         const targetVerification = await verifications.findOne({
             code,
         });
 
         if (!targetVerification)
-            return pm.user.sendMessage("[BOT]: Invalid code! Try again...");
+            return pm.user.sendMessage("Invalid code! Try again...");
 
         const partialUserData = await pm.user.fetchFromAPI();
 
         await osuApi.fetch.user(partialUserData.id.toString()).then((data) => {
             if (data.status != 200 || !data.data)
                 return pm.user.sendMessage(
-                    "[BOT]: We can't find your account! Try again..."
+                    "We can't find your account! Try again..."
                 );
 
-            validateVerificationRequirements(
-                data.data,
-                targetVerification.target_guild,
-                targetVerification.target_user,
-                targetVerification._id,
-                pm
-            );
+            switch (targetVerification.type) {
+                case VerificationType.default:
+                    validateVerificationRequirements(
+                        data.data,
+                        targetVerification as unknown as IVerificationObject,
+                        pm
+                    );
+                    break;
+                case VerificationType.validate:
+                    validateVerificationSync(
+                        data.data,
+                        targetVerification as unknown as IVerificationObject,
+                        pm
+                    );
+                    break;
+            }
         });
     },
 };

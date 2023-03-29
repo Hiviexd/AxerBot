@@ -3,12 +3,19 @@ import crypto from "crypto";
 import { users, verifications } from "../../../database";
 import createNewUser from "../../../database/utils/createNewUser";
 
+export enum VerificationType {
+    "validate" = "verification_validate",
+    "default" = "verification",
+}
+
 export interface IVerificationObject {
     target_guild: string;
     target_user: string;
     createdAt: Date;
     _id: string;
     code: number;
+    type: VerificationType;
+    target_channel?: string;
 }
 
 function generateRandomNumber() {
@@ -18,7 +25,9 @@ function generateRandomNumber() {
 }
 
 export default async (
-    user: GuildMember
+    user: GuildMember,
+    type?: VerificationType,
+    channel?: string
 ): Promise<{
     status: number;
     message: string;
@@ -36,6 +45,9 @@ export default async (
         target_guild: user.guild.id,
         target_user: user.id,
         createdAt: new Date(),
+        type: type || VerificationType.default,
+        target_channel:
+            type == VerificationType.validate ? (channel as string) : undefined,
     };
 
     if (!user_db)

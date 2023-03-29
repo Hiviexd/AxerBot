@@ -13,6 +13,7 @@ import verificationSetChannel from "./subcommands/verification/setChannel";
 import verificationSetFlags from "./subcommands/verification/setFlags";
 import verificationSetMessage from "./subcommands/verification/setMessage";
 import verificationStatus from "./subcommands/verification/status";
+import verificationSync from "./subcommands/verification/sync";
 
 const verificationCommand = new SlashCommand(
     "verification",
@@ -35,6 +36,7 @@ const verificationCommand = new SlashCommand(
 verificationCommand.addSubcommand(verificationStatus);
 verificationCommand.addSubcommand(verificationSetDisabled);
 verificationCommand.addSubcommand(verificationSetEnabled);
+verificationCommand.addSubcommand(verificationSync);
 
 const commandGroupSET = new SlashCommandSubcommandGroup(
     "set",
