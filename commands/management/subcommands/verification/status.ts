@@ -2,6 +2,8 @@ import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import colors from "../../../../constants/colors";
 import { guilds } from "../../../../database";
+import { IMapperRole } from "./addMapperRole";
+import getEmoji from "../../../../helpers/text/getEmoji";
 
 const verificationStatus = new SlashCommandSubcommand(
     "status",
@@ -64,6 +66,10 @@ verificationStatus.setExecuteFunction(async (command) => {
                 value: getRankRoles(),
             },
             {
+                name: "Mapper Roles",
+                value: getMapperRoles(),
+            },
+            {
                 name: "Welcome Message",
                 value: guild.verification.message,
                 /**
@@ -81,6 +87,33 @@ verificationStatus.setExecuteFunction(async (command) => {
     command.editReply({
         embeds: [embed],
     });
+
+    function getMapperRoles() {
+        if (!guild) return "none...";
+
+        const roles =
+            (guild.verification.mapper_roles as IMapperRole[]) ||
+            ([] as IMapperRole[]);
+
+        const emojis: { [key: string]: string } = {
+            r: getEmoji("ranked"),
+            l: getEmoji("loved"),
+            a: getEmoji("pending"),
+        };
+
+        if (roles.length == 0) return "none...";
+
+        return roles
+            .map(
+                (r, i) =>
+                    `${emojis[r.target]} **|** ${r.roles
+                        .map((roleId) => `<@&${roleId}>`)
+                        .join(", ")} **|** [${r.modes.join(", ")}] **|** ${
+                        r.min
+                    } -> ${r.max}`
+            )
+            .join("\n");
+    }
 
     function getFlags() {
         if (!guild) return;
