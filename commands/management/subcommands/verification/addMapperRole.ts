@@ -34,9 +34,9 @@ export interface IMapperRole {
 
 const verificationAddMapperRole = new SlashCommandSubcommand(
     "mapperrole",
-    "Sets the roles that users with ranked or loved beatmaps",
+    "Sets roles based on the amount of a user's Ranked/Loved/Unranked beatmaps",
     {
-        important: "It doesn't includes Guest Difficulty beatmaps",
+        important: "Guest difficulty beatmaps are not counted",
     },
     [PermissionFlagsBits.ManageGuild]
 );
@@ -61,7 +61,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
     const mapperTitles: { [key: string]: string } = {
         r: `Ranked Mappers`,
         l: `Loved Mappers`,
-        a: `Aspirant Mappers`,
+        a: `Unranked Mappers`,
     };
 
     const beatmapTitles: { [key: string]: string } = {
@@ -73,7 +73,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
     const mapperTitlesWithEmoji: { [key: string]: string } = {
         r: `${getEmoji("ranked")} Ranked Mappers`,
         l: `${getEmoji("loved")} Loved Mappers`,
-        a: `${getEmoji("graveyard")} Aspirant Mappers`,
+        a: `${getEmoji("graveyard")} Unranked Mappers`,
     };
 
     const entry: IMapperRole = {
@@ -101,7 +101,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                     value: MapperRoleType.LovedMapper,
                 },
                 {
-                    label: "Aspirant Mappers",
+                    label: "Unranked Mappers",
                     value: MapperRoleType.AspirantMapper,
                 }
             )
@@ -110,7 +110,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
         generateStepEmbedWithChoices<MapperRoleType[]>(
             command,
             "Mapper Group",
-            "Select the group of users to recive roles",
+            "Select the group of users to receive roles",
             selectMenu,
             undefined,
             true
@@ -194,7 +194,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
         generateStepEmbedWithChoices<string[]>(
             command,
             "Roles Selection",
-            `Select roles that ${mapperTitles[entry.target]} will recive`,
+            `Select roles that ${mapperTitles[entry.target]} will receive`,
             selectMenu,
             undefined,
             true
@@ -218,7 +218,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
 
     function sendConfirm() {
         const embed = new EmbedBuilder()
-            .setTitle("This is what you want?")
+            .setTitle("Please confirm your configuration")
             .addFields(
                 {
                     name: "Target",
@@ -247,8 +247,8 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
 
         generateConfirmEmbedWithChoices(
             command,
-            "This is what you want?",
-            "Check below what will be added to the system",
+            "Please confirm your configuration",
+            "Are you sure you want to save this configuration?",
             [
                 {
                     label: "Edit Roles",
@@ -280,7 +280,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
             if (e.reason == "timeout")
                 return command.editReply({
                     embeds: [
-                        generateErrorEmbed("Don't leave me waiting too much!"),
+                        generateErrorEmbed("Timed out, please try again!"),
                     ],
                 });
 
@@ -300,7 +300,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                 .setTitle(
                     `Minimum amount of ${beatmapTitles[entry.target]} beatmaps`
                 )
-                .setDescription("Type here and send via message")
+                .setDescription("Send a message with the minimum amount of beatmaps you want")
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",
@@ -353,7 +353,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                 .setTitle(
                     `Max amount of ${beatmapTitles[entry.target]} beatmaps`
                 )
-                .setDescription("Type here and send via message")
+                .setDescription("Send a message with the maximum amount of beatmaps you want")
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",
@@ -387,7 +387,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                                 return command.editReply({
                                     embeds: [
                                         generateErrorEmbed(
-                                            "Don't leave me waiting too much!"
+                                            "Timed out, please try again!"
                                         ),
                                     ],
                                 });
