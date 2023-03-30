@@ -95,13 +95,12 @@ export async function generateConfirmEmbedWithChoices(
                             });
 
                         option.callback(action);
+                        collector.stop("UserChoice");
 
                         resolve({
                             reason: "resolve",
                             data: action as string,
                         });
-
-                        collector.stop("UserChoice");
                     });
             });
 

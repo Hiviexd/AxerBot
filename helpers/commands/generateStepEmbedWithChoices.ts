@@ -71,12 +71,12 @@ export async function generateStepEmbedWithChoices<T = string[]>(
                             components: [],
                         })
                         .then(() => {
+                            collector.stop("UserChoice");
+
                             resolve({
                                 reason: "resolve",
                                 data: select.values as any,
                             });
-
-                            collector.stop("UserChoice");
                         });
                 }
             );
