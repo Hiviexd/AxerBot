@@ -7,6 +7,7 @@ import {
 
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../helpers/osu/url/checkOsuURL";
+import { antiDumbass } from "../modules/verification/message/antiDumbass";
 
 export default {
     name: "messageCreate",
@@ -32,6 +33,7 @@ export default {
 
             sendQuotes(message, bot);
             checkOsuURL(message);
+            antiDumbass(message);
             // checkOsuAttachment(message); disabled cuz my brain sucks
         });
     },
