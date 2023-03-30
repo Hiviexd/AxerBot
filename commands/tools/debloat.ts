@@ -52,8 +52,6 @@ debloat.setExecuteFunction(async (command) => {
     const attachment = command.options.getAttachment("audio", true);
     const bitrate = command.options.getString("target_bitrate", true);
 
-    if (!attachment.attachment) return;
-
     const mimes = ["audio/mpeg"];
 
     const mimeNames: { [key: string]: string } = {
