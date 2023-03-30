@@ -1,29 +1,37 @@
 import {
     ActionRowBuilder,
+    AnySelectMenuInteraction,
     CommandInteraction,
     ComponentType,
     EmbedBuilder,
     GuildResolvable,
     InteractionCollector,
+    InteractionType,
+    RoleSelectMenuBuilder,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
     TextBasedChannel,
+    UserSelectMenuBuilder,
 } from "discord.js";
 import crypto from "crypto";
 import colors from "../../constants/colors";
 
-interface IStepWithMenuPromise {
-    reason: "timeout" | "resolve";
-    data: string[];
-}
-
-export async function generateStepEmbedWithChoices(
+export async function generateStepEmbedWithChoices<T = string[]>(
     command: CommandInteraction,
     title: string,
     description: string,
-    selectMenu: StringSelectMenuBuilder,
-    _embed?: EmbedBuilder
+    selectMenu:
+        | StringSelectMenuBuilder
+        | RoleSelectMenuBuilder
+        | UserSelectMenuBuilder,
+    _embed?: EmbedBuilder,
+    removeContent?: boolean
 ) {
+    interface IStepWithMenuPromise {
+        reason: "timeout" | "resolve";
+        data: T;
+    }
+
     const promise: Promise<IStepWithMenuPromise> = new Promise(
         (resolve, reject) => {
             const handshakeId = crypto.randomUUID();
@@ -42,15 +50,17 @@ export async function generateStepEmbedWithChoices(
                 channel: command.channel as TextBasedChannel,
                 guild: command.guild as GuildResolvable,
                 time: 60000,
-                filter: (i) => i.user.id == command.user.id,
-                componentType: ComponentType.StringSelect,
+                filter: (i) =>
+                    i.user.id == command.user.id &&
+                    i.type == InteractionType.MessageComponent &&
+                    i.componentType == selectMenu.data.type,
             });
 
             selectMenu.setCustomId(handshakeId);
 
             collector.on(
                 "collect",
-                async (select: StringSelectMenuInteraction) => {
+                async (select: AnySelectMenuInteraction) => {
                     if (select.customId != handshakeId) return;
                     await select.deferUpdate();
 
@@ -63,7 +73,7 @@ export async function generateStepEmbedWithChoices(
                         .then(() => {
                             resolve({
                                 reason: "resolve",
-                                data: select.values,
+                                data: select.values as any,
                             });
 
                             collector.stop("UserChoice");
@@ -79,15 +89,22 @@ export async function generateStepEmbedWithChoices(
                     });
             });
 
-            const actionRow =
-                new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-                    selectMenu
-                );
+            const actionRow = new ActionRowBuilder<
+                typeof selectMenu
+            >().addComponents(selectMenu);
 
-            command.editReply({
-                embeds: [embed],
-                components: [actionRow],
-            });
+            command.editReply(
+                removeContent
+                    ? {
+                          content: "",
+                          embeds: [embed],
+                          components: [actionRow],
+                      }
+                    : {
+                          embeds: [embed],
+                          components: [actionRow],
+                      }
+            );
         }
     );
 

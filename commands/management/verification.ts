@@ -1,11 +1,13 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandSubcommandGroup";
 import verificationAddGroupRole from "./subcommands/verification/addGroupRole";
+import verificationAddMapperRole from "./subcommands/verification/addMapperRole";
 import verificationAddRankRole from "./subcommands/verification/addRankRole";
 import verificationAddRole from "./subcommands/verification/addRole";
 import verificationSetDisabled from "./subcommands/verification/disable";
 import verificationSetEnabled from "./subcommands/verification/enable";
 import verificationRemoveGroupRole from "./subcommands/verification/removeGroupRole";
+import verificationRemoveMapperRole from "./subcommands/verification/removeMapperRole";
 import verificationRemoveRankRole from "./subcommands/verification/removeRankRole";
 import verificationRemoveRole from "./subcommands/verification/removeRole";
 import verificationSetButton from "./subcommands/verification/setButton";
@@ -57,7 +59,8 @@ const commandGroupADD = new SlashCommandSubcommandGroup(
 commandGroupADD
     .addCommand(verificationAddGroupRole)
     .addCommand(verificationAddRankRole)
-    .addCommand(verificationAddRole);
+    .addCommand(verificationAddRole)
+    .addCommand(verificationAddMapperRole);
 
 const commandGroupREMOVE = new SlashCommandSubcommandGroup(
     "remove",
@@ -67,7 +70,8 @@ const commandGroupREMOVE = new SlashCommandSubcommandGroup(
 commandGroupREMOVE
     .addCommand(verificationRemoveRankRole)
     .addCommand(verificationRemoveRole)
-    .addCommand(verificationRemoveGroupRole);
+    .addCommand(verificationRemoveGroupRole)
+    .addCommand(verificationRemoveMapperRole);
 
 verificationCommand
     .addSubcommandGroup(commandGroupADD)

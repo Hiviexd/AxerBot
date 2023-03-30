@@ -2,6 +2,11 @@ import { Guild, GuildMember } from "discord.js";
 import { guilds, users, verifications } from "../../../database";
 import { User, UserGroup } from "../../../types/user";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
+import { IMapperRole } from "../../../commands/management/subcommands/verification/addMapperRole";
+import { HTTPResponse } from "../../../types/qat";
+import { Beatmapset } from "../../../types/beatmap";
+import { IHTTPResponse } from "../../../types/http";
+import { bot } from "../../..";
 
 export async function runVerificationChecks(
     guild: Guild,
@@ -168,6 +173,110 @@ export async function runVerificationChecks(
                 }
             } catch (e) {
                 console.log(e);
+            }
+        }
+    }
+
+    if (guild_db.verification.mapper_roles) {
+        const roles = guild_db.verification.mapper_roles as IMapperRole[];
+
+        const beatmaps: {
+            [key: string]: Beatmapset[];
+        } = {
+            r: await fetchBeatmapsWithMode(
+                ["osu", "taiko", "fruits", "mania"],
+                "ranked"
+            ),
+            l: await fetchBeatmapsWithMode(
+                ["osu", "taiko", "fruits", "mania"],
+                "loved"
+            ),
+            a: await fetchPendingAndGraveyard([
+                "osu",
+                "taiko",
+                "fruits",
+                "mania",
+            ]),
+        };
+
+        const allBeatmaps = ([] as Beatmapset[])
+            .concat(beatmaps.r)
+            .concat(beatmaps.l)
+            .concat(beatmaps.a);
+
+        for (const role of roles) {
+            checkFor(role);
+        }
+
+        async function fetchBeatmapsWithMode(modes: string[], status?: string) {
+            let maps: Beatmapset[] = [];
+
+            for (const mode of modes) {
+                const b = await osuApi.fetch.searchBeatmapset(
+                    `creator=${user.id}`,
+                    mode,
+                    status
+                );
+
+                if (b.status == 200 && b.data) {
+                    maps = maps.concat(b.data.beatmapsets);
+                }
+            }
+
+            return maps;
+        }
+
+        async function fetchPendingAndGraveyard(modes: string[]) {
+            let maps: Beatmapset[] = [];
+
+            const pending = await osuApi.fetch.basicUserBeatmaps(
+                user.id,
+                "pending"
+            );
+
+            if (!pending.data || pending.status != 200)
+                return [] as Beatmapset[];
+
+            const graveyard = await fetchBeatmapsWithMode(modes, "graveyard");
+
+            maps = maps.concat(pending.data).concat(graveyard);
+
+            return maps;
+        }
+
+        async function checkFor(role: IMapperRole) {
+            if (!guild_db) return;
+
+            const beatmapCount = {
+                r: user.ranked_and_approved_beatmapset_count,
+                l: user.loved_beatmapset_count,
+                a:
+                    user.graveyard_beatmapset_count +
+                    user.pending_beatmapset_count,
+            };
+
+            if (beatmapCount[role.target] < role.min) return;
+            if (beatmapCount[role.target] > role.max) return;
+
+            if (isBeatmapAllowed()) {
+                for (const roleId of role.roles) {
+                    await member.roles.add(roleId);
+                }
+            }
+
+            function isBeatmapAllowed() {
+                let r = false;
+
+                for (const mode of role.modes) {
+                    if (
+                        allBeatmaps.filter((s) =>
+                            s.beatmaps?.filter((b) => b.mode == mode)
+                        ).length != 0
+                    )
+                        r = true;
+                }
+
+                return r;
             }
         }
     }

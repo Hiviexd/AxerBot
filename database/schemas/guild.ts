@@ -30,6 +30,7 @@ export default new Schema({
                 username: true,
                 default_roles: [],
                 group_roles: [],
+                mapper_roles: [],
             },
             button: true,
         },
