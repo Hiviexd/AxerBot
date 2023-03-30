@@ -7,11 +7,9 @@ export async function antiDumbass(message: Message) {
 
     if (!guild) return;
 
-    if (
-        guild.verification.channel != message.channel.id &&
-        !guild.verification.enable
-    )
-        return;
+    if (!guild.verification.enable) return;
+
+    if (guild.verification.channel != message.channel.id) return;
 
     if (!message.content.includes("!verify")) return;
 
