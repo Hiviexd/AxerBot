@@ -18,7 +18,9 @@ export default async (interaction: ButtonInteraction) => {
 
     await interaction.deferReply({ ephemeral: true });
 
-    if (interaction.user.id != targets[1]) if (!interaction.guild) return;
+    if (interaction.user.id != targets[1]) return interaction.editReply("**You're not allowed to use this!**")
+    
+    if (!interaction.guild) return;
 
     let targetVerification = await verifications.findById(targets[2]);
 
