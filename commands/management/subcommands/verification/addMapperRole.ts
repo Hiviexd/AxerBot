@@ -300,7 +300,9 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                 .setTitle(
                     `Minimum amount of ${beatmapTitles[entry.target]} beatmaps`
                 )
-                .setDescription("Send a message with the minimum amount of beatmaps you want")
+                .setDescription(
+                    "Send a message with the minimum amount of beatmaps you want"
+                )
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",
@@ -353,7 +355,9 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                 .setTitle(
                     `Max amount of ${beatmapTitles[entry.target]} beatmaps`
                 )
-                .setDescription("Send a message with the maximum amount of beatmaps you want")
+                .setDescription(
+                    "Send a message with the maximum amount of beatmaps you want"
+                )
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",

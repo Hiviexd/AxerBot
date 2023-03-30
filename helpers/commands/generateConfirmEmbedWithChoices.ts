@@ -75,9 +75,17 @@ export async function generateConfirmEmbedWithChoices(
 
                 const action = button.customId.split(",").pop()?.trim();
 
-                if (action == "confirm") return confirmCallback();
-                if (action == "cancel" && showCancel)
-                    return generateWaitEmbed("Ok", "Job cancellated");
+                if (action == "confirm") {
+                    collector.stop("UserChoice");
+                    return confirmCallback();
+                }
+                if (action == "cancel" && showCancel) {
+                    collector.stop("UserChoice");
+
+                    return command.editReply({
+                        embeds: [generateWaitEmbed("Ok", "Job cancellated")],
+                    });
+                }
 
                 command
                     .editReply({
@@ -95,8 +103,8 @@ export async function generateConfirmEmbedWithChoices(
                             });
 
                         option.callback(action);
-                        collector.stop("UserChoice");
 
+                        collector.stop("UserChoice");
                         resolve({
                             reason: "resolve",
                             data: action as string,
