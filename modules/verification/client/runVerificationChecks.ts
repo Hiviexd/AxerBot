@@ -2,7 +2,10 @@ import { Guild, GuildMember } from "discord.js";
 import { guilds, users, verifications } from "../../../database";
 import { User, UserGroup } from "../../../types/user";
 import osuApi from "../../../helpers/osu/fetcher/osuApi";
-import { IMapperRole } from "../../../commands/management/subcommands/verification/addMapperRole";
+import {
+    IMapperRole,
+    MapperRoleType,
+} from "../../../commands/management/subcommands/verification/addMapperRole";
 import { HTTPResponse } from "../../../types/qat";
 import { Beatmapset } from "../../../types/beatmap";
 import { IHTTPResponse } from "../../../types/http";
@@ -266,6 +269,7 @@ export async function runVerificationChecks(
 
             function isBeatmapAllowed() {
                 let r = false;
+                let isRanked = false;
 
                 for (const mode of role.modes) {
                     if (
@@ -274,7 +278,40 @@ export async function runVerificationChecks(
                         ).length != 0
                     )
                         r = true;
+
+                    if (role.target == MapperRoleType.AspirantMapper) {
+                        if (
+                            allBeatmaps.filter((s) =>
+                                s.beatmaps?.filter((b) =>
+                                    ["wip", "graveyard", "pending"].includes(
+                                        b.status
+                                    )
+                                )
+                            ).length != 0
+                        )
+                            isRanked = true;
+                    } else {
+                        if (
+                            allBeatmaps.filter((s) =>
+                                s.beatmaps?.filter((b) =>
+                                    [
+                                        "ranked",
+                                        "approved",
+                                        "qualified",
+                                    ].includes(b.status)
+                                )
+                            ).length != 0
+                        )
+                            isRanked = true;
+                    }
                 }
+
+                if (
+                    r == true &&
+                    role.target == MapperRoleType.AspirantMapper &&
+                    isRanked
+                )
+                    return false;
 
                 return r;
             }
