@@ -34,7 +34,7 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
         return command.editReply({
             embeds: [
                 generateWaitEmbed(
-                    "Ayo",
+                    "Error",
                     "You need to add a Mapper Role before use this command."
                 ),
             ],
@@ -43,7 +43,7 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
     const mapperTitles: { [key: string]: string } = {
         r: `Ranked Mappers`,
         l: `Loved Mappers`,
-        a: `Aspirant Mappers`,
+        a: `Unranked Mappers`,
     };
 
     const menu = new StringSelectMenuBuilder().setOptions(
@@ -85,7 +85,7 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
             if (e.reason == "timeout")
                 return command.editReply({
                     embeds: [
-                        generateErrorEmbed("Don't leave me waiting too much!"),
+                        generateErrorEmbed("Timed out, please try again!"),
                     ],
                 });
 
