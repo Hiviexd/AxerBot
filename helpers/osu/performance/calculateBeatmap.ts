@@ -6,89 +6,89 @@ import { calculateAccuracy } from "./calculateAccuracy";
 import { getRulesetById } from "./getRuleset";
 
 export interface BeatmapCalculationResult {
-	beatmap: RulesetBeatmap;
-	difficulty: DifficultyAttributes;
-	performance: BeatmapPerformance[];
+    beatmap: RulesetBeatmap;
+    difficulty: DifficultyAttributes;
+    performance: BeatmapPerformance[];
 }
 
 interface BeatmapPerformance {
-	pp: number;
-	acc: number;
+    pp: number;
+    acc: number;
 }
 
 export function calculateOsuBeatmap(osu_file: string, mods?: string) {
-	return calculateBeatmap(osu_file, 0, mods);
+    return calculateBeatmap(osu_file, 0, mods);
 }
 
 export function calculateTaikoBeatmap(osu_file: string, mods?: string) {
-	return calculateBeatmap(osu_file, 1, mods);
+    return calculateBeatmap(osu_file, 1, mods);
 }
 
 export function calculateFruitsBeatmap(osu_file: string, mods?: string) {
-	return calculateBeatmap(osu_file, 2, mods);
+    return calculateBeatmap(osu_file, 2, mods);
 }
 
 export function calculateManiaBeatmap(osu_file: string, mods?: string) {
-	return calculateBeatmap(osu_file, 3, mods);
+    return calculateBeatmap(osu_file, 3, mods);
 }
 
 export function generateRulesetBeatmap(
-	osu_file: string,
-	rulesetId: number,
-	mods?: string
+    osu_file: string,
+    rulesetId: number,
+    mods?: string
 ) {
-	const decoder = new BeatmapDecoder();
-	const ruleset = getRulesetById(rulesetId);
+    const decoder = new BeatmapDecoder();
+    const ruleset = getRulesetById(rulesetId);
 
-	const parsed = decoder.decodeFromString(osu_file);
-	const combination = ruleset.createModCombination(mods);
+    const parsed = decoder.decodeFromString(osu_file);
+    const combination = ruleset.createModCombination(mods);
 
-	const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
+    const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
 
-	return beatmap;
+    return beatmap;
 }
 
 export function calculateBeatmap(
-	osu_file: string,
-	rulesetId: number,
-	mods?: string
+    osu_file: string,
+    rulesetId: number,
+    mods?: string
 ) {
-	const decoder = new BeatmapDecoder();
-	const ruleset = getRulesetById(rulesetId);
+    const decoder = new BeatmapDecoder();
+    const ruleset = getRulesetById(rulesetId);
 
-	const parsed = decoder.decodeFromString(osu_file);
-	const combination = ruleset.createModCombination(mods);
+    const parsed = decoder.decodeFromString(osu_file);
+    const combination = ruleset.createModCombination(mods);
 
-	const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
-	const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
-	const difficulty = difficultyCalculator.calculateWithMods(combination);
+    const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
+    const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
+    const difficulty = difficultyCalculator.calculateWithMods(combination);
 
-	const scoreInfo = new ScoreInfo();
-	const accuracy = [100, 99, 98, 95];
+    const scoreInfo = new ScoreInfo();
+    const accuracy = [100, 99, 98, 95];
 
-	const performance = accuracy.map((acc) => {
-		scoreInfo.maxCombo = beatmap.maxCombo;
-		scoreInfo.rulesetId = ruleset.id;
-		scoreInfo.beatmap = createBeatmapInfo(beatmap);
-		scoreInfo.statistics = generateHitStatistics({
-			accuracy: acc,
-			beatmap,
-		});
-		scoreInfo.accuracy = calculateAccuracy(scoreInfo);
+    const performance = accuracy.map((acc) => {
+        scoreInfo.maxCombo = beatmap.maxCombo;
+        scoreInfo.rulesetId = ruleset.id;
+        scoreInfo.beatmap = createBeatmapInfo(beatmap);
+        scoreInfo.statistics = generateHitStatistics({
+            accuracy: acc,
+            beatmap,
+        });
+        scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
-		const performanceCalculator = ruleset.createPerformanceCalculator(
-			difficulty,
-			scoreInfo
-		);
+        const performanceCalculator = ruleset.createPerformanceCalculator(
+            difficulty,
+            scoreInfo
+        );
 
-		const pp = Math.round(performanceCalculator.calculate());
+        const pp = Math.round(performanceCalculator.calculate());
 
-		return { pp, acc };
-	}) as BeatmapPerformance[];
+        return { pp, acc };
+    }) as BeatmapPerformance[];
 
-	return {
-		beatmap,
-		difficulty,
-		performance,
-	} as BeatmapCalculationResult;
+    return {
+        beatmap,
+        difficulty,
+        performance,
+    } as BeatmapCalculationResult;
 }

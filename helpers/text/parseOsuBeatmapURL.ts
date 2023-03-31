@@ -106,6 +106,15 @@ function parseOsuBeatmapHash(hash: string[]) {
             beatmap_id: hash[1],
         };
 
+    // #taiko/123
+    if (!isNaN(Number(hash[0])))
+        return {
+            error: false,
+            mode: null,
+            message: "found complete with mode",
+            beatmap_id: Number(hash[0]).toString(),
+        };
+
     return {
         error: true,
         message: "invalid hash",

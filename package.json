@@ -47,7 +47,7 @@
 		"mp3-cutter": "^1.0.6",
 		"osu-beatmapset-downloader": "^1.1.2",
 		"osu-catch-stable": "^3.2.1",
-		"osu-classes": "^2.0.0",
+		"osu-classes": "^2.2.0",
 		"osu-downloader": "^0.8.1",
 		"osu-mania-stable": "^4.0.2",
 		"osu-parsers": "^3.3.3",
@@ -58,6 +58,7 @@
 		"owoify-js": "^1.0.7",
 		"spectro": "^1.0.1",
 		"spectrogram": "^0.0.7",
+		"statuses": "^2.0.1",
 		"tr46": "^0.0.3",
 		"ts-mixer": "^6.0.0",
 		"ts-node": "^10.6.0",
@@ -95,6 +96,7 @@
 		"@types/lodash": "^4.14.180",
 		"@types/node-fetch": "^2.6.1",
 		"@types/numeral": "^2.0.2",
+		"@types/statuses": "^2.0.1",
 		"@types/when": "^2.4.34"
 	}
 }

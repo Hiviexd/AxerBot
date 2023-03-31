@@ -5,16 +5,21 @@ import {
     consoleLog,
 } from "../../helpers/core/logger";
 import { BanchoCommands } from "./commands";
+import { calculateBeatmapFromAction } from "./helpers/calculateBeatmap";
 
 export const bancho = new BanchoClient({
     username: process.env.IRC_USERNAME || "eae",
     password: process.env.IRC_PASSWORD || "eae",
     port: Number(process.env.IRC_PORT) || 6667,
     apiKey: process.env.OSU_API_KEY,
+    botAccount: true,
 });
 
 bancho.on("PM", (pm) => {
     if (pm.user.ircUsername == process.env.IRC_USERNAME) return;
+
+    if (pm.getAction()) return calculateBeatmapFromAction(pm);
+
     if (pm.content[0] != "!") return;
 
     const args = pm.content.split(" ");
