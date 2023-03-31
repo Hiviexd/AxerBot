@@ -35,7 +35,7 @@ async function qatTracking(bot: Client) {
         );
 
     // dickwads and people who don't want to be tracked go here
-    const blacklistedBNs = [9487458, 10959501, 33599, 3558897];
+    const blacklistedBNs = [9487458, 10959501, 33599];
 
     if (storedData.length != 0) {
         for (const user of liveData.data) {
