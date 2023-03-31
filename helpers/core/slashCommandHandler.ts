@@ -11,6 +11,8 @@ import { AxerCommands } from "../../commands";
 import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
+import { Chance } from "chance";
+
 export function checkMemberPermissions(
     member: GuildMember,
     permissions: PermissionResolvable[]
@@ -43,27 +45,21 @@ export default async function commandHandler(
     if (!targetCommand.allowDM && !event.channel)
         return event.reply({
             embeds: [
-                generateErrorEmbed(
-                    "You need to run this command in a guild aaa!"
-                ),
+                generateErrorEmbed("You need to run this command in a guild!"),
             ],
         }); // Command error message
 
     if (!targetCommand.allowDM && event.channel?.type == ChannelType.DM)
         return event.reply({
             embeds: [
-                generateErrorEmbed(
-                    "You need to run this command in a guild bbb!"
-                ),
+                generateErrorEmbed("You need to run this command in a guild!"),
             ],
         }); // Command error message
 
     if (targetCommand.permissions.length != 0 && !event.member)
         return event.reply({
             embeds: [
-                generateErrorEmbed(
-                    "You need to run this command in a guild ccc!"
-                ),
+                generateErrorEmbed("You need to run this command in a guild!"),
             ],
         });
 
@@ -79,15 +75,24 @@ export default async function commandHandler(
         });
     }
 
-    try {
-        if (event.options.getSubcommand() || event.options.getSubcommandGroup())
-            return targetCommand.runSubcommand(event, {
-                name: event.options.getSubcommand(),
-                group: event.options.getSubcommandGroup(),
-            });
-    } catch (e) {
-        void {};
-    }
+    const jokeChance = new Chance();
 
-    targetCommand.run(event);
+    if (jokeChance.bool({ likelihood: 50 })) {
+        return event.reply('Say "please master" <:trol:1091493021243150416>');
+    } else {
+        try {
+            if (
+                event.options.getSubcommand() ||
+                event.options.getSubcommandGroup()
+            )
+                return targetCommand.runSubcommand(event, {
+                    name: event.options.getSubcommand(),
+                    group: event.options.getSubcommandGroup(),
+                });
+        } catch (e) {
+            void {};
+        }
+
+        targetCommand.run(event);
+    }
 }
