@@ -75,24 +75,17 @@ export default async function commandHandler(
         });
     }
 
-    const jokeChance = new Chance();
+    // const jokeChance = new Chance();
 
-    if (jokeChance.bool({ likelihood: 50 })) {
-        return event.reply('Say "please master" <:trol:1091493021243150416>');
-    } else {
-        try {
-            if (
-                event.options.getSubcommand() ||
-                event.options.getSubcommandGroup()
-            )
-                return targetCommand.runSubcommand(event, {
-                    name: event.options.getSubcommand(),
-                    group: event.options.getSubcommandGroup(),
-                });
-        } catch (e) {
-            void {};
-        }
-
-        targetCommand.run(event);
+    try {
+        if (event.options.getSubcommand() || event.options.getSubcommandGroup())
+            return targetCommand.runSubcommand(event, {
+                name: event.options.getSubcommand(),
+                group: event.options.getSubcommandGroup(),
+            });
+    } catch (e) {
+        void {};
     }
+
+    targetCommand.run(event);
 }
