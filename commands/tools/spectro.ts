@@ -5,7 +5,13 @@ import crypto from "crypto";
 import axios from "axios";
 import ffmpeg from "fluent-ffmpeg";
 import { readFileSync, unlinkSync } from "fs";
-import { AttachmentBuilder, EmbedBuilder } from "discord.js";
+import {
+    ActionRowBuilder,
+    AttachmentBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+} from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../constants/colors";
 
@@ -97,10 +103,23 @@ spectrum.setExecuteFunction(async (command) => {
                         .setImage("attachment://image.jpg")
                         .setColor(colors.blue);
 
+                    const guideButton = new ButtonBuilder()
+                        .setLabel("How to read spectrograms")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(
+                            "https://github.com/AxerBot/axer-bot/wiki/Spectrogram-Guide"
+                        );
+
+                    const row =
+                        new ActionRowBuilder<ButtonBuilder>().addComponents(
+                            guideButton
+                        );
+
                     command
                         .editReply({
                             embeds: [successEmbed],
                             files: [attachment],
+                            components: [row],
                         })
                         .then(() => {
                             setTimeout(() => {
