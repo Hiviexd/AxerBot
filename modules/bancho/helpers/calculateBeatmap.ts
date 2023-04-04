@@ -47,7 +47,7 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
     const difficulty = calculateBeatmap(
         osuFile.data,
         convertMode || beatmapData.data.mode_int,
-        mods
+        mods.join("")
     );
 
     const { data: beatmap } = beatmapData;
@@ -56,8 +56,10 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
         `[${args[0]} ${beatmap.beatmapset?.artist} - ${
             beatmap.beatmapset?.title
         } [${beatmap.version}]]${
-            mods
-                ? ` | +${mods} (${Math.round(difficulty.beatmap.bpm)}BPM) `
+            !difficulty.difficulty.mods.acronyms.includes("NM")
+                ? ` | +${difficulty.difficulty.mods.acronyms.join(
+                      ""
+                  )} (${Math.round(difficulty.beatmap.bpm)}BPM) `
                 : " "
         }|${
             convertMode
@@ -72,18 +74,30 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
 function getMods(message: string) {
     const mods: string[] = [];
 
+    const modsList: { acronym: string; match: string }[] = [
+        { acronym: "DT", match: "+DoubleTime" },
+        { acronym: "NC", match: "+Nightcore" },
+        { acronym: "HD", match: "+Hidden" },
+        { acronym: "HR", match: "+HardRock" },
+        { acronym: "FL", match: "+Flashlight" },
+        { acronym: "EZ", match: "-Easy" },
+        { acronym: "HT", match: "-HalfTime" },
+        { acronym: "NF", match: "-NoFail" },
+        { acronym: "SD", match: "+SuddenDeath" },
+        { acronym: "PF", match: "+Perfect" },
+    ];
+
     message.split(" ").forEach((arg) => {
-        if (arg.startsWith("+")) mods.push(arg.slice(1));
+        arg = arg.trim();
+
+        if (arg.startsWith("+") || arg.startsWith("-")) {
+            const targetMod = modsList.find((m) => m.match == arg);
+
+            if (targetMod) mods.push(targetMod.acronym);
+        }
     });
 
-    return mods
-        .map((mod) =>
-            mod
-                .split(/[a-z]+/g)
-                .filter((a) => a != "")
-                .join("")
-        )
-        .join("");
+    return mods;
 }
 
 function getMode(message: string) {
