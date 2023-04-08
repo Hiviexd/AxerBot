@@ -54,6 +54,7 @@ import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
 import addsilent from "./tools/addsilence";
 import shutdown from "./dev/shutdown";
+import rebuild from "./dev/rebuild";
 
 export const AxerCommands = [
     // ? General
@@ -114,4 +115,5 @@ export const AxerCommands = [
 
     // ? Dev
     shutdown,
+    rebuild,
 ];

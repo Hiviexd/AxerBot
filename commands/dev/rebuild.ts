@@ -5,18 +5,18 @@ import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed
 import { StatusManager } from "../../modules/status/StatusManager";
 import { exec } from "child_process";
 
-const shutdown = new SlashCommand(
+const rebuild = new SlashCommand(
     "rebuild",
     "Shutdown and build axer again",
     "Developers",
     true
 );
 
-shutdown.builder.addStringOption((o) =>
-    o.setName("reason").setDescription("reason to shutdown").setRequired(false)
+rebuild.builder.addStringOption((o) =>
+    o.setName("reason").setDescription("reason to rebuild").setRequired(false)
 );
 
-shutdown.setExecuteFunction(async (command) => {
+rebuild.setExecuteFunction(async (command) => {
     if (!config.owners.includes(command.user.id))
         return command.editReply({
             embeds: [MissingPermissions],
@@ -49,4 +49,4 @@ shutdown.setExecuteFunction(async (command) => {
     }
 });
 
-export default shutdown;
+export default rebuild;
