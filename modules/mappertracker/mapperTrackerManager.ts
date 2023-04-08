@@ -154,7 +154,8 @@ function compareData(
                 SendBeatmapNominationResetEmbed(currentBeatmap, tracker);
 
             if (
-                currentBeatmap.nominations_summary.current == 2 &&
+                referentStoredBeatmap.status == "pending" &&
+                currentBeatmap.status == "qualified" &&
                 tracker.targetsArray.includes(
                     MapperTrackerType.QualifiedBeatmap
                 )
