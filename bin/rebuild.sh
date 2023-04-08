@@ -1,0 +1,1 @@
+sudo git pull && tsc && pkill node

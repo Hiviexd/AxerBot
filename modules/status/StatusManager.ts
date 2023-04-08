@@ -42,6 +42,41 @@ export class StatusManager {
         });
     }
 
+    sendBuildMessage(reason?: string, user?: User) {
+        const embed = new EmbedBuilder()
+            .setTitle("🔧 AxerBot axerbot is updating...")
+            .setDescription(reason || "No reason provided...")
+            .setColor(colors.yellowBright)
+            .setFooter({
+                text: "System",
+            });
+
+        if (user) {
+            embed.setFooter({
+                text: user.tag,
+                iconURL: user.avatarURL() || "",
+            });
+        }
+
+        return this.sendMessage({
+            embeds: [embed],
+        });
+    }
+
+    sendErrorMessage(error: string) {
+        const embed = new EmbedBuilder()
+            .setTitle("🔧 AxerBot axerbot is updating...")
+            .setDescription(error)
+            .setColor(colors.red)
+            .setFooter({
+                text: "System",
+            });
+
+        return this.sendMessage({
+            embeds: [embed],
+        });
+    }
+
     sendMessage(
         message: string | MessagePayload | WebhookMessageCreateOptions
     ): Promise<APIMessage | null> {
