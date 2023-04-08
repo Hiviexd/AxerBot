@@ -39,7 +39,9 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        const p = spawn(`sudo bin/sh`, [`git pull && tsc && pkill node`]);
+        const p = spawn(`bin/sh`, [
+            `sudo -u ${process.env.LINUX_user} git pull && tsc && pkill node`,
+        ]);
 
         console.log(p);
 
