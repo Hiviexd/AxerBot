@@ -39,13 +39,16 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        exec(`sudo sh ./bin/rebuild.sh`, (error, stdout, stderr) => {
-            if (error === null) {
-                status.sendBuildMessage(reason, command.user);
-            } else {
-                status.sendErrorMessage(error.message);
+        exec(
+            `sudo sh ${process.env.REBUILD_PATH}/rebuild.sh`,
+            (error, stdout, stderr) => {
+                if (error === null) {
+                    status.sendBuildMessage(reason, command.user);
+                } else {
+                    status.sendErrorMessage(error.message);
+                }
             }
-        });
+        );
     }
 });
 
