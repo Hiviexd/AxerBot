@@ -39,9 +39,7 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        const p = spawn(
-            `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`
-        );
+        const p = spawn(`sudo bin/sh`, [`git pull && tsc && pkill node`]);
 
         console.log(p);
 
@@ -55,6 +53,7 @@ rebuild.setExecuteFunction(async (command) => {
 
         p.on("error", (error) => {
             console.error(error);
+            command.followUp(JSON.stringify(error));
             status.sendErrorMessage(error.message);
         });
     }

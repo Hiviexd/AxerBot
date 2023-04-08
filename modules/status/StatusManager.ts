@@ -65,7 +65,7 @@ export class StatusManager {
 
     sendErrorMessage(error: string) {
         const embed = new EmbedBuilder()
-            .setTitle("🔧 AxerBot axerbot is updating...")
+            .setTitle("🔧 AxerBot build error")
             .setDescription(error)
             .setColor(colors.red)
             .setFooter({
