@@ -39,24 +39,21 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        exec(
-            `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`,
-            (error, stdout, stderr) => {
-                console.log(error);
-                console.log(stdout);
-                console.log(stderr);
+        exec(`git pull && tsc && pkill node`, (error, stdout, stderr) => {
+            console.log(error);
+            console.log(stdout);
+            console.log(stderr);
 
-                command.followUp(JSON.stringify(error));
-                command.followUp(stdout);
-                command.followUp(stderr);
+            command.followUp(JSON.stringify(error));
+            command.followUp(stdout);
+            command.followUp(stderr);
 
-                if (error === null) {
-                    status.sendBuildMessage(reason, command.user);
-                } else {
-                    status.sendErrorMessage(error.message);
-                }
+            if (error === null) {
+                status.sendBuildMessage(reason, command.user);
+            } else {
+                status.sendErrorMessage(error.message);
             }
-        );
+        });
     }
 });
 
