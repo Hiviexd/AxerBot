@@ -33,8 +33,8 @@ rebuild.setExecuteFunction(async (command) => {
                 .editReply({
                     embeds: [generateSuccessEmbed("Done!")],
                 })
-                .then(() => executeBuild)
-                .catch(() => executeBuild);
+                .then(executeBuild)
+                .catch(executeBuild);
         })
         .catch(executeBuild);
 
@@ -42,6 +42,8 @@ rebuild.setExecuteFunction(async (command) => {
         const p = spawn(
             `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`
         );
+
+        console.log(p);
 
         p.on("spawn", () => {
             status.sendBuildMessage(reason, command.user);
