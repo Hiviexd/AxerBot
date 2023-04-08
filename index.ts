@@ -3,7 +3,7 @@ dotenv.config();
 const token = process.env.TOKEN;
 
 import "colors";
-import { Client, IntentsBitField, Message } from "discord.js";
+import { Client, EmbedBuilder, IntentsBitField, Message } from "discord.js";
 import "./helpers/osu/fetcher/startConnection";
 import keepAlive from "./server";
 import { consoleCheck } from "./helpers/core/logger";
@@ -13,6 +13,7 @@ import { connectToBancho } from "./modules/bancho/client";
 import { startAvatarListener } from "./modules/avatar/avatarManager";
 import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManager";
 import fs from "fs";
+import colors from "./constants/colors";
 
 export const bot = new Client({
     intents: [

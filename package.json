@@ -23,9 +23,11 @@
 		"chart.js": "^3.7.1",
 		"colors": "^1.4.0",
 		"combined-stream": "^1.0.8",
+		"cross-env": "^7.0.3",
 		"d3": "^7.4.0",
 		"delayed-stream": "^1.0.0",
 		"discord-api-types": "^0.37.10",
+		"discord-hybrid-sharding": "^2.1.1",
 		"discord.js": "^14.8.0",
 		"discord.js-minesweeper": "^1.1.0",
 		"discord.js-pagination": "^1.0.3",
@@ -74,10 +76,10 @@
 		"ws": "^7.5.5"
 	},
 	"scripts": {
-		"test": "ts-node-dev --transpile-only --respawn --ignore-watch node_modules",
-		"start": "ts-node .",
+		"test": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn --ignore-watch node_modules",
+		"start": "cross-env NODE_ENV=production node index.js",
 		"build": "tsc",
-		"dev": "ts-node-dev --transpile-only --respawn --ignore-watch node_modules ./index.ts"
+		"dev": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn --ignore-watch node_modules ./index.ts"
 	},
 	"repository": {
 		"type": "git",
