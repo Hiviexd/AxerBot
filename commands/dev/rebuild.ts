@@ -3,7 +3,7 @@ import config from "../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { StatusManager } from "../../modules/status/StatusManager";
-import { exec } from "child_process";
+import { spawn } from "child_process";
 
 const rebuild = new SlashCommand(
     "rebuild",
@@ -39,20 +39,21 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        exec(`git pull && tsc && pkill node`, (error, stdout, stderr) => {
-            console.log(error);
-            console.log(stdout);
-            console.log(stderr);
+        const p = spawn(
+            `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`
+        );
 
-            command.followUp(JSON.stringify(error));
-            command.followUp(stdout);
-            command.followUp(stderr);
+        p.on("spawn", () => {
+            status.sendBuildMessage(reason, command.user);
+        });
 
-            if (error === null) {
-                status.sendBuildMessage(reason, command.user);
-            } else {
-                status.sendErrorMessage(error.message);
-            }
+        p.on("message", (message) => {
+            command.followUp(message.toString());
+        });
+
+        p.on("error", (error) => {
+            console.error(error);
+            status.sendErrorMessage(error.message);
         });
     }
 });
