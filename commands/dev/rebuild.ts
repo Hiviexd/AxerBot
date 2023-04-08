@@ -27,7 +27,7 @@ rebuild.setExecuteFunction(async (command) => {
     const status = new StatusManager();
 
     status
-        .sendOutageMessage(reason, command.user)
+        .sendBuildMessage(reason, command.user)
         .then(() => {
             command
                 .editReply({
@@ -42,6 +42,10 @@ rebuild.setExecuteFunction(async (command) => {
         exec(
             `sudo sh ${process.env.REBUILD_PATH}/rebuild.sh`,
             (error, stdout, stderr) => {
+                console.log(error);
+                console.log(stdout);
+                console.log(stderr);
+
                 if (error === null) {
                     status.sendBuildMessage(reason, command.user);
                 } else {
