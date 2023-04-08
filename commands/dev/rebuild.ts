@@ -40,7 +40,7 @@ rebuild.setExecuteFunction(async (command) => {
 
     function executeBuild() {
         exec(
-            `sudo sh ${process.env.REBUILD_PATH}/rebuild.sh`,
+            `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`,
             (error, stdout, stderr) => {
                 console.log(error);
                 console.log(stdout);
