@@ -78,11 +78,13 @@ export default {
 
             if (!beatmapData) return "General (All difficulties)";
 
+            const sanitizedDiffname = beatmapData.version.length > 40 ? beatmapData.version.slice(0, 40) + "..." : beatmapData.version;
+
             if (url.includes("general") && !url.includes("generalAll"))
-                return `General (${beatmapData.version})`;
+                return `General (${sanitizedDiffname})`;
 
             if (url.includes("timeline"))
-                return `Timeline (${beatmapData.version})`;
+                return `Timeline (${sanitizedDiffname})`;
         }
 
         let e = new EmbedBuilder({
