@@ -39,7 +39,7 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        const p = spawn(`bin/sh`, [
+        const p = spawn(`/bin/bash`, [
             `sudo -u ${process.env.LINUX_user} git pull && tsc && pkill node`,
         ]);
 
