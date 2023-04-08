@@ -46,6 +46,10 @@ rebuild.setExecuteFunction(async (command) => {
                 console.log(stdout);
                 console.log(stderr);
 
+                command.followUp(JSON.stringify(error));
+                command.followUp(stdout);
+                command.followUp(stderr);
+
                 if (error === null) {
                     status.sendBuildMessage(reason, command.user);
                 } else {
