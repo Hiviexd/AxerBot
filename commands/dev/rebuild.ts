@@ -47,7 +47,7 @@ rebuild.setExecuteFunction(async (command) => {
             (error, stdout, stderr) => {
                 if (error) return sendError(error);
 
-                if (stdout == "Already up to date.")
+                if (stdout.trim() == "Already up to date.")
                     return command.followUp({
                         embeds: [generateWaitEmbed(stdout)],
                     });
