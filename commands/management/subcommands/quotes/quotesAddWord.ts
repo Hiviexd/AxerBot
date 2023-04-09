@@ -28,15 +28,15 @@ quotesAddWord.setExecuteFunction(async (command) => {
     if (guild.fun.mode != "custom")
         return command.editReply({
             embeds: [
-                generateErrorEmbed(
-                    "❗ This server is not in custom quotes mode."
-                ),
+                generateErrorEmbed("This server is not in custom quotes mode."),
             ],
         });
 
     if (!command.guild) return;
 
     const phrase = command.options.getString("phrase", true);
+
+    if (!guild.fun.phrases) guild.fun.phrases = [] as string[];
 
     guild.fun.phrases.push(phrase);
 
@@ -48,7 +48,7 @@ quotesAddWord.setExecuteFunction(async (command) => {
     );
 
     command.editReply({
-        embeds: [generateSuccessEmbed(`✅ Phrase added!`)],
+        embeds: [generateSuccessEmbed(`Phrase added!`)],
     });
 });
 
