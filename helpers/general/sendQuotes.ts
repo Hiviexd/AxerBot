@@ -1,9 +1,7 @@
-import { parseTextFile } from "../text/processText";
-import { Client } from "discord.js";
-import { Message } from "discord.js";
-import * as database from "../../database";
 import { Chance } from "chance";
-import path from "path";
+import { Client, Message } from "discord.js";
+import * as database from "../../database";
+import { DEFAULT_QUOTES } from "../../responses/text/DefaultQuotes";
 
 export default async (message: Message, bot: Client) => {
     if (!message.guild) return;
@@ -33,9 +31,7 @@ export default async (message: Message, bot: Client) => {
             if (!guild.fun.chance) guild.fun.chance = 100; // ? fallback chance to 100 if its undefined
 
             if (guild.fun.mode == "default") {
-                const quotes = await parseTextFile(
-                    path.resolve(__dirname + "/../../responses/text/quotes.txt")
-                );
+                const quotes = DEFAULT_QUOTES;
 
                 const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
