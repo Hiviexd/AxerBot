@@ -53,7 +53,7 @@ rebuild.setExecuteFunction(async (command) => {
                     if (error) return sendError(error);
 
                     command.followUp({
-                        embeds: [generateSuccessEmbed("Builded!")],
+                        embeds: [generateSuccessEmbed("Build successful!")],
                     });
 
                     exec(`pkill node`, (error, stdout, stderr) => {

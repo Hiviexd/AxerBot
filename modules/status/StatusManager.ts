@@ -23,7 +23,7 @@ export class StatusManager {
 
     sendOutageMessage(reason?: string, user?: User) {
         const embed = new EmbedBuilder()
-            .setTitle("⚠️ AxerBot Outage")
+            .setTitle("⚠️ Axer Outage")
             .setDescription(reason || "No reason provided...")
             .setColor(colors.red)
             .setFooter({
@@ -44,8 +44,10 @@ export class StatusManager {
 
     sendBuildMessage(reason?: string, user?: User) {
         const embed = new EmbedBuilder()
-            .setTitle("🔧 AxerBot axerbot is updating...")
-            .setDescription(reason || "No reason provided...")
+            .setTitle("🔧 Axer is updating...")
+            .setDescription(
+                `**Reason:** reason` || "**Reason:** No reason provided..."
+            )
             .setColor(colors.yellowBright)
             .setFooter({
                 text: "System",
@@ -65,7 +67,7 @@ export class StatusManager {
 
     sendErrorMessage(error: string) {
         const embed = new EmbedBuilder()
-            .setTitle("🔧 AxerBot build error")
+            .setTitle("🔧 Axer build error")
             .setDescription(error)
             .setColor(colors.red)
             .setFooter({
