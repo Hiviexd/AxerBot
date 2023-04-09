@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 
 import sendQuotes from "../helpers/general/sendQuotes";
-import checkOsuURL from "../helpers/osu/url/checkOsuURL";
+import checkOsuURL from "../modules/osu/url/checkOsuURL";
 import { antiDumbass } from "../modules/verification/message/antiDumbass";
 
 export default {

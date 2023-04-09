@@ -1,10 +1,10 @@
-import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import UserNotMapper from "../../responses/embeds/UserNotMapper";
-import { Beatmapset } from "../../types/beatmap";
-import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";
-import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
+import UserNotFound from "../../responses/embeds/UserNotFound";
+import UserNotMapper from "../../responses/embeds/UserNotMapper";
+import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";
+import { Beatmapset } from "../../types/beatmap";
 
 const mapsetrank = new SlashCommand(
     ["mapsetrank", "mr"],

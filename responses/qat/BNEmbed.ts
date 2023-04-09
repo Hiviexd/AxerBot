@@ -1,16 +1,16 @@
-import { QatUserResponse, UserActivityResponse } from "../../types/qat";
-import { UserResponse } from "../../types/user";
-import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
-import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import getUniqueMappersNumber from "../../helpers/qat/getters/mappers/getUniqueMappersNumber";
-import getTop3Mappers from "../../helpers/qat/getters/mappers/getTop3Mappers";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import getTop3Genres from "../../helpers/qat/getters/genres/getTop3Genres";
 import getTop3Languages from "../../helpers/qat/getters/languages/getTop3Languages";
-import calculateDuration from "../../helpers/text/calculateDuration";
+import getTop3Mappers from "../../helpers/qat/getters/mappers/getTop3Mappers";
+import getUniqueMappersNumber from "../../helpers/qat/getters/mappers/getUniqueMappersNumber";
 import getRequestStatus from "../../helpers/qat/getters/requestStatus/getRequestStatus";
-import abbreviation from "../../helpers/text/abbreviation";
-import getEmoji from "../../helpers/text/getEmoji";
 import parseResets from "../../helpers/qat/getters/resets/parseResets";
+import abbreviation from "../../helpers/text/abbreviation";
+import calculateDuration from "../../helpers/text/calculateDuration";
+import getEmoji from "../../helpers/text/getEmoji";
+import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
+import { QatUserResponse, UserActivityResponse } from "../../types/qat";
+import { UserResponse } from "../../types/user";
 
 //! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
 // TODO: add BN finder count IF you're re-adding QA info

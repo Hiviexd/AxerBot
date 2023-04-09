@@ -1,19 +1,17 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-const token = process.env.TOKEN;
-
 import "colors";
-import { Client, EmbedBuilder, IntentsBitField, Message } from "discord.js";
+import { Client, IntentsBitField } from "discord.js";
+import * as dotenv from "dotenv";
+import fs from "fs";
+import eventHandler from "./helpers/core/eventHandler";
+import { consoleCheck } from "./helpers/core/logger";
+import registerCommands from "./helpers/interactions/registerCommands";
+import { startAvatarListener } from "./modules/avatar/avatarManager";
+import { connectToBancho } from "./modules/bancho/client";
+import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManager";
 import "./modules/osu/fetcher/startConnection";
 import keepAlive from "./server";
-import { consoleCheck } from "./helpers/core/logger";
-import eventHandler from "./helpers/core/eventHandler";
-import registerCommands from "./helpers/interactions/registerCommands";
-import { connectToBancho } from "./modules/bancho/client";
-import { startAvatarListener } from "./modules/avatar/avatarManager";
-import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManager";
-import fs from "fs";
-import colors from "./constants/colors";
+dotenv.config();
+const token = process.env.TOKEN;
 
 export const bot = new Client({
     intents: [

@@ -1,13 +1,13 @@
 import {
-    Message,
-    EmbedBuilder,
     ActionRowBuilder,
-    ButtonStyle,
     ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    Message,
 } from "discord.js";
-import { ParsedComment } from "../../helpers/osu/url/parseComment";
-import truncateString from "../../helpers/text/truncateString";
 import colors from "../../constants/colors";
+import truncateString from "../../helpers/text/truncateString";
+import { ParsedComment } from "../../modules/osu/url/parseComment";
 
 export default {
     async send(comment: ParsedComment, message: Message) {

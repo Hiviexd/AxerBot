@@ -1,9 +1,9 @@
-import { SlashCommand } from "../../models/commands/SlashCommand";
-import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import PlayerEmbed from "../../responses/osu/PlayerEmbed";
-import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
+import UserNotFound from "../../responses/embeds/UserNotFound";
+import PlayerEmbed from "../../responses/osu/PlayerEmbed";
 
 const player = new SlashCommand(
     ["player", "profile"],

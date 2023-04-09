@@ -1,15 +1,10 @@
-import { UserResponse } from "../../types/user";
-import {
-    Beatmap,
-    Beatmapset,
-    UserBeatmapetsResponse,
-} from "../../types/beatmap";
-import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
-import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import getMappingAge from "../../helpers/osu/player/getMappingAge";
-import osuApi from "../../modules/osu/fetcher/osuApi";
+import { ChatInputCommandInteraction, EmbedBuilder, Message } from "discord.js";
 import parseDate from "../../helpers/text/parseDate";
-import { fetchOldestBeatmap } from "../../helpers/osu/player/fetchOldestBeatmap";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import { fetchOldestBeatmap } from "../../modules/osu/player/fetchOldestBeatmap";
+import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
+import { Beatmapset, UserBeatmapetsResponse } from "../../types/beatmap";
+import { UserResponse } from "../../types/user";
 
 export default {
     send: async (

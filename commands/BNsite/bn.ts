@@ -1,11 +1,10 @@
-import { Client, ChatInputCommandInteraction } from "discord.js";
-import UserNotFound from "../../responses/embeds/UserNotFound";
-import UserNotBNorNAT from "../../responses/qat/UserNotBNorNAT";
-import osuApi from "../../modules/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
-import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
-import BNEmbed from "../../responses/qat/BNEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
+import UserNotFound from "../../responses/embeds/UserNotFound";
+import BNEmbed from "../../responses/qat/BNEmbed";
+import UserNotBNorNAT from "../../responses/qat/UserNotBNorNAT";
 
 const bn = new SlashCommand(
     ["bn", "nat"],

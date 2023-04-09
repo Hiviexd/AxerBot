@@ -1,13 +1,9 @@
 import { PrivateMessage } from "bancho.js";
 import statuses from "statuses";
 
-import osuApi from "../../../modules/osu/fetcher/osuApi";
-import {
-    BeatmapCalculationResult,
-    calculateBeatmap,
-} from "../../../helpers/osu/performance/calculateBeatmap";
 import { parseOsuBeatmapURL } from "../../../helpers/text/parseOsuBeatmapURL";
-import { StandardDifficultyAttributes } from "osu-standard-stable";
+import osuApi from "../../../modules/osu/fetcher/osuApi";
+import { calculateBeatmap } from "../../../modules/osu/performance/calculateBeatmap";
 
 export async function calculateBeatmapFromAction(pm: PrivateMessage) {
     const action = pm.getAction();

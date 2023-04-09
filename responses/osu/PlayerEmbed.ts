@@ -1,15 +1,15 @@
-import { UserResponse } from "../../types/user";
 import {
-    ChatInputCommandInteraction,
-    Message,
     AttachmentBuilder,
+    ChatInputCommandInteraction,
     EmbedBuilder,
+    Message,
 } from "discord.js";
-import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import generatePlayerRankChart from "../../helpers/osu/player/generatePlayerRankChart";
-import parsePlayTime from "../../helpers/osu/player/parsePlayTime";
 import moment from "moment";
 import getEmoji from "../../helpers/text/getEmoji";
+import generatePlayerRankChart from "../../modules/osu/player/generatePlayerRankChart";
+import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
+import parsePlayTime from "../../modules/osu/player/parsePlayTime";
+import { UserResponse } from "../../types/user";
 
 export default {
     send: async (user: UserResponse, message: Message, mode?: string) => {

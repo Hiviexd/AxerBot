@@ -1,7 +1,7 @@
-import { UserResponse } from "../../types/user";
+import { ChatInputCommandInteraction, EmbedBuilder, Message } from "discord.js";
+import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { Beatmapset } from "../../types/beatmap";
-import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
-import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
+import { UserResponse } from "../../types/user";
 
 export default {
     send: (

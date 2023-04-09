@@ -1,41 +1,41 @@
 import {
-    ButtonInteraction,
-    InteractionCollector,
-    Message,
-    EmbedBuilder,
-    SelectMenuInteraction,
-    StringSelectMenuBuilder,
     ActionRowBuilder,
+    AttachmentBuilder,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     ChatInputCommandInteraction,
+    EmbedBuilder,
+    InteractionCollector,
+    Message,
+    SelectMenuInteraction,
+    StringSelectMenuBuilder,
     TextBasedChannelResolvable,
-    AttachmentBuilder,
 } from "discord.js";
 
-import {
-    calculateBeatmap,
-    BeatmapCalculationResult,
-} from "../../helpers/osu/performance/calculateBeatmap";
-import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
-import { Beatmapset } from "../../types/beatmap";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
-import colors from "../../constants/colors";
-import { validateArrayIndex } from "../../helpers/general/validateArrayIndex";
-import timeString from "../../helpers/text/timeString";
 import crypto from "crypto";
-import moment from "moment";
-import { getUserId } from "../../helpers/commands/getUserId";
 import { unlinkSync } from "fs";
-import { GameModeName } from "../../types/game_mode";
+import moment from "moment";
+import path from "path";
+import colors from "../../constants/colors";
+import { getUserId } from "../../helpers/commands/getUserId";
+import { validateArrayIndex } from "../../helpers/general/validateArrayIndex";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
+import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
+import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
+import timeString from "../../helpers/text/timeString";
 import {
     IBeatmapVideo,
     generateBeatmapVideo,
 } from "../../helpers/video/generateBeatmapVideo";
-import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
-import path from "path";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import {
+    BeatmapCalculationResult,
+    calculateBeatmap,
+} from "../../modules/osu/performance/calculateBeatmap";
+import { Beatmapset } from "../../types/beatmap";
+import { GameModeName } from "../../types/game_mode";
 
 const mods = [
     { name: "EZ", emoji: "1071874648112910436" },

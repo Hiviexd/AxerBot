@@ -5,18 +5,18 @@ import {
     ChatInputCommandInteraction,
     EmbedBuilder,
 } from "discord.js";
-import { calculateScore } from "../../helpers/osu/performance/calculateScore";
-import getEmoji from "../../helpers/text/getEmoji";
-import { Score } from "../../types/score";
-import { User } from "../../types/user";
 import colors from "../../constants/colors";
+import getEmoji from "../../helpers/text/getEmoji";
 import {
     calculateBeatmap,
     generateRulesetBeatmap,
-} from "../../helpers/osu/performance/calculateBeatmap";
+} from "../../modules/osu/performance/calculateBeatmap";
+import { calculateScore } from "../../modules/osu/performance/calculateScore";
+import { generateHitStatistics } from "../../modules/osu/performance/generateHitStatistics";
+import { Score } from "../../types/score";
+import { User } from "../../types/user";
 import abbreviation from "./../../helpers/text/abbreviation";
 import { GameMode } from "./../../types/game_mode";
-import { generateHitStatistics } from "../../helpers/osu/performance/generateHitStatistics";
 
 export default {
     send: async (

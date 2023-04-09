@@ -1,21 +1,20 @@
-import { BeatmapsetDiscussionPost } from "../../types/beatmap";
 import {
-    Message,
-    EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
+    EmbedBuilder,
+    Message,
 } from "discord.js";
-import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
-import storeBeatmap from "../../modules/osu/fetcher/general/storeBeatmap";
-import truncateString from "../../helpers/text/truncateString";
-import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
-import parseOsuTimestamps from "../../helpers/text/parseOsuTimestamps";
-import getEmoji from "../../helpers/text/getEmoji";
-import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { QatEvent } from "types/qat";
+import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
+import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
+import getEmoji from "../../helpers/text/getEmoji";
+import parseOsuTimestamps from "../../helpers/text/parseOsuTimestamps";
+import truncateString from "../../helpers/text/truncateString";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import getHighestUsergroup from "../../modules/osu/player/getHighestUsergroup";
+import { DiscussionAttributtes } from "../../modules/osu/url/getTargetDiscussionPost";
+import { BeatmapsetDiscussionPost } from "../../types/beatmap";
 
 export default {
     send: async (

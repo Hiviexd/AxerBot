@@ -1,10 +1,4 @@
-import {
-    Client,
-    Message,
-    ChatInputCommandInteraction,
-    GuildMember,
-} from "discord.js";
-import { parseTextFile } from "../../helpers/text/processText";
+import { GuildMember } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { YesNoReplies } from "../../responses/text/YesNoReplies";
 

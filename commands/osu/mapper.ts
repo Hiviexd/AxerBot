@@ -1,10 +1,3 @@
-import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import UserNotMapper from "../../responses/embeds/UserNotMapper";
-import MapperEmbed from "../../responses/osu/MapperEmbed";
-import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
-import { SlashCommand } from "../../models/commands/SlashCommand";
-import { MapperCard } from "../../models/images/MapperCard";
 import {
     ActionRowBuilder,
     AttachmentBuilder,
@@ -12,6 +5,12 @@ import {
     ButtonStyle,
 } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import { MapperCard } from "../../models/images/MapperCard";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
+import UserNotFound from "../../responses/embeds/UserNotFound";
+import UserNotMapper from "../../responses/embeds/UserNotMapper";
 
 const mapper = new SlashCommand(
     "mapper",

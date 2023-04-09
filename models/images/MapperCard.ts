@@ -1,24 +1,20 @@
+import axios from "axios";
 import {
+    CanvasRenderingContext2D,
     Image,
     createCanvas,
     loadImage,
     registerFont,
-    CanvasRenderingContext2D,
 } from "canvas";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import { User } from "../../types/user";
 import path from "path";
-import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import { truncateCanvasText } from "../../helpers/transform/truncateCanvasText";
-import parseDate from "../../helpers/text/parseDate";
-import { fetchOldestBeatmap } from "../../helpers/osu/player/fetchOldestBeatmap";
-import {
-    Beatmapset,
-    BeatmapsetResponse,
-    UserBeatmapetsResponse,
-} from "../../types/beatmap";
 import config from "../../config.json";
-import axios from "axios";
+import parseDate from "../../helpers/text/parseDate";
+import { truncateCanvasText } from "../../helpers/transform/truncateCanvasText";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import { fetchOldestBeatmap } from "../../modules/osu/player/fetchOldestBeatmap";
+import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
+import { UserBeatmapetsResponse } from "../../types/beatmap";
+import { User } from "../../types/user";
 
 export class MapperCard {
     private user_data!: User | null;
