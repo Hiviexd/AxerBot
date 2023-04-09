@@ -1,12 +1,13 @@
-import { SlashCommand } from "../../models/commands/SlashCommand";
-import config from "../../config.json";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
-import { StatusManager } from "../../modules/status/StatusManager";
 import { exec, ExecException } from "child_process";
-import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { codeBlock } from "discord.js";
+import config from "../../config.json";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
+import truncateString from "../../helpers/text/truncateString";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import { StatusManager } from "../../modules/status/StatusManager";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
 const rebuild = new SlashCommand(
     "rebuild",
@@ -90,7 +91,10 @@ rebuild.setExecuteFunction(async (command) => {
             embeds: [
                 generateErrorEmbed(
                     `${codeBlock(
-                        `${error.message}\n` + error.stack || error.message
+                        truncateString(
+                            `${error.message}\n` + error.stack || error.message,
+                            4096
+                        )
                     )}`
                 ),
             ],
