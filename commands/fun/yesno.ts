@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { parseTextFile } from "../../helpers/text/processText";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { YesNoReplies } from "../../responses/text/YesNoReplies";
 
 const yesno = new SlashCommand(
     "yesno",
@@ -27,9 +28,7 @@ yesno.setExecuteFunction(async (command) => {
     //get question from options
     const question = command.options.getString("question");
 
-    const phrases = await parseTextFile(
-        __dirname.concat("/../../responses/text/yesno.txt")
-    );
+    const phrases = YesNoReplies;
 
     if (!(command.member instanceof GuildMember)) return;
 
