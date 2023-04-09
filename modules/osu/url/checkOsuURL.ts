@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
-
 import * as database from "../../../database";
-import osuTimestamp from "../../text/osuTimestamp";
+import osuTimestamp from "../../../helpers/text/osuTimestamp";
 import parseBeatmap from "./parseBeatmap";
 import parseComment from "./parseComment";
 import parseDiscussionPost from "./parseDiscussionPost";

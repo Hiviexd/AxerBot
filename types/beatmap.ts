@@ -1,8 +1,8 @@
-import { RankedStatus } from "./ranked_status";
 import type { Failtimes } from "./failtimes";
+import { GameModeName } from "./game_mode";
+import { RankedStatus } from "./ranked_status";
 import type { Timestamp } from "./timestamp";
 import type { User, UserCompact } from "./user";
-import { GameModeName } from "./game_mode";
 
 export interface Covers {
     cover: string;

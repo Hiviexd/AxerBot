@@ -1,28 +1,31 @@
 import axios from "axios";
+
 import {
-    BeatmapsetResponse,
+    BeatmapGenre,
+    BeatmapLanguage,
+} from "../../../commands/osu/subcommands/search/searchBeatmap";
+import {
+    consoleCheck,
+    consoleError,
+    consoleLog,
+} from "../../../helpers/core/logger";
+import {
     BeatmapResponse,
-    UserBeatmapetsResponse,
-    BeatmapsetDiscussionPostResponse,
     Beatmapset,
-    BeatmapsetDiscussionVote,
-    BeatmapsetDiscussionVoteResponse,
     BeatmapsetDiscussion,
-    Beatmap,
+    BeatmapsetDiscussionPostResponse,
+    BeatmapsetDiscussionVoteResponse,
+    BeatmapsetResponse,
     BeatmapsetSearchResponse,
+    UserBeatmapetsResponse,
 } from "../../../types/beatmap";
-import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
+import { IHTTPResponse } from "../../../types/http";
+import { HTTPResponse } from "../../../types/qat";
 import {
     FetchDownloadClient,
     OsuAuthenticator,
     OsuOfficialDownloader,
 } from "./downloader/beatmap";
-import { IHTTPResponse } from "../../../types/http";
-import {
-    BeatmapGenre,
-    BeatmapLanguage,
-} from "../../../commands/osu/subcommands/search/searchBeatmap";
-import { HTTPResponse } from "../../../types/qat";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {

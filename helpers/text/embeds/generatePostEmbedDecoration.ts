@@ -1,9 +1,6 @@
 import { QatEvent } from "types/qat";
-import {
-    BeatmapsetDiscussionPost,
-    BeatmapsetDiscussionPostCompact,
-} from "../../../types/beatmap";
-import { DiscussionAttributtes } from "../../osu/url/getTargetDiscussionPost";
+import { DiscussionAttributtes } from "../../../modules/osu/url/getTargetDiscussionPost";
+import { BeatmapsetDiscussionPost } from "../../../types/beatmap";
 
 export default (
     raw_posts: BeatmapsetDiscussionPost,

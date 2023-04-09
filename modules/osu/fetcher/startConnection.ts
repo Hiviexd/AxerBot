@@ -3,8 +3,12 @@
  * ? Get authorization token
  */
 
-import { consoleCheck, consoleError, consoleLog } from "../../core/logger";
 import axios from "axios";
+import {
+    consoleCheck,
+    consoleError,
+    consoleLog,
+} from "../../../helpers/core/logger";
 const osu_client_id = process.env.OSU_CLIENT_ID;
 const osu_client_secret = process.env.OSU_CLIENT_SECRET;
 
