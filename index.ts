@@ -1,6 +1,7 @@
 import "colors";
 import { Client, IntentsBitField } from "discord.js";
 import dotenv from "dotenv";
+dotenv.config();
 import fs from "fs";
 import eventHandler from "./helpers/core/eventHandler";
 import { consoleCheck } from "./helpers/core/logger";
@@ -10,7 +11,6 @@ import { connectToBancho } from "./modules/bancho/client";
 import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManager";
 import "./modules/osu/fetcher/startConnection";
 import keepAlive from "./server";
-dotenv.config();
 
 const token = process.env.TOKEN;
 
