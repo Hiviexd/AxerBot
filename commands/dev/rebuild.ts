@@ -41,24 +41,27 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        exec(`git pull`, (error, stdout, stderr) => {
-            if (error) return sendError(error);
-            command.followUp({
-                embeds: [generateSuccessEmbed(stdout)],
-            });
-
-            exec(`tsc`, (error, stdout, stderr) => {
+        exec(
+            `sudo -u ${process.env.LINUX_USER} git pull`,
+            (error, stdout, stderr) => {
                 if (error) return sendError(error);
-
                 command.followUp({
-                    embeds: [generateSuccessEmbed("Builded!")],
+                    embeds: [generateSuccessEmbed(stdout)],
                 });
 
-                exec(`pkill node`, (error, stdout, stderr) => {
+                exec(`tsc`, (error, stdout, stderr) => {
                     if (error) return sendError(error);
+
+                    command.followUp({
+                        embeds: [generateSuccessEmbed("Builded!")],
+                    });
+
+                    exec(`pkill node`, (error, stdout, stderr) => {
+                        if (error) return sendError(error);
+                    });
                 });
-            });
-        });
+            }
+        );
     }
 
     function sendError(error: ExecException) {
