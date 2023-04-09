@@ -46,7 +46,7 @@ export class StatusManager {
         const embed = new EmbedBuilder()
             .setTitle("🔧 Axer is updating...")
             .setDescription(
-                `**Reason:** reason` || "**Reason:** No reason provided..."
+                `**Reason:** ${reason}` || "**Reason:** No reason provided..."
             )
             .setColor(colors.yellowBright)
             .setFooter({

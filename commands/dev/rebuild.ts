@@ -6,6 +6,7 @@ import { StatusManager } from "../../modules/status/StatusManager";
 import { exec, ExecException } from "child_process";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { codeBlock } from "discord.js";
+import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
 
 const rebuild = new SlashCommand(
     "rebuild",
@@ -33,7 +34,7 @@ rebuild.setExecuteFunction(async (command) => {
         .then(() => {
             command
                 .editReply({
-                    embeds: [generateSuccessEmbed("Done!")],
+                    embeds: [generateWaitEmbed("Build starting...")],
                 })
                 .then(executeBuild)
                 .catch(executeBuild);
@@ -45,21 +46,32 @@ rebuild.setExecuteFunction(async (command) => {
             `sudo -u ${process.env.LINUX_USER} git pull`,
             (error, stdout, stderr) => {
                 if (error) return sendError(error);
-                command.followUp({
-                    embeds: [generateSuccessEmbed(stdout)],
-                });
+                command
+                    .followUp({
+                        embeds: [generateSuccessEmbed(stdout)],
+                    })
+                    .then(() => {
+                        exec(`tsc`, (error, stdout, stderr) => {
+                            if (error) return sendError(error);
 
-                exec(`tsc`, (error, stdout, stderr) => {
-                    if (error) return sendError(error);
-
-                    command.followUp({
-                        embeds: [generateSuccessEmbed("Build successful!")],
+                            command
+                                .followUp({
+                                    embeds: [
+                                        generateSuccessEmbed(
+                                            "Build successful!"
+                                        ),
+                                    ],
+                                })
+                                .then(() => {
+                                    exec(
+                                        `pkill node`,
+                                        (error, stdout, stderr) => {
+                                            if (error) return sendError(error);
+                                        }
+                                    );
+                                });
+                        });
                     });
-
-                    exec(`pkill node`, (error, stdout, stderr) => {
-                        if (error) return sendError(error);
-                    });
-                });
             }
         );
     }
