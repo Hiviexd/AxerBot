@@ -1,7 +1,7 @@
 import { PrivateMessage } from "bancho.js";
 import statuses from "statuses";
 
-import osuApi from "../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../modules/osu/fetcher/osuApi";
 import {
     BeatmapCalculationResult,
     calculateBeatmap,

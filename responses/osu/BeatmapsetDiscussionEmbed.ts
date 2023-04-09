@@ -7,9 +7,9 @@ import {
     ButtonStyle,
 } from "discord.js";
 import getHighestUsergroup from "../../helpers/osu/player/getHighestUsergroup";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
-import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
+import storeBeatmap from "../../modules/osu/fetcher/general/storeBeatmap";
 import truncateString from "../../helpers/text/truncateString";
 import { DiscussionAttributtes } from "../../helpers/osu/url/getTargetDiscussionPost";
 import parseOsuTimestamps from "../../helpers/text/parseOsuTimestamps";
@@ -78,7 +78,10 @@ export default {
 
             if (!beatmapData) return "General (All difficulties)";
 
-            const sanitizedDiffname = beatmapData.version.length > 40 ? beatmapData.version.slice(0, 40) + "..." : beatmapData.version;
+            const sanitizedDiffname =
+                beatmapData.version.length > 40
+                    ? beatmapData.version.slice(0, 40) + "..."
+                    : beatmapData.version;
 
             if (url.includes("general") && !url.includes("generalAll"))
                 return `General (${sanitizedDiffname})`;

@@ -7,7 +7,7 @@ import {
 import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
 import { bot } from "../..";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 
 export async function SendBeatmapDisqualifyEmbed(

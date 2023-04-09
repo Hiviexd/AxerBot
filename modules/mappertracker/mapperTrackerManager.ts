@@ -1,6 +1,6 @@
 import { MapperTrackerType } from "../../commands/osu/mappertracker";
 import { tracks } from "../../database";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import { existsSync, writeFileSync, readFileSync } from "fs";
 import path from "path";
 import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";

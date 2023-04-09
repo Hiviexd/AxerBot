@@ -5,7 +5,7 @@ import {
     StringSelectMenuBuilder,
 } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
-import osuApi from "../../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../../modules/osu/fetcher/osuApi";
 import UserNotFound from "../../../../responses/embeds/UserNotFound";
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";

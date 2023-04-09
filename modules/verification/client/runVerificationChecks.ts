@@ -1,7 +1,7 @@
 import { Guild, GuildMember } from "discord.js";
 import { guilds, users, verifications } from "../../../database";
 import { User, UserGroup } from "../../../types/user";
-import osuApi from "../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../modules/osu/fetcher/osuApi";
 import {
     IMapperRole,
     MapperRoleType,

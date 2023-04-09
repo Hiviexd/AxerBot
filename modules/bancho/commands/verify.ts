@@ -1,6 +1,6 @@
 import { BanchoClient, PrivateMessage } from "bancho.js";
 import { verifications } from "./../../../database";
-import osuApi from "../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../modules/osu/fetcher/osuApi";
 import validateVerificationRequirements from "../../../modules/verification/client/validateVerificationRequirements";
 import { consoleLog } from "../../../helpers/core/logger";
 import {

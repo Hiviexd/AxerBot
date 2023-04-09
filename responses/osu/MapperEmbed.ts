@@ -7,7 +7,7 @@ import {
 import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";
 import getMappingAge from "../../helpers/osu/player/getMappingAge";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import parseDate from "../../helpers/text/parseDate";
 import { fetchOldestBeatmap } from "../../helpers/osu/player/fetchOldestBeatmap";
 

@@ -1,6 +1,6 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import PlayerEmbed from "../../responses/osu/PlayerEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";

@@ -9,7 +9,7 @@ import axios from "axios";
 
 import { heardles } from "../../database";
 import { Beatmapset } from "../../types/beatmap";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import crypto from "crypto";
 import truncateString from "../../helpers/text/truncateString";
 import { consoleLog, consoleCheck } from "../../helpers/core/logger";

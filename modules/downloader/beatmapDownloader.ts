@@ -5,8 +5,8 @@ import {
     ButtonStyle,
 } from "discord.js";
 import relativeTime from "../../helpers/general/relativeTime";
-import storeBeatmap from "../../helpers/osu/fetcher/general/storeBeatmap";
-import osuApi from "./../../helpers/osu/fetcher/osuApi";
+import storeBeatmap from "../../modules/osu/fetcher/general/storeBeatmap";
+import osuApi from "./../../modules/osu/fetcher/osuApi";
 
 export default async (button: ButtonInteraction) => {
     const targets = button.customId.split("|");

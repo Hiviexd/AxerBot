@@ -19,7 +19,7 @@ import {
 } from "../../helpers/osu/performance/calculateBeatmap";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { Beatmapset } from "../../types/beatmap";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
 import colors from "../../constants/colors";
 import { validateArrayIndex } from "../../helpers/general/validateArrayIndex";

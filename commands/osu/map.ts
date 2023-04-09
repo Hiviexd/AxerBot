@@ -1,4 +1,4 @@
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { parseOsuBeatmapURL } from "../../helpers/text/parseOsuBeatmapURL";
 import { SlashCommand } from "../../models/commands/SlashCommand";

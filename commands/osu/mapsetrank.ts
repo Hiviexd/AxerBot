@@ -1,5 +1,5 @@
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import { Beatmapset } from "../../types/beatmap";
 import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";

@@ -1,7 +1,7 @@
 import { Client, ChatInputCommandInteraction } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotBNorNAT from "../../responses/qat/UserNotBNorNAT";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import BNEmbed from "../../responses/qat/BNEmbed";

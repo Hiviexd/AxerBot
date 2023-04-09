@@ -9,7 +9,7 @@ import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
 import colors from "../../constants/colors";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { bot } from "../..";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import getEmoji from "../../helpers/text/getEmoji";
 
 export async function sendBeatmapHypeEmbed(

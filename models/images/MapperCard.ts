@@ -5,7 +5,7 @@ import {
     registerFont,
     CanvasRenderingContext2D,
 } from "canvas";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import { User } from "../../types/user";
 import path from "path";
 import parseUsergroup from "../../helpers/osu/player/getHighestUsergroup";

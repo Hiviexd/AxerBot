@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 
 import { bot } from "../..";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import { CompressedBeatmapset } from "../../types/beatmap";

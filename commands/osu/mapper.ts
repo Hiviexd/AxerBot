@@ -1,5 +1,5 @@
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapperEmbed from "../../responses/osu/MapperEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";

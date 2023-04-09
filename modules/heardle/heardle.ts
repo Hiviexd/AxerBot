@@ -9,7 +9,7 @@ import {
 import { users, heardles } from "../../database";
 import { consoleCheck, consoleLog } from "../../helpers/core/logger";
 import relativeTime from "../../helpers/general/relativeTime";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import truncateString from "../../helpers/text/truncateString";
 import { Beatmapset } from "../../types/beatmap";
 import colors from "../../constants/colors";

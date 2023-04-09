@@ -1,7 +1,7 @@
 import { EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 
 import colors from "../../../../constants/colors";
-import osuApi from "../../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../../modules/osu/fetcher/osuApi";
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { Beatmapset } from "../../../../types/beatmap";

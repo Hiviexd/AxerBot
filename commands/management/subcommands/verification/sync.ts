@@ -4,7 +4,7 @@ import createNewUser from "../../../../database/utils/createNewUser";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { runVerificationChecks } from "../../../../modules/verification/client/runVerificationChecks";
 import { sendFirstTimeVerificationSync } from "../../../../modules/verification/client/sendFirstTimeVerificationSync";
-import osuApi from "../../../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../../../modules/osu/fetcher/osuApi";
 import UserNotFound from "../../../../responses/embeds/UserNotFound";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";

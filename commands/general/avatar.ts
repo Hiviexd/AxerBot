@@ -9,7 +9,7 @@ import UserNotFound from "../../responses/embeds/UserNotFound";
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import abbreviation from "../../helpers/text/abbreviation";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 
 const avatar = new SlashCommand(
     "avatar",

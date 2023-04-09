@@ -1,5 +1,5 @@
 import UserNotFound from "../../responses/embeds/UserNotFound";
-import osuApi from "../../helpers/osu/fetcher/osuApi";
+import osuApi from "../../modules/osu/fetcher/osuApi";
 import RecentScoreEmbed from "../../responses/osu/RecentScoreEmbed";
 import checkCommandPlayers from "../../helpers/osu/player/checkCommandPlayers";
 import { SlashCommand } from "../../models/commands/SlashCommand";

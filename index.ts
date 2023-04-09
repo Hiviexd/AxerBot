@@ -4,7 +4,7 @@ const token = process.env.TOKEN;
 
 import "colors";
 import { Client, EmbedBuilder, IntentsBitField, Message } from "discord.js";
-import "./helpers/osu/fetcher/startConnection";
+import "./modules/osu/fetcher/startConnection";
 import keepAlive from "./server";
 import { consoleCheck } from "./helpers/core/logger";
 import eventHandler from "./helpers/core/eventHandler";
