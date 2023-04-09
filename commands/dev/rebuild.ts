@@ -3,7 +3,9 @@ import config from "../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { StatusManager } from "../../modules/status/StatusManager";
-import { spawn } from "child_process";
+import { exec, ExecException } from "child_process";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import { codeBlock } from "discord.js";
 
 const rebuild = new SlashCommand(
     "rebuild",
@@ -39,24 +41,36 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        const p = spawn(`/bin/bash`, [
-            `sudo -u ${process.env.LINUX_USER} git pull && tsc && pkill node`,
-        ]);
+        exec(`git pull`, (error, stdout, stderr) => {
+            if (error) return sendError(error);
+            command.followUp({
+                embeds: [generateSuccessEmbed(stdout)],
+            });
 
-        console.log(p);
+            exec(`tsc`, (error, stdout, stderr) => {
+                if (error) return sendError(error);
 
-        p.on("spawn", () => {
-            status.sendBuildMessage(reason, command.user);
+                command.followUp({
+                    embeds: [generateSuccessEmbed("Builded!")],
+                });
+
+                exec(`pkill node`, (error, stdout, stderr) => {
+                    if (error) return sendError(error);
+                });
+            });
         });
+    }
 
-        p.on("message", (message) => {
-            command.followUp(message.toString());
-        });
-
-        p.on("error", (error) => {
-            console.error(error);
-            command.followUp(JSON.stringify(error));
-            status.sendErrorMessage(error.message);
+    function sendError(error: ExecException) {
+        command.followUp({
+            content: `${command.user}`,
+            embeds: [
+                generateErrorEmbed(
+                    `${codeBlock(
+                        `${error.message}\n` + error.stack || error.message
+                    )}`
+                ),
+            ],
         });
     }
 });
