@@ -1,6 +1,6 @@
 import "colors";
 import { Client, IntentsBitField } from "discord.js";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 import fs from "fs";
 import eventHandler from "./helpers/core/eventHandler";
 import { consoleCheck } from "./helpers/core/logger";
@@ -11,6 +11,7 @@ import { listenMapperTracker } from "./modules/mappertracker/mapperTrackerManage
 import "./modules/osu/fetcher/startConnection";
 import keepAlive from "./server";
 dotenv.config();
+
 const token = process.env.TOKEN;
 
 export const bot = new Client({
