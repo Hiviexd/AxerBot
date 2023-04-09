@@ -46,9 +46,15 @@ rebuild.setExecuteFunction(async (command) => {
             `sudo -u ${process.env.LINUX_USER} git pull`,
             (error, stdout, stderr) => {
                 if (error) return sendError(error);
+
+                if (stdout == "Already up to date.")
+                    return command.followUp({
+                        embeds: [generateWaitEmbed(stdout)],
+                    });
+
                 command
                     .followUp({
-                        embeds: [generateSuccessEmbed(stdout)],
+                        embeds: [generateSuccessEmbed(codeBlock(stdout))],
                     })
                     .then(() => {
                         exec(`tsc`, (error, stdout, stderr) => {
