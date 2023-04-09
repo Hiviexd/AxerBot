@@ -34,7 +34,6 @@ export default {
             sendQuotes(message, bot);
             checkOsuURL(message);
             antiDumbass(message);
-            // checkOsuAttachment(message); disabled cuz my brain sucks
         });
     },
 };

@@ -5,7 +5,6 @@ import osuTimestamp from "../../text/osuTimestamp";
 import parseBeatmap from "./parseBeatmap";
 import parseComment from "./parseComment";
 import parseDiscussionPost from "./parseDiscussionPost";
-import { parseScoreURL } from "./parseScoreURL";
 import parseUser from "./parseUser";
 
 export default async (message: Message) => {
@@ -77,17 +76,6 @@ export default async (message: Message) => {
                 guild.embeds.comment.channels.includes(message.channelId)
             ) {
                 return parseComment(arg, message);
-            }
-        }
-
-        if (url.pathname.includes("scores")) {
-            if (
-                (guild.embeds.scores &&
-                    guild.embeds.scores.all &&
-                    !guild.embeds.scores.none) ||
-                guild.embeds.scores.channels.includes(message.channelId)
-            ) {
-                return parseScoreURL(url);
             }
         }
     }
