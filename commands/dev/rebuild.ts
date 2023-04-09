@@ -49,7 +49,9 @@ rebuild.setExecuteFunction(async (command) => {
 
                 if (stdout.trim() == "Already up to date.")
                     return command.followUp({
-                        embeds: [generateWaitEmbed(stdout)],
+                        embeds: [
+                            generateWaitEmbed(stdout, "No need to build again"),
+                        ],
                     });
 
                 command
