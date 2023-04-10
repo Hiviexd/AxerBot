@@ -169,9 +169,11 @@ export class AudioSpectrogram extends EventEmitter {
         this.setImage.bind(this);
 
         exec(
-            `python3 ${this.PythonModule} ${this.getFileId().concat(
-                ".wav"
-            )} ${this.getBitRate()}kb/s`,
+            `python3 ${this.PythonModule} ${this.getFileId().concat(".wav")} ${
+                this.getBitRate()
+                    ? `${this.getBitRate()}kb/s`
+                    : "Unknown Bitrate"
+            }`,
             (error, stdout, stderr) => {
                 if (error !== null) return this.emit("error", error);
 
