@@ -11,7 +11,7 @@ export default async (
         name: `${beatmapset.id} ${beatmapset.artist} - ${beatmapset.title}.osz`,
     });
 
-    if (beatmap_file.data.size > 8000000) {
+    if (beatmap_file.data.size > 2.5e7) {
         big = true;
 
         return {
