@@ -60,36 +60,25 @@ rebuild.setExecuteFunction(async (command) => {
                         embeds: [generateSuccessEmbed(codeBlock(stdout))],
                     })
                     .then(() => {
-                        exec(`yarn`, (error, stdout, stderr) => {
+                        exec(`tsc`, (error, stdout, stderr) => {
                             if (error) return sendError(error);
 
-                            command.followUp({
-                                embeds: [
-                                    generateSuccessEmbed("Updated modules"),
-                                ],
-                            });
-
-                            exec(`tsc`, (error, stdout, stderr) => {
-                                if (error) return sendError(error);
-
-                                command
-                                    .followUp({
-                                        embeds: [
-                                            generateSuccessEmbed(
-                                                "Build successful!"
-                                            ),
-                                        ],
-                                    })
-                                    .then(() => {
-                                        exec(
-                                            `pkill node`,
-                                            (error, stdout, stderr) => {
-                                                if (error)
-                                                    return sendError(error);
-                                            }
-                                        );
-                                    });
-                            });
+                            command
+                                .followUp({
+                                    embeds: [
+                                        generateSuccessEmbed(
+                                            "Build successful!"
+                                        ),
+                                    ],
+                                })
+                                .then(() => {
+                                    exec(
+                                        `pkill node`,
+                                        (error, stdout, stderr) => {
+                                            if (error) return sendError(error);
+                                        }
+                                    );
+                                });
                         });
                     });
             }
