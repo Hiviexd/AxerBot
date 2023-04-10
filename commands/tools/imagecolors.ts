@@ -144,6 +144,10 @@ imagecolors.setExecuteFunction(async (command) => {
                 inline: true,
             }
         )
+        .setFooter({
+            iconURL: command.user.avatarURL() || "",
+            text: `${command.user.tag} (${command.user.id})`,
+        })
         .setThumbnail(attachment.url);
 
     command.editReply({
