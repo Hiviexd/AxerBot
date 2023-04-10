@@ -10,6 +10,7 @@ import track from "./schemas/track";
 import addScoreEmbedConfiguration from "./migrations/addScoreEmbedConfiguration";
 import verification from "./schemas/verification";
 import addFlagsLeaderboard from "./migrations/addFlagsLeaderboard";
+import banchoUser from "./schemas/banchoUser";
 
 consoleLog("database", "Starting database connection...");
 
@@ -33,6 +34,7 @@ mongoose.connect(
 );
 
 export const users = mongoose.model("Users", user);
+export const banchoUsers = mongoose.model("BanchoUsers", banchoUser);
 export const verifications = mongoose.model("Verifications", verification);
 export const guilds = mongoose.model("Guilds", guild);
 export const heardles = mongoose.model("Heardles", heardle);

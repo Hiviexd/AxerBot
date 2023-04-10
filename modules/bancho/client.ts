@@ -6,6 +6,7 @@ import {
 } from "../../helpers/core/logger";
 import { BanchoCommands } from "./commands";
 import { calculateBeatmapFromAction } from "./helpers/calculateBeatmap";
+import getOrCreateBanchoUser from "../../database/utils/getOrCreatBanchoUser";
 
 export const bancho = new BanchoClient({
     username: process.env.IRC_USERNAME || "eae",
@@ -15,7 +16,7 @@ export const bancho = new BanchoClient({
     botAccount: true,
 });
 
-bancho.on("PM", (pm) => {
+bancho.on("PM", async (pm) => {
     if (pm.user.ircUsername == process.env.IRC_USERNAME) return;
 
     if (pm.getAction()) return calculateBeatmapFromAction(pm);
