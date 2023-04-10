@@ -53,6 +53,9 @@ import { resizebg } from "./tools/resizebg";
 import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
 import addsilent from "./tools/addsilence";
+import imagecolors from "./tools/imagecolors";
+
+// ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
 
@@ -112,6 +115,7 @@ export const AxerCommands = [
     spectro,
     debloat,
     addsilent,
+    imagecolors,
 
     // ? Dev
     shutdown,
