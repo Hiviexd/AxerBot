@@ -1,13 +1,14 @@
 import { BanchoClient, PrivateMessage } from "bancho.js";
-import { verifications } from "./../../../database";
+
+import { consoleLog } from "../../../helpers/core/logger";
 import osuApi from "../../../modules/osu/fetcher/osuApi";
 import validateVerificationRequirements from "../../../modules/verification/client/validateVerificationRequirements";
-import { consoleLog } from "../../../helpers/core/logger";
 import {
     IVerificationObject,
     VerificationType,
 } from "../../verification/client/GenerateAuthToken";
 import { validateVerificationSync } from "../../verification/client/validateVerificationSync";
+import { verifications } from "./../../../database";
 
 export default {
     settings: {

@@ -148,7 +148,13 @@ export async function searchBeatmapset(
     }
 }
 
-export async function download(beatmapset_id: string): Promise<any> {
+export async function download(beatmapset_id: string): Promise<
+    IHTTPResponse<{
+        name: string;
+        size: number;
+        buffer: Buffer;
+    } | null>
+> {
     try {
         consoleLog(
             "beatmap fetcher",
@@ -171,6 +177,7 @@ export async function download(beatmapset_id: string): Promise<any> {
             beatmapsetId: beatmapset_id,
             noVideo: true,
         });
+
         const filename = await downloader.name();
         const data = await downloader.buffer();
         const size = await downloader.size();

@@ -4,6 +4,8 @@ import statuses from "statuses";
 import { parseOsuBeatmapURL } from "../../../helpers/text/parseOsuBeatmapURL";
 import osuApi from "../../../modules/osu/fetcher/osuApi";
 import { calculateBeatmap } from "../../../modules/osu/performance/calculateBeatmap";
+import getOrCreateBanchoUser from "../../../database/utils/getOrCreatBanchoUser";
+import { banchoUsers } from "../../../database";
 
 export async function calculateBeatmapFromAction(pm: PrivateMessage) {
     const action = pm.getAction();
@@ -47,6 +49,21 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
     );
 
     const { data: beatmap } = beatmapData;
+
+    const apiUser = await pm.user.fetchFromAPI();
+    const user = await getOrCreateBanchoUser(apiUser.id);
+
+    if (user) {
+        await banchoUsers.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    last_beatmapset: beatmapURL.data.beatmapset_id,
+                    last_beatmap: beatmapURL.data.beatmap_id,
+                },
+            }
+        );
+    }
 
     return pm.user.sendMessage(
         `[${args[0]} ${beatmap.beatmapset?.artist} - ${

@@ -103,7 +103,7 @@ spectrum.setExecuteFunction(async (command) => {
                 generateErrorEmbedWithTitle(
                     ":x: Something went wrong!",
                     `${error?.message || "**Error:**"}\n${truncateString(
-                        error.stack || "",
+                        error?.stack || "",
                         4096
                     )}`
                 ),

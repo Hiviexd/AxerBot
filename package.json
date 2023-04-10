@@ -12,13 +12,14 @@
 		"@types/mongoose": "^5.11.97",
 		"@types/numeral": "^2.0.2",
 		"@types/spectrogram": "^0.0.1",
+		"@types/yauzl": "^2.10.0",
 		"array-paginator": "^1.5.2",
 		"asynckit": "^0.4.0",
 		"audio-render": "^2.0.1",
 		"axios": "^0.26.0",
 		"bancho.js": "^0.11.0",
 		"callsites": "^3.1.0",
-		"canvas": "^2.11.0",
+		"canvas": "^2.11.2",
 		"chance": "^1.1.8",
 		"chart.js": "^3.7.1",
 		"colors": "^1.4.0",
@@ -74,7 +75,8 @@
 		"webidl-conversions": "^3.0.1",
 		"whatwg-url": "^5.0.0",
 		"when": "^3.7.8",
-		"ws": "^7.5.5"
+		"ws": "^7.5.5",
+		"yauzl": "^2.10.0"
 	},
 	"scripts": {
 		"test": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn --ignore-watch node_modules",
