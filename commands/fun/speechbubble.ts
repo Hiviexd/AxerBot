@@ -10,12 +10,26 @@ const speechbubble = new SlashCommand(
     true
 );
 
-speechbubble.builder.addAttachmentOption((o) =>
-    o.setName("image").setDescription("Source image").setRequired(true)
-);
+speechbubble.builder
+    .addAttachmentOption((o) =>
+        o.setName("image").setDescription("Source image").setRequired(true)
+    )
+    .addStringOption((o) =>
+        o.setName("template").setDescription("Meme template type").addChoices(
+            {
+                name: "White speech bubble",
+                value: "default",
+            },
+            {
+                name: "Crop/Transparent",
+                value: "crop",
+            }
+        )
+    );
 
 speechbubble.setExecuteFunction(async (command) => {
     const attachment = command.options.getAttachment("image", true);
+    const type = command.options.getString("template") || "default";
 
     const allowedMimes = ["image/jpg", "image/jpeg", "image/jfif", "image/png"];
 
@@ -35,27 +49,62 @@ speechbubble.setExecuteFunction(async (command) => {
             ],
         });
 
-    const canvas = createCanvas(
-        attachment.width || 100,
-        attachment.height || 100
-    );
+    const sizing: { [key: string]: { width: number; height: number } } = {
+        default: {
+            width: attachment.width || 100,
+            height: attachment.height || 100,
+        },
+        goofy: {
+            width: attachment.width || 100,
+            height:
+                (attachment.height || 100) +
+                160 *
+                    Math.min(
+                        (attachment.width || 100) / 490,
+                        (attachment.height || 100) / 160
+                    ),
+        },
+    };
+
+    const canvas = createCanvas(sizing[type].width, sizing[type].height);
+
     const ctx = canvas.getContext("2d");
 
     const baseImage = await loadImage(attachment.url);
-    const maskImage = await loadImage(
-        "https://media.discordapp.net/attachments/959908232736952420/1095157593468579951/bubble.png"
-    );
 
-    const maskSize = getImageSize(maskImage.width, maskImage.height, canvas);
-    ctx.drawImage(
-        maskImage,
-        (canvas.width - maskSize.width) / 2,
-        -(maskSize.height / 2),
-        maskSize.width,
-        maskSize.height
-    );
-    ctx.globalCompositeOperation = "source-out";
-    ctx.drawImage(baseImage, 0, 0);
+    if (type == "crop") {
+        const maskImage = await loadImage(
+            "https://media.discordapp.net/attachments/959908232736952420/1095157593468579951/bubble.png"
+        );
+
+        const maskSize = getImageSize(
+            maskImage.width,
+            maskImage.height,
+            canvas
+        );
+        ctx.drawImage(
+            maskImage,
+            (canvas.width - maskSize.width) / 2,
+            -(maskSize.height / 2),
+            maskSize.width,
+            maskSize.height
+        );
+        ctx.globalCompositeOperation = "source-out";
+        ctx.drawImage(baseImage, 0, 0);
+    } else {
+        const goofyImage = await loadImage(
+            "https://media.discordapp.net/attachments/959908232736952420/1095408128041943141/goofy_bubble.png"
+        );
+
+        const sizing = getImageSize(
+            goofyImage.width,
+            goofyImage.height,
+            canvas
+        );
+
+        ctx.drawImage(goofyImage, 0, 0, canvas.width, sizing.height);
+        ctx.drawImage(baseImage, 0, sizing.height);
+    }
 
     const result = new AttachmentBuilder(canvas.toBuffer(), {
         name: "bubble.gif",
@@ -67,7 +116,7 @@ speechbubble.setExecuteFunction(async (command) => {
 });
 
 function getImageSize(width: number, height: number, canvas: Canvas) {
-    var r = Math.min(canvas.width / width, canvas.height / height);
+    const r = Math.min(canvas.width / width, canvas.height / height);
 
     return {
         width: width * r + 5,
