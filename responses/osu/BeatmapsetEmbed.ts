@@ -137,15 +137,17 @@ export default {
                 );
 
                 if ((target as ChatInputCommandInteraction).commandId) {
-                    (target as ChatInputCommandInteraction).editReply({
-                        embeds: [embed],
-                        content: "",
-                        components: [actionRow],
-                        files: [],
-                        allowedMentions: {
-                            repliedUser: false,
-                        },
-                    });
+                    (target as ChatInputCommandInteraction)
+                        .editReply({
+                            embeds: [embed],
+                            content: "",
+                            components: [actionRow],
+                            files: [],
+                            allowedMentions: {
+                                repliedUser: false,
+                            },
+                        })
+                        .catch(console.error);
                 } else {
                     target.reply({
                         embeds: [embed],
@@ -175,23 +177,27 @@ export default {
                     );
 
                 if ((target as ChatInputCommandInteraction).commandId) {
-                    (target as ChatInputCommandInteraction).editReply({
-                        files: [attachment],
-                        content: "",
-                        components: [actionRow],
-                        allowedMentions: {
-                            repliedUser: false,
-                        },
-                    });
+                    (target as ChatInputCommandInteraction)
+                        .editReply({
+                            files: [attachment],
+                            content: "",
+                            components: [actionRow],
+                            allowedMentions: {
+                                repliedUser: false,
+                            },
+                        })
+                        .catch(console.error);
                 } else {
-                    target.reply({
-                        files: [attachment],
-                        content: "",
-                        components: [actionRow],
-                        allowedMentions: {
-                            repliedUser: false,
-                        },
-                    });
+                    target
+                        .reply({
+                            files: [attachment],
+                            content: "",
+                            components: [actionRow],
+                            allowedMentions: {
+                                repliedUser: false,
+                            },
+                        })
+                        .catch(console.error);
                 }
             }
 
@@ -609,57 +615,65 @@ export default {
             });
 
             if ((target as ChatInputCommandInteraction).commandId) {
-                (target as ChatInputCommandInteraction).editReply({
-                    embeds: [embed],
-                    content: "",
-                    files: [],
-                    components: [
-                        staticButtonsRow,
-                        modsSelector,
-                        embedButtonsRow,
-                    ],
-                    allowedMentions: {
-                        repliedUser: false,
-                    },
-                });
+                (target as ChatInputCommandInteraction)
+                    .editReply({
+                        embeds: [embed],
+                        content: "",
+                        files: [],
+                        components: [
+                            staticButtonsRow,
+                            modsSelector,
+                            embedButtonsRow,
+                        ],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    })
+                    .catch(console.error);
             } else {
-                target.reply({
-                    embeds: [embed],
-                    files: [],
-                    content: "",
-                    components: [
-                        staticButtonsRow,
-                        modsSelector,
-                        embedButtonsRow,
-                    ],
-                    allowedMentions: {
-                        repliedUser: false,
-                    },
-                });
+                target
+                    .reply({
+                        embeds: [embed],
+                        files: [],
+                        content: "",
+                        components: [
+                            staticButtonsRow,
+                            modsSelector,
+                            embedButtonsRow,
+                        ],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    })
+                    .catch(console.error);
             }
         } catch (e) {
             console.error(e);
 
             if ((target as ChatInputCommandInteraction).commandId) {
-                (target as ChatInputCommandInteraction).editReply({
-                    embeds: [generateErrorEmbed("Something went wrong")],
-                    content: "",
-                    files: [],
-                    components: [],
-                    allowedMentions: {
-                        repliedUser: false,
-                    },
-                });
+                (target as ChatInputCommandInteraction)
+                    .editReply({
+                        embeds: [generateErrorEmbed("Something went wrong")],
+                        content: "",
+                        files: [],
+                        components: [],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    })
+                    .catch(console.error);
             } else {
-                target.reply({
-                    embeds: [generateErrorEmbed("Something went wrong")],
-                    content: "",
-                    files: [],
-                    components: [],
-                    allowedMentions: {
-                        repliedUser: false,
-                    },
-                });
+                target
+                    .reply({
+                        embeds: [generateErrorEmbed("Something went wrong")],
+                        content: "",
+                        files: [],
+                        components: [],
+                        allowedMentions: {
+                            repliedUser: false,
+                        },
+                    })
+                    .catch(console.error);
             }
         }
     },
