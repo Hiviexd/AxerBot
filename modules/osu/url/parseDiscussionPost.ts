@@ -27,9 +27,9 @@ export default async (url: string, message?: Message) => {
     const targetEvent = events.data
         ? events.data.find(
               (e) =>
-                  (e.discussionId == targetPost.discussions[0].id ||
-                      e.content == targetPost.posts[0].message) &&
-                  e.userId == targetPost.posts[0].user_id
+                  (e.discussionId == targetPost.discussions[0]?.id ||
+                      e.content == targetPost.posts[0]?.message) &&
+                  e.userId == targetPost.posts[0]?.user_id
           )
         : undefined;
 
