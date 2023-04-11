@@ -50,11 +50,11 @@ speechbubble.setExecuteFunction(async (command) => {
         });
 
     const sizing: { [key: string]: { width: number; height: number } } = {
-        default: {
+        crop: {
             width: attachment.width || 100,
             height: attachment.height || 100,
         },
-        goofy: {
+        default: {
             width: attachment.width || 100,
             height:
                 (attachment.height || 100) +
