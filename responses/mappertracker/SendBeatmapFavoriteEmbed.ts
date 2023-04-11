@@ -20,8 +20,6 @@ export async function sendBeatmapFavoriteEmbed(
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
-    console.log(beatmapset.data.recent_favourites);
-
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
