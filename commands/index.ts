@@ -17,6 +17,7 @@ import fact from "./fun/fact";
 import coinflip from "./fun/coinflip";
 import choose from "./fun/choose";
 import rps from "./fun/rps";
+import speechbubble from "./fun/speechbubble";
 import guesstheflag from "./fun/gtf";
 
 // ? Management
@@ -81,6 +82,7 @@ export const AxerCommands = [
     rps,
     guesstheflag,
     burningtext,
+    speechbubble,
     //chess,
 
     // ? Management
