@@ -6,81 +6,44 @@ import {
     EmbedBuilder,
 } from "discord.js";
 import { tracks } from "../../database";
-import { readFileSync, writeFileSync } from "fs";
-import path from "path";
-import qatApi from "../../helpers/qat/fetcher/qatApi";
 import { QatUser } from "../../types/qat";
 import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPreferences";
 import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
+import { WebSocket } from "ws";
+import { consoleCheck } from "../../helpers/core/logger";
 
 async function qatTracking(bot: Client) {
     const allTracks = await tracks.find({ type: "qat" });
 
-    let storedData = JSON.parse(
-        readFileSync(
-            path.resolve(__dirname + "/../../cache/nominators.json"),
-            "utf8"
-        )
+    const websocketConfig = {
+        headers: {
+            username: process.env.QAT_USER,
+            secret: process.env.QAT_SECRET,
+            tags: "users:request_status_update",
+        },
+    };
+    let qatWebsocket = new WebSocket(
+        "wss://bn.mappersguild.com/websocket/interOp",
+        websocketConfig
     );
 
-    const liveData = await qatApi.fetch.allUsers();
-    const differentData: QatUser[] = [];
+    qatWebsocket.on("open", () => {
+        consoleCheck("QatTracking", "Connected to QAT");
+    });
 
-    if (!storedData || storedData.length == 0)
-        return writeFileSync(
-            path.resolve(__dirname + "/../../cache/nominators.json"),
-            JSON.stringify(liveData),
-            "utf8"
+    qatWebsocket.on("close", () => {
+        qatWebsocket = new WebSocket(
+            "wss://bn.mappersguild.com/websocket/interOp",
+            websocketConfig
         );
+    });
 
-    // dickwads and people who don't want to be tracked go here
-    const blacklistedBNs = [9487458, 10959501, 33599];
-
-    if (storedData.length != 0) {
-        for (const user of liveData.data) {
-            const storedDataIndex = storedData.findIndex(
-                (u: QatUser) => u._id == user._id
-            );
-
-            if (
-                storedData[storedDataIndex] &&
-                storedData[storedDataIndex].requestStatus.includes("closed") !=
-                    user.requestStatus.includes("closed")
-            )
-                differentData.push(user);
+    qatWebsocket.on("message", (data: { type: string; data: QatUser }) => {
+        for (const track of allTracks) {
+            sendUpdate(data.data, track);
         }
-    }
-
-    for (const track of allTracks) {
-        await mapBns(track);
-    }
-
-    async function mapBns(track: any) {
-        let usersToSend: QatUser[] = [];
-
-        async function checkModes(user: QatUser) {
-            let allow = false;
-
-            for (const mode of user.modes) {
-                if (track.targets.modes.includes(mode)) allow = true;
-            }
-
-            return allow;
-        }
-
-        for (const user of differentData) {
-            if (blacklistedBNs.includes(user.osuId)) continue;
-
-            if (await checkModes(user)) {
-                usersToSend.push(user);
-            }
-        }
-
-        for (const user of usersToSend) {
-            await sendUpdate(user, track);
-        }
-    }
+    });
 
     async function sendUpdate(bn: QatUser, track: any) {
         const footer = {
@@ -213,15 +176,6 @@ async function qatTracking(bot: Client) {
 
         return void {};
     }
-
-    writeFileSync(
-        path.resolve(__dirname + "/../../cache/nominators.json"),
-        JSON.stringify(liveData.data),
-        "utf8"
-    );
-    setTimeout(async () => {
-        await qatTracking(bot);
-    }, 30000); // ? checks every 30 seconds
 
     return void {};
 }
