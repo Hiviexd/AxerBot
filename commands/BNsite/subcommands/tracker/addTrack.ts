@@ -15,11 +15,7 @@ const addTracker = new SlashCommandSubcommand(
     "add",
     "Create a new tracker",
     {
-        syntax: "/bntracker add `channel:#channel` `status:open|closed|both` `mode:osu|taiko|catch|mania`",
-        example:
-            "/bntracker add `channel:#bn-forms` `status:both` `modes:osu,taiko,catch,mania`",
-        "selecting modes":
-            'Modes are split by commas "`,`";\nExample: `osu,taiko,mania`',
+        syntax: "/bntracker add `channel:#channel`",
     },
     [PermissionFlagsBits.ManageChannels]
 );
