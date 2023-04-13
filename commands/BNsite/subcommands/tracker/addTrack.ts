@@ -127,7 +127,9 @@ addTracker.setExecuteFunction(async (command) => {
             command,
             "Select statuses to track",
             "Filter bn request status",
-            menu
+            menu,
+            undefined,
+            true
         )
             .then(async (status) => {
                 config.open = status.data.includes("open");
