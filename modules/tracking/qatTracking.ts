@@ -11,7 +11,7 @@ import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPrefere
 import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
 import WebSocket from "ws";
-import { consoleCheck } from "../../helpers/core/logger";
+import { consoleCheck, consoleLog } from "../../helpers/core/logger";
 import { StatusManager } from "../status/StatusManager";
 
 async function qatTracking(bot: Client) {
@@ -50,8 +50,13 @@ async function qatTracking(bot: Client) {
                 };
             };
 
+            consoleLog(
+                "qatTracker",
+                `Received status update from ${message.data.user.username}`
+            );
+
             for (const track of allTracks) {
-                sendUpdate(message.data.user, track);
+                sendUpdate(message.data.user, track, message.data.isOpen);
             }
         } catch (e: any) {
             const statusManager = new StatusManager();
@@ -62,7 +67,7 @@ async function qatTracking(bot: Client) {
         }
     });
 
-    async function sendUpdate(bn: QatUser, track: any) {
+    async function sendUpdate(bn: QatUser, track: any, isOpen: boolean) {
         const footer = {
             text: "BN website",
             iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
@@ -74,16 +79,17 @@ async function qatTracking(bot: Client) {
             .join("")
             .trim();
 
-        const texts: { [key: string]: any } = {
-            open: {
-                title: `🟢 Open (<t:${Math.trunc(
-                    new Date().valueOf() / 1000
-                )}:R>)`,
-                thumbnail: {
-                    url: `https://a.ppy.sh/${bn.osuId}`,
-                },
-                description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`,
-                fields: [
+        const texts: { [key: string]: EmbedBuilder } = {
+            open: new EmbedBuilder()
+                .setTitle(
+                    `🟢 Open (<t:${Math.trunc(new Date().valueOf() / 1000)}:R>)`
+                )
+                .setDescription(
+                    `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`
+                )
+                .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
+                .setFooter(footer)
+                .setFields(
                     {
                         name: "Positive",
                         value: getBNPreferences.positive(bn),
@@ -93,41 +99,37 @@ async function qatTracking(bot: Client) {
                         name: "Negative",
                         value: getBNPreferences.negative(bn),
                         inline: true,
-                    },
-                ],
-                footer: footer,
-            },
-            closed: {
-                title: `🔴 Closed (<t:${Math.trunc(
-                    new Date().valueOf() / 1000
-                )}:R>)`,
-                thumbnail: {
-                    url: `https://a.ppy.sh/${bn.osuId}`,
-                },
-                description: `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`,
-                footer: footer,
-            },
+                    }
+                )
+                .setColor(colors.green),
+            closed: new EmbedBuilder()
+                .setTitle(
+                    `🔴 Closed (<t:${Math.trunc(
+                        new Date().valueOf() / 1000
+                    )}:R>)`
+                )
+                .setDescription(
+                    `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`
+                )
+                .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
+                .setFooter(footer)
+                .setColor(colors.red),
         };
 
-        const open = bn.requestStatus.includes("closed") ? false : true;
-
-        const embed = new EmbedBuilder(
-            texts[open ? "open" : "closed"]
-        ).setColor(open ? colors.green : colors.red);
-
         const buttons = new ActionRowBuilder<ButtonBuilder>();
-        const buttons2 = new ActionRowBuilder<ButtonBuilder>();
 
-        if (!bn.requestStatus.includes("closed")) {
+        const embed = texts[isOpen ? "open" : "closed"];
+
+        if (isOpen) {
             const dmButton = new ButtonBuilder();
             dmButton
                 .setStyle(ButtonStyle.Link)
                 .setLabel("Send message (osu!)")
                 .setURL(`https://osu.ppy.sh/home/messages/users/${bn.osuId}`);
-
             buttons.addComponents(dmButton);
 
             if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
+                console.log(bn.requestLink);
                 const siteName = new URL(bn.requestLink).hostname.split(".")[0];
                 const personalQueueButton = new ButtonBuilder();
                 personalQueueButton
@@ -143,7 +145,7 @@ async function qatTracking(bot: Client) {
                     .setStyle(ButtonStyle.Link)
                     .setLabel(`Global queue`)
                     .setURL(`https://bn.mappersguild.com/modrequests`);
-                buttons2.addComponents(globalQueueButton);
+                buttons.addComponents(globalQueueButton);
             }
         }
 
@@ -159,41 +161,36 @@ async function qatTracking(bot: Client) {
         if (!channel) return;
 
         function allowSend() {
-            let v = false;
-
-            if (bn.requestStatus.includes("closed") && !track.targets.closed)
-                return !v;
-
-            if (!bn.requestStatus.includes("closed") && !track.targets.open)
-                return !v;
+            let hasTarget = false;
+            let hasModes = false;
 
             track.targets.modes.forEach((mode: string) => {
-                if (bn.modes.includes(mode)) v = true;
+                if (bn.modes.includes(mode)) hasModes = true;
             });
 
-            return v;
+            if (
+                (isOpen && track.targets.open) ||
+                (!isOpen && track.targets.closed)
+            )
+                hasTarget = true;
+
+            if (!hasTarget || !hasModes) return false;
+
+            return true;
         }
 
-        if (channel.isTextBased() && allowSend()) {
-            if (!bn.requestStatus.includes("closed")) {
-                return await channel
+        if (allowSend()) {
+            if (channel.isTextBased()) {
+                return channel
                     .send({
                         embeds: [embed],
-                        components: bn.requestStatus.includes("globalQueue")
-                            ? [buttons, buttons2]
-                            : [buttons],
+                        components: isOpen ? [buttons] : [],
                     })
                     .catch((e) => {
                         console.error(e);
                     });
             } else {
-                return await channel
-                    .send({
-                        embeds: [embed],
-                    })
-                    .catch((e) => {
-                        console.error(e);
-                    });
+                return;
             }
         }
 
