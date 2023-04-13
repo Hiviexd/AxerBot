@@ -1,6 +1,5 @@
 import {
     ChannelType,
-    ChatInputCommandInteraction,
     PermissionFlagsBits,
     StringSelectMenuBuilder,
 } from "discord.js";
