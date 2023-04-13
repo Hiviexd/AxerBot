@@ -12,10 +12,9 @@ import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
 import WebSocket from "ws";
 import { consoleCheck } from "../../helpers/core/logger";
+import { StatusManager } from "../status/StatusManager";
 
 async function qatTracking(bot: Client) {
-    const allTracks = await tracks.find({ type: "qat" });
-
     const websocketConfig = {
         headers: {
             username: process.env.QAT_USER,
@@ -39,9 +38,27 @@ async function qatTracking(bot: Client) {
         );
     });
 
-    qatWebsocket.on("message", (data: { type: string; data: QatUser }) => {
-        for (const track of allTracks) {
-            sendUpdate(data.data, track);
+    qatWebsocket.on("message", async (data: Buffer) => {
+        try {
+            const allTracks = await tracks.find({ type: "qat" });
+
+            const message = JSON.parse(data.toString()) as {
+                type: string;
+                data: {
+                    isOpen: boolean;
+                    user: QatUser;
+                };
+            };
+
+            for (const track of allTracks) {
+                sendUpdate(message.data.user, track);
+            }
+        } catch (e: any) {
+            const statusManager = new StatusManager();
+            statusManager.sendErrorMessage(
+                `Can't send bn update: ${e.message}`
+            );
+            console.error(e);
         }
     });
 
@@ -142,13 +159,19 @@ async function qatTracking(bot: Client) {
         if (!channel) return;
 
         function allowSend() {
+            let v = false;
+
             if (bn.requestStatus.includes("closed") && !track.targets.closed)
-                return false;
+                return !v;
 
             if (!bn.requestStatus.includes("closed") && !track.targets.open)
-                return false;
+                return !v;
 
-            return true;
+            track.targets.modes.forEach((mode: string) => {
+                if (bn.modes.includes(mode)) v = true;
+            });
+
+            return v;
         }
 
         if (channel.isTextBased() && allowSend()) {

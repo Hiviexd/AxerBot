@@ -2,12 +2,14 @@ import {
     ChannelType,
     ChatInputCommandInteraction,
     PermissionFlagsBits,
+    StringSelectMenuBuilder,
 } from "discord.js";
 import { tracks } from "../../../../database";
 import crypto from "crypto";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 
 const addTracker = new SlashCommandSubcommand(
     "add",
@@ -22,47 +24,15 @@ const addTracker = new SlashCommandSubcommand(
     [PermissionFlagsBits.ManageChannels]
 );
 
-addTracker.builder
-    .addChannelOption((o) =>
-        o
-            .setName("channel")
-            .setDescription("Channel to announce")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
-            .setName("status")
-            .setDescription("Filter bn status to announce")
-            .addChoices(
-                {
-                    name: "open",
-                    value: "open",
-                },
-                {
-                    name: "close",
-                    value: "closed",
-                },
-                {
-                    name: "both",
-                    value: "open,closed",
-                }
-            )
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
-            .setName("modes")
-            .setDescription("Filter bn modes (split by commas)")
-            .setRequired(true)
-    );
+addTracker.builder.addChannelOption((o) =>
+    o.setName("channel").setDescription("Channel to announce").setRequired(true)
+);
 
 addTracker.setExecuteFunction(async (command) => {
     if (!command.member || typeof command.member.permissions == "string")
         return;
 
     const channel = command.options.getChannel("channel", true);
-    const modes = command.options.getString("modes", true).split(",");
-    const status = command.options.getString("status", true).split(",");
 
     const actualTrack = await tracks.find({
         guild: command.guildId,
@@ -86,34 +56,10 @@ addTracker.setExecuteFunction(async (command) => {
             ],
         });
 
-    const avaliableModes = ["osu", "taiko", "catch", "mania"];
-    const clearModes: string[] = [];
-
-    for (let mode of modes) {
-        if (!avaliableModes.includes(mode)) {
-            return command.editReply({
-                embeds: [
-                    generateErrorEmbed(
-                        `The mode \`${mode}\` is not valid. Avaliable modes are: \`${avaliableModes.join(
-                            ","
-                        )}\`
-							Make sure that modes are separated by comma.`
-                    ),
-                ],
-            });
-        }
-
-        mode = mode.trim().toLowerCase();
-
-        if (avaliableModes.includes(mode)) {
-            clearModes.push(mode);
-        }
-    }
-
     const config = {
-        modes: clearModes,
-        open: status.includes("open"),
-        closed: status.includes("closed"),
+        modes: [] as string[],
+        open: true,
+        closed: true,
     };
 
     const id = crypto.randomBytes(30).toString("hex").slice(30);
@@ -125,11 +71,87 @@ addTracker.setExecuteFunction(async (command) => {
         targets: config,
     });
 
-    await newTrack.save();
+    setupModes();
 
-    command.editReply({
-        embeds: [generateSuccessEmbed("Tracker added!")],
-    });
+    function setupModes() {
+        const menu = new StringSelectMenuBuilder()
+            .addOptions(
+                {
+                    label: "osu!",
+                    value: "osu",
+                },
+                {
+                    label: "osu!taiko",
+                    value: "taiko",
+                },
+                {
+                    label: "osu!catch",
+                    value: "fruits",
+                },
+                {
+                    label: "osu!mania",
+                    value: "mania",
+                }
+            )
+            .setMaxValues(4);
+
+        generateStepEmbedWithChoices(
+            command,
+            "Select gamemodes to track",
+            "It will be used to filter bns for a requested gamemode",
+            menu
+        )
+            .then((modes) => {
+                config.modes = modes.data;
+
+                setupStatuses();
+            })
+            .catch(() => {
+                command.editReply({
+                    content: "",
+                    embeds: [generateErrorEmbed("Time out!")],
+                });
+            });
+    }
+
+    function setupStatuses() {
+        const menu = new StringSelectMenuBuilder()
+            .addOptions(
+                {
+                    label: "When a BN opens",
+                    value: "open",
+                },
+                {
+                    label: "When a BN closes",
+                    value: "closed",
+                }
+            )
+            .setMaxValues(2);
+
+        generateStepEmbedWithChoices(
+            command,
+            "Select statuses to track",
+            "Filter bn request status",
+            menu
+        )
+            .then(async (status) => {
+                config.open = status.data.includes("open");
+                config.closed = status.data.includes("closed");
+
+                await newTrack.save();
+
+                command.editReply({
+                    content: "",
+                    embeds: [generateSuccessEmbed("Tracker added!")],
+                });
+            })
+            .catch(() => {
+                command.editReply({
+                    content: "",
+                    embeds: [generateErrorEmbed("Time out!")],
+                });
+            });
+    }
 });
 
 export default addTracker;
