@@ -10,7 +10,7 @@ import { QatUser } from "../../types/qat";
 import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPreferences";
 import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
-import { WebSocket } from "ws";
+import WebSocket from "ws";
 import { consoleCheck } from "../../helpers/core/logger";
 
 async function qatTracking(bot: Client) {
@@ -29,7 +29,7 @@ async function qatTracking(bot: Client) {
     );
 
     qatWebsocket.on("open", () => {
-        consoleCheck("QatTracking", "Connected to QAT");
+        consoleCheck("QatTracking", "Connected to bnsite via websocket");
     });
 
     qatWebsocket.on("close", () => {
