@@ -36,14 +36,14 @@ imagecolors.setExecuteFunction(async (command) => {
 
     if (attachment.size > 1e7)
         return command.editReply({
-            embeds: [generateErrorEmbed(`File too big! Max file size is 10mb`)],
+            embeds: [generateErrorEmbed(`File too big! Max filesize is 10mb`)],
         });
 
     if (!allowedMimes.includes(attachment.contentType || ""))
         return command.editReply({
             embeds: [
                 generateErrorEmbed(
-                    `Invalid file type! I can just process these files: ${allowedMimes
+                    `Invalid file type! The only valid ones are: ${allowedMimes
                         .map((m) => `\`.${m.split("/")[1]}\``)
                         .join(", ")}`
                 ),
@@ -146,7 +146,7 @@ imagecolors.setExecuteFunction(async (command) => {
         )
         .setFooter({
             iconURL: command.user.avatarURL() || "",
-            text: `${command.user.tag} (${command.user.id})`,
+            text: `${command.user.tag}`,
         })
         .setThumbnail(attachment.url);
 
