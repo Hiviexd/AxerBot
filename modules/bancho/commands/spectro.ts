@@ -78,8 +78,20 @@ export default {
                         );
                     }
 
+                    const audioData = await spectrogram.getAudioInfo();
+
                     pm.user.sendMessage(
-                        `[${attachment} Click here to view your spectrogram]`
+                        audioData
+                            ? `${audioData.format.format_name} | ${
+                                  audioData.streams[0].bit_rate
+                                      ? `${
+                                            Number(
+                                                audioData.streams[0].bit_rate
+                                            ) / 1000
+                                        }Kb/s`
+                                      : "Unknown BitRate"
+                              } | [${attachment} Click here to view your spectrogram]`
+                            : `[${attachment} Click here to view your spectrogram]`
                     );
                 })
                 .on("error", (error: ExecException) => {

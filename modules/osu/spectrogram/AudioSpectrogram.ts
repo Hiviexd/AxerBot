@@ -76,47 +76,110 @@
  */
 
 import path from "path";
-import ffmpeg from "fluent-ffmpeg";
+import ffmpeg, { FfprobeData, ffprobe } from "fluent-ffmpeg";
 import { Readable } from "stream";
-import { existsSync, mkdirSync, readFileSync, unlinkSync } from "fs";
+import {
+    existsSync,
+    mkdirSync,
+    readFileSync,
+    unlinkSync,
+    writeFileSync,
+} from "fs";
 import crypto from "crypto";
 import { exec } from "child_process";
 import { EventEmitter } from "events";
 import { TextBasedChannel, AttachmentBuilder } from "discord.js";
 import { bot } from "../../..";
+import { streamToBuffer } from "../../../helpers/transform/streamToBuffer";
 
 export class AudioSpectrogram extends EventEmitter {
     private FFMPEG_PATH = path.resolve("./bin/ffmpeg.exe");
+    private FFPROBE_PATH = path.resolve("./bin/ffprobe.exe");
     private StaticImagePathBase = path.resolve(`./temp/spectro/images/`);
     private StaticAudioPathBase = path.resolve(`./temp/spectro/audio/`);
     private PythonModule = "./helpers/audio/spectrogram.py";
     private FFMPEG = ffmpeg;
     private FileId!: string;
-    private Audio!: Readable | string;
+    private Audio!: Readable;
+    private AudioBuffer!: Buffer | null;
     private Image!: Buffer;
-    private BitRate!: number;
 
     constructor() {
         super();
 
         if (process.platform == "win32") {
             this.FFMPEG.setFfmpegPath(this.FFMPEG_PATH);
+            this.FFMPEG.setFfprobePath(this.FFPROBE_PATH);
         }
 
         this.validatePaths();
         this.generateId();
     }
 
-    setAudio(audio: string | Readable) {
+    setAudio(audio: Readable) {
         this.Audio = audio;
+
+        streamToBuffer(this.Audio)
+            .then((buffer) => {
+                this.AudioBuffer = buffer;
+            })
+            .catch((e) => {
+                this.AudioBuffer = null;
+            });
     }
 
-    private setBitRate(value: number) {
-        this.BitRate = value;
+    getAudioInfo(): Promise<FfprobeData | null> {
+        return new Promise((resolve, reject) => {
+            if (!this.AudioBuffer) return resolve(null);
+
+            writeFileSync(
+                path.join(
+                    this.getAudioStaticPathBase(),
+                    this.getFileId().concat(".default")
+                ),
+                this.AudioBuffer
+            );
+
+            ffprobe(
+                path.join(
+                    this.getAudioStaticPathBase(),
+                    this.getFileId().concat(".default")
+                ),
+                (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        unlinkSync(
+                            path.join(
+                                this.getAudioStaticPathBase(),
+                                this.getFileId().concat(".default")
+                            )
+                        );
+                        return resolve(null);
+                    }
+
+                    resolve(data);
+
+                    unlinkSync(
+                        path.join(
+                            this.getAudioStaticPathBase(),
+                            this.getFileId().concat(".default")
+                        )
+                    );
+                }
+            );
+        });
     }
 
-    private getBitRate() {
-        return this.BitRate;
+    public async getBitRate() {
+        const audioData = await this.getAudioInfo();
+
+        if (!audioData) return "Unknown BitRate";
+
+        const result = audioData.streams[0].bit_rate
+            ? `${Number(audioData.streams[0].bit_rate) / 1000}Kb/s`
+            : "Unknown BitRate";
+
+        return result;
     }
 
     private getFileId() {
@@ -134,7 +197,7 @@ export class AudioSpectrogram extends EventEmitter {
     start() {
         this.FFMPEG.bind(this);
         this.startPythonProcess.bind(this);
-        this.setBitRate.bind(this);
+        this.getBitRate.bind(this);
         this.getFileId.bind(this);
         this.getImageStaticPathBase.bind(this);
         this.getAudioStaticPathBase.bind(this);
@@ -147,9 +210,6 @@ export class AudioSpectrogram extends EventEmitter {
                     this.getFileId().concat(".wav")
                 )
             )
-            .on("codecData", (codecinfo) => {
-                this.setBitRate(codecinfo.audio_details[4]);
-            })
             .on("end", this.startPythonProcess.bind(this));
     }
 
@@ -161,7 +221,7 @@ export class AudioSpectrogram extends EventEmitter {
         return this.Image;
     }
 
-    private startPythonProcess() {
+    private async startPythonProcess() {
         this.emit.bind(this);
         this.getFileId.bind(this);
         this.getAudioStaticPathBase.bind(this);
@@ -169,11 +229,9 @@ export class AudioSpectrogram extends EventEmitter {
         this.setImage.bind(this);
 
         exec(
-            `python3 ${this.PythonModule} ${this.getFileId().concat(".wav")} ${
-                this.getBitRate()
-                    ? `${this.getBitRate()}kb/s`
-                    : "Unknown Bitrate"
-            }`,
+            `python3 ${this.PythonModule} ${this.getFileId().concat(
+                ".wav"
+            )} ${await this.getBitRate()}`,
             (error, stdout, stderr) => {
                 if (error !== null) return this.emit("error", error);
 
@@ -186,7 +244,7 @@ export class AudioSpectrogram extends EventEmitter {
                     )
                 );
 
-                this.emit("data");
+                this.emit("data", this.getImage());
 
                 unlinkSync(
                     path.join(
