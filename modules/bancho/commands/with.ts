@@ -1,8 +1,6 @@
 import { BanchoClient, PrivateMessage } from "bancho.js";
-
-import { BanchoCommands } from ".";
-import { sendBeatmapCalculation } from "../helpers/sendBeatmapCalculation";
 import getOrCreateBanchoUser from "../../../database/utils/getOrCreatBanchoUser";
+import { sendBeatmapCalculation } from "../helpers/sendBeatmapCalculation";
 
 export default {
     settings: {
