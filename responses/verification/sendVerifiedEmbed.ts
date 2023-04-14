@@ -12,7 +12,7 @@ export async function sendVerifiedEmbed(
         ?.map((group) => {
             return (
                 `- ${group.short_name} ` +
-                group.playmodes
+                (group.playmodes || [])
                     .map((mode: string) => {
                         return `${getEmoji(mode as keyof typeof getEmoji)} `;
                     })
