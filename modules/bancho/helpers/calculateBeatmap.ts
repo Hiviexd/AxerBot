@@ -19,7 +19,6 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
         const beatmapURL = parseOsuBeatmapURL(args[0]);
 
         if (beatmapURL.error || !beatmapURL.data) return;
-        if (!beatmapURL.data.beatmap_id) return;
 
         const user = await pm.user.fetchFromAPI();
 
@@ -32,6 +31,8 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
                 },
             }
         );
+
+        if (!beatmapURL.data.beatmap_id) return;
 
         sendBeatmapCalculation(pm, beatmapURL.data.beatmap_id);
     } catch (e: any) {
