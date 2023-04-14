@@ -8,7 +8,7 @@ import { PrivateMessage } from "bancho.js";
 export async function sendBeatmapCalculation(
     pm: PrivateMessage,
     beatmap_id: string,
-    mods?: string[]
+    mods?: string[] | string
 ) {
     const beatmapData = await osuApi.fetch.beatmap(beatmap_id);
 
@@ -32,7 +32,7 @@ export async function sendBeatmapCalculation(
     const difficulty = calculateBeatmap(
         osuFile.data,
         convertMode || beatmapData.data.mode_int,
-        playMods.join("")
+        playMods.toString().replace(/,/g, "")
     );
 
     const { data: beatmap } = beatmapData;
