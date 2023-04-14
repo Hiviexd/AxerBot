@@ -1,11 +1,11 @@
-import { BanchoClient, PrivateMessage } from 'bancho.js';
-import { ExecException } from 'child_process';
+import { BanchoClient, PrivateMessage } from "bancho.js";
+import { ExecException } from "child_process";
 
-import getOrCreateBanchoUser from '../../../database/utils/getOrCreatBanchoUser';
-import { bufferToStream } from '../../../helpers/transform/bufferToStream';
-import { LegacyBeatmapsetImporter } from '../../osu/fetcher/beatmap/LegacyBeatmapImporter';
-import osuApi from '../../osu/fetcher/osuApi';
-import { AudioSpectrogram } from '../../osu/spectrogram/AudioSpectrogram';
+import getOrCreateBanchoUser from "../../../database/utils/getOrCreatBanchoUser";
+import { bufferToStream } from "../../../helpers/transform/bufferToStream";
+import { LegacyBeatmapsetImporter } from "../../osu/fetcher/beatmap/LegacyBeatmapImporter";
+import osuApi from "../../osu/fetcher/osuApi";
+import { AudioSpectrogram } from "../../osu/spectrogram/AudioSpectrogram";
 
 export default {
     settings: {
