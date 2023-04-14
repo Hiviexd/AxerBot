@@ -33,9 +33,9 @@ export async function generateBeatmapVideo(
 
         async function getCoverImage() {
             try {
-                const coverImage = await axios(cover);
+                await axios(cover);
 
-                return coverImage.data;
+                return cover;
             } catch (e) {
                 return "https://media.discordapp.net/attachments/959908232736952420/1096495922831167528/default-bg.7594e945.png";
             }
