@@ -7,6 +7,7 @@ import { createCanvas, loadImage, registerFont } from "canvas";
 import { Beatmapset } from "../../types/beatmap";
 import { truncateCanvasText } from "../transform/truncateCanvasText";
 import { bufferToStream } from "../transform/bufferToStream";
+import axios from "axios";
 
 export interface IBeatmapVideo {
     fileId: string;
@@ -27,12 +28,22 @@ export async function generateBeatmapVideo(
         const fileId = crypto.randomBytes(10).toString("hex");
         const filePath = path.resolve(`./cache/previews/${fileId}.webm`);
 
-        const cover = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/card.jpg`;
+        let cover = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/card.jpg`;
         const audio = `https://b.ppy.sh/preview/${beatmapset.id}.mp3`;
+
+        async function getCoverImage() {
+            try {
+                const coverImage = await axios(cover);
+
+                return coverImage.data;
+            } catch (e) {
+                return "https://media.discordapp.net/attachments/959908232736952420/1096495922831167528/default-bg.7594e945.png";
+            }
+        }
 
         const canvas = createCanvas(400, 140);
         const ctx = canvas.getContext("2d");
-        const bg = await loadImage(cover);
+        const bg = await loadImage(await getCoverImage());
         registerFont(path.resolve("./assets/fonts/quicksand.ttf"), {
             family: "Quicksand",
         });
