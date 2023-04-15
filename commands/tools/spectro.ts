@@ -1,10 +1,6 @@
-import { SlashCommand } from "../../models/commands/SlashCommand";
-import { ExecException } from "child_process";
-import path from "path";
-import crypto from "crypto";
 import axios from "axios";
-import ffmpeg from "fluent-ffmpeg";
-import { readFileSync, unlinkSync } from "fs";
+import { ExecException } from "child_process";
+import crypto from "crypto";
 import {
     ActionRowBuilder,
     AttachmentBuilder,
@@ -12,11 +8,13 @@ import {
     ButtonStyle,
     EmbedBuilder,
 } from "discord.js";
-import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+
 import colors from "../../constants/colors";
-import { AudioSpectrogram } from "../../modules/osu/spectrogram/AudioSpectrogram";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import truncateString from "../../helpers/text/truncateString";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import { AudioSpectrogram } from "../../modules/osu/spectrogram/AudioSpectrogram";
 
 const spectrum = new SlashCommand(
     "spectro",
@@ -31,7 +29,6 @@ spectrum.builder.addAttachmentOption((o) =>
 
 spectrum.setExecuteFunction(async (command) => {
     const audioFileData = command.options.getAttachment("audio", true);
-    const fileId = crypto.randomBytes(10).toString("hex");
 
     const mimes = ["audio/ogg", "audio/wav", "audio/x-wav", "audio/mpeg"];
 
@@ -46,9 +43,9 @@ spectrum.setExecuteFunction(async (command) => {
             ],
         });
 
-    if (audioFileData.size > 1e7)
+    if (audioFileData.size > 1.5e7)
         return command.editReply({
-            embeds: [generateErrorEmbed(`Max file size must be 10mb or less!`)],
+            embeds: [generateErrorEmbed(`Max file size must be 15mb or less!`)],
         });
 
     const audioFile = await axios(audioFileData.url, {
