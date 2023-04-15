@@ -37,9 +37,13 @@ async function qatTracking(bot: Client) {
             "wss://bn.mappersguild.com/websocket/interOp",
             websocketConfig
         );
+
+        qatWebsocket.on("message", messageListener);
     });
 
-    qatWebsocket.on("message", async (data: Buffer) => {
+    qatWebsocket.on("message", messageListener);
+
+    async function messageListener(data: Buffer) {
         try {
             const allTracks = await tracks.find({ type: "qat" });
 
@@ -66,7 +70,7 @@ async function qatTracking(bot: Client) {
             );
             console.error(e);
         }
-    });
+    }
 
     async function sendUpdate(bn: QatUser, track: any, isOpen: boolean) {
         const footer = {
