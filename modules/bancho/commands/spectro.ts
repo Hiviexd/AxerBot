@@ -30,6 +30,20 @@ export default {
 
         pm.user.sendMessage("Downloading beatmap... This can take a while.");
 
+        const beatmapInfo = await osuApi.fetch.beatmapset(user.last_beatmapset);
+
+        if (beatmapInfo.status != 200)
+            return pm.user.sendMessage("Can't find this beatmap!");
+
+        if (
+            (beatmapInfo.data.beatmaps?.sort(
+                (b, a) => a.total_length - b.total_length
+            )[0].total_length || 0) > 600
+        )
+            return pm.user.sendMessage(
+                "This beatmap is too big! Max duration is 10 minutes"
+            );
+
         const beatmap = await osuApi.download.beatmapset(user.last_beatmapset);
 
         if (!beatmap.data || beatmap.status != 200)
@@ -49,15 +63,26 @@ export default {
 
             importer.loadBeatmaps();
 
-            if (!importer.getBeatmaps())
+            if (!importer.getBeatmaps()) {
+                importer.deleteBeatmap();
                 return pm.user.sendMessage("Invalid beatmapset!");
+            }
 
             const audioFile = importer.getAudioFileFrom(
                 importer.getBeatmaps()[0].metadata.beatmapId
             );
 
-            if (audioFile === null)
+            if (audioFile === null) {
+                importer.deleteBeatmap();
                 return pm.user.sendMessage("Can't find beatmap audio file!");
+            }
+
+            if (audioFile.byteLength > 1.5e7) {
+                importer.deleteBeatmap();
+                return pm.user.sendMessage(
+                    `Max file size must be 15mb or less!`
+                );
+            }
 
             const audioStream = bufferToStream(audioFile);
 
