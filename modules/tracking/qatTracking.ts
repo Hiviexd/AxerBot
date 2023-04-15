@@ -11,7 +11,11 @@ import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPrefere
 import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
 import WebSocket from "ws";
-import { consoleCheck, consoleLog } from "../../helpers/core/logger";
+import {
+    consoleCheck,
+    consoleError,
+    consoleLog,
+} from "../../helpers/core/logger";
 import { StatusManager } from "../status/StatusManager";
 
 async function qatTracking(bot: Client) {
@@ -33,10 +37,17 @@ async function qatTracking(bot: Client) {
 
     qatWebsocket.on("close", (e) => {
         console.error(e);
+
+        consoleError("QatTracking", "bnsite disconnected! Reconnecting...");
+
         qatWebsocket = new WebSocket(
             "wss://bn.mappersguild.com/websocket/interOp",
             websocketConfig
         );
+
+        qatWebsocket.on("open", () => {
+            consoleCheck("QatTracking", "Connected to bnsite via websocket");
+        });
 
         qatWebsocket.on("message", messageListener);
     });
