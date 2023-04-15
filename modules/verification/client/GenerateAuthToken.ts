@@ -18,10 +18,20 @@ export interface IVerificationObject {
     target_channel?: string;
 }
 
-function generateRandomNumber() {
-    var minm = 100000;
-    var maxm = 999999;
-    return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+async function generateRandomNumber() {
+    const minm = 100000;
+    const maxm = 999999;
+
+    try {
+        let code = Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+
+        if (await verifications.findOne({ code: code }))
+            code = Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+
+        return code;
+    } catch (e) {
+        return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+    }
 }
 
 export default async (
@@ -41,7 +51,7 @@ export default async (
 
     const verification_object: IVerificationObject = {
         _id: id,
-        code: generateRandomNumber(),
+        code: await generateRandomNumber(),
         target_guild: user.guild.id,
         target_user: user.id,
         createdAt: new Date(),

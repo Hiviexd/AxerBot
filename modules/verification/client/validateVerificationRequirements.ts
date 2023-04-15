@@ -15,6 +15,19 @@ export default async (
     pm: PrivateMessage
 ) => {
     try {
+        const verificationsWithSameCode = await verifications.find({
+            code: verification.code,
+        });
+
+        if (verificationsWithSameCode.length > 1) {
+            await verifications.deleteMany({ code: verification.code });
+            return {
+                status: 403,
+                message:
+                    "Gratz! You hit the 0,0001% of chance of have the same code of another user! But you need to leave then join the server again to get a new token.",
+            };
+        }
+
         const guild = await bot.guilds.fetch(verification.target_guild);
 
         if (!guild)
