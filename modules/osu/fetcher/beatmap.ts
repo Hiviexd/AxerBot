@@ -506,27 +506,33 @@ export async function userBeatmaps(
             let state = 0;
 
             search_types.forEach(async (status) => {
-                let b = await axios(
-                    `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${status}?limit=${
-                        limit || 500
-                    }&offset=${offset || 0}`,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
-                        },
+                try {
+                    let b = await axios(
+                        `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${status}?limit=${
+                            limit || 500
+                        }&offset=${offset || 0}`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+                            },
+                        }
+                    );
+
+                    let res: Array<any> = b.data;
+
+                    for (let i = 0; i < res.length; i++) {
+                        _r.push(res[i]);
                     }
-                );
 
-                let res: Array<any> = b.data;
+                    state++;
 
-                for (let i = 0; i < res.length; i++) {
-                    _r.push(res[i]);
+                    if (state == 4) resolveData();
+                } catch (e) {
+                    console.error(e);
+
+                    resolveData();
                 }
-
-                state++;
-
-                if (state == 4) resolveData();
             });
 
             function resolveData() {
