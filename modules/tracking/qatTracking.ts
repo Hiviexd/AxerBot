@@ -39,21 +39,21 @@ async function qatTracking(bot: Client) {
 
     qatWebsocket.on("message", messageListener);
 
-    setInterval(pingWebsocket, 30000);
+    // setInterval(pingWebsocket, 30000);
 
-    function pingWebsocket() {
-        consoleLog("QatTracking", "Sending ping to bnsite");
+    // function pingWebsocket() {
+    //     consoleLog("QatTracking", "Sending ping to bnsite");
 
-        qatWebsocket.ping("PING", false, (error) => {
-            if (error)
-                return consoleError(
-                    "QatTracking",
-                    `Can't ping bnsite! ${error}`
-                );
+    //     qatWebsocket.ping("PING", false, (error) => {
+    //         if (error)
+    //             return consoleError(
+    //                 "QatTracking",
+    //                 `Can't ping bnsite! ${error}`
+    //             );
 
-            consoleCheck("QatTracking", "Ping sent to bnsite!");
-        });
-    }
+    //         consoleCheck("QatTracking", "Ping sent to bnsite!");
+    //     });
+    // }
 
     function closeListener(e: any) {
         console.error(e);
