@@ -177,11 +177,19 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
 
             if (
                 !existsSync(
-                    path.join(this.ImportFolder, this.BeatmapsetId, _path)
+                    path.join(
+                        this.ImportFolder,
+                        this.BeatmapsetId,
+                        target.join("/")
+                    )
                 )
             )
                 mkdirSync(
-                    path.join(this.ImportFolder, this.BeatmapsetId, _path)
+                    path.join(
+                        this.ImportFolder,
+                        this.BeatmapsetId,
+                        target.join("/")
+                    )
                 );
         }
     }
