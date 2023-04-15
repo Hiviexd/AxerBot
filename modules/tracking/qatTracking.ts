@@ -35,7 +35,11 @@ async function qatTracking(bot: Client) {
         consoleCheck("QatTracking", "Connected to bnsite via websocket");
     });
 
-    qatWebsocket.on("close", (e) => {
+    qatWebsocket.on("close", closeListener);
+
+    qatWebsocket.on("message", messageListener);
+
+    function closeListener(e: any) {
         console.error(e);
 
         consoleError("QatTracking", "bnsite disconnected! Reconnecting...");
@@ -50,9 +54,8 @@ async function qatTracking(bot: Client) {
         });
 
         qatWebsocket.on("message", messageListener);
-    });
-
-    qatWebsocket.on("message", messageListener);
+        qatWebsocket.on("close", closeListener);
+    }
 
     async function messageListener(data: Buffer) {
         try {
