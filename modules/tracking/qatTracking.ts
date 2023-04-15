@@ -31,7 +31,8 @@ async function qatTracking(bot: Client) {
         consoleCheck("QatTracking", "Connected to bnsite via websocket");
     });
 
-    qatWebsocket.on("close", () => {
+    qatWebsocket.on("close", (e) => {
+        console.error(e);
         qatWebsocket = new WebSocket(
             "wss://bn.mappersguild.com/websocket/interOp",
             websocketConfig
@@ -129,7 +130,6 @@ async function qatTracking(bot: Client) {
             buttons.addComponents(dmButton);
 
             if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
-                console.log(bn.requestLink);
                 const siteName = new URL(bn.requestLink).hostname.split(".")[0];
                 const personalQueueButton = new ButtonBuilder();
                 personalQueueButton
