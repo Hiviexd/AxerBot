@@ -26,9 +26,13 @@ export async function antiDumbass(message: Message) {
             },
         })
         .then((r) => {
-            message.delete();
-            setTimeout(() => {
-                r.delete();
-            }, 10000);
+            message
+                .delete()
+                .then(() => {
+                    setTimeout(() => {
+                        r.delete().catch(console.error);
+                    }, 10000);
+                })
+                .catch(console.error);
         });
 }
