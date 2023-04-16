@@ -263,7 +263,7 @@ export async function runVerificationChecks(
                         await member.roles.add(roleId);
 
                     if (
-                        role.target == MapperRoleType.LovedMapper &&
+                        role.target == MapperRoleType.AspirantMapper &&
                         !matchStatus.isLoved &&
                         matchStatus.isRanked
                     )
