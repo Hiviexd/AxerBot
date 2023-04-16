@@ -142,7 +142,7 @@ verificationAddGroupRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    if (group != "LVD" && mode == "none")
+    if (!["LVD", "GMT"].includes(group) && mode == "none")
         return command.editReply({
             embeds: [generateErrorEmbed("This role can't use this mode.")],
         });
