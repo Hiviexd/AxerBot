@@ -24,14 +24,15 @@ export default async (url: string, message?: Message) => {
 
     const events = await qatApi.fetch.events(postInfo.beatmapset);
 
-    const targetEvent = events.data
-        ? events.data.find(
-              (e) =>
-                  (e.discussionId == targetPost.discussions[0]?.id ||
-                      e.content == targetPost.posts[0]?.message) &&
-                  e.userId == targetPost.posts[0]?.user_id
-          )
-        : undefined;
+    const targetEvent =
+        events.data && events.data.length
+            ? events.data.find(
+                  (e) =>
+                      (e.discussionId == targetPost.discussions[0]?.id ||
+                          e.content == targetPost.posts[0]?.message) &&
+                      e.userId == targetPost.posts[0]?.user_id
+              )
+            : undefined;
 
     if (message) {
         BeatmapsetDiscussionEmbed.send(
