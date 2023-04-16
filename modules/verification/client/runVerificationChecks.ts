@@ -102,13 +102,13 @@ export async function runVerificationChecks(
 
             if (
                 configuration.modes.includes("none") &&
-                usergroup.playmodes.length == 0
+                (usergroup.playmodes || []).length == 0
             )
                 return true;
 
             if (configuration.modes.length == 0) return true;
 
-            usergroup.playmodes.forEach((m) => {
+            (usergroup.playmodes || []).forEach((m) => {
                 if (configuration.modes.includes(m)) r = true;
             });
 
