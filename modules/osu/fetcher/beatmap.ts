@@ -109,10 +109,10 @@ export async function searchBeatmapset(
 
         const url = new URL("https://osu.ppy.sh/api/v2/beatmapsets/search");
 
-        url.searchParams.set("g", genre || "");
-        url.searchParams.set("l", language || "");
-        url.searchParams.set("s", status || "");
-        url.searchParams.set("m", mode || "");
+        genre ? url.searchParams.set("g", genre) : void {};
+        language ? url.searchParams.set("l", language) : void {};
+        status ? url.searchParams.set("s", status) : void {};
+        mode ? url.searchParams.set("m", mode) : void {};
 
         if (stars) {
             url.searchParams.set("query", `${query} stars${stars}`);

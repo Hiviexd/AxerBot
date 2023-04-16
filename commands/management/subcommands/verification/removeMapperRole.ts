@@ -74,6 +74,16 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
         .then((r) => {
             const roles = r.data;
 
+            for (const role of roles) {
+                if (guild)
+                    guild.verification.mapper_roles =
+                        guild.verification.mapper_roles.filter(
+                            (r: IMapperRole, i: number) =>
+                                roles.indexOf(role) ==
+                                guild?.verification.mapper_roles.indexOf(role)
+                        );
+            }
+
             roles.forEach((r) => {
                 if (!guild) return;
                 guild.verification.mapper_roles.splice(Number(r), 1);

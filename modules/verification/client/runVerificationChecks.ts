@@ -10,6 +10,7 @@ import { HTTPResponse } from "../../../types/qat";
 import { Beatmapset } from "../../../types/beatmap";
 import { IHTTPResponse } from "../../../types/http";
 import { bot } from "../../..";
+import { BeatmapStatus } from "../../../commands/osu/subcommands/search/searchBeatmap";
 
 export async function runVerificationChecks(
     guild: Guild,
@@ -183,29 +184,24 @@ export async function runVerificationChecks(
     if (guild_db.verification.mapper_roles) {
         const roles = guild_db.verification.mapper_roles as IMapperRole[];
 
-        const beatmaps: {
-            [key: string]: Beatmapset[];
-        } = {
-            r: await fetchBeatmapsWithMode(
-                ["osu", "taiko", "fruits", "mania"],
-                "ranked"
-            ),
-            l: await fetchBeatmapsWithMode(
-                ["osu", "taiko", "fruits", "mania"],
-                "loved"
-            ),
-            a: await fetchPendingAndGraveyard([
-                "osu",
-                "taiko",
-                "fruits",
-                "mania",
-            ]),
-        };
-
-        const allBeatmaps = ([] as Beatmapset[])
-            .concat(beatmaps.r)
-            .concat(beatmaps.l)
-            .concat(beatmaps.a);
+        // const beatmaps: {
+        //     [key: string]: Beatmapset[];
+        // } = {
+        //     r: await fetchBeatmapsWithMode(
+        //         ["osu", "taiko", "fruits", "mania"],
+        //         "ranked"
+        //     ),
+        //     l: await fetchBeatmapsWithMode(
+        //         ["osu", "taiko", "fruits", "mania"],
+        //         "loved"
+        //     ),
+        //     a: await fetchPendingAndGraveyard([
+        //         "osu",
+        //         "taiko",
+        //         "fruits",
+        //         "mania",
+        //     ]),
+        // };
 
         for (const role of roles) {
             checkFor(role);
@@ -250,70 +246,107 @@ export async function runVerificationChecks(
         async function checkFor(role: IMapperRole) {
             if (!guild_db) return;
 
-            const beatmapCount = {
-                r: user.ranked_and_approved_beatmapset_count,
-                l: user.loved_beatmapset_count,
-                a:
-                    user.graveyard_beatmapset_count +
-                    user.pending_beatmapset_count,
-            };
+            const matchStatus = await isBeatmapAllowed(role.modes, role.target);
 
-            if (beatmapCount[role.target] < role.min) return;
-            if (beatmapCount[role.target] > role.max) return;
-
-            if (isBeatmapAllowed()) {
+            if (matchStatus.hasRequired) {
                 for (const roleId of role.roles) {
-                    await member.roles.add(roleId);
+                    if (
+                        role.target == MapperRoleType.RankedMapper &&
+                        matchStatus.isRanked
+                    )
+                        await member.roles.add(roleId);
+
+                    if (
+                        role.target == MapperRoleType.LovedMapper &&
+                        matchStatus.isLoved
+                    )
+                        await member.roles.add(roleId);
+
+                    if (
+                        role.target == MapperRoleType.LovedMapper &&
+                        !matchStatus.isLoved &&
+                        matchStatus.isRanked
+                    )
+                        await member.roles.add(roleId);
                 }
             }
 
-            function isBeatmapAllowed() {
-                let r = false;
-                let isRanked = false;
+            async function isBeatmapAllowed(
+                modes: string[],
+                type: MapperRoleType
+            ) {
+                const modeToInt = ["osu", "taiko", "fruits", "mania"];
+                const typesToStatus = {
+                    r: await fetchBeatmapsWithMode(
+                        modes.map((m) => modeToInt.indexOf(m).toString()),
+                        BeatmapStatus.Ranked
+                    ),
+                    l: await fetchBeatmapsWithMode(
+                        modes.map((m) => modeToInt.indexOf(m).toString()),
+                        BeatmapStatus.Loved
+                    ),
+                    a: await fetchPendingAndGraveyard(
+                        modes.map((m) => modeToInt.indexOf(m).toString())
+                    ),
+                };
 
-                for (const mode of role.modes) {
-                    if (
-                        allBeatmaps.filter((s) =>
-                            s.beatmaps?.filter((b) => b.mode == mode)
-                        ).length != 0
-                    )
-                        r = true;
+                const rankedStatus = {
+                    osu: typesToStatus.r.length > 0,
+                    taiko: typesToStatus.r.length > 0,
+                    fruits: typesToStatus.r.length > 0,
+                    mania: typesToStatus.r.length > 0,
+                };
 
-                    if (role.target == MapperRoleType.AspirantMapper) {
-                        if (
-                            allBeatmaps.filter((s) =>
-                                s.beatmaps?.filter((b) =>
-                                    ["wip", "graveyard", "pending"].includes(
-                                        b.status
-                                    )
-                                )
-                            ).length != 0
-                        )
-                            isRanked = true;
-                    } else {
-                        if (
-                            allBeatmaps.filter((s) =>
-                                s.beatmaps?.filter((b) =>
-                                    [
-                                        "ranked",
-                                        "approved",
-                                        "qualified",
-                                    ].includes(b.status)
-                                )
-                            ).length != 0
-                        )
-                            isRanked = true;
-                    }
-                }
+                const lovedStatus = {
+                    osu: typesToStatus.l.length > 0,
+                    taiko: typesToStatus.l.length > 0,
+                    fruits: typesToStatus.l.length > 0,
+                    mania: typesToStatus.l.length > 0,
+                };
 
-                if (
-                    r == true &&
-                    role.target == MapperRoleType.AspirantMapper &&
-                    isRanked
-                )
-                    return false;
+                if (typesToStatus[type].length < role.min)
+                    return {
+                        isRanked:
+                            rankedStatus.osu == true ||
+                            rankedStatus.taiko == true ||
+                            rankedStatus.fruits == true ||
+                            rankedStatus.mania == true,
+                        isLoved:
+                            lovedStatus.osu == true ||
+                            lovedStatus.taiko == true ||
+                            lovedStatus.fruits == true ||
+                            lovedStatus.mania == true,
+                        hasRequired: false,
+                    };
 
-                return r;
+                if (typesToStatus[type].length > role.max)
+                    return {
+                        isRanked:
+                            rankedStatus.osu == true ||
+                            rankedStatus.taiko == true ||
+                            rankedStatus.fruits == true ||
+                            rankedStatus.mania == true,
+                        isLoved:
+                            lovedStatus.osu == true ||
+                            lovedStatus.taiko == true ||
+                            lovedStatus.fruits == true ||
+                            lovedStatus.mania == true,
+                        hasRequired: false,
+                    };
+
+                return {
+                    isRanked:
+                        rankedStatus.osu == true ||
+                        rankedStatus.taiko == true ||
+                        rankedStatus.fruits == true ||
+                        rankedStatus.mania == true,
+                    isLoved:
+                        lovedStatus.osu == true ||
+                        lovedStatus.taiko == true ||
+                        lovedStatus.fruits == true ||
+                        lovedStatus.mania == true,
+                    hasRequired: true,
+                };
             }
         }
     }
