@@ -39,7 +39,7 @@ export async function validateVerificationSync(
 
                 if (channel) {
                     channel.send({
-                        content: `<@${member}>`,
+                        content: `${member}`,
                         embeds: [
                             generateSuccessEmbed(
                                 "Your account info is validated!"
