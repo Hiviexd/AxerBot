@@ -74,12 +74,15 @@ export function calculateBeatmap(
             accuracy: acc,
             beatmap,
         });
+        scoreInfo.mods = combination;
         scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
         const performanceCalculator = ruleset.createPerformanceCalculator(
             difficulty,
             scoreInfo
         );
+
+        performanceCalculator.calculateAttributes(difficulty, scoreInfo);
 
         const pp = Math.round(performanceCalculator.calculate());
 

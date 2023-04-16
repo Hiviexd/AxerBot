@@ -3488,10 +3488,10 @@ osu-parsers@^3.3.3:
     buffer "^6.0.3"
     lzma-js-simple-v2 "^1.2.1"
 
-osu-standard-stable@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/osu-standard-stable/-/osu-standard-stable-4.0.1.tgz"
-  integrity sha512-HhAJ5fr3xfrlredZRK8Y4FwM5ondC52YVboIn2zR1OwvZTr4zDEKouHNYl8LSNPC3J1l5yn7w8oEhdBOllnBJA==
+osu-standard-stable@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/osu-standard-stable/-/osu-standard-stable-4.0.4.tgz#eaf30e4d3441d552549b88bf4742286c12cc923d"
+  integrity sha512-Rb1aJTViU+ZFMe197aKlYhjMThuQ/jPHF9+KybKvElLY10/+nDgbD+lyVw2fp/4G/IgI3ghxSuD4nakgrLLGaA==
 
 osu-taiko-stable@^4.0.3:
   version "4.0.3"
