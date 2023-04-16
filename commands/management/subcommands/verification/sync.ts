@@ -56,6 +56,7 @@ verificationSync.setExecuteFunction(async (command) => {
         )
             .then(() => {
                 command.editReply({
+                    content: `<@${command.user.id}>`,
                     embeds: [generateSuccessEmbed("Your data is updated!")],
                 });
             })
