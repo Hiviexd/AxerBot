@@ -218,7 +218,11 @@ export async function runVerificationChecks(
                 );
 
                 if (b.status == 200 && b.data) {
-                    maps = maps.concat(b.data.beatmapsets);
+                    maps = maps.concat(
+                        b.data.beatmapsets.filter(
+                            (b) => b.creator == user.id.toString()
+                        )
+                    );
                 }
             }
 
