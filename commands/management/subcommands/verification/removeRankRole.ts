@@ -4,8 +4,8 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
-import { GameMode } from "../../../../types/game_mode";
 import truncateString from "../../../../helpers/text/truncateString";
+import crypto from "crypto";
 
 const verificationRemoveRankRole = new SlashCommandSubcommand(
     "rankrole",
@@ -49,6 +49,7 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
         .setOptions(
             guild.verification.targets.rank_roles.map(
                 (role: IRankRole, i: number) => {
+                    const nonce = crypto.randomBytes(10).toString("hex");
                     return {
                         label: `#${i + 1} | ${truncateString(
                             `@${
@@ -60,7 +61,7 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
                             100,
                             true
                         )}`,
-                        value: role.id,
+                        value: `${nonce},role.id`,
                     };
                 }
             )
@@ -80,7 +81,7 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
             for (const role of roles.data) {
                 guild.verification.targets.rank_roles =
                     guild.verification.targets.rank_roles.filter(
-                        (r: IRankRole) => r.id == role
+                        (r: IRankRole) => r.id == role.slice(8)
                     );
             }
 

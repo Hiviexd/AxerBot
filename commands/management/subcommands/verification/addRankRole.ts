@@ -1,10 +1,8 @@
-import { ChatInputCommandInteraction } from "discord.js";
-import { ownerId } from "../../../../config.json";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { guilds } from "../../../../database";
-import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { PermissionFlagsBits } from "discord.js";
+
+import { guilds } from "../../../../database";
+import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
 const verificationAddRankRole = new SlashCommandSubcommand(
