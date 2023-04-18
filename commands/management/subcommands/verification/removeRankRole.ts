@@ -81,19 +81,12 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
             for (const role of roles.data) {
                 guild.verification.targets.rank_roles =
                     guild.verification.targets.rank_roles.filter(
-                        (r: IRankRole) => r.id == role.slice(10)
+                        (r: IRankRole) => r.id != role.slice(10)
                     );
             }
 
             guilds
-                .updateOne(
-                    { _id: guild.id },
-                    {
-                        $set: {
-                            verification: guild.verification,
-                        },
-                    }
-                )
+                .findByIdAndUpdate(guild._id, guild)
                 .then(() => {
                     command.editReply({
                         content: "",
