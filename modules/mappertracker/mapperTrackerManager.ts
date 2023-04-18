@@ -1,27 +1,27 @@
-// import { MapperTrackerType } from "../../commands/osu/mappertracker";
+// import { IMapperTrackerType } from "../../commands/osu/IMapperTracker";
 // import { tracks } from "../../database";
 // import osuApi from "../../modules/osu/fetcher/osuApi";
 // import { existsSync, writeFileSync, readFileSync } from "fs";
 // import path from "path";
 // import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
 // import { consoleCheck } from "../../helpers/core/logger";
-// import { sendNewBeatmapEmbed } from "../../responses/mappertracker/SendNewBeatmapEmbed";
-// import { SendBeatmapQualifyEmbed } from "../../responses/mappertracker/SendBeatmapQualifyEmbed";
-// import { sendBeatmapGraveyardEmbed } from "../../responses/mappertracker/SendBeatmapGraveyardEmbed";
-// import { sendBeatmapRankedEmbed } from "../../responses/mappertracker/SendBeatmapRankedEmbed";
-// import { sendBeatmapLovedEmbed } from "../../responses/mappertracker/SendBeatmapLovedEmbed";
-// import { SendBeatmapNominationResetEmbed } from "../../responses/mappertracker/SendBeatmapNominationResetEmbed";
-// import { SendBeatmapDisqualifyEmbed } from "../../responses/mappertracker/SendBeatmapDisqualifyEmbed";
-// import { SendBeatmapNominationEmbed } from "../../responses/mappertracker/SendBeatmapNominationEmbed";
-// import { sendBeatmapHypeEmbed } from "../../responses/mappertracker/SendBeatmapHypeEmbed";
-// import { sendBeatmapFavoriteEmbed } from "../../responses/mappertracker/SendBeatmapFavoriteEmbed";
+// import { sendNewBeatmapEmbed } from "../../responses/IMapperTracker/SendNewBeatmapEmbed";
+// import { SendBeatmapQualifyEmbed } from "../../responses/IMapperTracker/SendBeatmapQualifyEmbed";
+// import { sendBeatmapGraveyardEmbed } from "../../responses/IMapperTracker/SendBeatmapGraveyardEmbed";
+// import { sendBeatmapRankedEmbed } from "../../responses/IMapperTracker/SendBeatmapRankedEmbed";
+// import { sendBeatmapLovedEmbed } from "../../responses/IMapperTracker/SendBeatmapLovedEmbed";
+// import { SendBeatmapNominationResetEmbed } from "../../responses/IMapperTracker/SendBeatmapNominationResetEmbed";
+// import { SendBeatmapDisqualifyEmbed } from "../../responses/IMapperTracker/SendBeatmapDisqualifyEmbed";
+// import { SendBeatmapNominationEmbed } from "../../responses/IMapperTracker/SendBeatmapNominationEmbed";
+// import { sendBeatmapHypeEmbed } from "../../responses/IMapperTracker/SendBeatmapHypeEmbed";
+// import { sendBeatmapFavoriteEmbed } from "../../responses/IMapperTracker/SendBeatmapFavoriteEmbed";
 
 import { MapperTrackerType } from "../../commands/osu/mappertracker";
 
-// export interface IMapperTracker {
+// export interface MapperTracker {
 //     _id: string;
 //     type: "mapper";
-//     targetsArray: MapperTrackerType[];
+//     targetsArray: IMapperTrackerType[];
 //     userId: string;
 //     channel: string;
 //     guild: string;
@@ -31,7 +31,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //     const trackers = await tracks.find({ type: "mapper" });
 
 //     for (const tracker of trackers) {
-//         checkTracker(tracker as unknown as IMapperTracker);
+//         checkTracker(tracker as unknown as MapperTracker);
 //     }
 // }
 
@@ -66,7 +66,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //         "utf8"
 //     );
 
-//     consoleCheck("MapperTracker", "Stored database file");
+//     consoleCheck("IMapperTracker", "Stored database file");
 // }
 
 // function updateUserStoredData(beatmaps: Beatmapset[]) {
@@ -87,12 +87,12 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //     storeFile(JSON.stringify(d));
 
 //     consoleCheck(
-//         "MapperTracker",
+//         "IMapperTracker",
 //         `Updated user stored data for ${beatmaps[0].user_id}`
 //     );
 // }
 
-// async function checkTracker(tracker: IMapperTracker) {
+// async function checkTracker(tracker: MapperTracker.IMapperTracker) {
 //     setTimeout(async () => {
 //         const beatmaps = await osuApi.fetch.userBeatmaps(tracker.userId);
 
@@ -110,7 +110,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 // }
 
 // function compareData(
-//     tracker: IMapperTracker,
+//     tracker: MapperTracker.IMapperTracker,
 //     currentBeatmaps: Beatmapset[],
 //     storedData: CompressedBeatmapset[]
 // ) {
@@ -136,7 +136,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 
 //         if (
 //             !referentStoredBeatmap &&
-//             tracker.targetsArray.includes(MapperTrackerType.NewBeatmap)
+//             tracker.targetsArray.includes(IMapperTrackerType.NewBeatmap)
 //         )
 //             sendNewBeatmapEmbed(currentBeatmap, tracker); // New beatmap\
 
@@ -150,7 +150,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //                 (currentBeatmap.nominations_summary.current || 0) <
 //                     (referentStoredBeatmap.nominations_summary.current || 0) &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.DisqualifiedBeatmap
+//                     IMapperTrackerType.DisqualifiedBeatmap
 //                 )
 //             )
 //                 SendBeatmapNominationResetEmbed(currentBeatmap, tracker);
@@ -159,7 +159,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //                 referentStoredBeatmap.status == "pending" &&
 //                 currentBeatmap.status == "qualified" &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.QualifiedBeatmap
+//                     IMapperTrackerType.QualifiedBeatmap
 //                 )
 //             )
 //                 SendBeatmapQualifyEmbed(currentBeatmap, tracker);
@@ -169,7 +169,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //                 currentBeatmap.status == "pending" &&
 //                 referentStoredBeatmap.nominations_summary.current == 2 &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.DisqualifiedBeatmap
+//                     IMapperTrackerType.DisqualifiedBeatmap
 //                 )
 //             )
 //                 SendBeatmapDisqualifyEmbed(currentBeatmap, tracker);
@@ -179,7 +179,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //                 currentBeatmap.status == "pending" &&
 //                 referentStoredBeatmap.nominations_summary.current == 0 &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.BeatmapNomination
+//                     IMapperTrackerType.BeatmapNomination
 //                 )
 //             )
 //                 SendBeatmapNominationEmbed(currentBeatmap, tracker);
@@ -193,7 +193,7 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //                 currentBeatmap.hype &&
 //                 currentBeatmap.hype.current !=
 //                     referentStoredBeatmap.hype?.current &&
-//                 tracker.targetsArray.includes(MapperTrackerType.NewHype)
+//                 tracker.targetsArray.includes(IMapperTrackerType.NewHype)
 //             )
 //                 sendBeatmapHypeEmbed(currentBeatmap, tracker);
 //         }
@@ -202,35 +202,35 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //             if (
 //                 currentBeatmap.status == "graveyard" &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.BeatmapGraveyard
+//                     IMapperTrackerType.BeatmapGraveyard
 //                 )
 //             )
 //                 sendBeatmapGraveyardEmbed(currentBeatmap, tracker);
 
 //             if (
 //                 currentBeatmap.status == "ranked" &&
-//                 tracker.targetsArray.includes(MapperTrackerType.RankedBeatmap)
+//                 tracker.targetsArray.includes(IMapperTrackerType.RankedBeatmap)
 //             )
 //                 sendBeatmapRankedEmbed(currentBeatmap, tracker);
 
 //             if (
 //                 currentBeatmap.status == "qualified" &&
 //                 tracker.targetsArray.includes(
-//                     MapperTrackerType.QualifiedBeatmap
+//                     IMapperTrackerType.QualifiedBeatmap
 //                 )
 //             )
 //                 SendBeatmapQualifyEmbed(currentBeatmap, tracker);
 
 //             if (
 //                 currentBeatmap.status == "loved" &&
-//                 tracker.targetsArray.includes(MapperTrackerType.BeatmapLoved)
+//                 tracker.targetsArray.includes(IMapperTrackerType.BeatmapLoved)
 //             )
 //                 sendBeatmapLovedEmbed(currentBeatmap, tracker);
 //         } // Status change
 
 //         if (
 //             currentBeatmap.favorites > referentStoredBeatmap.favorites &&
-//             tracker.targetsArray.includes(MapperTrackerType.BeatmapFavorite)
+//             tracker.targetsArray.includes(IMapperTrackerType.BeatmapFavorite)
 //         ) {
 //             sendBeatmapFavoriteEmbed(currentBeatmap, tracker);
 //         }
@@ -246,10 +246,10 @@ import { MapperTrackerType } from "../../commands/osu/mappertracker";
 //         "utf8"
 //     );
 
-//     consoleCheck("MapperTracker", "Created default file!");
+//     consoleCheck("IMapperTracker", "Created default file!");
 // }
 
-// export function listenMapperTracker() {
+// export function listenIMapperTracker() {
 //     if (!existsSync(path.resolve(__dirname + "/../../cache/mappers.json")))
 //         createDefaultFile();
 

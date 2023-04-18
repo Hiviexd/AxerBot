@@ -6,13 +6,13 @@ import {
 } from "discord.js";
 import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
-import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import { CompressedBeatmapset } from "../../types/beatmap";
+import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function SendBeatmapQualifyEmbed(
     map: CompressedBeatmapset,
-    tracker: IMapperTracker
+    tracker: MapperTracker.IMapperTracker
 ) {
     const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
 

@@ -5,18 +5,18 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
-const mappertrackerRemoveTracker = new SlashCommandSubcommand(
+const IMapperTrackerRemoveTracker = new SlashCommandSubcommand(
     "remove",
     "List all mapper trackers",
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );
 
-mappertrackerRemoveTracker.builder.addIntegerOption((o) =>
+IMapperTrackerRemoveTracker.builder.addIntegerOption((o) =>
     o.setName("index").setDescription("Tracker index").setRequired(true)
 );
 
-mappertrackerRemoveTracker.setExecuteFunction(async (command) => {
+IMapperTrackerRemoveTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
 
     let allTrackers = await tracks.find({
@@ -42,4 +42,4 @@ mappertrackerRemoveTracker.setExecuteFunction(async (command) => {
     });
 });
 
-export default mappertrackerRemoveTracker;
+export default IMapperTrackerRemoveTracker;

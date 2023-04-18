@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { AxerBot } from "./models/core/AxerBot";
 
-const bot = new AxerBot({
+const axer = new AxerBot({
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
@@ -19,4 +19,4 @@ const bot = new AxerBot({
     ],
 }).start();
 
-export default bot;
+export const bot = axer;

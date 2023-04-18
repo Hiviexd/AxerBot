@@ -8,12 +8,12 @@ import {
 import { bot } from "../..";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
-import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import { CompressedBeatmapset } from "../../types/beatmap";
+import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function sendNewBeatmapEmbed(
     map: CompressedBeatmapset,
-    tracker: IMapperTracker
+    tracker: MapperTracker.IMapperTracker
 ) {
     const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
 

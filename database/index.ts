@@ -12,11 +12,11 @@ consoleLog("database", "Starting database connection...");
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
-    (err) => {
-        if (err)
+    (e: any) => {
+        if (e)
             return consoleError(
                 "database",
-                "An error has occurred:\n".concat(err.message)
+                "An error has occurred:\n".concat(e.message)
             );
 
         consoleCheck("database", "Database connected!");

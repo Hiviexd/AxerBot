@@ -23,7 +23,10 @@ abstract class DiscussionEventEmitter extends EventEmitter {
         super();
     }
 
-    on(event: WrapperEventType, callback: (data: BeatmapsetEvent) => void) {
+    on(
+        eventEvent: WrapperEventType | string | symbol,
+        callback: (data: BeatmapsetEvent) => void
+    ) {
         return this;
     }
 }

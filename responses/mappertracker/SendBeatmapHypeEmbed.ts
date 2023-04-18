@@ -4,17 +4,16 @@ import {
     ButtonStyle,
     EmbedBuilder,
 } from "discord.js";
-import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
-import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
-import colors from "../../constants/colors";
-import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
+
 import { bot } from "../..";
-import osuApi from "../../modules/osu/fetcher/osuApi";
 import getEmoji from "../../helpers/text/getEmoji";
+import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import { CompressedBeatmapset } from "../../types/beatmap";
 
 export async function sendBeatmapHypeEmbed(
     map: CompressedBeatmapset,
-    tracker: IMapperTracker
+    tracker: MapperTracker.IMapperTracker
 ) {
     const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
 

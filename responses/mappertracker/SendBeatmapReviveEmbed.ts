@@ -5,16 +5,16 @@ import {
     EmbedBuilder,
     GuildTextBasedChannel,
 } from "discord.js";
-import { IMapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import { Beatmapset, CompressedBeatmapset } from "../../types/beatmap";
 import colors from "../../constants/colors";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import { bot } from "../..";
 import osuApi from "../../modules/osu/fetcher/osuApi";
+import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function sendBeatmapReviveEmbed(
     map: CompressedBeatmapset,
-    tracker: IMapperTracker
+    tracker: MapperTracker.IMapperTracker
 ) {
     const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
 

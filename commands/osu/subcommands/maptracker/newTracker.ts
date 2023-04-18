@@ -12,17 +12,17 @@ import { generateStepEmbedWithChoices } from "../../../../helpers/commands/gener
 import crypto from "crypto";
 import { tracks } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import { MapperTrackerType } from "../../../osu/mappertracker";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
+import { MapperTrackerType } from "../../mappertracker";
 
-const mappertrackerNewTracker = new SlashCommandSubcommand(
+const mapperTrackerNewTracker = new SlashCommandSubcommand(
     "new",
     "Create a new mapper tracker",
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );
 
-mappertrackerNewTracker.builder
+mapperTrackerNewTracker.builder
     .addStringOption((o) =>
         o.setName("mapper").setDescription("Mapper username").setRequired(true)
     )
@@ -34,7 +34,7 @@ mappertrackerNewTracker.builder
             .addChannelTypes(ChannelType.GuildText)
     );
 
-mappertrackerNewTracker.setExecuteFunction(async (command) => {
+mapperTrackerNewTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
 
     const mapperUsername = command.options.getString("mapper", true);
@@ -165,4 +165,4 @@ mappertrackerNewTracker.setExecuteFunction(async (command) => {
     }
 });
 
-export default mappertrackerNewTracker;
+export default mapperTrackerNewTracker;

@@ -10,6 +10,7 @@
 		"@types/fluent-ffmpeg": "^2.1.20",
 		"@types/moment": "^2.13.0",
 		"@types/mongoose": "^5.11.97",
+		"@types/node": "^18.15.11",
 		"@types/numeral": "^2.0.2",
 		"@types/spectrogram": "^0.0.1",
 		"@types/yauzl": "^2.10.0",

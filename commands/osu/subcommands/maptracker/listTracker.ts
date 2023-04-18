@@ -6,14 +6,14 @@ import colors from "../../../../constants/colors";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
 import { MapperTrackerType } from "../../mappertracker";
 
-const mappertrackerListTracker = new SlashCommandSubcommand(
+const IMapperTrackerListTracker = new SlashCommandSubcommand(
     "list",
     "List all mapper trackers",
     undefined,
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );
 
-interface IMapperTracker {
+interface MapperTracker {
     _id: string;
     targetsArray: string[];
     userId: string;
@@ -22,7 +22,7 @@ interface IMapperTracker {
     type: "mapper";
 }
 
-mappertrackerListTracker.setExecuteFunction(async (command) => {
+IMapperTrackerListTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
 
     const targetTypes = {
@@ -41,7 +41,7 @@ mappertrackerListTracker.setExecuteFunction(async (command) => {
     const allTrackers = (await tracks.find({
         guild: command.guildId,
         type: "mapper",
-    })) as unknown as IMapperTracker[];
+    })) as unknown as MapperTracker[];
 
     const users = await osuApi.fetch.users(allTrackers.map((t) => t.userId));
 
@@ -90,4 +90,4 @@ mappertrackerListTracker.setExecuteFunction(async (command) => {
     });
 });
 
-export default mappertrackerListTracker;
+export default IMapperTrackerListTracker;

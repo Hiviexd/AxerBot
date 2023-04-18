@@ -1,8 +1,8 @@
 import { PermissionFlagsBits } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import mappertrackerNewTracker from "./subcommands/maptracker/newTracker";
-import mappertrackerListTracker from "./subcommands/maptracker/listTracker";
-import mappertrackerRemoveTracker from "./subcommands/maptracker/removeTracker";
+import mapperTrackerNewTracker from "./subcommands/maptracker/newTracker";
+import mapperTrackerListTracker from "./subcommands/maptracker/listTracker";
+import mapperTrackerRemoveTracker from "./subcommands/maptracker/removeTracker";
 
 export enum MapperTrackerType {
     BeatmapFavorite = "favorite",
@@ -17,8 +17,8 @@ export enum MapperTrackerType {
     BeatmapGraveyard = "graveyard",
 }
 
-const mappertracker = new SlashCommand(
-    ["mappertracker", "maptracker"],
+const mapperTracker = new SlashCommand(
+    ["mapperTracker", "maptracker"],
     "Track mapper beatmap events",
     "osu!",
     false,
@@ -32,9 +32,9 @@ const mappertracker = new SlashCommand(
     [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
 );
 
-mappertracker
-    .addSubcommand(mappertrackerNewTracker)
-    .addSubcommand(mappertrackerListTracker)
-    .addSubcommand(mappertrackerRemoveTracker);
+mapperTracker
+    .addSubcommand(mapperTrackerNewTracker)
+    .addSubcommand(mapperTrackerListTracker)
+    .addSubcommand(mapperTrackerRemoveTracker);
 
-export default mappertracker;
+export default mapperTracker;
