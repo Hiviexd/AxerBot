@@ -1,4 +1,5 @@
 import {
+    allBeatmapsetEvents,
     basicUserBeatmap,
     beatmap,
     beatmapset,
@@ -20,6 +21,7 @@ export default {
     fetch: {
         beatmap: beatmap,
         beatmapset: beatmapset,
+        allBeatmapsetEvents: allBeatmapsetEvents,
         searchBeatmapset: searchBeatmapset,
         featuredBeatmapsets: featuredBeatmapsets,
         beatmapsetDiscussionPost: beatmapsetDiscussionPost,

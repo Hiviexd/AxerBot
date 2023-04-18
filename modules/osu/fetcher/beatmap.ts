@@ -15,6 +15,8 @@ import {
     BeatmapsetDiscussion,
     BeatmapsetDiscussionPostResponse,
     BeatmapsetDiscussionVoteResponse,
+    BeatmapsetEvent,
+    BeatmapsetEventType,
     BeatmapsetResponse,
     BeatmapsetSearchResponse,
     UserBeatmapetsResponse,
@@ -26,6 +28,7 @@ import {
     OsuAuthenticator,
     OsuOfficialDownloader,
 } from "./downloader/beatmap";
+import { UserCompact } from "../../../types/user";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {
@@ -43,6 +46,51 @@ export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
         const res = req.data;
 
         consoleCheck("beatmap fetcher", `Beatmap ${beatmap_id} found!`);
+
+        return {
+            status: 200,
+            data: res,
+        };
+    } catch (e: any) {
+        consoleError("beatmap fetcher", "Wtf an error:");
+        console.error(e);
+
+        return {
+            status: 500,
+            data: e,
+        };
+    }
+}
+
+export async function allBeatmapsetEvents(
+    types: BeatmapsetEventType[]
+): Promise<
+    IHTTPResponse<{
+        events: BeatmapsetEvent[];
+        reviewsConfig: {
+            max_blocks: number;
+        };
+        users: UserCompact[];
+    }>
+> {
+    try {
+        consoleLog("beatmap fetcher", `Fetching all beatmapset events`);
+
+        const url = new URL("https://osu.ppy.sh/api/v2/beatmapsets/events");
+
+        for (const type of types) {
+            url.searchParams.append("types[]", type);
+        }
+
+        const req = await axios(url.href, {
+            headers: {
+                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+            },
+        });
+
+        const res = req.data;
+
+        consoleCheck("beatmap fetcher", `All beatmapset events found!`);
 
         return {
             status: 200,

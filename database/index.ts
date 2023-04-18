@@ -1,16 +1,12 @@
 import mongoose from "mongoose";
 import { consoleCheck, consoleError, consoleLog } from "../helpers/core/logger";
-import addRevolverToGuildObject from "./migrations/addRevolverToGuildObject";
-import addBNsiteToCooldown from "./migrations/addBNsiteToCooldown";
-import addButtonToGuildVerification from "./migrations/addButtonToGuildVerification";
+import banchoUser from "./schemas/banchoUser";
 import guild from "./schemas/guild";
-import user from "./schemas/user";
 import heardle from "./schemas/heardle";
 import track from "./schemas/track";
-import addScoreEmbedConfiguration from "./migrations/addScoreEmbedConfiguration";
+import user from "./schemas/user";
 import verification from "./schemas/verification";
-import addFlagsLeaderboard from "./migrations/addFlagsLeaderboard";
-import banchoUser from "./schemas/banchoUser";
+import discussionEvent from "./schemas/discussionEvent";
 
 consoleLog("database", "Starting database connection...");
 
@@ -39,3 +35,7 @@ export const verifications = mongoose.model("Verifications", verification);
 export const guilds = mongoose.model("Guilds", guild);
 export const heardles = mongoose.model("Heardles", heardle);
 export const tracks = mongoose.model("Tracks", track);
+export const discussionEvents = mongoose.model(
+    "DiscussionEvents",
+    discussionEvent
+);
