@@ -81,10 +81,11 @@ export class DiscussionEventsManager {
                 beatmapsetId: event.beatmapset.id,
                 content: event.discussion?.starting_post.message,
                 createdAt: new Date(event.created_at),
-                discussionId: event.comment.beatmap_discussion_id,
-                discussionPostId: event.comment.beatmap_discussion_post_id,
+                discussionId: event.comment?.beatmap_discussion_id,
+                discussionPostId: event.comment?.beatmap_discussion_post_id,
                 type: event.type,
                 userId: event.user_id,
+                comment: event.comment,
             });
 
             consoleCheck(

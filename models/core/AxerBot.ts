@@ -1,6 +1,6 @@
 import { Client, ClientOptions } from "discord.js";
 import { LoggerClient } from "./LoggerClient";
-import { config } from "dotenv";
+import "../../modules/osu/fetcher/startConnection";
 import { DiscussionEventsManager } from "../bancho/DiscussionEventsManager";
 import { existsSync, mkdirSync } from "fs";
 import eventHandler from "../../helpers/core/eventHandler";
@@ -10,7 +10,7 @@ import { connectToBancho } from "../../modules/bancho/client";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
-    public Discussions = new DiscussionEventsManager();
+    //public Discussions = new DiscussionEventsManager();
 
     constructor(options: ClientOptions) {
         super(options);
@@ -27,7 +27,7 @@ export class AxerBot extends Client {
 
             this.Logger.printSuccess(`${this.user?.username} is online!`);
         });
-        this.Discussions.listen();
+        //this.Discussions.listen();
 
         return this;
     }

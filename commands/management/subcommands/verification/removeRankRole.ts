@@ -1,77 +1,29 @@
-import { PermissionFlagsBits } from "discord.js";
+import { PermissionFlagsBits, StringSelectMenuBuilder } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
+import { GameMode } from "../../../../types/game_mode";
+import truncateString from "../../../../helpers/text/truncateString";
 
 const verificationRemoveRankRole = new SlashCommandSubcommand(
     "rankrole",
     "Remove a rank role from the system",
-    {
-        syntax: "/verification `remove rankrole` `role: @role` `min_rank:number` `max_rank:number` `gamemode: <Gamemode>` `rank_type: <Rank Type>`",
-        gamemode: ["`osu!`", "`osu!taiko`", "`osu!catch`", "`osu!mania`"],
-        "rank types": ["`country`", "`global`"],
-    },
+    undefined,
     [PermissionFlagsBits.ManageGuild]
 );
 
-verificationRemoveRankRole.builder
-    .addRoleOption((o) => o.setName("role").setDescription("Target role"))
-    .addIntegerOption((o) =>
-        o.setName("min_rank").setDescription("Min rank of the role")
-    )
-    .addIntegerOption((o) =>
-        o.setName("max_rank").setDescription("Max rank of the role")
-    )
-    .addStringOption((o) =>
-        o
-            .setName("gamemode")
-            .setDescription("Game Mode of the role")
-            .addChoices(
-                {
-                    name: "osu!",
-                    value: "osu",
-                },
-                {
-                    name: "osu!taiko",
-                    value: "taiko",
-                },
-                {
-                    name: "osu!catch",
-                    value: "fruits",
-                },
-                {
-                    name: "osu!mania",
-                    value: "mania",
-                }
-            )
-    )
-    .addStringOption((o) =>
-        o
-            .setName("rank_type")
-            .setDescription("Game Mode of the role")
-            .addChoices(
-                {
-                    name: "global",
-                    value: "global",
-                },
-                {
-                    name: "country",
-                    value: "country",
-                }
-            )
-    );
+export interface IRankRole {
+    id: string;
+    type: "country" | "global";
+    gamemode: string;
+    min_rank: number;
+    max_rank: number;
+}
 
 verificationRemoveRankRole.setExecuteFunction(async (command) => {
     if (!command.member || !command.guild || !command.client.user) return;
-
-    if (typeof command.member?.permissions == "string") return;
-
-    const minRank = command.options.getInteger("min_rank", true);
-    const maxRank = command.options.getInteger("max_rank", true);
-    const role = command.options.getRole("role", true);
-    const gamemode = command.options.getString("gamemode", true);
-    const rankType = command.options.getString("rank_type", true);
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
@@ -91,27 +43,91 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
             embeds: [generateErrorEmbed("No rank roles found.")],
         });
 
-    const index = guild.verification.targets.rank_roles.find(
-        (r: any) =>
-            r.id == role.id &&
-            r.min_rank == minRank &&
-            r.max_rank == maxRank &&
-            r.gamemode == gamemode &&
-            r.type == rankType
-    );
+    const menu = new StringSelectMenuBuilder()
+        .setMaxValues(guild.verification.targets.rank_roles.length)
+        .setMinValues(1)
+        .setOptions(
+            guild.verification.targets.rank_roles.map(
+                (role: IRankRole, i: number) => {
+                    return {
+                        label: `#${i + 1} | ${truncateString(
+                            `@${
+                                command.guild?.roles.cache.get(role.id)?.name ||
+                                "@Deleted Role"
+                            } | ${role.min_rank} -> ${role.max_rank} | ${
+                                role.gamemode
+                            }`,
+                            100,
+                            true
+                        )}`,
+                        value: role.id,
+                    };
+                }
+            )
+        );
 
-    if (index == -1)
-        return command.editReply({
-            embeds: [generateErrorEmbed("Rank role not found.")],
+    generateStepEmbedWithChoices(
+        command,
+        "Select roles to remove",
+        "You can select multiple roles",
+        menu,
+        undefined,
+        true
+    )
+        .then((roles) => {
+            if (!guild) return;
+
+            for (const role of roles.data) {
+                guild.verification.targets.rank_roles =
+                    guild.verification.targets.rank_roles.filter(
+                        (r: IRankRole) => r.id == role
+                    );
+            }
+
+            guilds
+                .updateOne(
+                    { _id: guild.id },
+                    {
+                        $set: {
+                            verification: guild.verification,
+                        },
+                    }
+                )
+                .then(() => {
+                    command.editReply({
+                        content: "",
+                        embeds: [generateSuccessEmbed("Removed roles!")],
+                        components: [],
+                    });
+                })
+                .catch((e) => {
+                    console.error(e);
+
+                    command.editReply({
+                        content: "",
+                        embeds: [
+                            generateErrorEmbed(
+                                "Can't save your changes. Sorry..."
+                            ),
+                        ],
+                        components: [],
+                    });
+                });
+        })
+        .catch((e) => {
+            console.error(e);
+
+            command.editReply({
+                content: "",
+                embeds: [
+                    generateErrorEmbed(
+                        "Time expired! Don't leave me waiting, please."
+                    ),
+                ],
+            });
         });
 
-    guild.verification.targets.rank_roles.splice(index, 1);
-
     await guilds.findByIdAndUpdate(command.guildId, guild);
-
-    command.editReply({
-        embeds: [generateSuccessEmbed("Rank role removed!")],
-    });
 });
 
 export default verificationRemoveRankRole;

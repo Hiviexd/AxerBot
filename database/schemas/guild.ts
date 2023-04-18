@@ -31,6 +31,18 @@ export default new Schema({
                 default_roles: [],
                 group_roles: [],
                 mapper_roles: [],
+                rank_roles: [
+                    {
+                        id: String,
+                        type: { type: String, enum: ["country", "global"] },
+                        gamemode: {
+                            type: String,
+                            enum: ["osu", "taiko", "fruits", "mania"],
+                        },
+                        min_rank: Number,
+                        max_rank: Number,
+                    },
+                ],
             },
             button: true,
         },

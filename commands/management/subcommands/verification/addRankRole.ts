@@ -19,17 +19,26 @@ const verificationAddRankRole = new SlashCommandSubcommand(
 );
 
 verificationAddRankRole.builder
-    .addRoleOption((o) => o.setName("role").setDescription("Target role"))
-    .addIntegerOption((o) =>
-        o.setName("min_rank").setDescription("Min rank of the role")
+    .addRoleOption((o) =>
+        o.setName("role").setDescription("Target role").setRequired(true)
     )
     .addIntegerOption((o) =>
-        o.setName("max_rank").setDescription("Max rank of the role")
+        o
+            .setName("min_rank")
+            .setDescription("Min rank of the role")
+            .setRequired(true)
+    )
+    .addIntegerOption((o) =>
+        o
+            .setName("max_rank")
+            .setDescription("Max rank of the role")
+            .setRequired(true)
     )
     .addStringOption((o) =>
         o
             .setName("gamemode")
             .setDescription("Game Mode of the role")
+            .setRequired(true)
             .addChoices(
                 {
                     name: "osu!",
@@ -53,6 +62,7 @@ verificationAddRankRole.builder
         o
             .setName("rank_type")
             .setDescription("Game Mode of the role")
+            .setRequired(true)
             .addChoices(
                 {
                     name: "global",
@@ -112,6 +122,11 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
 
     if (!guild.verification.targets.rank_roles)
         guild.verification.targets.rank_roles = [];
+
+    if (guild.verification.targets.rank_roles.length >= 25)
+        return command.editReply({
+            embeds: [generateErrorEmbed("You can't add more than 25 roles!")],
+        });
 
     guild.verification.targets.rank_roles.push(newRole);
 

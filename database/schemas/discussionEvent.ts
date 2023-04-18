@@ -7,7 +7,7 @@ export default new Schema({
     },
     beatmapsetId: { type: Number, required: true },
     beatmapId: { type: Number, required: false },
-    userId: { type: Number, required: true },
+    userId: { type: Number, required: false },
     discussionId: { type: Number, required: false },
     discussionPostId: { type: Number, required: false },
     content: { type: String, required: false },
