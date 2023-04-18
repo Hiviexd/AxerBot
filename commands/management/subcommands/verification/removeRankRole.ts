@@ -79,10 +79,10 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
             if (!guild) return;
 
             for (const role of roles.data) {
-                guild.verification.targets.rank_roles =
-                    guild.verification.targets.rank_roles.filter(
-                        (r: IRankRole) => r.id != role.slice(10)
-                    );
+                guild.verification.targets.rank_roles.splice(
+                    guild.verification.targets.rank_roles.indexOf(role),
+                    1
+                );
             }
 
             guilds
