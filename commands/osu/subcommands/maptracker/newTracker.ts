@@ -88,7 +88,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
                 value: MapperTrackerType.NewBeatmap,
             },
             {
-                label: "Beatmap update upload",
+                label: "Beatmap Update Upload",
                 value: UserRecentEventType.BeatmapsetUpdate,
             },
             {
