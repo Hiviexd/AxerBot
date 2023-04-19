@@ -9,10 +9,10 @@ import { bot } from "../..";
 import getEmoji from "../../helpers/text/getEmoji";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { CompressedBeatmapset } from "../../types/beatmap";
+import { Beatmapset } from "../../types/beatmap";
 
 export async function sendBeatmapHypeEmbed(
-    map: CompressedBeatmapset,
+    map: Beatmapset,
     tracker: MapperTracker.IMapperTracker
 ) {
     const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());

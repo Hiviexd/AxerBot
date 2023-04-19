@@ -7,6 +7,7 @@ import track from "./schemas/track";
 import user from "./schemas/user";
 import verification from "./schemas/verification";
 import discussionEvent from "./schemas/discussionEvent";
+import userEvent from "./schemas/userEvent";
 
 consoleLog("database", "Starting database connection...");
 
@@ -39,3 +40,4 @@ export const discussionEvents = mongoose.model(
     "DiscussionEvents",
     discussionEvent
 );
+export const userEvents = mongoose.model("UserEvents", userEvent);

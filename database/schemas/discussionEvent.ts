@@ -27,6 +27,7 @@ export default new Schema({
             "nsfw_toggle",
             "offset_edit",
             "tags_edit",
+            "beatmap_owner_change",
         ],
     },
     createdAt: Date,

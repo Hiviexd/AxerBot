@@ -8,14 +8,16 @@ import {
 import { bot } from "../..";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { CompressedBeatmapset } from "../../types/beatmap";
+import { BeatmapsetEvent } from "../../types/beatmap";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function sendBeatmapLovedEmbed(
-    map: CompressedBeatmapset,
+    event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
+    const beatmapset = await osuApi.fetch.beatmapset(
+        event.beatmapset.id.toString()
+    );
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 

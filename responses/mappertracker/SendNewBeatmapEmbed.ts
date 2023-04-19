@@ -6,16 +6,21 @@ import {
 } from "discord.js";
 
 import { bot } from "../..";
-import osuApi from "../../modules/osu/fetcher/osuApi";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
-import { CompressedBeatmapset } from "../../types/beatmap";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
+import osuApi from "../../modules/osu/fetcher/osuApi";
+import { UserRecentEvent } from "../../types/user";
+import { parseOsuPathId } from "../../helpers/text/parseOsuPathId";
 
 export async function sendNewBeatmapEmbed(
-    map: CompressedBeatmapset,
+    event: UserRecentEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
+    if (!event.beatmapset) return;
+
+    const beatmapset = await osuApi.fetch.beatmapset(
+        parseOsuPathId(event.beatmapset.url)
+    );
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
@@ -40,7 +45,7 @@ export async function sendNewBeatmapEmbed(
         const total = diffs.length;
 
         diffs.sort((a, b) => b.difficulty_rating - a.difficulty_rating);
-        diffs.splice(3, 9999);
+        diffs.splice(5, 9999);
 
         let description = `Displaying ${diffs.length} of ${total} difficulties:\n`;
 
@@ -73,7 +78,14 @@ export async function sendNewBeatmapEmbed(
         .setStyle(ButtonStyle.Link)
         .setURL(url);
 
-    buttonsActionRow.addComponents(beatmapPageButton);
+    const beatmapDirectButton = new ButtonBuilder()
+        .setStyle(ButtonStyle.Link)
+        .setLabel("osu!direct")
+        .setURL(
+            `https://axer-url.vercel.app/api/direct?set=${beatmapset.data.id}`
+        );
+
+    buttonsActionRow.addComponents(beatmapPageButton, beatmapDirectButton);
 
     channel
         .send({

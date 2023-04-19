@@ -14,6 +14,8 @@ import { tracks } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { MapperTrackerType } from "../../mappertracker";
+import { BeatmapsetEventType } from "../../../../types/beatmap";
+import { UserRecentEventType } from "../../../../types/user";
 
 const mapperTrackerNewTracker = new SlashCommandSubcommand(
     "new",
@@ -86,40 +88,56 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
                 value: MapperTrackerType.NewBeatmap,
             },
             {
-                label: "New Hype",
-                value: MapperTrackerType.NewHype,
-            },
-            {
-                label: "Beatmap Favorite",
-                value: MapperTrackerType.BeatmapFavorite,
+                label: "Beatmap update upload",
+                value: UserRecentEventType.BeatmapsetUpdate,
             },
             {
                 label: "Beatmap Revive",
-                value: MapperTrackerType.BeatmapRevive,
+                value: UserRecentEventType.BeatmapsetRevive,
             },
             {
                 label: "Beatmap Ranked",
-                value: MapperTrackerType.RankedBeatmap,
+                value: BeatmapsetEventType.RANK,
             },
             {
                 label: "Beatmap Nomination",
-                value: MapperTrackerType.BeatmapNomination,
+                value: BeatmapsetEventType.NOMINATE,
             },
             {
                 label: "Beatmap Qualified",
-                value: MapperTrackerType.QualifiedBeatmap,
+                value: BeatmapsetEventType.QUALIFY,
             },
             {
                 label: "Beatmap Disqualify",
-                value: MapperTrackerType.DisqualifiedBeatmap,
+                value: BeatmapsetEventType.DISQUALIFY,
             },
             {
                 label: "Beatmap Loved",
-                value: MapperTrackerType.BeatmapLoved,
+                value: BeatmapsetEventType.LOVE,
             },
             {
                 label: "Beatmap Graveyard",
                 value: MapperTrackerType.BeatmapGraveyard,
+            },
+            {
+                label: "Beatmapset Tags Edit",
+                value: BeatmapsetEventType.TAGS_EDIT,
+            },
+            {
+                label: "Beatmapset Genre Edit",
+                value: BeatmapsetEventType.GENRE_EDIT,
+            },
+            {
+                label: "Beatmapset Language Edit",
+                value: BeatmapsetEventType.LANGUAGE_EDIT,
+            },
+            {
+                label: "Beatmap Owner Change",
+                value: BeatmapsetEventType.BEATMAP_OWNER_CHANGE,
+            },
+            {
+                label: "Beatmapset Timing Offset Edit",
+                value: BeatmapsetEventType.OFFSET_EDIT,
             }
         )
         .setMinValues(1);

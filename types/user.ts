@@ -9,6 +9,51 @@ export interface UserCompactCover {
     id: string;
 }
 
+export namespace Event {
+    export interface Beatmap {
+        title: string;
+        url: string;
+    }
+    export interface Beatmapset {
+        title: string;
+        url: string;
+    }
+
+    export interface User {
+        username: string;
+        url: string;
+        previousUsername?: string;
+        achievement: unknown;
+        user: Event.User;
+    }
+}
+
+export interface UserRecentEvent {
+    created_at: Date;
+    id: number;
+    type: UserRecentEventType;
+    url: string;
+    beatmapset?: Event.Beatmapset;
+    beatmap?: Event.Beatmap;
+    user: Event.User;
+}
+
+export enum UserRecentEventType {
+    Achievement = "achievement",
+    BeatmapPlaycount = "beatmapPlaycount",
+    BeatmapsetApprove = "beatmapsetApprove",
+    BeatmapsetDelete = "beatmapsetDelete",
+    BeatmapsetRevive = "beatmapsetRevive",
+    BeatmapsetUpdate = "beatmapsetUpdate",
+    BeatmapsetUpload = "beatmapsetUpload",
+    Rank = "rank",
+    RankLost = "rankLost",
+    UserSupportAgain = "userSupportAgain",
+    UserSupportFirst = "userSupportFirst",
+    UserSupportGift = "userSupportGift",
+    UsernameChange = "usernameChange",
+}
+
 /**
  * https://osu.ppy.sh/docs/index.html#user-profilepage
  */

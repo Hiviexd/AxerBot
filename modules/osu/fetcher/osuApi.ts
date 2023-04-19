@@ -12,7 +12,7 @@ import {
     searchBeatmapset,
     userBeatmaps,
 } from "./beatmap";
-import { user, userRecent, users } from "./user";
+import { user, userRecent, userRecentActivity, users } from "./user";
 import { comment } from "./comment";
 import { fetchBeatmapEvents } from "./qat";
 import { downloadUnofficialReplay } from "./downloader/replay/downloadUnofficialReplay";
@@ -29,6 +29,7 @@ export default {
         beatmapsetDiscussionVotes: beatmapsetDiscussionVotes,
         discussionEvents: fetchBeatmapEvents,
         user: user,
+        userRecentActivity: userRecentActivity,
         users,
         basicUserBeatmaps: basicUserBeatmap,
         userBeatmaps: userBeatmaps,

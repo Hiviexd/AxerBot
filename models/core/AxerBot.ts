@@ -1,16 +1,20 @@
 import { Client, ClientOptions } from "discord.js";
 import { LoggerClient } from "./LoggerClient";
 import "../../modules/osu/fetcher/startConnection";
-import { DiscussionEventsManager } from "../bancho/DiscussionEventsManager";
+import { DiscussionEventsListener } from "./DiscussionEventsListener";
 import { existsSync, mkdirSync } from "fs";
 import eventHandler from "../../helpers/core/eventHandler";
 import registerCommands from "../../helpers/interactions/registerCommands";
 import { startAvatarListener } from "../../modules/avatar/avatarManager";
 import { connectToBancho } from "../../modules/bancho/client";
+import { handleDiscussionEvent } from "../../modules/osu/events/handleDiscussionEvent";
+import { UserEventsListener } from "./UserEventsListener";
+import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
-    //public Discussions = new DiscussionEventsManager();
+    public Discussions = new DiscussionEventsListener();
+    public UserEvents = new UserEventsListener();
 
     constructor(options: ClientOptions) {
         super(options);
@@ -27,7 +31,11 @@ export class AxerBot extends Client {
 
             this.Logger.printSuccess(`${this.user?.username} is online!`);
         });
-        //this.Discussions.listen();
+        this.Discussions.listen();
+        this.Discussions.events.on("any", handleDiscussionEvent);
+
+        this.UserEvents.listen();
+        this.UserEvents.events.on("any", handleMapperTrackerUserEvent);
 
         return this;
     }

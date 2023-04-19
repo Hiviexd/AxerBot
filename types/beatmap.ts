@@ -39,6 +39,7 @@ export enum BeatmapsetEventType {
     NSFW_TOGGLE = "nsfw_toggle",
     OFFSET_EDIT = "offset_edit",
     TAGS_EDIT = "tags_edit",
+    BEATMAP_OWNER_CHANGE = "beatmap_owner_change",
 }
 
 export interface BeatmapsetEvent {
@@ -49,6 +50,10 @@ export interface BeatmapsetEvent {
         beatmap_discussion_post_id?: number;
         old?: string | boolean;
         new?: string | boolean;
+        beatmap_id?: number;
+        beatmap_version?: string;
+        new_user_id?: number;
+        new_user_username?: string;
     };
     created_at: Date;
     user_id: number;

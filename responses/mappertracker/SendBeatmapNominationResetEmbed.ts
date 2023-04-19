@@ -8,14 +8,16 @@ import {
 import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { CompressedBeatmapset } from "../../types/beatmap";
+import { BeatmapsetEvent } from "../../types/beatmap";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function SendBeatmapNominationResetEmbed(
-    map: CompressedBeatmapset,
+    event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
+    const beatmapset = await osuApi.fetch.beatmapset(
+        event.beatmapset.id.toString()
+    );
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 

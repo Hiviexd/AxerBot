@@ -24,14 +24,14 @@ abstract class DiscussionEventEmitter extends EventEmitter {
     }
 
     on(
-        eventEvent: WrapperEventType | string | symbol,
+        eventEvent: keyof WrapperEventType | string | symbol,
         callback: (data: BeatmapsetEvent) => void
     ) {
         return this;
     }
 }
 
-export class DiscussionEventsManager {
+export class DiscussionEventsListener {
     private allowList = [
         BeatmapsetEventType.NOMINATE,
         BeatmapsetEventType.QUALIFY,
@@ -39,12 +39,10 @@ export class DiscussionEventsManager {
         BeatmapsetEventType.NOMINATION_RESET,
         BeatmapsetEventType.NOMINATION_RESET_RECEIVED,
         BeatmapsetEventType.RANK,
-        BeatmapsetEventType.ISSUE_REOPEN,
-        BeatmapsetEventType.ISSUE_RESOLVE,
         BeatmapsetEventType.GENRE_EDIT,
         BeatmapsetEventType.LANGUAGE_EDIT,
-        BeatmapsetEventType.NSFW_TOGGLE,
         BeatmapsetEventType.OFFSET_EDIT,
+        BeatmapsetEventType.BEATMAP_OWNER_CHANGE,
         BeatmapsetEventType.TAGS_EDIT,
     ];
     public events = new EventEmitter() as DiscussionEventEmitter;
@@ -57,7 +55,7 @@ export class DiscussionEventsManager {
         this.events.emit.bind(this);
 
         try {
-            if (!this.allowList.includes(event.type))
+            if (!this.allowList.map((t) => t.toString()).includes(event.type))
                 return {
                     status: 400,
                     data: {
@@ -71,7 +69,7 @@ export class DiscussionEventsManager {
                 return {
                     status: 201,
                     data: {
-                        message: "Exists",
+                        message: `Exists ${event.beatmapset?.artist} - ${event.beatmapset?.title} | ${event.type} | ${event.id}`,
                     },
                 };
 
@@ -93,6 +91,7 @@ export class DiscussionEventsManager {
                 `Inserted event ${event.id} with type ${event.type}`
             );
 
+            this.events.emit("any", event);
             this.events.emit(event.type, event);
 
             return {
@@ -111,13 +110,13 @@ export class DiscussionEventsManager {
 
     async listen(): Promise<unknown> {
         consoleLog(`DiscussionEventsManager`, `Starting listener`);
-        const events = await osuApi.fetch.allBeatmapsetEvents(this.allowList);
+        const events = await osuApi.fetch.allBeatmapsetEvents();
 
         if (events.status != 200)
             return setTimeout(this.listen.bind(this), 30000);
 
         for (const event of events.data.events) {
-            await this.tryToInsertNewEvent(event);
+            this.tryToInsertNewEvent(event);
         }
 
         setTimeout(this.listen.bind(this), 30000);

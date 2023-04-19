@@ -7,12 +7,12 @@ import {
 
 import { bot } from "../..";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
-import { parseOsuPathId } from "../../helpers/text/parseOsuPathId";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import { UserRecentEvent } from "../../types/user";
+import { parseOsuPathId } from "../../helpers/text/parseOsuPathId";
 
-export async function sendBeatmapReviveEmbed(
+export async function sendBeatmapUpdateEmbed(
     event: UserRecentEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
@@ -27,24 +27,28 @@ export async function sendBeatmapReviveEmbed(
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
-        .setTitle(`♻️ Revived`)
+
+        .setTitle(`📤 Beatmap Updated`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${beatmapset.data.creator}](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n`.concat(
                 generateBeatmapDescription()
             )
         )
-        .setColor("#1df27d")
-        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
+        .setColor("#FFA500")
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
+        .setTimestamp(new Date(beatmapset.data.last_updated));
 
     function generateBeatmapDescription() {
         const diffs = beatmapset.data.beatmaps;
 
         if (!diffs) return "This beatmapset has no difficulties...";
 
-        diffs.sort((a, b) => b.difficulty_rating - a.difficulty_rating);
-        diffs.splice(3, 9999);
+        const total = diffs.length;
 
-        let description = `Displaying ${diffs.length} of ${beatmapset.data.beatmaps?.length} difficulties:\n`;
+        diffs.sort((a, b) => b.difficulty_rating - a.difficulty_rating);
+        diffs.splice(5, 9999);
+
+        let description = `Displaying ${diffs.length} of ${total} difficulties:\n`;
 
         diffs.forEach((difficulty) => {
             description = description.concat(
@@ -75,7 +79,14 @@ export async function sendBeatmapReviveEmbed(
         .setStyle(ButtonStyle.Link)
         .setURL(url);
 
-    buttonsActionRow.addComponents(beatmapPageButton);
+    const beatmapDirectButton = new ButtonBuilder()
+        .setStyle(ButtonStyle.Link)
+        .setLabel("osu!direct")
+        .setURL(
+            `https://axer-url.vercel.app/api/direct?set=${beatmapset.data.id}`
+        );
+
+    buttonsActionRow.addComponents(beatmapPageButton, beatmapDirectButton);
 
     channel
         .send({

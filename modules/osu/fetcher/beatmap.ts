@@ -63,7 +63,7 @@ export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
 }
 
 export async function allBeatmapsetEvents(
-    types: BeatmapsetEventType[]
+    types?: BeatmapsetEventType[]
 ): Promise<
     IHTTPResponse<{
         events: BeatmapsetEvent[];
@@ -78,8 +78,10 @@ export async function allBeatmapsetEvents(
 
         const url = new URL("https://osu.ppy.sh/api/v2/beatmapsets/events");
 
-        for (const type of types) {
-            url.searchParams.append("types[]", type);
+        if (types) {
+            for (const type of types) {
+                url.searchParams.append("types[]", type.toString());
+            }
         }
 
         const req = await axios(url.href, {

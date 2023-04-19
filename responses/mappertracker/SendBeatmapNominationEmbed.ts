@@ -9,13 +9,15 @@ import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { CompressedBeatmapset } from "../../types/beatmap";
+import { BeatmapsetEvent } from "../../types/beatmap";
 
 export async function SendBeatmapNominationEmbed(
-    map: CompressedBeatmapset,
+    event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
+    const beatmapset = await osuApi.fetch.beatmapset(
+        event.beatmapset.id.toString()
+    );
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 

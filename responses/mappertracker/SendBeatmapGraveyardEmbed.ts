@@ -7,14 +7,14 @@ import {
 
 import { bot } from "../..";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { CompressedBeatmapset } from "../../types/beatmap";
+import { Beatmapset } from "../../types/beatmap";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 
 export async function sendBeatmapGraveyardEmbed(
-    map: CompressedBeatmapset,
+    beatmap: Beatmapset,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(map.id.toString());
+    const beatmapset = await osuApi.fetch.beatmapset(beatmap.id.toString());
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 

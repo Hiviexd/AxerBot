@@ -6,7 +6,7 @@ import {
 } from "../../../helpers/core/logger";
 import { IHTTPResponse } from "../../../types/http";
 import { UserScoreResponse } from "../../../types/score";
-import { User, UserResponse } from "../../../types/user";
+import { User, UserRecentEvent, UserResponse } from "../../../types/user";
 
 export async function user(
     user_id: string,
@@ -34,6 +34,40 @@ export async function user(
 
             return link;
         }
+
+        return {
+            status: 200,
+            data: res,
+        };
+    } catch (e: any) {
+        consoleError("user fetcher", "Wtf an error:");
+        console.error(e);
+
+        return {
+            status: 500,
+            data: e,
+        };
+    }
+}
+
+export async function userRecentActivity(
+    user_id: string
+): Promise<IHTTPResponse<UserRecentEvent[]>> {
+    try {
+        consoleLog("user fetcher", `Fetching user recent activity ${user_id}`);
+
+        const req = await axios(
+            `https://osu.ppy.sh/api/v2/users/${user_id}/recent_activity`,
+            {
+                headers: {
+                    authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+                },
+            }
+        );
+
+        const res = req.data;
+
+        consoleCheck("user fetcher", `user ${user_id} recent activity found!`);
 
         return {
             status: 200,
