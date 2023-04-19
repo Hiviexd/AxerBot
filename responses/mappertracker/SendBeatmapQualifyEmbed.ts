@@ -20,26 +20,7 @@ export async function SendBeatmapQualifyEmbed(
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
-    const qatData = await qatApi.fetch.events(beatmapset.data.id.toString());
-
-    const nomUser = await fetchNominator(
-        beatmapset.data.current_nominations[1].user_id
-    );
-
-    const nom = qatData.data
-        ?.sort(
-            (a, b) =>
-                new Date(b.createdAt).valueOf() -
-                new Date(a.createdAt).valueOf()
-        )
-        .find(
-            (n) =>
-                (n.type == "qualify" &&
-                    n.userId ==
-                        beatmapset.data.current_nominations[0].user_id) ||
-                (n.type == "qualify" &&
-                    n.userId == beatmapset.data.current_nominations[1].user_id)
-        );
+    const nomUser = await fetchNominator(event.user_id);
 
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
@@ -55,11 +36,13 @@ export async function SendBeatmapQualifyEmbed(
             }](${url})**\n Mapped by [${
                 beatmapset.data.creator
             }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n${
-                nom?.content || "No comment provided..."
+                event.discussion?.starting_post.message ||
+                "No comment provided..."
             }`
         )
         .setColor("#ff4b63")
-        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
+        .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`)
+        .setTimestamp(new Date(event.created_at));
 
     async function fetchNominator(id: number) {
         const u = await osuApi.fetch.user(id.toString());
