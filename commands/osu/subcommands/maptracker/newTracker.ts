@@ -85,7 +85,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
         .setOptions(
             {
                 label: "New Beatmap",
-                value: MapperTrackerType.NewBeatmap,
+                value: UserRecentEventType.BeatmapsetUpload,
             },
             {
                 label: "Beatmap Update Upload",
@@ -114,10 +114,6 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
             {
                 label: "Beatmap Loved",
                 value: BeatmapsetEventType.LOVE,
-            },
-            {
-                label: "Beatmap Graveyard",
-                value: MapperTrackerType.BeatmapGraveyard,
             },
             {
                 label: "Beatmapset Tags Edit",
