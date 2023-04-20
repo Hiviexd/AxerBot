@@ -26,16 +26,20 @@ IMapperTrackerListTracker.setExecuteFunction(async (command) => {
     if (!command.guild) return;
 
     const targetTypes = {
-        favorite: "Favorites",
-        revive: "Beatmap Revive",
-        hype: "Hype",
-        new: "New Beatmap",
-        ranked: "Ranked Beatmap",
-        qualify: "Qualified Beatmap",
-        dq: "Disqualified Beatmap",
-        nom: "Nomination",
-        loved: "Beatmap Loved",
-        graveyard: "Beatmap Graveyard",
+        nominate: "Nominate",
+        qualify: "Qualify",
+        disqualify: "Disqualify",
+        nomination_reset: "Nomination Reset",
+        nomination_reset_received: "Nomination Reset",
+        rank: "Rank",
+        genre_edit: "Genre Edit",
+        language_edit: "Language Edit",
+        offset_edit: "Offset Edit",
+        tags_edit: "Tags Edit",
+        beatmap_owner_change: "Owner Change",
+        beatmapsetRevive: "Revive",
+        beatmapsetUpload: "Upload",
+        beatmapsetUpdate: "Update",
     };
 
     const allTrackers = (await tracks.find({
