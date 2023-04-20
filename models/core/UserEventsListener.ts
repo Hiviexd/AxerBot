@@ -116,13 +116,13 @@ export class UserEventsListener {
             );
 
             if (events.status != 200)
-                return setTimeout(this.listen.bind(this), 60000);
+                return setTimeout(this.listen.bind(this), 300000);
 
             for (const event of events.data) {
                 await this.tryToInsertNewEvent(event);
             }
         }
 
-        setTimeout(this.listen.bind(this), 60000);
+        setTimeout(this.listen.bind(this), 300000);
     }
 }
