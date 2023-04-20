@@ -107,6 +107,7 @@ export async function handleMapperTracker(event: BeatmapsetEvent) {
             language_edit: SendBeatmapsetMetadataEdit,
             offset_edit: SendBeatmapsetMetadataEdit,
             tags_edit: SendBeatmapsetMetadataEdit,
+            beatmap_owner_change: SendBeatmapsetMetadataEdit,
         };
 
         return embeds[type];

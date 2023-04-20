@@ -5,16 +5,20 @@ import mapperTrackerListTracker from "./subcommands/maptracker/listTracker";
 import mapperTrackerRemoveTracker from "./subcommands/maptracker/removeTracker";
 
 export enum MapperTrackerType {
-    BeatmapFavorite = "favorite",
-    BeatmapRevive = "revive",
-    NewHype = "hype",
-    NewBeatmap = "new",
-    RankedBeatmap = "ranked",
-    QualifiedBeatmap = "qualify",
-    DisqualifiedBeatmap = "dq",
-    BeatmapNomination = "nom",
-    BeatmapLoved = "loved",
-    BeatmapGraveyard = "graveyard",
+    Nominate = "nominate",
+    Qualify = "qualify",
+    Disqualify = "disqualify",
+    NominationReset = "nomination_reset",
+    NominationResetRecive = "nomination_reset_received",
+    Rank = "rank",
+    GenreEdit = "genre_edit",
+    LanguageEdit = "language_edit",
+    OffsetEdit = "offset_edit",
+    TagsEdit = "tags_edit",
+    OwnerChange = "beatmap_owner_change",
+    Revive = "beatmapsetRevive",
+    Upload = "beatmapsetUpload",
+    Update = "beatmapsetUpdate",
 }
 
 const mapperTracker = new SlashCommand(
