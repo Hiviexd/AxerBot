@@ -50,12 +50,14 @@ export async function generateConfirmEmbedWithChoices(
 
             const confirmButton = new ButtonBuilder()
                 .setCustomId(handshakeId.concat(",confirm"))
-                .setLabel("✅ Confirm")
+                .setLabel("Confirm")
+                .setEmoji("995849401492832316")
                 .setStyle(ButtonStyle.Success);
 
             const cancelButton = new ButtonBuilder()
                 .setCustomId(handshakeId.concat(",cancel"))
-                .setLabel("❌ Cancel")
+                .setLabel("Cancel")
+                .setEmoji("996082571261784114")
                 .setStyle(ButtonStyle.Danger);
 
             const collector = new InteractionCollector(command.client, {
@@ -83,6 +85,8 @@ export async function generateConfirmEmbedWithChoices(
                     collector.stop("UserChoice");
 
                     return command.editReply({
+                        components: [],
+                        content: "",
                         embeds: [generateWaitEmbed("Ok", "Job cancellated")],
                     });
                 }

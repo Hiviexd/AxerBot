@@ -1,4 +1,5 @@
 import {
+    ButtonStyle,
     ChannelType,
     GuildChannelResolvable,
     PermissionFlagsBits,
@@ -13,9 +14,9 @@ import crypto from "crypto";
 import { tracks } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
-import { MapperTrackerType } from "../../mappertracker";
 import { BeatmapsetEventType } from "../../../../types/beatmap";
 import { UserRecentEventType } from "../../../../types/user";
+import { generateConfirmEmbedWithChoices } from "../../../../helpers/commands/generateConfirmEmbedWithChoices";
 
 const mapperTrackerNewTracker = new SlashCommandSubcommand(
     "new",
@@ -71,7 +72,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
         type: "mapper",
     });
 
-    if (trackerCheck.length == 25)
+    if (trackerCheck.length >= 25)
         return command.editReply({
             embeds: [
                 generateErrorEmbedWithTitle(
@@ -81,86 +82,170 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
             ],
         });
 
-    const selectMenu = new StringSelectMenuBuilder()
-        .setOptions(
-            {
-                label: "New Beatmap",
-                value: UserRecentEventType.BeatmapsetUpload,
-            },
-            {
-                label: "Beatmap Update Upload",
-                value: UserRecentEventType.BeatmapsetUpdate,
-            },
-            {
-                label: "Beatmap Revive",
-                value: UserRecentEventType.BeatmapsetRevive,
-            },
-            {
-                label: "Beatmap Ranked",
-                value: BeatmapsetEventType.RANK,
-            },
-            {
-                label: "Beatmap Nomination",
-                value: BeatmapsetEventType.NOMINATE,
-            },
-            {
-                label: "Beatmap Qualified",
-                value: BeatmapsetEventType.QUALIFY,
-            },
-            {
-                label: "Beatmap Disqualify",
-                value: BeatmapsetEventType.DISQUALIFY,
-            },
-            {
-                label: "Beatmap Loved",
-                value: BeatmapsetEventType.LOVE,
-            },
-            {
-                label: "Beatmapset Tags Edit",
-                value: BeatmapsetEventType.TAGS_EDIT,
-            },
-            {
-                label: "Beatmapset Genre Edit",
-                value: BeatmapsetEventType.GENRE_EDIT,
-            },
-            {
-                label: "Beatmapset Language Edit",
-                value: BeatmapsetEventType.LANGUAGE_EDIT,
-            },
-            {
-                label: "Beatmap Owner Change",
-                value: BeatmapsetEventType.BEATMAP_OWNER_CHANGE,
-            },
-            {
-                label: "Beatmapset Timing Offset Edit",
-                value: BeatmapsetEventType.OFFSET_EDIT,
-            }
+    if (
+        trackerCheck.find(
+            (t) =>
+                t.userId == mapperProfile.data.id.toString() &&
+                t.channel == channel.id
         )
-        .setMinValues(1);
-    selectMenu.setMaxValues(selectMenu.options.length);
-
-    generateStepEmbedWithChoices(
-        command,
-        "📑 Select data to track",
-        "Please select one of the options below",
-        selectMenu
     )
-        .then((values) => {
-            if (!values.data) return;
-            createTracker(values.data);
-        })
-        .catch((e) => {
+        return command.editReply({
+            embeds: [
+                generateErrorEmbedWithTitle(
+                    "❌ Invalid user!",
+                    "You can't add this user again to this channel!"
+                ),
+            ],
+        });
+
+    requestTargets();
+    let targets: string[] = [];
+
+    function requestTargets() {
+        const selectMenu = new StringSelectMenuBuilder()
+            .setOptions(
+                {
+                    label: "New Beatmap",
+                    value: UserRecentEventType.BeatmapsetUpload,
+                },
+                {
+                    label: "Beatmap Update Upload",
+                    value: UserRecentEventType.BeatmapsetUpdate,
+                },
+                {
+                    label: "Beatmap Revive",
+                    value: UserRecentEventType.BeatmapsetRevive,
+                },
+                {
+                    label: "Beatmap Ranked",
+                    value: BeatmapsetEventType.RANK,
+                },
+                {
+                    label: "Beatmap Nomination",
+                    value: BeatmapsetEventType.NOMINATE,
+                },
+                {
+                    label: "Beatmap Qualified",
+                    value: BeatmapsetEventType.QUALIFY,
+                },
+                {
+                    label: "Beatmap Disqualify",
+                    value: BeatmapsetEventType.DISQUALIFY,
+                },
+                {
+                    label: "Beatmap Loved",
+                    value: BeatmapsetEventType.LOVE,
+                },
+                {
+                    label: "Beatmapset Tags Edit",
+                    value: BeatmapsetEventType.TAGS_EDIT,
+                },
+                {
+                    label: "Beatmapset Genre Edit",
+                    value: BeatmapsetEventType.GENRE_EDIT,
+                },
+                {
+                    label: "Beatmapset Language Edit",
+                    value: BeatmapsetEventType.LANGUAGE_EDIT,
+                },
+                {
+                    label: "Beatmap Owner Change",
+                    value: BeatmapsetEventType.BEATMAP_OWNER_CHANGE,
+                },
+                {
+                    label: "Beatmapset Timing Offset Edit",
+                    value: BeatmapsetEventType.OFFSET_EDIT,
+                }
+            )
+            .setMinValues(1);
+        selectMenu.setMaxValues(selectMenu.options.length);
+
+        generateStepEmbedWithChoices(
+            command,
+            "📑 Select data to track",
+            "Please select one of the options below",
+            selectMenu,
+            undefined,
+            true
+        )
+            .then((values) => {
+                if (!values.data) return;
+                targets = values.data;
+
+                confirm();
+            })
+            .catch((e) => {
+                return command.editReply({
+                    content: "",
+                    embeds: [
+                        generateErrorEmbed(
+                            "Don't leave me waiting here! Please, do your things during the correct time."
+                        ),
+                    ],
+                });
+            })
+            .catch(() => {
+                return command.editReply({
+                    content: "",
+                    components: [],
+                    embeds: [
+                        generateErrorEmbed("Time out! Don't leave me waiting."),
+                    ],
+                });
+            });
+    }
+
+    function confirm() {
+        const targetTypes = {
+            nominate: "Nominate",
+            qualify: "Qualify",
+            disqualify: "Disqualify",
+            nomination_reset: "Nomination Reset",
+            nomination_reset_received: "Nomination Reset",
+            rank: "Rank",
+            genre_edit: "Genre Edit",
+            language_edit: "Language Edit",
+            offset_edit: "Offset Edit",
+            tags_edit: "Tags Edit",
+            beatmap_owner_change: "Owner Change",
+            beatmapsetRevive: "Revive",
+            beatmapsetUpload: "Upload",
+            beatmapsetUpdate: "Update",
+        } as {
+            [key: string]: string;
+        };
+
+        generateConfirmEmbedWithChoices(
+            command,
+            "This is your new tracker",
+            `__**${mapperProfile.data.username}**__\n<#${channel.id}> [${targets
+                .map((target) => targetTypes[target])
+                .join(", ")}]\n\n`,
+            [
+                {
+                    label: "Edit Targets",
+                    callback: () => {
+                        requestTargets();
+                    },
+                    type: ButtonStyle.Secondary,
+                },
+            ],
+            createTracker,
+            undefined,
+            true,
+            true
+        ).catch(() => {
             return command.editReply({
                 content: "",
+                components: [],
                 embeds: [
-                    generateErrorEmbed(
-                        "Don't leave me waiting here! Please, do your things during the correct time."
-                    ),
+                    generateErrorEmbed("Time out! Don't leave me waiting."),
                 ],
             });
         });
+    }
 
-    async function createTracker(targets: string[]) {
+    async function createTracker() {
         const trackerId = crypto.randomBytes(15).toString("hex");
 
         await tracks.create({
@@ -174,6 +259,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
 
         command.editReply({
             content: "",
+            components: [],
             embeds: [generateSuccessEmbed("Tracker created!")],
         });
     }
