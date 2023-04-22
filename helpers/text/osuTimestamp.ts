@@ -11,7 +11,7 @@ export default function osuTimestamp(m: Message) {
 		const res = timestampRegex.exec(timestamp);
 		timestampRegex.lastIndex = 0;
 		if (!res) continue;
-		message += `[${timestamp}](https://axer-url.vercel.app/api/edit?time=${res[1]}:${res[2]}:${res[3]}`;
+		message += `• [${timestamp}](https://axer-url.vercel.app/api/edit?time=${res[1]}:${res[2]}:${res[3]}`;
 		if (res[4]) message += `-${res[4]}`;
 		message += ")\n";
 	}
