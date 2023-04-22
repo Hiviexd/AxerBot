@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 
 export default function osuTimestamp(m: Message) {
 	const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d+(\|)?,?)+)\))?/gim;
@@ -11,13 +11,17 @@ export default function osuTimestamp(m: Message) {
 		const res = timestampRegex.exec(timestamp);
 		timestampRegex.lastIndex = 0;
 		if (!res) continue;
-		message += `<osu://edit/${res[1]}:${res[2]}:${res[3]}`;
+		message += `[${timestamp}](https://axer-url.vercel.app/api/edit?time=${res[1]}:${res[2]}:${res[3]}`;
 		if (res[4]) message += `-${res[4]}`;
-		message += ">\n";
+		message += ")\n";
 	}
 
+    const embed = new EmbedBuilder()
+        .setDescription(message)
+        .setColor("#34343c");
+
 	m.reply({
-		content: message,
+		embeds: [embed],
 		allowedMentions: {
 			repliedUser: false,
 		},
