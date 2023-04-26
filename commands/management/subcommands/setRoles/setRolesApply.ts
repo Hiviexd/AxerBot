@@ -84,8 +84,14 @@ setRolesAdd.setExecuteFunction(async (command) => {
         })
         .addFields(
             {
-                name: "Name",
+                name: "Preset",
                 value: rolePreset.name || "*No name*",
+                inline: true
+            },
+            {
+                name: "Applied on",
+                value: `${member.nickname ? `${member.nickname} (${member.user.tag})` : member.user.tag}` || "*No member*",
+                inline: true
             },
             {
                 name: "Roles added",
