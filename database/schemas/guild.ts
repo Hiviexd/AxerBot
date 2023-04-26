@@ -104,86 +104,9 @@ export default new Schema({
             },
         },
     },
-    cooldown: {
-        type: Object,
-        default: {
-            contests: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-            fun: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-            misc: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-            management: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-            osu: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-            BNsite: {
-                size: 0,
-                ends_at: {},
-                current_increments: 0,
-                increments: 0,
-                channels: [],
-            },
-        },
-    },
     role_presets: [{ name: String, roles_add: Array, roles_remove: Array }],
+    country_roles: [{ country: String, id: String }],
     flaglb: [{ userId: String, score: Number }],
-    messages: {
-        type: Object,
-        default: {
-            join: {
-                content: "",
-                embeds: [
-                    {
-                        author: {
-                            name: "Welcome {username}! 👋",
-                            icon: "{user_avatar}",
-                            colour: "#37afc6",
-                        },
-                        description: "Welcome to the server {username}",
-                    },
-                ],
-            },
-            leave: {
-                content: "",
-                embeds: [
-                    {
-                        author: {
-                            name: "Oh no, bye {username}!",
-                            icon: "{user_avatar}",
-                            colour: "#37afc6",
-                        },
-                        description: "Oh, {username} has left the server...",
-                    },
-                ],
-            },
-        },
-    },
     logging: {
         type: Object,
         default: {

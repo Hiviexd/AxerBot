@@ -12,6 +12,7 @@ const verificationSetFlags = new SlashCommandSubcommand(
         example: "/verification `set flags` `flag:username` `status:enable`",
         "avaliable flags": [
             "`username, <enable|disable>`: Set the user's discord nickname to match their osu! username",
+            "`country_role, <enable|disable>`: Add a role with user's country name to the user",
         ],
     },
     [PermissionFlagsBits.ManageGuild]
@@ -22,10 +23,16 @@ verificationSetFlags.builder
         o
             .setName("flag")
             .setDescription("What do you want to manage?")
-            .addChoices({
-                name: "username",
-                value: "username",
-            })
+            .addChoices(
+                {
+                    name: "username",
+                    value: "username",
+                },
+                {
+                    name: "country_role",
+                    value: "country_role",
+                }
+            )
     )
     .addStringOption((o) =>
         o.setName("status").setDescription("Set status").addChoices(

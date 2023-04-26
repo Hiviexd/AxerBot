@@ -89,7 +89,7 @@ verificationStatus.setExecuteFunction(async (command) => {
     });
 
     function getMapperRoles() {
-        if (!guild) return "none...";
+        if (!guild) return "None";
 
         const roles =
             (guild.verification.mapper_roles as IMapperRole[]) ||
@@ -101,7 +101,7 @@ verificationStatus.setExecuteFunction(async (command) => {
             a: getEmoji("pending"),
         };
 
-        if (roles.length == 0) return "none...";
+        if (roles.length == 0) return "None";
 
         return roles
             .map(
@@ -120,7 +120,7 @@ verificationStatus.setExecuteFunction(async (command) => {
 
         let val = "";
 
-        const flags = ["username"];
+        const flags = ["username", "country_role"];
 
         Object.keys(guild.verification.targets).forEach((flag) => {
             if (!guild) return;
@@ -138,11 +138,11 @@ verificationStatus.setExecuteFunction(async (command) => {
     }
 
     function getRankRoles() {
-        if (!guild) return "-";
+        if (!guild) return "None";
 
-        if (!guild.verification.targets.rank_roles) return "-";
+        if (!guild.verification.targets.rank_roles) return "None";
 
-        if (guild.verification.targets.rank_roles.length == 0) return "-";
+        if (guild.verification.targets.rank_roles.length == 0) return "None";
 
         return guild.verification.targets.rank_roles
             .map(

@@ -30,6 +30,52 @@ export async function runVerificationChecks(
             .catch(console.error); // ? Sync username to osu! username
     }
 
+    if (guild_db.verification.targets.country_role) {
+        let roleDataForCountry = guild_db.country_roles.find(
+            (r) => r.country == user.country_code
+        );
+
+        // ? Create role if doesn't exists
+        if (!roleDataForCountry) {
+            const newRole = await guild.roles.create({
+                name: user.country.name || "Unknown Country",
+                reason: "AxerBot Verification System",
+            });
+
+            const newData = {
+                country: user.country_code,
+                id: newRole.id,
+            };
+
+            guild_db.country_roles.push(newData);
+
+            roleDataForCountry = newData;
+
+            await guild_db.save();
+        }
+
+        let roleToAdd = await guild.roles.fetch(String(roleDataForCountry.id));
+
+        if (!roleToAdd) {
+            const newRole = await guild.roles.create({
+                name: user.country.name || "Unknown Country",
+                reason: "AxerBot Verification System",
+            });
+
+            const roleIndex = guild_db.country_roles.findIndex(
+                (r) => r.country == user.country_code
+            );
+
+            guild_db.country_roles[roleIndex].id = newRole.id;
+
+            roleToAdd = newRole;
+
+            await guild_db.save();
+        }
+
+        member.roles.add(roleToAdd, "AxerBot Verification System");
+    }
+
     addRankRoles();
 
     for (const _role of guild_db.verification.targets.default_roles) {
@@ -183,25 +229,6 @@ export async function runVerificationChecks(
 
     if (guild_db.verification.mapper_roles) {
         const roles = guild_db.verification.mapper_roles as IMapperRole[];
-
-        // const beatmaps: {
-        //     [key: string]: Beatmapset[];
-        // } = {
-        //     r: await fetchBeatmapsWithMode(
-        //         ["osu", "taiko", "fruits", "mania"],
-        //         "ranked"
-        //     ),
-        //     l: await fetchBeatmapsWithMode(
-        //         ["osu", "taiko", "fruits", "mania"],
-        //         "loved"
-        //     ),
-        //     a: await fetchPendingAndGraveyard([
-        //         "osu",
-        //         "taiko",
-        //         "fruits",
-        //         "mania",
-        //     ]),
-        // };
 
         for (const role of roles) {
             checkFor(role);

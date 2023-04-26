@@ -50,14 +50,26 @@ export default {
                         data.data,
                         targetVerification as unknown as IVerificationObject,
                         pm
-                    );
+                    ).catch((e) => {
+                        console.error(e);
+
+                        pm.user.sendMessage(
+                            "I can't verify you! Please, try again later."
+                        );
+                    });
                     break;
                 case VerificationType.validate:
                     validateVerificationSync(
                         data.data,
                         targetVerification as unknown as IVerificationObject,
                         pm
-                    );
+                    ).catch((e) => {
+                        console.error(e);
+
+                        pm.user.sendMessage(
+                            "I can't verify you! Please, try again later."
+                        );
+                    });
                     break;
             }
         });

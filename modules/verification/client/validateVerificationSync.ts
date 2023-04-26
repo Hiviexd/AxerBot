@@ -45,12 +45,15 @@ export async function validateVerificationSync(
                                 "Your account info is validated!"
                             ),
                         ],
+                        allowedMentions: {
+                            users: [member.id],
+                        },
                     });
                 }
             }
         })
         .catch((e) => {
             console.error(e);
-            pm.user.sendMessage(errorText);
+            pm.user.sendMessage(`I can't verify you! ${errorText}`);
         });
 }
