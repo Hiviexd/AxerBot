@@ -70,7 +70,7 @@ debloat.setExecuteFunction(async (command) => {
             ],
         });
 
-    if (attachment.size > 1e7)
+    if (attachment.size > 1.5e7)
         return command.editReply({
             embeds: [generateErrorEmbed(`Max file size must be 15mb or less!`)],
         });
