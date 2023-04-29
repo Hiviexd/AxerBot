@@ -55,12 +55,10 @@ import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
 import addsilent from "./tools/addsilence";
 import imagecolors from "./tools/imagecolors";
-import taikopattern from "./tools/taikopattern";
 
 // ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
-import selectroles from "./management/selectroles";
 
 export const AxerCommands = [
     // ? General
@@ -98,7 +96,6 @@ export const AxerCommands = [
     editMessage,
     logging,
     setRoles,
-    selectroles,
 
     // ? osu!
     mappertracker,
@@ -121,7 +118,6 @@ export const AxerCommands = [
     debloat,
     addsilent,
     imagecolors,
-    taikopattern,
 
     // ? Dev
     shutdown,
