@@ -7,6 +7,7 @@ import {
     GuildResolvable,
     InteractionCollector,
     InteractionType,
+    ModalSubmitInteraction,
     RoleSelectMenuBuilder,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
@@ -17,7 +18,7 @@ import crypto from "crypto";
 import colors from "../../constants/colors";
 
 export async function generateStepEmbedWithChoices<T = string[]>(
-    command: CommandInteraction,
+    command: CommandInteraction | ModalSubmitInteraction,
     title: string,
     description: string,
     selectMenu:
@@ -25,12 +26,19 @@ export async function generateStepEmbedWithChoices<T = string[]>(
         | RoleSelectMenuBuilder
         | UserSelectMenuBuilder,
     _embed?: EmbedBuilder,
-    removeContent?: boolean
+    removeContent?: boolean,
+    customReplyFunction?: boolean
 ) {
     interface IStepWithMenuPromise {
         reason: "timeout" | "resolve";
         data: T;
     }
+
+    command.followUp.bind(command.followUp);
+
+    const replyAction = customReplyFunction
+        ? command.followUp
+        : command.editReply;
 
     const promise: Promise<IStepWithMenuPromise> = new Promise(
         (resolve, reject) => {
@@ -64,20 +72,18 @@ export async function generateStepEmbedWithChoices<T = string[]>(
                     if (select.customId != handshakeId) return;
                     await select.deferUpdate();
 
-                    command
-                        .editReply({
-                            content: "_Loading..._",
-                            embeds: [],
-                            components: [],
-                        })
-                        .then(() => {
-                            collector.stop("UserChoice");
+                    replyAction({
+                        content: "_Loading..._",
+                        embeds: [],
+                        components: [],
+                    }).then(() => {
+                        collector.stop("UserChoice");
 
-                            resolve({
-                                reason: "resolve",
-                                data: select.values as any,
-                            });
+                        resolve({
+                            reason: "resolve",
+                            data: select.values as any,
                         });
+                    });
                 }
             );
 
@@ -93,7 +99,7 @@ export async function generateStepEmbedWithChoices<T = string[]>(
                 typeof selectMenu
             >().addComponents(selectMenu);
 
-            command.editReply(
+            replyAction(
                 removeContent
                     ? {
                           content: "",

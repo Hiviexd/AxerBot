@@ -24,7 +24,6 @@ abstract class UserEventEmitter extends EventEmitter {
 export class UserEventsListener {
     private allowList = [
         UserRecentEventType.BeatmapsetApprove,
-        UserRecentEventType.BeatmapsetDelete,
         UserRecentEventType.BeatmapsetRevive,
         UserRecentEventType.BeatmapsetUpdate,
         UserRecentEventType.BeatmapsetUpload,
@@ -99,7 +98,7 @@ export class UserEventsListener {
             type: "mapper",
         });
 
-        const sanitizedTrackers: typeof allMapperTrackers[0][] = [];
+        const sanitizedTrackers: (typeof allMapperTrackers)[0][] = [];
 
         for (const tracker of allMapperTrackers) {
             if (
