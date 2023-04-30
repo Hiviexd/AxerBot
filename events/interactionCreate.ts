@@ -33,12 +33,13 @@ export default {
                     beatmapDownloader(interaction);
 
                     previewVerificationMessage(interaction);
+
+                    handleSelectRoles(interaction);
                 }
 
                 // ============ String Select Menu
                 if (interaction.componentType == ComponentType.StringSelect) {
                     heardle(interaction);
-                    handleSelectRoles(interaction);
                 }
             }
 

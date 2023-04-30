@@ -8,6 +8,7 @@ import user from "./schemas/user";
 import verification from "./schemas/verification";
 import discussionEvent from "./schemas/discussionEvent";
 import userEvent from "./schemas/userEvent";
+import selectRole from "./schemas/selectRole";
 
 consoleLog("database", "Starting database connection...");
 
@@ -36,6 +37,7 @@ export const verifications = mongoose.model("Verifications", verification);
 export const guilds = mongoose.model("Guilds", guild);
 export const heardles = mongoose.model("Heardles", heardle);
 export const tracks = mongoose.model("Tracks", track);
+export const selectRoles = mongoose.model("SelectRoles", selectRole);
 export const discussionEvents = mongoose.model(
     "DiscussionEvents",
     discussionEvent

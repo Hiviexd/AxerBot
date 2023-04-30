@@ -14,10 +14,13 @@ import {
     ChannelType,
     TextBasedChannel,
     StringSelectMenuBuilder,
+    ButtonBuilder,
+    ButtonStyle,
 } from "discord.js";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
+import { selectRoles } from "../../../../database";
 
 const createRoleSelector = new SlashCommandSubcommand(
     "new",
@@ -209,24 +212,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
             });
     }
 
-    function generateResultSelectMenu() {
-        return new StringSelectMenuBuilder()
-            .setOptions(
-                entryData.roles.map((roleId) => {
-                    return {
-                        label: command.guild?.roles.cache.get(roleId)?.name
-                            ? `@${command.guild?.roles.cache.get(roleId)?.name}`
-                            : "@Unknwon Role",
-                        value: roleId,
-                    };
-                })
-            )
-            .setMinValues(0)
-            .setMaxValues(entryData.roles.length)
-            .setCustomId(`${randomBytes(10).toString("hex")},selectroles`);
-    }
-
-    function sendData() {
+    async function sendData() {
         const channel = command.guild?.channels.cache.get(entryData.channel) as
             | TextBasedChannel
             | undefined;
@@ -247,12 +233,31 @@ createRoleSelector.setExecuteFunction(async (command) => {
             .send({
                 embeds: [embedData],
                 components: [
-                    new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-                        generateResultSelectMenu()
+                    new ActionRowBuilder<ButtonBuilder>().setComponents(
+                        new ButtonBuilder()
+                            .setLabel("Select Roles")
+                            .setStyle(ButtonStyle.Secondary)
+                            .setCustomId(
+                                `${randomBytes(10).toString("hex")},selectroles`
+                            )
                     ),
                 ],
             })
-            .then(() => {
+            .then(async (message) => {
+                await selectRoles.create({
+                    _id: message.id,
+                    guild_id: command.guildId,
+                    channel: entryData.channel,
+                    roles: entryData.roles,
+                    embed: {
+                        title: embedTitle,
+                        description: embedDescription,
+                        color: embedColor,
+                        image: embedImage,
+                        thumbnail: embedThumbnail,
+                    },
+                });
+
                 command.followUp({
                     embeds: [
                         generateSuccessEmbed(

@@ -21,6 +21,7 @@ import { generateStepEmbedWithChoices } from "../../../../helpers/commands/gener
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { integerToHex } from "../../../../modules/bancho/helpers/integerToHex";
+import { selectRoles } from "../../../../database";
 
 const editRoleSelector = new SlashCommandSubcommand(
     "edit",
@@ -75,74 +76,18 @@ editRoleSelector.setExecuteFunction(async (command) => {
             embeds: [generateErrorEmbed("Provide a valid message URL")],
         });
 
-    const selectRolesMessageData = await getSelectRolesData();
+    const selectRolesMessageData = await selectRoles.findOne({
+        _id: messagePermalinkData.messageId,
+        guild_id: command.guildId,
+        channel: messagePermalinkData.channelId,
+    });
+
     if (!selectRolesMessageData)
         return command.reply({
             embeds: [
                 generateErrorEmbed("This isn't a valid set roles message!"),
             ],
         });
-
-    async function getSelectRolesData() {
-        if (!messagePermalinkData) return null;
-
-        const guild = command.client.guilds.cache.get(
-            messagePermalinkData.guildId
-        );
-
-        if (!guild || guild.id != command.guild?.id) return null;
-
-        const channel = guild.channels.cache.get(
-            messagePermalinkData.channelId
-        );
-
-        if (!channel || channel.guildId != command.guild?.id) return null;
-
-        if (
-            ![
-                ChannelType.GuildText,
-                ChannelType.GuildAnnouncement,
-                ChannelType.GuildForum,
-            ].includes(channel.type)
-        )
-            return null;
-
-        if (channel.isTextBased()) {
-            const message = await channel.messages.fetch(
-                messagePermalinkData.messageId
-            );
-
-            if (
-                !message ||
-                message.guildId != command.guildId ||
-                message.channelId != channel.id ||
-                message.author.id != command.client.user.id
-            ) {
-                return null;
-            }
-
-            const actionRow = message.components[0];
-            if (!actionRow) return null;
-
-            const selectMenu = actionRow.components[0];
-            if (!selectMenu) return null;
-
-            if (selectMenu.type != ComponentType.StringSelect) return null;
-            if (selectMenu.customId.split(",")[1] != "selectroles") return null;
-
-            const embed = message.embeds[0];
-            if (!embed) return null;
-
-            return {
-                embed: new EmbedBuilder(embed as APIEmbed),
-                selectMenu: new StringSelectMenuBuilder(selectMenu.data),
-                channel,
-                message,
-            };
-        }
-
-        return null;
-    }
 
     // Text inputs
     const modalEmbedTitleInput =
@@ -188,7 +133,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
                 .setStyle(TextInputStyle.Short)
                 .setCustomId("image")
                 .setRequired(false)
-                .setValue(selectRolesMessageData.embed.data.image?.url || "")
+                .setValue(selectRolesMessageData.embed.data.image || "")
                 .setPlaceholder("URL (optional)")
         );
 
@@ -199,9 +144,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
                 .setStyle(TextInputStyle.Short)
                 .setCustomId("thumbnail")
                 .setRequired(false)
-                .setValue(
-                    selectRolesMessageData.embed.data.thumbnail?.url || ""
-                )
+                .setValue(selectRolesMessageData.embed.data.thumbnail || "")
                 .setPlaceholder("URL (optional)")
         );
 
@@ -316,21 +259,69 @@ editRoleSelector.setExecuteFunction(async (command) => {
             .setCustomId(`${randomBytes(10).toString("hex")},selectroles`);
     }
 
-    function updateMessage() {
-        selectRolesMessageData?.message
-            .edit({
-                embeds: [embedData],
-                components: [
-                    new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-                        generateResultSelectMenu()
-                    ),
-                ],
-            })
-            .then(() => {
-                command.followUp({
-                    embeds: [generateSuccessEmbed("Message Updated!")],
+    async function updateMessage() {
+        try {
+            const targetChannel = command.guild?.channels.cache.get(
+                selectRolesMessageData?.channel || ""
+            );
+
+            if (
+                !targetChannel ||
+                ![
+                    ChannelType.GuildText,
+                    ChannelType.GuildAnnouncement,
+                    ChannelType.GuildForum,
+                ].includes(targetChannel.type) ||
+                !targetChannel.isTextBased()
+            )
+                return command.followUp({
+                    embeds: [generateErrorEmbed("Channel not found!")],
                 });
+
+            const targetMessage = await targetChannel.messages.fetch(
+                selectRolesMessageData?._id || ""
+            );
+
+            if (!targetMessage)
+                return command.followUp({
+                    embeds: [generateErrorEmbed("Message not found!")],
+                });
+
+            await selectRoles.updateOne(
+                { _id: targetMessage.id },
+                {
+                    roles: entryData.roles,
+                    embed: {
+                        title: embedTitle,
+                        description: embedDescription,
+                        color: embedColor,
+                        image: embedImage,
+                        thumbnail: embedThumbnail,
+                    },
+                }
+            );
+
+            targetMessage
+                .edit({
+                    embeds: [embedData],
+                    components: [
+                        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                            generateResultSelectMenu()
+                        ),
+                    ],
+                })
+                .then(() => {
+                    command.followUp({
+                        embeds: [generateSuccessEmbed("Message Updated!")],
+                    });
+                });
+        } catch (e) {
+            console.error(e);
+
+            command.followUp({
+                embeds: [generateErrorEmbed("Something went wrong...")],
             });
+        }
     }
 });
 
