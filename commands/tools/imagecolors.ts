@@ -57,10 +57,14 @@ imagecolors.setExecuteFunction(async (command) => {
         responseType: "arraybuffer",
     });
 
-    const colors = await getColors(imageBuffer.data, {
-        count: count,
-        type: attachment.contentType || "image/png",
-    });
+    const colors = (
+        await getColors(imageBuffer.data, {
+            count: count,
+            type: attachment.contentType || "image/png",
+        })
+    ).map((color) =>
+        getFixedRGB(color.rgb()[0], color.rgb()[0], color.rgb()[0])
+    );
 
     const height = 50;
     const canvas = createCanvas(450, height * colors.length);
@@ -70,20 +74,14 @@ imagecolors.setExecuteFunction(async (command) => {
 
     async function getColorsImage() {
         for (let i = 0; i < colors.length; i++) {
-            const fixedColor = getFixedRGB(
-                colors[i].rgb()[0],
-                colors[i].rgb()[0],
-                colors[i].rgb()[0]
-            );
-
-            ctx.fillStyle = `#${colorconver.rgb.hex(fixedColor)}`;
+            ctx.fillStyle = `#${colorconver.rgb.hex(colors[i])}`;
 
             ctx.fillRect(0, i == 0 ? 0 : height * i, canvas.width, height);
 
             ctx.fillStyle = mustUseDarkText(
-                fixedColor[0],
-                fixedColor[1],
-                fixedColor[2]
+                colors[i][0],
+                colors[i][1],
+                colors[i][2]
             )
                 ? "#000000"
                 : "#FFFFFF";
@@ -91,9 +89,9 @@ imagecolors.setExecuteFunction(async (command) => {
             ctx.font = "500 20px Quicksand";
 
             const colorText = `#${colorconver.rgb.hex(
-                fixedColor[0],
-                fixedColor[1],
-                fixedColor[2]
+                colors[i][0],
+                colors[i][1],
+                colors[i][2]
             )}`;
 
             const textMeasure = ctx.measureText(colorText);
@@ -148,34 +146,20 @@ imagecolors.setExecuteFunction(async (command) => {
 
     const embed = new EmbedBuilder()
         .setTitle("🎨 Image color palette")
-        .setColor(colors[0].hex("rgb") as ColorResolvable)
+        .setColor(colorconver.rgb.hex(colors[0]) as ColorResolvable)
         .setImage("attachment://colors.png")
         .addFields(
             {
                 name: "osu! Format",
                 value: colors
-                    .map(
-                        (c, i) =>
-                            `Combo${i + 1}: ${getFixedRGB(
-                                c.rgb()[0],
-                                c.rgb()[1],
-                                c.rgb()[2]
-                            ).join(",")}`
-                    )
+                    .map((c, i) => `Combo${i + 1}: ${c.join(",")}`)
                     .join("\n"),
                 inline: true,
             },
             {
                 name: "HEX Colors",
                 value: colors
-                    .map(
-                        (c) =>
-                            `#${colorconver.rgb.hex(
-                                c.rgb()[0],
-                                c.rgb()[1],
-                                c.rgb()[2]
-                            )}`
-                    )
+                    .map((c) => `#${colorconver.rgb.hex(c)}`)
                     .join("\n"),
                 inline: true,
             }
