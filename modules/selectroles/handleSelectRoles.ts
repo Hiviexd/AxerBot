@@ -12,11 +12,9 @@ export async function handleSelectRoles(
     try {
         const idFields = selectMenu.customId.split(",");
 
-        console.log(idFields);
-
         if (idFields[1] != "selectroles" || !selectMenu.member) return;
 
-        selectMenu.deferUpdate();
+        await selectMenu.deferUpdate();
 
         const rolesToManage = selectMenu.values;
 
@@ -71,7 +69,9 @@ export async function handleSelectRoles(
     } catch (error) {
         console.error(error);
 
-        selectMenu.followUp({
+        (selectMenu.deferred || selectMenu.replied
+            ? selectMenu.followUp
+            : selectMenu.reply)({
             embeds: [generateErrorEmbed("Something went wrong!")],
             ephemeral: true,
         });
