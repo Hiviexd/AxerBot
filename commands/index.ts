@@ -59,6 +59,7 @@ import imagecolors from "./tools/imagecolors";
 // ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
+import selectroles from "./management/selectroles";
 
 export const AxerCommands = [
     // ? General
@@ -96,6 +97,7 @@ export const AxerCommands = [
     editMessage,
     logging,
     setRoles,
+    selectroles,
 
     // ? osu!
     mappertracker,

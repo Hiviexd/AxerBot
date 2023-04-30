@@ -1,6 +1,7 @@
 import {
     ActionRowBuilder,
     AnySelectMenuInteraction,
+    ChannelSelectMenuBuilder,
     CommandInteraction,
     ComponentType,
     EmbedBuilder,
@@ -24,59 +25,54 @@ export async function generateStepEmbedWithChoices<T = string[]>(
     selectMenu:
         | StringSelectMenuBuilder
         | RoleSelectMenuBuilder
-        | UserSelectMenuBuilder,
+        | UserSelectMenuBuilder
+        | ChannelSelectMenuBuilder,
     _embed?: EmbedBuilder,
     removeContent?: boolean,
-    customReplyFunction?: boolean
+    useFollowUp?: boolean
 ) {
     interface IStepWithMenuPromise {
         reason: "timeout" | "resolve";
         data: T;
     }
 
-    command.followUp.bind(command.followUp);
+    return new Promise((resolve, reject) => {
+        const handshakeId = crypto.randomUUID();
 
-    const replyAction = customReplyFunction
-        ? command.followUp
-        : command.editReply;
+        const embed =
+            _embed ??
+            new EmbedBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setColor(colors.yellow)
+                .setFooter({
+                    text: "You have 1 minute to choose!",
+                });
 
-    const promise: Promise<IStepWithMenuPromise> = new Promise(
-        (resolve, reject) => {
-            const handshakeId = crypto.randomUUID();
+        const collector = new InteractionCollector(command.client, {
+            channel: command.channel as TextBasedChannel,
+            guild: command.guild as GuildResolvable,
+            time: 60000,
+            filter: (i) =>
+                i.user.id == command.user.id &&
+                i.type == InteractionType.MessageComponent &&
+                i.componentType == selectMenu.data.type,
+        });
 
-            const embed =
-                _embed ??
-                new EmbedBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setColor(colors.yellow)
-                    .setFooter({
-                        text: "You have 1 minute to choose!",
-                    });
+        selectMenu.setCustomId(handshakeId);
 
-            const collector = new InteractionCollector(command.client, {
-                channel: command.channel as TextBasedChannel,
-                guild: command.guild as GuildResolvable,
-                time: 60000,
-                filter: (i) =>
-                    i.user.id == command.user.id &&
-                    i.type == InteractionType.MessageComponent &&
-                    i.componentType == selectMenu.data.type,
-            });
+        collector.on("collect", async (select: AnySelectMenuInteraction) => {
+            if (select.customId != handshakeId) return;
+            await select.deferUpdate();
 
-            selectMenu.setCustomId(handshakeId);
-
-            collector.on(
-                "collect",
-                async (select: AnySelectMenuInteraction) => {
-                    if (select.customId != handshakeId) return;
-                    await select.deferUpdate();
-
-                    replyAction({
+            if (useFollowUp) {
+                command
+                    .followUp({
                         content: "_Loading..._",
                         embeds: [],
                         components: [],
-                    }).then(() => {
+                    })
+                    .then(() => {
                         collector.stop("UserChoice");
 
                         resolve({
@@ -84,22 +80,51 @@ export async function generateStepEmbedWithChoices<T = string[]>(
                             data: select.values as any,
                         });
                     });
-                }
-            );
+            } else {
+                command
+                    .editReply({
+                        content: "_Loading..._",
+                        embeds: [],
+                        components: [],
+                    })
+                    .then(() => {
+                        collector.stop("UserChoice");
 
-            collector.on("end", (interactions, reason) => {
-                if (reason != "UserChoice")
-                    return reject({
-                        reason: "timeout",
-                        data: null,
+                        resolve({
+                            reason: "resolve",
+                            data: select.values as any,
+                        });
                     });
-            });
+            }
+        });
 
-            const actionRow = new ActionRowBuilder<
-                typeof selectMenu
-            >().addComponents(selectMenu);
+        collector.on("end", (interactions, reason) => {
+            if (reason != "UserChoice")
+                return reject({
+                    reason: "timeout",
+                    data: null,
+                });
+        });
 
-            replyAction(
+        const actionRow = new ActionRowBuilder<
+            typeof selectMenu
+        >().addComponents(selectMenu);
+
+        if (useFollowUp) {
+            command.followUp(
+                removeContent
+                    ? {
+                          content: "",
+                          embeds: [embed],
+                          components: [actionRow],
+                      }
+                    : {
+                          embeds: [embed],
+                          components: [actionRow],
+                      }
+            );
+        } else {
+            command.editReply(
                 removeContent
                     ? {
                           content: "",
@@ -112,7 +137,5 @@ export async function generateStepEmbedWithChoices<T = string[]>(
                       }
             );
         }
-    );
-
-    return promise;
+    }) as Promise<IStepWithMenuPromise>;
 }
