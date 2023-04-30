@@ -37,7 +37,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
             new TextInputBuilder()
                 .setLabel("Embed Title")
                 .setStyle(TextInputStyle.Short)
-                .setValue("Select your roles")
+                .setValue("📝 Select your roles")
                 .setCustomId("title")
                 .setPlaceholder("(optional)")
         );
@@ -47,7 +47,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
             new TextInputBuilder()
                 .setLabel("Embed Content")
                 .setStyle(TextInputStyle.Paragraph)
-                .setValue("- @cool users: is for cool users")
+                .setValue("Use the menu below to select your roles.")
                 .setRequired(true)
                 .setCustomId("description")
         );
@@ -135,7 +135,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
 
     if (embedImage) {
         try {
-            embedData.setThumbnail(new URL(embedImage).href);
+            embedData.setImage(new URL(embedImage).href);
         } catch (error) {
             void {}; // Just ignore
         }
