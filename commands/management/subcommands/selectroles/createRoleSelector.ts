@@ -221,6 +221,8 @@ createRoleSelector.setExecuteFunction(async (command) => {
                     };
                 })
             )
+            .setMinValues(0)
+            .setMaxValues(entryData.roles.length)
             .setCustomId(`${randomBytes(10).toString("hex")},selectroles`);
     }
 

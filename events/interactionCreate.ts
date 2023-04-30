@@ -10,6 +10,7 @@ import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
 import beatmapDownloader from "../modules/downloader/beatmapDownloader";
 import heardle from "../modules/heardle/heardle";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
+import { handleSelectRoles } from "../modules/selectroles/handleSelectRoles";
 
 export default {
     name: "interactionCreate",
@@ -37,6 +38,7 @@ export default {
                 // ============ String Select Menu
                 if (interaction.componentType == ComponentType.StringSelect) {
                     heardle(interaction);
+                    handleSelectRoles(interaction);
                 }
             }
 

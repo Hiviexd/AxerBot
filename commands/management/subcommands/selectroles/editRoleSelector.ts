@@ -311,7 +311,9 @@ editRoleSelector.setExecuteFunction(async (command) => {
                     };
                 })
             )
-            .setCustomId(randomBytes(10).toString("hex"));
+            .setMinValues(0)
+            .setMaxValues(entryData.roles.length)
+            .setCustomId(`${randomBytes(10).toString("hex")},selectroles`);
     }
 
     function updateMessage() {
