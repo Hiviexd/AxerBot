@@ -119,7 +119,7 @@ export async function handleSelectRoles(button: ButtonInteraction) {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle("📝 Roles managed")
+                .setTitle("📝 Roles updated!")
                 .setDescription(
                     `\`\`\`diff\n${
                         managedRoles.length == 0
@@ -134,7 +134,10 @@ export async function handleSelectRoles(button: ButtonInteraction) {
                                   .join("\n")
                     }\`\`\``
                 )
-                .setColor(colors.pink);
+                .setColor(colors.pink)
+                .setFooter({
+                    text: `Dismiss this message in order to re-use the role selector`,
+                });
 
             collector.stop();
 

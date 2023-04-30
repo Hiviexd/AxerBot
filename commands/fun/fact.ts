@@ -1,6 +1,5 @@
 import axios from "axios";
 import { EmbedBuilder } from "discord.js";
-
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
