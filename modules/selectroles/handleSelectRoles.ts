@@ -52,7 +52,7 @@ export async function handleSelectRoles(
             .setDescription(
                 `\`\`\`diff\n${
                     managedRoles.length == 0
-                        ? "None (Select again to remove)"
+                        ? "None (Select again to remove/add)"
                         : managedRoles
                               .map(
                                   (role) =>
