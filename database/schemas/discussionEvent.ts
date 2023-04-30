@@ -19,6 +19,7 @@ export default new Schema({
             "qualify",
             "disqualify",
             "nomination_reset",
+            "nomination_reset_received",
             "rank",
             "issue_reopen",
             "issue_resolve",
