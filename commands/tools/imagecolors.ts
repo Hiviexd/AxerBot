@@ -6,6 +6,7 @@ import { AttachmentBuilder, ColorResolvable, EmbedBuilder } from "discord.js";
 import { mustUseDarkText } from "../../helpers/images/mustUseDarkText";
 import path from "path";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import colorconver, { rgb } from "color-convert";
 
 const imagecolors = new SlashCommand(
     ["combocolors", "imagecolors"],
@@ -69,21 +70,31 @@ imagecolors.setExecuteFunction(async (command) => {
 
     async function getColorsImage() {
         for (let i = 0; i < colors.length; i++) {
-            ctx.fillStyle = colors[i].hex("rgb");
+            const fixedColor = getFixedRGB(
+                colors[i].rgb()[0],
+                colors[i].rgb()[0],
+                colors[i].rgb()[0]
+            );
+
+            ctx.fillStyle = `#${colorconver.rgb.hex(fixedColor)}`;
 
             ctx.fillRect(0, i == 0 ? 0 : height * i, canvas.width, height);
 
             ctx.fillStyle = mustUseDarkText(
-                colors[i].rgb()[0],
-                colors[i].rgb()[1],
-                colors[i].rgb()[2]
+                fixedColor[0],
+                fixedColor[1],
+                fixedColor[2]
             )
                 ? "#000000"
                 : "#FFFFFF";
 
             ctx.font = "500 20px Quicksand";
 
-            const colorText = colors[i].hex("rgb");
+            const colorText = `#${colorconver.rgb.hex(
+                fixedColor[0],
+                fixedColor[1],
+                fixedColor[2]
+            )}`;
 
             const textMeasure = ctx.measureText(colorText);
             const textHeight =
@@ -98,6 +109,15 @@ imagecolors.setExecuteFunction(async (command) => {
         }
 
         return canvas.toBuffer();
+    }
+
+    function getFixedRGB(r: number, g: number, b: number) {
+        const thisColorToHSL = colorconver.rgb.hsl(r, g, b);
+
+        if (thisColorToHSL[2] > 83) thisColorToHSL[2] = 83;
+        if (thisColorToHSL[2] < 21) thisColorToHSL[2] = 21;
+
+        return colorconver.hsl.rgb(thisColorToHSL);
     }
 
     function loadFonts() {
@@ -134,13 +154,29 @@ imagecolors.setExecuteFunction(async (command) => {
             {
                 name: "osu! Format",
                 value: colors
-                    .map((c, i) => `Combo${i + 1}: ${c.rgb().join(",")}`)
+                    .map(
+                        (c, i) =>
+                            `Combo${i + 1}: ${getFixedRGB(
+                                c.rgb()[0],
+                                c.rgb()[1],
+                                c.rgb()[2]
+                            ).join(",")}`
+                    )
                     .join("\n"),
                 inline: true,
             },
             {
                 name: "HEX Colors",
-                value: colors.map((c) => c.hex("rgb")).join("\n"),
+                value: colors
+                    .map(
+                        (c) =>
+                            `#${colorconver.rgb.hex(
+                                c.rgb()[0],
+                                c.rgb()[1],
+                                c.rgb()[2]
+                            )}`
+                    )
+                    .join("\n"),
                 inline: true,
             }
         )
