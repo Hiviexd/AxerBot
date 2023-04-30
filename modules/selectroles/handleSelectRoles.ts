@@ -47,18 +47,19 @@ export async function handleSelectRoles(
             }
         }
 
-        if (managedRoles.length == 0)
-            return selectMenu.followUp({
-                embeds: [generateErrorEmbed("Something went wrong!")],
-                ephemeral: true,
-            });
-
         const embed = new EmbedBuilder()
             .setTitle("📝 Roles managed")
             .setDescription(
-                `\`\`\`diff\n${managedRoles
-                    .map((role) => `${role.added ? "+" : "-"} @${role.name}`)
-                    .join("\n")}\`\`\``
+                `\`\`\`diff\n${
+                    managedRoles.length == 0
+                        ? "None (Select again to remove)"
+                        : managedRoles
+                              .map(
+                                  (role) =>
+                                      `${role.added ? "+" : "-"} @${role.name}`
+                              )
+                              .join("\n")
+                }\`\`\``
             )
             .setColor(colors.pink);
 
