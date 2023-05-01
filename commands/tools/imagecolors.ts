@@ -63,7 +63,7 @@ imagecolors.setExecuteFunction(async (command) => {
             type: attachment.contentType || "image/png",
         })
     ).map((color) =>
-        getFixedRGB(color.rgb()[0], color.rgb()[0], color.rgb()[0])
+        getFixedRGB(color.rgb()[0], color.rgb()[1], color.rgb()[2])
     );
 
     const height = 50;
