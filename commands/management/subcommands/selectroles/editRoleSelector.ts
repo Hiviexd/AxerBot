@@ -95,7 +95,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
             new TextInputBuilder()
                 .setLabel("Embed Title")
                 .setStyle(TextInputStyle.Short)
-                .setValue(selectRolesMessageData.embed.data.title || "")
+                .setValue(selectRolesMessageData.embed.title || "")
                 .setCustomId("title")
                 .setPlaceholder("(optional)")
         );
@@ -105,7 +105,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
             new TextInputBuilder()
                 .setLabel("Embed Content")
                 .setStyle(TextInputStyle.Paragraph)
-                .setValue(selectRolesMessageData.embed.data.description || "")
+                .setValue(selectRolesMessageData.embed.description || "")
                 .setRequired(true)
                 .setCustomId("description")
         );
@@ -117,7 +117,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
                 .setStyle(TextInputStyle.Short)
                 .setValue(
                     `#${integerToHex(
-                        Number(selectRolesMessageData.embed.data.color)
+                        Number(selectRolesMessageData.embed.color)
                     )}`
                 )
                 .setCustomId("color")
@@ -133,7 +133,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
                 .setStyle(TextInputStyle.Short)
                 .setCustomId("image")
                 .setRequired(false)
-                .setValue(selectRolesMessageData.embed.data.image || "")
+                .setValue(selectRolesMessageData.embed.image || "")
                 .setPlaceholder("URL (optional)")
         );
 
@@ -144,7 +144,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
                 .setStyle(TextInputStyle.Short)
                 .setCustomId("thumbnail")
                 .setRequired(false)
-                .setValue(selectRolesMessageData.embed.data.thumbnail || "")
+                .setValue(selectRolesMessageData.embed.thumbnail || "")
                 .setPlaceholder("URL (optional)")
         );
 
