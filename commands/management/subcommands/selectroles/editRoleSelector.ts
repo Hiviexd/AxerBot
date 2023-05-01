@@ -115,11 +115,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
             new TextInputBuilder()
                 .setLabel("Embed Color")
                 .setStyle(TextInputStyle.Short)
-                .setValue(
-                    `#${integerToHex(
-                        Number(selectRolesMessageData.embed.color)
-                    )}`
-                )
+                .setValue(`${selectRolesMessageData.embed.color}`)
                 .setCustomId("color")
                 .setRequired(false)
                 .setPlaceholder("HEX format (optional)")
