@@ -136,7 +136,7 @@ export async function handleSelectRoles(button: ButtonInteraction) {
                 )
                 .setColor(colors.pink)
                 .setFooter({
-                    text: `Dismiss this message in order to re-use the role selector`,
+                    text: `Dismiss the messages above in order to re-use the role selector`,
                 });
 
             collector.stop();
