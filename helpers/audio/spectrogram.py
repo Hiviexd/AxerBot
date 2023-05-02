@@ -69,7 +69,7 @@ def show(
             norm=colors.LogNorm(vmin=min_freq, vmax=Sxx.max()),
             shading="auto",
         )
-        plt.title(f"Channel {k + 1} | {track.frame_rate} Hz | {bitrate}")
+        plt.title(f"Channel {k + 1} | {track.frame_rate} Hz | Real BitRate: {bitrate}")
         if k == 0:
             plt.ylabel("Frequency [Hz]")
         plt.xlabel("Time [sec]")
