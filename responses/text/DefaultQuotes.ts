@@ -20,6 +20,7 @@ export const DEFAULT_QUOTES = [
     "you will not wake up tomorrow.",
     "osu score this osu score that how about you score yourself some bitches",
     "fie! thou art an unbelievable blinking idiot, kicketh the bucket thee naughty bastard!",
+    "https://cdn.discordapp.com/attachments/959908232736952420/1103058360993058946/jO5ooYPgvQtNwAZs.mp4",
     "73.145.201.23",
     "do NOT threaten me i WILL cry",
     "i'm just dropping lines",
