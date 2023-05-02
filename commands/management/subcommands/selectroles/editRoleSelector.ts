@@ -195,7 +195,7 @@ editRoleSelector.setExecuteFunction(async (command) => {
 
     if (embedImage) {
         try {
-            embedData.setThumbnail(new URL(embedImage).href);
+            embedData.setImage(new URL(embedImage).href);
         } catch (error) {
             void {}; // Just ignore
         }
