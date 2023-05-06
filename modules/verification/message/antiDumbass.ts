@@ -18,7 +18,7 @@ export async function antiDumbass(message: Message) {
             embeds: [
                 generateErrorEmbedWithTitle(
                     "🛑 Alert",
-                    "Please click on the green button and do the proccess. **NEVER SHARE YOUR VERIFICATION CODE**"
+                    "Please click on the button above and follow the process carefully. **NEVER SHARE YOUR VERIFICATION CODE PUBLICLY.**"
                 ),
             ],
             options: {

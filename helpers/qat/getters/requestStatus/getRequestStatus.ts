@@ -13,13 +13,9 @@ export default function getRequestStatus(user: QatUser): string {
 			"personalQueue",
 			`${
 				user.requestLink
-					? `[personal queue](${user.requestLink})`
-					: `personal queue (no link)`
+					? `[queue](${user.requestLink})`
+					: `queue (no link)`
 			}`
 		)
-		.replace(
-			"globalQueue",
-			"[global queue](https://bn.mappersguild.com/modrequests/listing)"
-		)
-		.replace("gameChat", "game chat");
+		.replace("gameChat", "chat");
 }

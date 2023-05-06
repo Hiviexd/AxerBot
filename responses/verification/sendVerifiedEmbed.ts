@@ -50,10 +50,9 @@ export async function sendVerifiedEmbed(
                               "en-US"
                           ) + "pp"
                         : "-"
-                })
-            ${getEmoji(
-                user.playmode.toString() as keyof typeof getEmoji
-            )} :flag_${user.country_code.toLowerCase()}: #${
+                })\n${getEmoji(
+                    user.playmode.toString() as keyof typeof getEmoji
+                )} :flag_${user.country_code.toLowerCase()}: #${
                     user.statistics?.country_rank
                         ? user.statistics?.country_rank.toLocaleString("en-US")
                         : "-"
@@ -63,8 +62,9 @@ export async function sendVerifiedEmbed(
                 name: "Beatmap statistics",
                 value: `🗺️ ${totalMapsets} ✅ ${
                     user.ranked_and_approved_beatmapset_count
-                } 👥 ${user.guest_beatmapset_count}
-            ❤ ${user.loved_beatmapset_count} ❓ ${
+                } 👥 ${user.guest_beatmapset_count}\n❤ ${
+                    user.loved_beatmapset_count
+                } ❓ ${
                     Number(user.pending_beatmapset_count) +
                     Number(user.graveyard_beatmapset_count)
                 } 💭 ${user.nominated_beatmapset_count}
