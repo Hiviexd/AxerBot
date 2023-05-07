@@ -61,7 +61,6 @@ import imagecolors from "./tools/imagecolors";
 // ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
-import test from "./general/test";
 
 export const AxerCommands = [
     // ? General
@@ -127,6 +126,4 @@ export const AxerCommands = [
     // ? Dev
     shutdown,
     rebuild,
-
-    test,
 ];
