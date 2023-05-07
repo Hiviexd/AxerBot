@@ -173,11 +173,15 @@ export class AudioSpectrogram extends EventEmitter {
     public async getBitRate() {
         const audioData = await this.getAudioInfo();
 
-        if (!audioData) return "Unknown BitRate";
+        if (!audioData) return "Unknown";
 
-        const result = audioData.streams[0].bit_rate
-            ? `${Number(audioData.streams[0].bit_rate) / 1000}Kb/s`
-            : "Unknown BitRate";
+        const sanitizedBitRate = Math.round(
+            Number(audioData.format.bit_rate) / 1000
+        );
+
+        const result = audioData.format.bit_rate
+            ? `${!isNaN(sanitizedBitRate) ? sanitizedBitRate : "Unknown"}Kb/s`
+            : "Unknown";
 
         return result;
     }
