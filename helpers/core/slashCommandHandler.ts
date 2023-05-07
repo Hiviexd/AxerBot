@@ -4,16 +4,16 @@ import {
     Client,
     ContextMenuCommandInteraction,
     GuildMember,
-    PermissionFlagsBits,
+    Interaction,
+    MessageContextMenuCommandInteraction,
     PermissionResolvable,
+    UserContextMenuCommandInteraction,
 } from "discord.js";
 
 import { AxerCommands } from "../../commands";
-import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-
-import { Chance } from "chance";
 import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
+import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 
 export function checkMemberPermissions(
     member: GuildMember,
@@ -34,14 +34,22 @@ export function checkMemberPermissions(
 
 export default async function commandHandler(
     bot: Client,
-    event: ChatInputCommandInteraction | ContextMenuCommandInteraction
+    event:
+        | ChatInputCommandInteraction
+        | MessageContextMenuCommandInteraction
+        | UserContextMenuCommandInteraction
 ) {
     if (event.user.bot) return;
 
     const targetCommand = AxerCommands.find(
         (c) =>
             c.names.includes(event.commandName) ||
-            (c as ContextMenuCommand).name == event.commandName
+            (
+                c as ContextMenuCommand<
+                    | UserContextMenuCommandInteraction
+                    | MessageContextMenuCommandInteraction
+                >
+            ).name == event.commandName
     );
 
     if (!targetCommand) return console.log("0"); // Command not found error embed
@@ -99,6 +107,8 @@ export default async function commandHandler(
     }
 
     if (targetCommand.isContextMenu() && event.isContextMenuCommand()) {
-        targetCommand.run(event);
+        if (event.isContextMenuCommand()) {
+            (targetCommand as ContextMenuCommand<any>).run(event);
+        }
     }
 }

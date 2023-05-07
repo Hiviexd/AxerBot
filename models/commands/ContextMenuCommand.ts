@@ -2,19 +2,25 @@ import {
     ContextMenuCommandBuilder,
     ContextMenuCommandInteraction,
     GuildMember,
+    Interaction,
+    MessageContextMenuCommandInteraction,
     PermissionResolvable,
+    UserContextMenuCommandInteraction,
 } from "discord.js";
-import { LoggerClient } from "../core/LoggerClient";
+
 import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
+import { LoggerClient } from "../core/LoggerClient";
 import { SlashCommand } from "./SlashCommand";
 
-export type ContextMenuExecuteFunction = (
-    command: ContextMenuCommandInteraction
+export type ContextMenuExecuteFunction<InteractionType> = (
+    command: InteractionType
 ) => void;
 
-export class ContextMenuCommand extends ContextMenuCommandBuilder {
-    private _executeFunction!: ContextMenuExecuteFunction;
+export class ContextMenuCommand<
+    InteractionType
+> extends ContextMenuCommandBuilder {
+    private _executeFunction!: ContextMenuExecuteFunction<InteractionType>;
     public permissions: PermissionResolvable[] = [];
     public category = "General";
     public help: { [key: string]: string | string[] } = {};
@@ -30,7 +36,7 @@ export class ContextMenuCommand extends ContextMenuCommandBuilder {
         this.names = [this.name];
     }
 
-    isContextMenu(): this is ContextMenuCommand {
+    isContextMenu(): this is ContextMenuCommand<InteractionType> {
         return this instanceof ContextMenuCommand;
     }
 
@@ -56,7 +62,7 @@ export class ContextMenuCommand extends ContextMenuCommandBuilder {
         return this;
     }
 
-    setExecuteFunction(fn: ContextMenuExecuteFunction) {
+    setExecuteFunction(fn: ContextMenuExecuteFunction<InteractionType>) {
         this._executeFunction = fn;
 
         return this;
@@ -68,29 +74,35 @@ export class ContextMenuCommand extends ContextMenuCommandBuilder {
         return this;
     }
 
-    async run(interaction: ContextMenuCommandInteraction) {
-        this.Logger.printInfo(`Executing command ${interaction.commandName}`);
+    async run(interaction: InteractionType) {
+        const interactionData = interaction as
+            | UserContextMenuCommandInteraction
+            | MessageContextMenuCommandInteraction;
+
+        this.Logger.printInfo(
+            `Executing command ${interactionData.commandName}`
+        );
 
         if (!this.hasModal)
-            await interaction.deferReply({ ephemeral: this.ephemeral });
+            await interactionData.deferReply({ ephemeral: this.ephemeral });
 
         if (
             this.permissions.length != 0 &&
             !checkMemberPermissions(
-                interaction.member as GuildMember,
+                interactionData.member as GuildMember,
                 this.permissions
             )
         ) {
-            return interaction.deferred
-                ? interaction.editReply({
+            return interactionData.deferred
+                ? interactionData.editReply({
                       embeds: [MissingPermissions],
                   })
-                : interaction.reply({
+                : interactionData.reply({
                       embeds: [MissingPermissions],
                   });
         }
 
-        this._executeFunction(interaction);
+        this._executeFunction(interactionData as InteractionType);
 
         return this;
     }

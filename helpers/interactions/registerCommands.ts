@@ -1,4 +1,8 @@
-import { Client } from "discord.js";
+import {
+    Client,
+    MessageContextMenuCommandInteraction,
+    UserContextMenuCommandInteraction,
+} from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { consoleLog, consoleCheck } from "../core/logger";
@@ -13,7 +17,14 @@ export default (bot: Client) => {
         post(command);
     }
 
-    function post(command: SlashCommand | ContextMenuCommand) {
+    function post(
+        command:
+            | SlashCommand
+            | ContextMenuCommand<
+                  | UserContextMenuCommandInteraction
+                  | MessageContextMenuCommandInteraction
+              >
+    ) {
         consoleCheck(
             "registerCommands",
             `Command ${command.names.join("/")} queued!`
@@ -27,7 +38,14 @@ export default (bot: Client) => {
                 }
             });
         } else {
-            _commands.push((command as ContextMenuCommand).toJSON());
+            _commands.push(
+                (
+                    command as ContextMenuCommand<
+                        | UserContextMenuCommandInteraction
+                        | MessageContextMenuCommandInteraction
+                    >
+                ).toJSON()
+            );
         }
     }
 

@@ -33,6 +33,7 @@ import logging from "./management/logging";
 import setRoles from "./management/setRoles";
 import selectroles from "./management/selectroles";
 import report from "./management/report";
+import reportMenu from "./management/reportMenu";
 
 // ? osu!
 import mapper from "./osu/mapper";
@@ -61,6 +62,12 @@ import imagecolors from "./tools/imagecolors";
 // ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
+import { ContextMenuCommand } from "../models/commands/ContextMenuCommand";
+import { SlashCommand } from "../models/commands/SlashCommand";
+import {
+    UserContextMenuCommandInteraction,
+    MessageContextMenuCommandInteraction,
+} from "discord.js";
 
 export const AxerCommands = [
     // ? General
@@ -100,6 +107,7 @@ export const AxerCommands = [
     setRoles,
     selectroles,
     report,
+    reportMenu,
 
     // ? osu!
     mappertracker,
@@ -126,4 +134,10 @@ export const AxerCommands = [
     // ? Dev
     shutdown,
     rebuild,
-];
+] as (
+    | ContextMenuCommand<
+          | UserContextMenuCommandInteraction
+          | MessageContextMenuCommandInteraction
+      >
+    | SlashCommand
+)[];
