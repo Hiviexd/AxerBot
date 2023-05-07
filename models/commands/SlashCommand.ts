@@ -1,6 +1,7 @@
 import {
     ChatInputCommandInteraction,
     GuildMember,
+    InteractionType,
     PermissionResolvable,
     SlashCommandBuilder,
 } from "discord.js";
@@ -180,7 +181,7 @@ export class SlashCommand {
         );
     }
 
-    isContextMenu(): this is ContextMenuCommand {
+    isContextMenu(): this is ContextMenuCommand<any> {
         return this instanceof ContextMenuCommand;
     }
 
