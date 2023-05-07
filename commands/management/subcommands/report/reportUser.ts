@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildMember } from "discord.js";
+import { EmbedBuilder, GuildMember, GuildChannel } from "discord.js";
 import colors from "../../../../constants/colors";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
@@ -90,7 +90,7 @@ reportUser.setExecuteFunction(async (command) => {
             },
             {
                 name: "Channel",
-                value: command.channel.name,
+                value: (command.channel as GuildChannel).name,
                 inline: true,
             },
             {
