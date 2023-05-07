@@ -4,21 +4,21 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetChannel = new SlashCommandSubcommand(
+const reportSetChannel = new SlashCommandSubcommand(
     "channel",
     "Sets the channel for the system",
     {
-        syntax: "/verification `set channel` `text_channel:<channel>`",
-        example: "/verification `set channel` `text_channel:#arrival`",
+        syntax: "/report `set channel` `text_channel:<channel>`",
+        example: "/report `set channel` `text_channel:#arrival`",
     },
     [PermissionFlagsBits.ManageGuild]
 );
 
-verificationSetChannel.builder.addChannelOption((o) =>
+reportSetChannel.builder.addChannelOption((o) =>
     o.setName("channel").setDescription("System channel")
 );
 
-verificationSetChannel.setExecuteFunction(async (command) => {
+reportSetChannel.setExecuteFunction(async (command) => {
     const channel = command.options.getChannel("channel", true);
 
     if (channel.type != ChannelType.GuildText)
@@ -38,14 +38,14 @@ verificationSetChannel.setExecuteFunction(async (command) => {
             ],
         });
 
-    guild.verification.enable = true;
-    guild.verification.channel = channel.id;
+    guild.reports.enable = true;
+    guild.reports.channel = channel.id;
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed(`Verification system is enabled and channel is set to <#${channel.id}>!`)],
+        embeds: [generateSuccessEmbed(`Report system is enabled and channel is set to <#${channel.id}>!`)],
     });
 });
 
-export default verificationSetChannel;
+export default reportSetChannel;
