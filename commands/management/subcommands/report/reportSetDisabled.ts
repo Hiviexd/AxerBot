@@ -4,14 +4,14 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetDisabled = new SlashCommandSubcommand(
+const reportSetDisabled = new SlashCommandSubcommand(
     "disable",
-    "Disable the verification system",
+    "Disable the report system",
     undefined,
     [PermissionFlagsBits.ManageGuild]
 );
 
-verificationSetDisabled.setExecuteFunction(async (command) => {
+reportSetDisabled.setExecuteFunction(async (command) => {
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({
@@ -22,13 +22,13 @@ verificationSetDisabled.setExecuteFunction(async (command) => {
             ],
         });
 
-    guild.verification.enable = false;
+    guild.reports.enable = false;
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed("Verification system disabled!")],
+        embeds: [generateSuccessEmbed("Report system disabled!")],
     });
 });
 
-export default verificationSetDisabled;
+export default reportSetDisabled;

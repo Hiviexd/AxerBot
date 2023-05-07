@@ -124,4 +124,13 @@ export default new Schema({
             logs: [{ reason: String, date: Date }],
         },
     ],
+    reports: {
+        type: Object,
+        default: {
+            enable: false,
+            channel: "",
+            ping: false,
+            role: "",
+        },
+    }
 });
