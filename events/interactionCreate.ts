@@ -46,7 +46,11 @@ export default {
             if (interaction.type == InteractionType.ApplicationCommand) {
                 // ============ Chat input
                 if (
-                    interaction.commandType == ApplicationCommandType.ChatInput
+                    [
+                        ApplicationCommandType.ChatInput,
+                        ApplicationCommandType.Message,
+                        ApplicationCommandType.User,
+                    ].includes(interaction.commandType)
                 ) {
                     slashCommandHandler(bot, interaction);
                 }

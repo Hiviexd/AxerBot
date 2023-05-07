@@ -9,6 +9,7 @@ import { SlashCommandSubcommandGroup } from "./SlashCommandSubcommandGroup";
 import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { consoleLog } from "../../helpers/core/logger";
+import { ContextMenuCommand } from "./ContextMenuCommand";
 
 export type ISlashCommandExecuteFunction = (
     interaction: ChatInputCommandInteraction
@@ -94,6 +95,8 @@ export class SlashCommand {
 
     setExecuteFunction(fn: ISlashCommandExecuteFunction) {
         this._executeFunction = fn;
+
+        return this;
     }
 
     hasGroup(name: string) {
@@ -175,6 +178,14 @@ export class SlashCommand {
             interaction,
             interaction.options.getSubcommand()
         );
+    }
+
+    isContextMenu(): this is ContextMenuCommand {
+        return this instanceof ContextMenuCommand;
+    }
+
+    isSlashCommand(): this is SlashCommand {
+        return this instanceof SlashCommand;
     }
 
     async run(interaction: ChatInputCommandInteraction) {

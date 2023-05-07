@@ -2,6 +2,7 @@ import {
     ChannelType,
     ChatInputCommandInteraction,
     Client,
+    ContextMenuCommandInteraction,
     GuildMember,
     PermissionFlagsBits,
     PermissionResolvable,
@@ -12,6 +13,7 @@ import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
 import { Chance } from "chance";
+import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 
 export function checkMemberPermissions(
     member: GuildMember,
@@ -32,12 +34,14 @@ export function checkMemberPermissions(
 
 export default async function commandHandler(
     bot: Client,
-    event: ChatInputCommandInteraction
+    event: ChatInputCommandInteraction | ContextMenuCommandInteraction
 ) {
     if (event.user.bot) return;
 
-    const targetCommand = AxerCommands.find((c) =>
-        c.names.includes(event.commandName)
+    const targetCommand = AxerCommands.find(
+        (c) =>
+            c.names.includes(event.commandName) ||
+            (c as ContextMenuCommand).name == event.commandName
     );
 
     if (!targetCommand) return console.log("0"); // Command not found error embed
@@ -77,15 +81,24 @@ export default async function commandHandler(
 
     // const jokeChance = new Chance();
 
-    try {
-        if (event.options.getSubcommand() || event.options.getSubcommandGroup())
-            return targetCommand.runSubcommand(event, {
-                name: event.options.getSubcommand(),
-                group: event.options.getSubcommandGroup(),
-            });
-    } catch (e) {
-        void {};
+    if (targetCommand.isSlashCommand() && event.isChatInputCommand()) {
+        try {
+            if (
+                event.options.getSubcommand() ||
+                event.options.getSubcommandGroup()
+            )
+                return targetCommand.runSubcommand(event, {
+                    name: event.options.getSubcommand(),
+                    group: event.options.getSubcommandGroup(),
+                });
+        } catch (e) {
+            void {};
+        }
+
+        targetCommand.run(event);
     }
 
-    targetCommand.run(event);
+    if (targetCommand.isContextMenu() && event.isContextMenuCommand()) {
+        targetCommand.run(event);
+    }
 }

@@ -4,6 +4,7 @@ import { Routes } from "discord-api-types/v9";
 import { consoleLog, consoleCheck } from "../core/logger";
 import { AxerCommands } from "../../commands";
 import { SlashCommand } from "models/commands/SlashCommand";
+import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 
 export default (bot: Client) => {
     const _commands: { [key: string]: any } = [];
@@ -12,16 +13,22 @@ export default (bot: Client) => {
         post(command);
     }
 
-    function post(command: SlashCommand) {
+    function post(command: SlashCommand | ContextMenuCommand) {
         consoleCheck(
             "registerCommands",
             `Command ${command.names.join("/")} queued!`
         );
 
-        command.names.forEach((name) => {
-            command.builder.setName(name);
-            _commands.push(command.builder.toJSON());
-        });
+        if ((command as SlashCommand).builder) {
+            command.names.forEach((name) => {
+                if ((command as SlashCommand).builder) {
+                    (command as SlashCommand).builder.setName(name);
+                    _commands.push((command as SlashCommand).builder.toJSON());
+                }
+            });
+        } else {
+            _commands.push((command as ContextMenuCommand).toJSON());
+        }
     }
 
     const rest = new REST({ version: "10" }).setToken(process.env.TOKEN || "");
