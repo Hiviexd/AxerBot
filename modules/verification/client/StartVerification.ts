@@ -31,6 +31,27 @@ export default async (member: GuildMember) => {
                 .get(member.guild.id)
                 ?.channels.cache.get(guild_db.verification.channel);
 
+        async function sendSystemError() {
+            member.client.users.cache
+                .get(member.guild.ownerId)
+                ?.createDM()
+                .then((dm) => {
+                    dm.send({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("⚠️ Verification system alert")
+                                .setColor(colors.yellowBright)
+                                .setDescription(
+                                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel?.id}>.
+                \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
+                                ),
+                        ],
+                    });
+                })
+                .catch(console.error);
+        }
+
         if (
             !verification_channel ||
             verification_channel.type != ChannelType.GuildText ||
@@ -43,24 +64,7 @@ export default async (member: GuildMember) => {
                 "Verification",
                 `Verification channel is not set or deleted in ${member.guild.name}`
             );
-            return member.client.users.cache
-                .get(member.guild.ownerId)
-                ?.createDM()
-                .then((dm) => {
-                    dm.send({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("⚠️ Verification system alert")
-                                .setColor(colors.yellowBright)
-                                .setDescription(
-                                    `The verification system in your server \`${member.guild.name}\` is not working properly. It's possible that you didn't set any valid channel, the channel is deleted or i don't have permissions to send messages in that channel.
-                                \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
-                                Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
-                                ),
-                        ],
-                    });
-                })
-                .catch(console.error);
+            return sendSystemError();
         }
 
         if (
@@ -69,24 +73,7 @@ export default async (member: GuildMember) => {
                 ?.permissionsIn(verification_channel as GuildChannelResolvable)
                 .has(PermissionFlagsBits.SendMessages)
         )
-            return member.client.users.cache
-                .get(member.guild.ownerId)
-                ?.createDM()
-                .then((dm) => {
-                    dm.send({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("⚠️ Verification system alert")
-                                .setColor(colors.yellowBright)
-                                .setDescription(
-                                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel.id}>.
-                \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
-                Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
-                                ),
-                        ],
-                    });
-                })
-                .catch(console.error);
+            return sendSystemError();
 
         if (verification.status != 200 || !verification.data) {
             const error = new EmbedBuilder({
@@ -94,9 +81,16 @@ export default async (member: GuildMember) => {
                 description: verification.message,
             }).setColor(colors.orange);
 
-            verification_channel.send({
-                embeds: [error],
-            });
+            verification_channel
+                .send({
+                    embeds: [error],
+                })
+                .catch((error) => {
+                    if (error.rawError) {
+                        if (error.rawError.code == 50001)
+                            return sendSystemError();
+                    }
+                });
 
             return;
         }
@@ -126,6 +120,11 @@ export default async (member: GuildMember) => {
                     "Verification",
                     `Sent verification to ${member.user.tag} in ${member.guild.name}`
                 );
+            })
+            .catch((error) => {
+                if (error.rawError) {
+                    if (error.rawError.code == 50001) return sendSystemError();
+                }
             });
     } catch (e) {
         console.error(e);
