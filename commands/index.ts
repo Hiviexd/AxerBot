@@ -31,6 +31,8 @@ import osutimestamps from "./management/osuTimestamps";
 import editMessage from "./management/editMessage";
 import logging from "./management/logging";
 import setRoles from "./management/setRoles";
+import selectroles from "./management/selectroles";
+import report from "./management/report";
 
 // ? osu!
 import mapper from "./osu/mapper";
@@ -59,7 +61,6 @@ import imagecolors from "./tools/imagecolors";
 // ? dev
 import shutdown from "./dev/shutdown";
 import rebuild from "./dev/rebuild";
-import selectroles from "./management/selectroles";
 import test from "./general/test";
 
 export const AxerCommands = [
@@ -99,6 +100,7 @@ export const AxerCommands = [
     logging,
     setRoles,
     selectroles,
+    report,
 
     // ? osu!
     mappertracker,

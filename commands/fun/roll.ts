@@ -1,10 +1,13 @@
 import { GuildMember } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 
-const roll = new SlashCommand("roll", "Roll a dice!", "Fun", true, {
+const roll = new SlashCommand("roll", "roll a number!", "Fun", true, {
     syntax: "/roll `<value>`",
-    example: "/roll\n/roll `727`\n/roll `dubs and I ping @everyone`\n",
 });
+
+roll.builder.addIntegerOption((o) =>
+    o.setName("value").setDescription("The maximum value of the roll")
+);
 
 roll.setExecuteFunction(async (command) => {
     const dice =
@@ -18,7 +21,7 @@ roll.setExecuteFunction(async (command) => {
             command.member?.nickname
                 ? command.member.nickname
                 : command.user.username
-        }** rolled **${roll}**!`
+        }** rolled **${roll}** ${roll == 1 ? "point" : "points"}!`
     );
 });
 
