@@ -52,9 +52,9 @@ help.setExecuteFunction(async (command) => {
         group: string,
         subcommand: string
     ) {
-        const targetCommand = AxerCommands.find((c) =>
-            c.names.includes(commandName)
-        );
+        const targetCommand = AxerCommands.filter((command) =>
+            command.isSlashCommand()
+        ).find((c) => c.names.includes(commandName)) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
@@ -95,9 +95,9 @@ help.setExecuteFunction(async (command) => {
         commandName: string,
         subcommand: string
     ) {
-        const targetCommand = AxerCommands.find((c) =>
-            c.names.includes(commandName)
-        );
+        const targetCommand = AxerCommands.filter((command) =>
+            command.isSlashCommand()
+        ).find((c) => c.names.includes(commandName)) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
@@ -191,9 +191,9 @@ help.setExecuteFunction(async (command) => {
     }
 
     function sendBaseCommandHelp(commandName: string) {
-        const targetCommand = AxerCommands.find((c) =>
-            c.names.includes(commandName)
-        );
+        const targetCommand = AxerCommands.filter((command) =>
+            command.isSlashCommand()
+        ).find((c) => c.names.includes(commandName)) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
@@ -271,13 +271,19 @@ help.setExecuteFunction(async (command) => {
         const categories: { [key: string]: SlashCommand[] } = {};
 
         // Generate command categories list
-        AxerCommands.forEach((command) => {
-            if (!categories[command.category]) {
-                return (categories[command.category] = [command]);
-            } else {
-                return categories[command.category].push(command);
+        AxerCommands.filter((command) => command.isSlashCommand()).forEach(
+            (command) => {
+                if (!categories[command.category]) {
+                    return (categories[command.category] = [
+                        command as SlashCommand,
+                    ]);
+                } else {
+                    return categories[command.category].push(
+                        command as SlashCommand
+                    );
+                }
             }
-        });
+        );
 
         Object.keys(categories).forEach((category) => {
             embed.addFields({

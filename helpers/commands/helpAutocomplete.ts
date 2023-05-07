@@ -5,7 +5,6 @@ import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandS
 
 export async function helpAutocomplete(command: AutocompleteInteraction) {
     if (command.commandName != "help") return;
-
     const input = command.options
         .getString("command", true)
         .replace("/", "")
@@ -16,19 +15,21 @@ export async function helpAutocomplete(command: AutocompleteInteraction) {
     const list: string[] = [];
 
     if (args.length == 1) {
-        AxerCommands.forEach((c) => {
-            if (nameIncludesString(args[0], c.names)) {
-                list.push(`/${c.names[0]}`);
+        AxerCommands.filter((command) => command.isSlashCommand()).forEach(
+            (c) => {
+                if (nameIncludesString(args[0], c.names)) {
+                    list.push(`/${c.names[0]}`);
 
-                includeSubcommandsAndGroups(c);
+                    includeSubcommandsAndGroups(c as SlashCommand);
+                }
             }
-        });
+        );
     }
 
     if (args.length == 2) {
-        const targetCommand = AxerCommands.find((c) =>
-            c.names.includes(args[0])
-        );
+        const targetCommand = AxerCommands.filter((command) =>
+            command.isSlashCommand()
+        ).find((c) => c.names.includes(args[0])) as SlashCommand;
 
         if (targetCommand) {
             targetCommand.subcommands.forEach((c) => {
@@ -46,9 +47,9 @@ export async function helpAutocomplete(command: AutocompleteInteraction) {
     }
 
     if (args.length == 3) {
-        const targetCommand = AxerCommands.find((c) =>
-            c.names.includes(args[0])
-        );
+        const targetCommand = AxerCommands.filter((command) =>
+            command.isSlashCommand()
+        ).find((c) => c.names.includes(args[0])) as SlashCommand;
 
         if (targetCommand) {
             targetCommand.subcommandGroups.forEach((c) => {
