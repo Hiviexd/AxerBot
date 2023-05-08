@@ -138,7 +138,18 @@ export async function SendReportEmbed({
             content: guild.reports.ping ? `<@&${guild.reports.role}>` : "",
             embeds: [embed],
         })
-        .catch(console.error)
+        .catch((error) => {
+            console.error(error);
+
+            command.followUp({
+                embeds: [
+                    generateErrorEmbed(
+                        `I can't send your report!\n**Reason:** ${error.message}`
+                    ),
+                ],
+                ephemeral: true,
+            });
+        })
         .then(() => {
             command.followUp({
                 embeds: [generateSuccessEmbed("User reported!")],
