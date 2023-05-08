@@ -37,7 +37,7 @@ export default new ContextMenuCommand<MessageContextMenuCommandInteraction>()
             time: 300000, // 5 minutes,
         });
 
-        modalContent.deferUpdate();
+        await modalContent.deferUpdate();
 
         const reportReason = modalContent.fields.getTextInputValue("reason");
 
