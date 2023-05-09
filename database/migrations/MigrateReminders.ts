@@ -20,9 +20,10 @@ export default {
                 channel: "950107895754784908"
                 guild: 589557574702071819"
              */
-            user.reminders
+            user.reminders && user.reminders.length > 1
                 ? await reminders.create(
                       (user.reminders || []).map((reminder) => {
+                          console.log(user._id, reminder);
                           if (
                               reminder.creationTime &&
                               reminder.time &&
