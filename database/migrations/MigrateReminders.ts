@@ -20,28 +20,30 @@ export default {
                 channel: "950107895754784908"
                 guild: 589557574702071819"
              */
-            await reminders.create(
-                user.reminders.map((reminder) => {
-                    if (
-                        reminder.creationTime &&
-                        reminder.time &&
-                        reminder.message &&
-                        reminder.channel &&
-                        reminder.guild
-                    )
-                        return {
-                            _id: randomBytes(15).toString("hex"),
-                            sendAt: new Date(reminder.time),
-                            createdAt: new Date(reminder.creationTime),
-                            content: reminder.message,
-                            channelId: reminder.channel,
-                            guildId: reminder.guild,
-                            userId: user._id,
-                            parentMessageId: undefined,
-                            isPrivate: false,
-                        };
-                })
-            );
+            user.reminders
+                ? await reminders.create(
+                      (user.reminders || []).map((reminder) => {
+                          if (
+                              reminder.creationTime &&
+                              reminder.time &&
+                              reminder.message &&
+                              reminder.channel &&
+                              reminder.guild
+                          )
+                              return {
+                                  _id: randomBytes(15).toString("hex"),
+                                  sendAt: new Date(reminder.time),
+                                  createdAt: new Date(reminder.creationTime),
+                                  content: reminder.message,
+                                  channelId: reminder.channel,
+                                  guildId: reminder.guild,
+                                  userId: user._id,
+                                  parentMessageId: undefined,
+                                  isPrivate: false,
+                              };
+                      })
+                  )
+                : null;
 
             user.reminders = [];
 
