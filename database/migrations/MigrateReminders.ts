@@ -22,17 +22,24 @@ export default {
              */
             await reminders.create(
                 user.reminders.map((reminder) => {
-                    return {
-                        _id: randomBytes(15).toString("hex"),
-                        sendAt: reminder.time,
-                        createdAt: reminder.creationTime,
-                        content: reminder.message,
-                        channelId: reminder.channel,
-                        guildId: reminder.guild,
-                        userId: user._id,
-                        parentMessageId: undefined,
-                        isPrivate: false,
-                    };
+                    if (
+                        reminder.creationTime &&
+                        reminder.time &&
+                        reminder.message &&
+                        reminder.channel &&
+                        reminder.guild
+                    )
+                        return {
+                            _id: randomBytes(15).toString("hex"),
+                            sendAt: reminder.time,
+                            createdAt: reminder.creationTime,
+                            content: reminder.message,
+                            channelId: reminder.channel,
+                            guildId: reminder.guild,
+                            userId: user._id,
+                            parentMessageId: undefined,
+                            isPrivate: false,
+                        };
                 })
             );
 
