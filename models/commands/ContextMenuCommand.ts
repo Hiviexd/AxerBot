@@ -1,8 +1,6 @@
 import {
     ContextMenuCommandBuilder,
-    ContextMenuCommandInteraction,
     GuildMember,
-    Interaction,
     MessageContextMenuCommandInteraction,
     PermissionResolvable,
     UserContextMenuCommandInteraction,
@@ -16,6 +14,11 @@ import { SlashCommand } from "./SlashCommand";
 export type ContextMenuExecuteFunction<InteractionType> = (
     command: InteractionType
 ) => void;
+
+export namespace ContextMenuType {
+    export type Message = MessageContextMenuCommandInteraction;
+    export type User = UserContextMenuCommandInteraction;
+}
 
 export class ContextMenuCommand<
     InteractionType

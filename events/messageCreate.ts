@@ -16,9 +16,15 @@ export default {
             if (message.author.bot || !bot.user) return;
 
             if (
-                ![ChannelType.GuildText, ChannelType.DM].includes(
-                    message.channel.type
-                )
+                ![
+                    ChannelType.GuildText,
+                    ChannelType.DM,
+                    ChannelType.GuildAnnouncement,
+                    ChannelType.GuildForum,
+                    ChannelType.PublicThread,
+                    ChannelType.PrivateThread,
+                    ChannelType.AnnouncementThread,
+                ].includes(message.channel.type)
             )
                 return;
 

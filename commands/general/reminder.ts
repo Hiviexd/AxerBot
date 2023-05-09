@@ -7,7 +7,7 @@ const reminder = new SlashCommand(
     "reminder",
     "Sets a reminder",
     "General",
-    false,
+    true,
     {
         syntax: "/reminder `<time>`\n/reminder `<time>` `<message>`",
         "time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",

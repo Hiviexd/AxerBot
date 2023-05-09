@@ -1,10 +1,10 @@
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
-import { users, guilds } from "../../../../database/";
-import { EmbedBuilder } from "discord.js";
+import { reminders } from "../../../../database/";
+import { ChannelType, EmbedBuilder } from "discord.js";
 import colors from "../../../../constants/colors";
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { consoleCheck } from "../../../../helpers/core/logger";
-
+import { randomBytes } from "crypto";
 export const createReminder = new SlashCommandSubcommand(
     "new",
     "create a new reminder"
@@ -27,20 +27,11 @@ createReminder.builder
 createReminder.setExecuteFunction(async (command) => {
     // ? prevent errors
 
-    if (!command.guild) return;
-
-    const user = await users.findOne({ _id: command.user.id });
-
-    if (!user) return;
-    const guild = await guilds.findOne({
-        _id: command.guild.id,
+    const userReminders = await reminders.find({
+        userId: command.user.id,
     });
 
-    if (!guild) return;
-
-    if (!user.reminders) user.reminders = [];
-
-    if (user.reminders.length >= 10)
+    if (userReminders.length >= 10)
         return command.editReply({
             embeds: [
                 generateErrorEmbedWithTitle(
@@ -52,9 +43,13 @@ createReminder.setExecuteFunction(async (command) => {
 
     const timeInput = command.options.getString("time", true);
     const contentInput = command.options.getString("content", true);
+    // const isPrivate = useDmInput ?? (command.channel?.isDMBased() || false);
 
-    // ? This never will break, cuz all fields are required.
-    if (!command.channel) return;
+    function isPrivate() {
+        if (!command.guild) return true;
+
+        return false;
+    }
 
     const re = /^[0-9]+[smhd]{1}$/g;
 
@@ -108,6 +103,8 @@ createReminder.setExecuteFunction(async (command) => {
             break;
     }
 
+    const reminderSendDate = new Date().getTime() + time;
+
     // ? set max allowed date to 2 years
     if (time > 1000 * 60 * 60 * 24 * 365 * 2)
         return command.editReply({
@@ -138,19 +135,17 @@ createReminder.setExecuteFunction(async (command) => {
             },
         });
 
-    const reminder = {
-        time: new Date().getTime() + time,
-        creationTime: new Date().getTime(),
-        message: message_,
-        channel: command.channel.id,
-        guild: command.guild.id,
-    };
-    user.reminders.push(reminder);
-
-    await users.updateOne(
-        { _id: command.user.id },
-        { $set: { reminders: user.reminders } }
-    );
+    const reminder = await reminders.create({
+        _id: randomBytes(15).toString("hex"),
+        sendAt: reminderSendDate,
+        createdAt: new Date().getTime(),
+        content: message_,
+        channelId: command.channelId,
+        guildId: command.guildId,
+        userId: command.user.id,
+        parentMessageId: (await command.fetchReply()).id,
+        isPrivate: isPrivate(),
+    });
 
     const successEmbed = new EmbedBuilder()
         .setTitle("✅ Reminder Set!")
@@ -158,12 +153,12 @@ createReminder.setExecuteFunction(async (command) => {
             {
                 name: "Time",
                 value: `${normalizedTime} (<t:${Math.trunc(
-                    reminder.time / 1000
+                    reminderSendDate / 1000
                 )}:R>)`,
             },
             {
                 name: "Message",
-                value: message_.length > 0 ? message_ : "*No message*",
+                value: message_ || "**No content**",
             }
         )
         .setColor(colors.green);
@@ -177,7 +172,9 @@ createReminder.setExecuteFunction(async (command) => {
 
     consoleCheck(
         "reminder.ts",
-        `${command.user.tag} set a reminder in ${command.guild.name}`
+        `${command.user.tag} set a reminder in ${
+            command.guild?.name || "Private Messages"
+        }`
     );
 });
 

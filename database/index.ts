@@ -9,6 +9,7 @@ import verification from "./schemas/verification";
 import discussionEvent from "./schemas/discussionEvent";
 import userEvent from "./schemas/userEvent";
 import selectRole from "./schemas/selectRole";
+import reminder from "./schemas/reminder";
 
 consoleLog("database", "Starting database connection...");
 
@@ -42,4 +43,5 @@ export const discussionEvents = mongoose.model(
     "DiscussionEvents",
     discussionEvent
 );
+export const reminders = mongoose.model("UserReminders", reminder);
 export const userEvents = mongoose.model("UserEvents", userEvent);

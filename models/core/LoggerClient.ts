@@ -31,7 +31,7 @@ export class LoggerClient {
             new Date().toLocaleTimeString() +
                 " " +
                 `[${this.module}]`.bgYellow.black +
-                `${message}`.bgGreen.black
+                `${message}`.bgCyan.black
         );
     }
 

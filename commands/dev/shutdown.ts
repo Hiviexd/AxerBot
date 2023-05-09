@@ -39,7 +39,6 @@ shutdown.setExecuteFunction(async (command) => {
 
     function executeShutdown() {
         command.client.destroy();
-        process.exit(1);
     }
 });
 

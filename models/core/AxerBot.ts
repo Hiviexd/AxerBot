@@ -10,11 +10,13 @@ import { connectToBancho } from "../../modules/bancho/client";
 import { handleDiscussionEvent } from "../../modules/osu/events/handleDiscussionEvent";
 import { UserEventsListener } from "./UserEventsListener";
 import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
+import { RemindersManager } from "../../modules/reminders/remindersChecker";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
     public Discussions = new DiscussionEventsListener();
     public UserEvents = new UserEventsListener();
+    public Reminders = new RemindersManager(this);
 
     constructor(options: ClientOptions) {
         super(options);
@@ -28,6 +30,7 @@ export class AxerBot extends Client {
             eventHandler(this);
             registerCommands(this);
             startAvatarListener(this);
+            this.Reminders.start();
 
             this.Logger.printSuccess(`${this.user?.username} is online!`);
         });

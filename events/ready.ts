@@ -1,6 +1,5 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
-import remindersChecker from "../modules/reminders/remindersChecker";
 import presence from "../modules/presence/presence";
 import qatTracking from "../modules/tracking/qatTracking";
 
@@ -24,8 +23,6 @@ export default {
             }, 15000);
 
             //? checks for reminders every 1 second
-
-            remindersChecker(bot);
             qatTracking(bot);
         });
     },

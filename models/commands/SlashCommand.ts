@@ -29,6 +29,7 @@ export class SlashCommand {
     public category = "General";
     public help: { [key: string]: string | string[] } = {};
     public allowDM = false;
+    public ephemeral: boolean = false;
     public names: string[] = [];
     public hasModal = false;
     public builder = new SlashCommandBuilder();
@@ -40,7 +41,8 @@ export class SlashCommand {
         allowDM: boolean,
         help?: { [key: string | number]: string | string[] },
         permissions?: PermissionResolvable[],
-        hasModal?: boolean
+        hasModal?: boolean,
+        ephemeral?: boolean
     ) {
         this.builder.setDescription(description);
 
@@ -51,6 +53,8 @@ export class SlashCommand {
             this.builder.setName(name as string);
             this.names = [name as string];
         }
+
+        this.ephemeral = ephemeral || false;
 
         this.help = Object.assign({ description: description }, help);
 
@@ -195,7 +199,8 @@ export class SlashCommand {
             `Executing command ${interaction.commandName}`
         );
 
-        if (!this.hasModal) await interaction.deferReply();
+        if (!this.hasModal)
+            await interaction.deferReply({ ephemeral: this.ephemeral });
 
         if (
             this.permissions.length != 0 &&

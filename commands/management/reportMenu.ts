@@ -5,13 +5,15 @@ import {
     TextInputStyle,
     GuildMember,
     ApplicationCommandType,
-    MessageContextMenuCommandInteraction,
 } from "discord.js";
-import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
+import {
+    ContextMenuCommand,
+    ContextMenuType,
+} from "../../models/commands/ContextMenuCommand";
 import { SendReportEmbed } from "../../responses/report/SendReportEmbed";
 import { randomUUID } from "crypto";
 
-export default new ContextMenuCommand<MessageContextMenuCommandInteraction>()
+export default new ContextMenuCommand<ContextMenuType.Message>()
     .setName("Report Message")
     .setType(ApplicationCommandType.Message)
     .setEphemeral(true)

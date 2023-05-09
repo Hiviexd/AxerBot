@@ -3,128 +3,154 @@
  */
 
 import moment from "moment";
-import { Client, TextChannel, EmbedBuilder } from "discord.js";
-import * as database from "../../database";
-import { consoleCheck } from "../../helpers/core/logger";
-import colors from "../../constants/colors";
+import { AxerBot } from "../../models/core/AxerBot";
+import { LoggerClient } from "../../models/core/LoggerClient";
+import { reminders } from "../../database";
+import { HydratedDocument } from "mongoose";
+import { ReminderEmbed } from "../../responses/embeds/ReminderEmbed";
 
 export interface IReminder {
-	time: moment.MomentInput;
-	creationTime: moment.MomentInput;
-	guild: string;
-	channel: string;
-	message: any;
+    time: moment.MomentInput;
+    creationTime: moment.MomentInput;
+    guild: string;
+    channel: string;
+    message: any;
 }
 
-const queue: string[] = [];
-async function remindersChecker(bot: Client) {
-	let users = await database.users.find();
+export type ReminderType = HydratedDocument<{
+    type?: boolean | undefined;
+    _id?: string | undefined;
+    content?: string | undefined;
+    channelId?: string | undefined;
+    parentMessageId?: string | undefined;
+    guildId?: string | undefined;
+    userId?: string | undefined;
+    createdAt?: Date | undefined;
+    sendAt?: Date | undefined;
+}>;
 
-	for (const user of users) {
-		if (user.reminders.length > 0 && !queue.includes(user._id)) {
-			const validReminders = user.reminders.filter(
-				(r: IReminder) => moment().diff(moment(r.time), "seconds") >= 0
-			);
-
-			for (const reminder of validReminders) {
-				queue.push(user._id);
-
-				const reminderIndex = user.reminders.indexOf(reminder);
-
-				let guild = bot.guilds.cache.get(reminder.guild);
-
-				// ! error handling may be messy to read, idc
-				try {
-					if (guild) {
-						let channel = (await bot.channels.fetch(
-							reminder.channel
-						)) as TextChannel;
-
-						try {
-							if (channel) {
-								const embed = new EmbedBuilder()
-									.setColor(colors.yellow)
-									.setTitle("🔔 Reminder")
-									.setDescription(reminder.message);
-
-								reminder.creationTime
-									? embed.setTimestamp(reminder.creationTime)
-									: null;
-
-								await channel
-									.send({
-										content: `<@${user._id}>`,
-										embeds: [embed],
-									})
-									.catch(console.error);
-
-								await guild.members
-									.fetch(user._id)
-									.then((member) => {
-										consoleCheck(
-											"remindersChecker.ts",
-											`Reminder sent to ${
-												member.user.tag
-											} in ${
-												guild
-													? guild.name
-													: "unknown guild"
-											}`
-										);
-									})
-									.catch((err) => {
-										consoleCheck(
-											"remindersChecker.ts",
-											`Reminder sent to ${user._id} in ${
-												guild
-													? guild.name
-													: "unknown guild"
-											}`
-										);
-									});
-								user.reminders.splice(reminderIndex, 1);
-								await database.users.findByIdAndUpdate(
-									user._id,
-									user
-								);
-								const queue_index = queue.indexOf(user._id);
-								queue.splice(queue_index, 1);
-							}
-						} catch {
-							consoleCheck(
-								"remindersChecker.ts",
-								`Reminder channel not found in ${guild.name}, discarding reminder...`
-							);
-
-							user.reminders.splice(reminderIndex, 1);
-							await database.users.findByIdAndUpdate(
-								user._id,
-								user
-							);
-							const queue_index = queue.indexOf(user._id);
-							queue.splice(queue_index, 1);
-							return;
-						}
-					}
-				} catch {
-					consoleCheck(
-						"remindersChecker.ts",
-						`Reminder guild not found, discarding reminder...`
-					);
-
-					user.reminders.splice(reminderIndex, 1);
-					await database.users.findByIdAndUpdate(user._id, user);
-					const queue_index = queue.indexOf(user._id);
-					queue.splice(queue_index, 1);
-					return;
-				}
-			}
-		}
-	}
-
-	setTimeout(() => {
-		remindersChecker(bot);
-	}, 1000);
+export enum ReminderTargetType {
+    Private = "private",
+    Public = "public",
 }
 
-export default remindersChecker;
+export class RemindersManager {
+    public axer: AxerBot;
+    private Logger = new LoggerClient("RemindersManager");
+
+    constructor(axer: AxerBot) {
+        this.axer = axer;
+    }
+
+    async start() {
+        const allReminders = await reminders.find();
+
+        if (!allReminders)
+            return this.Logger.printError("Can't fetch reminders!");
+
+        this.Logger.printInfo("Processing all reminders!");
+
+        const remindersAvailableForSend = allReminders.filter(
+            (r: (typeof allReminders)[0]) =>
+                moment().diff(moment(r.sendAt), "seconds") >= 0
+        );
+
+        for (const reminder of remindersAvailableForSend) {
+            if (!reminder.isPrivate) {
+                const publicReminderResult = await this.sendPublicReminder(
+                    reminder
+                );
+
+                publicReminderResult.status == 200
+                    ? this.Logger.printSuccess(publicReminderResult.message)
+                    : this.Logger.printError(publicReminderResult.message);
+            }
+
+            if (reminder.isPrivate) await this.sendPrivateReminder(reminder);
+
+            await reminder.delete();
+        }
+
+        setTimeout(async () => {
+            await this.start();
+        }, 5000);
+    }
+
+    async sendPublicReminder(reminder: ReminderType) {
+        try {
+            if (!reminder.channelId || !reminder.guildId)
+                return {
+                    status: 400,
+                    message: "Missing channelId or guildId",
+                };
+
+            const channel = await this.axer.channels.fetch(reminder.channelId);
+
+            if (!channel)
+                return {
+                    status: 404,
+                    message: "Channel not found!",
+                };
+
+            if (!channel.isTextBased())
+                return {
+                    status: 404,
+                    message: "Channel not found!",
+                };
+
+            const reminderEmbed = ReminderEmbed(reminder);
+
+            await channel.send({
+                content: `<@${reminder.userId}>`,
+                embeds: [reminderEmbed],
+            });
+
+            return {
+                status: 200,
+                message: `Sent reminder ${reminder.id}`,
+            };
+        } catch (e: any) {
+            console.error(e);
+
+            return {
+                status: e.code || e.status,
+                message: e.message,
+            };
+        }
+    }
+
+    async sendPrivateReminder(reminder: ReminderType) {
+        try {
+            if (!reminder.userId)
+                return {
+                    status: 400,
+                    message: "Missing userId",
+                };
+
+            const user = await this.axer.users.fetch(reminder.userId);
+
+            const userDMChannel = await user.createDM();
+
+            const reminderEmbed = ReminderEmbed(reminder);
+
+            await userDMChannel.send({
+                content: `<@${reminder.userId}>`,
+                embeds: [reminderEmbed],
+            });
+
+            return {
+                status: 200,
+                message: `Sent reminder ${reminder.id}`,
+            };
+        } catch (e: any) {
+            console.error(e);
+
+            return {
+                status: e.code || e.status,
+                message: e.message,
+            };
+        }
+    }
+}
+
+// export default remindersChecker;

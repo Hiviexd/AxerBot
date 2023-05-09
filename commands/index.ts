@@ -68,6 +68,7 @@ import {
     UserContextMenuCommandInteraction,
     MessageContextMenuCommandInteraction,
 } from "discord.js";
+import migrate from "./dev/migrate";
 
 export const AxerCommands = [
     // ? General
@@ -134,6 +135,7 @@ export const AxerCommands = [
     // ? Dev
     shutdown,
     rebuild,
+    migrate,
 ] as (
     | ContextMenuCommand<
           | UserContextMenuCommandInteraction
