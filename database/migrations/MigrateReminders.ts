@@ -31,8 +31,8 @@ export default {
                     )
                         return {
                             _id: randomBytes(15).toString("hex"),
-                            sendAt: reminder.time,
-                            createdAt: reminder.creationTime,
+                            sendAt: new Date(reminder.time),
+                            createdAt: new Date(reminder.creationTime),
                             content: reminder.message,
                             channelId: reminder.channel,
                             guildId: reminder.guild,
