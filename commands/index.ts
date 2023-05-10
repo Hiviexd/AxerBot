@@ -33,7 +33,7 @@ import logging from "./management/logging";
 import setRoles from "./management/setRoles";
 import selectroles from "./management/selectroles";
 import report from "./management/report";
-import reportMenu from "./management/reportMenu";
+import reportMenu from "./ContextMenus/management/reportMenu";
 
 // ? osu!
 import mapper from "./osu/mapper";
@@ -58,6 +58,7 @@ import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
 import addsilent from "./tools/addsilence";
 import imagecolors from "./tools/imagecolors";
+import spectrogramMenu from "./ContextMenus/tools/spectrogramMenu";
 
 // ? dev
 import shutdown from "./dev/shutdown";
@@ -131,6 +132,7 @@ export const AxerCommands = [
     debloat,
     addsilent,
     imagecolors,
+    spectrogramMenu,
 
     // ? Dev
     shutdown,

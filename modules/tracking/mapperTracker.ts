@@ -28,7 +28,7 @@ export async function handleMapperTrackerUserEvent(event: UserRecentEvent) {
         sendForTracker(tracker);
     }
 
-    async function sendForTracker(tracker: typeof trackersMatchingMapper[0]) {
+    async function sendForTracker(tracker: (typeof trackersMatchingMapper)[0]) {
         console.log(tracker.userId, tracker.id, event.type);
         if (!tracker.channel) return;
 
@@ -73,7 +73,7 @@ export async function handleMapperTracker(event: BeatmapsetEvent) {
         sendForTracker(tracker);
     }
 
-    async function sendForTracker(tracker: typeof trackersMatchingMapper[0]) {
+    async function sendForTracker(tracker: (typeof trackersMatchingMapper)[0]) {
         if (!tracker.channel) return;
 
         const channel = await bot.channels.fetch(tracker.channel);

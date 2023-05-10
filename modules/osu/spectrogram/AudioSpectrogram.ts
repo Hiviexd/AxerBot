@@ -116,6 +116,25 @@ export class AudioSpectrogram extends EventEmitter {
         this.generateId();
     }
 
+    public static isMimeValid(mimetype: string | null) {
+        if (!mimetype) return false;
+
+        const validTypes = [
+            "audio/mpeg",
+            "audio/ogg",
+            "audio/x-wav",
+            "audio/wav",
+        ];
+
+        return validTypes.includes(mimetype);
+    }
+
+    public static isFileSizeValid(bytes: number | null) {
+        if (!bytes) return false;
+
+        return bytes <= 1.5e7;
+    }
+
     setAudio(audio: Readable) {
         this.Audio = audio;
 
@@ -126,6 +145,8 @@ export class AudioSpectrogram extends EventEmitter {
             .catch((e) => {
                 this.AudioBuffer = null;
             });
+
+        return this;
     }
 
     getAudioInfo(): Promise<FfprobeData | null> {
