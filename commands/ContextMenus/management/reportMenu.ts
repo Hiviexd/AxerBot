@@ -5,6 +5,10 @@ import {
     TextInputStyle,
     GuildMember,
     ApplicationCommandType,
+    InteractionCollector,
+    ComponentType,
+    InteractionType,
+    ModalSubmitInteraction,
 } from "discord.js";
 import { randomUUID } from "crypto";
 import {
@@ -12,6 +16,7 @@ import {
     ContextMenuType,
 } from "../../../models/commands/ContextMenuCommand";
 import { SendReportEmbed } from "../../../responses/report/SendReportEmbed";
+import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed";
 
 export default new ContextMenuCommand<ContextMenuType.Message>()
     .setName("Report Message")
@@ -19,37 +24,86 @@ export default new ContextMenuCommand<ContextMenuType.Message>()
     .setEphemeral(true)
     .setModal(true)
     .setExecuteFunction(async (command) => {
-        const modal = new ModalBuilder()
-            .setTitle("Report Message")
-            .setCustomId(randomUUID());
-        const reasonField =
-            new ActionRowBuilder<TextInputBuilder>().setComponents(
-                new TextInputBuilder()
-                    .setLabel("Reason")
-                    .setRequired(true)
-                    .setCustomId("reason")
-                    .setStyle(TextInputStyle.Paragraph)
-            );
+        try {
+            const modal = new ModalBuilder()
+                .setTitle("Report Message")
+                .setCustomId(randomUUID());
+            const reasonField =
+                new ActionRowBuilder<TextInputBuilder>().setComponents(
+                    new TextInputBuilder()
+                        .setLabel("Reason")
+                        .setRequired(true)
+                        .setCustomId("reason")
+                        .setStyle(TextInputStyle.Paragraph)
+                );
 
-        modal.addComponents(reasonField);
+            modal.addComponents(reasonField);
 
-        await command.showModal(modal);
+            await command.showModal(modal);
 
-        const modalContent = await command.awaitModalSubmit({
-            time: 300000, // 5 minutes,
-        });
+            const collector = new InteractionCollector(command.client, {
+                time: 300000, // 5 minutes,
+                filter: (i) =>
+                    i.user.id == command.user.id &&
+                    i.customId == modal.data.custom_id,
+            });
 
-        await modalContent.deferUpdate();
+            collector
+                .on("collect", async (modalData: ModalSubmitInteraction) => {
+                    await modalData.deferUpdate();
 
-        const reportReason = modalContent.fields.getTextInputValue("reason");
+                    const reportReason =
+                        modalData.fields.getTextInputValue("reason");
 
-        if (!command.targetMessage.member || !command.member) return;
+                    const reportedMessageAuthor = command.targetMessage.author;
+                    const reportedMember = await command.guild?.members.fetch(
+                        reportedMessageAuthor.id
+                    );
 
-        SendReportEmbed({
-            command,
-            reason: reportReason,
-            reportedUser: command.targetMessage.member,
-            reporter: command.member as GuildMember,
-            messageContent: command.targetMessage.content,
-        });
+                    if (!reportedMember || !command.member)
+                        return console.log(
+                            "no user",
+                            reportedMember,
+                            command.member
+                        );
+
+                    SendReportEmbed({
+                        command,
+                        reason: reportReason,
+                        reportedUser: reportedMember,
+                        reporter: command.member as GuildMember,
+                        messageContent: command.targetMessage.content,
+                    });
+                })
+                .on("end", (reason: string) => {
+                    if (reason != "timeout") {
+                        console.log(reason);
+
+                        command.followUp({
+                            embeds: [
+                                generateErrorEmbed("Something went wrong!"),
+                            ],
+                            ephemeral: true,
+                        });
+
+                        return;
+                    }
+
+                    command.followUp({
+                        embeds: [
+                            generateErrorEmbed(
+                                "Time Out! Don't leave me waiting."
+                            ),
+                        ],
+                        ephemeral: true,
+                    });
+                });
+        } catch (e) {
+            console.error(e);
+
+            command.followUp({
+                embeds: [generateErrorEmbed("Something went wrong!")],
+                ephemeral: true,
+            });
+        }
     });
