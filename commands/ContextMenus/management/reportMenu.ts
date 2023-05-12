@@ -74,9 +74,11 @@ export default new ContextMenuCommand<ContextMenuType.Message>()
                         reporter: command.member as GuildMember,
                         messageContent: command.targetMessage.content,
                     });
+
+                    collector.stop("end");
                 })
                 .on("end", (reason: string) => {
-                    if (reason != "timeout") {
+                    if (reason != "end") {
                         console.log(reason);
 
                         command.followUp({
