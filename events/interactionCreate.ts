@@ -11,6 +11,7 @@ import beatmapDownloader from "../modules/downloader/beatmapDownloader";
 import heardle from "../modules/heardle/heardle";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 import { handleSelectRoles } from "../modules/selectroles/handleSelectRoles";
+import { handleSyncButton } from "../modules/verification/interactions/handleSyncButton";
 
 export default {
     name: "interactionCreate",
@@ -35,6 +36,8 @@ export default {
                     previewVerificationMessage(interaction);
 
                     handleSelectRoles(interaction);
+
+                    handleSyncButton(interaction);
                 }
 
                 // ============ String Select Menu

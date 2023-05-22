@@ -1,6 +1,7 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     ChatInputCommandInteraction,
     EmbedBuilder,
@@ -11,7 +12,7 @@ import generateErrorEmbed from "../../../helpers/text/embeds/generateErrorEmbed"
 import colors from "../../../constants/colors";
 
 export async function sendFirstTimeVerificationSync(
-    command: ChatInputCommandInteraction
+    command: ChatInputCommandInteraction | ButtonInteraction
 ) {
     try {
         await command.editReply(

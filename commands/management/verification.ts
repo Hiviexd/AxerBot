@@ -6,6 +6,7 @@ import verificationAddRankRole from "./subcommands/verification/addRankRole";
 import verificationAddRole from "./subcommands/verification/addRole";
 import verificationSetDisabled from "./subcommands/verification/disable";
 import verificationSetEnabled from "./subcommands/verification/enable";
+import verificationNewSyncEmbed from "./subcommands/verification/newSyncEmbed";
 import verificationRemoveGroupRole from "./subcommands/verification/removeGroupRole";
 import verificationRemoveMapperRole from "./subcommands/verification/removeMapperRole";
 import verificationRemoveRankRole from "./subcommands/verification/removeRankRole";
@@ -67,6 +68,13 @@ const commandGroupREMOVE = new SlashCommandSubcommandGroup(
     "Remove a value to a module option."
 );
 
+const commandGroupNEW = new SlashCommandSubcommandGroup(
+    "new",
+    "Create a new module value"
+);
+
+commandGroupNEW.addCommand(verificationNewSyncEmbed);
+
 commandGroupREMOVE
     .addCommand(verificationRemoveRankRole)
     .addCommand(verificationRemoveRole)
@@ -76,6 +84,7 @@ commandGroupREMOVE
 verificationCommand
     .addSubcommandGroup(commandGroupADD)
     .addSubcommandGroup(commandGroupREMOVE)
-    .addSubcommandGroup(commandGroupSET);
+    .addSubcommandGroup(commandGroupSET)
+    .addSubcommandGroup(commandGroupNEW);
 
 export default verificationCommand;
