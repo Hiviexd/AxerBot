@@ -88,7 +88,7 @@ export default (
             color: colors["resolved"],
             title: `${
                 post_types[post.discussions[0].message_type].emoji
-            } <:resolved:957733964649480252>  Closed ${
+            } <:resolved:957733964649480252>  Resolved ${
                 post.discussions[0].message_type
             } `,
         };
