@@ -31,29 +31,9 @@ export async function validateVerificationSync(
     runVerificationChecks(guild, user, member)
         .then(() => {
             pm.user.sendMessage("Your data is updated!");
-
-            if (verification.target_channel) {
-                const channel = guild.channels.cache.get(
-                    verification.target_channel
-                ) as TextBasedChannel | undefined;
-
-                if (channel) {
-                    channel.send({
-                        content: `${member}`,
-                        embeds: [
-                            generateSuccessEmbed(
-                                "Your account info is validated!"
-                            ),
-                        ],
-                        allowedMentions: {
-                            users: [member.id],
-                        },
-                    });
-                }
-            }
         })
         .catch((e) => {
             console.error(e);
-            pm.user.sendMessage(`I can't verify you! ${errorText}`);
+            pm.user.sendMessage(`Error! ${errorText}`);
         });
 }
