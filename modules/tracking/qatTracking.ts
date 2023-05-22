@@ -19,32 +19,21 @@ import {
 import { StatusManager } from "../status/StatusManager";
 
 async function qatTracking(bot: Client) {
-    const websocketConfig = {
-        headers: {
-            username: process.env.QAT_USER,
-            secret: process.env.QAT_SECRET,
-            tags: "users:request_status_update",
-        },
-    };
-    let qatWebsocket = new WebSocket(
-        "wss://bn.mappersguild.com/websocket/interOp",
-        websocketConfig
-    );
+    try {
+        if (!process.env.QAT_USER || !process.env.QAT_SECRET)
+            return consoleError(
+                "QatTracking",
+                "Can't connect to bnsite: Missing credentials"
+            );
 
-    qatWebsocket.on("open", () => {
-        consoleCheck("QatTracking", "Connected to bnsite via websocket");
-    });
-
-    qatWebsocket.on("close", closeListener);
-
-    qatWebsocket.on("message", messageListener);
-
-    function closeListener(e: any) {
-        console.error(e);
-
-        consoleError("QatTracking", "bnsite disconnected! Reconnecting...");
-
-        qatWebsocket = new WebSocket(
+        const websocketConfig = {
+            headers: {
+                username: process.env.QAT_USER,
+                secret: process.env.QAT_SECRET,
+                tags: "users:request_status_update",
+            },
+        };
+        let qatWebsocket = new WebSocket(
             "wss://bn.mappersguild.com/websocket/interOp",
             websocketConfig
         );
@@ -53,174 +42,205 @@ async function qatTracking(bot: Client) {
             consoleCheck("QatTracking", "Connected to bnsite via websocket");
         });
 
-        qatWebsocket.on("message", messageListener);
         qatWebsocket.on("close", closeListener);
-    }
 
-    async function messageListener(data: Buffer) {
-        try {
-            const allTracks = await tracks.find({ type: "qat" });
+        qatWebsocket.on("message", messageListener);
 
-            const message = JSON.parse(data.toString()) as {
-                type: string;
-                data: {
-                    isOpen: boolean;
-                    user: QatUser;
-                } | null;
-            };
-
-            if (message.type == "PING" || !message.data) return consoleLog(
-                "qatTracker",
-                `Received ping`
-            );
-
-            consoleLog(
-                "qatTracker",
-                `Received status update from ${message.data.user.username}`
-            );
-
-            for (const track of allTracks) {
-                sendUpdate(message.data.user, track, message.data.isOpen);
-            }
-        } catch (e: any) {
-            const statusManager = new StatusManager();
-            statusManager.sendErrorMessage(
-                `Can't send bn update: ${e.message}`
-            );
+        function closeListener(e: any) {
             console.error(e);
-        }
-    }
 
-    async function sendUpdate(bn: QatUser, track: any, isOpen: boolean) {
-        const footer = {
-            text: "BN website",
-            iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
-        };
-        const modeIcons = bn.modes
-            .map((mode: string) => {
-                return `${getEmoji(mode as keyof typeof getEmoji)} `;
-            })
-            .join("")
-            .trim();
+            consoleError("QatTracking", "bnsite disconnected! Reconnecting...");
 
-        const texts: { [key: string]: EmbedBuilder } = {
-            open: new EmbedBuilder()
-                .setTitle(
-                    `🟢 Open (<t:${Math.trunc(new Date().valueOf() / 1000)}:R>)`
-                )
-                .setDescription(
-                    `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`
-                )
-                .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
-                .setFooter(footer)
-                .setFields(
-                    {
-                        name: "Positive",
-                        value: getBNPreferences.positive(bn),
-                        inline: true,
-                    },
-                    {
-                        name: "Negative",
-                        value: getBNPreferences.negative(bn),
-                        inline: true,
-                    }
-                )
-                .setColor(colors.green),
-            closed: new EmbedBuilder()
-                .setTitle(
-                    `🔴 Closed (<t:${Math.trunc(
-                        new Date().valueOf() / 1000
-                    )}:R>)`
-                )
-                .setDescription(
-                    `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`
-                )
-                .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
-                .setFooter(footer)
-                .setColor(colors.red),
-        };
+            qatWebsocket = new WebSocket(
+                "wss://bn.mappersguild.com/websocket/interOp",
+                websocketConfig
+            );
 
-        const buttons = new ActionRowBuilder<ButtonBuilder>();
-
-        const embed = texts[isOpen ? "open" : "closed"];
-
-        if (isOpen) {
-            const dmButton = new ButtonBuilder();
-            dmButton
-                .setStyle(ButtonStyle.Link)
-                .setLabel("Send message (osu!)")
-                .setURL(`https://osu.ppy.sh/home/messages/users/${bn.osuId}`);
-            buttons.addComponents(dmButton);
-
-            if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
-                const siteName = new URL(bn.requestLink).hostname.split(".")[0];
-                const personalQueueButton = new ButtonBuilder();
-                personalQueueButton
-                    .setStyle(ButtonStyle.Link)
-                    .setLabel(`Personal queue (${siteName})`)
-                    .setURL(bn.requestLink);
-                buttons.addComponents(personalQueueButton);
-            }
-
-            if (bn.requestStatus.includes("globalQueue")) {
-                const globalQueueButton = new ButtonBuilder();
-                globalQueueButton
-                    .setStyle(ButtonStyle.Link)
-                    .setLabel(`Global queue`)
-                    .setURL(`https://bn.mappersguild.com/modrequests`);
-                buttons.addComponents(globalQueueButton);
-            }
-        }
-
-        const guild = bot.guilds.cache.get(track.guild);
-
-        if (!guild) return;
-
-        const channel = guild.channels.cache.get(track.channel);
-
-        // ! deletes trackers upon booting for some reason dont use
-        // if (!channel) return tracks.findByIdAndDelete(track._id);
-
-        if (!channel) return;
-
-        function allowSend() {
-            let hasTarget = false;
-            let hasModes = false;
-
-            track.targets.modes.forEach((mode: string) => {
-                if (bn.modes.includes(mode)) hasModes = true;
+            qatWebsocket.on("open", () => {
+                consoleCheck(
+                    "QatTracking",
+                    "Connected to bnsite via websocket"
+                );
             });
 
-            if (
-                (isOpen && track.targets.open) ||
-                (!isOpen && track.targets.closed)
-            )
-                hasTarget = true;
-
-            if (!hasTarget || !hasModes) return false;
-
-            return true;
+            qatWebsocket.on("message", messageListener);
+            qatWebsocket.on("close", closeListener);
         }
 
-        if (allowSend()) {
-            if (channel.isTextBased()) {
-                return channel
-                    .send({
-                        embeds: [embed],
-                        components: isOpen ? [buttons] : [],
-                    })
-                    .catch((e) => {
-                        console.error(e);
-                    });
-            } else {
-                return;
+        async function messageListener(data: Buffer) {
+            try {
+                const allTracks = await tracks.find({ type: "qat" });
+
+                const message = JSON.parse(data.toString()) as {
+                    type: string;
+                    data: {
+                        isOpen: boolean;
+                        user: QatUser;
+                    } | null;
+                };
+
+                if (message.type == "PING" || !message.data)
+                    return consoleLog("qatTracker", `Received ping`);
+
+                consoleLog(
+                    "qatTracker",
+                    `Received status update from ${message.data.user.username}`
+                );
+
+                for (const track of allTracks) {
+                    sendUpdate(message.data.user, track, message.data.isOpen);
+                }
+            } catch (e: any) {
+                const statusManager = new StatusManager();
+                statusManager.sendErrorMessage(
+                    `Can't send bn update: ${e.message}`
+                );
+                console.error(e);
             }
+        }
+
+        async function sendUpdate(bn: QatUser, track: any, isOpen: boolean) {
+            const footer = {
+                text: "BN website",
+                iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
+            };
+            const modeIcons = bn.modes
+                .map((mode: string) => {
+                    return `${getEmoji(mode as keyof typeof getEmoji)} `;
+                })
+                .join("")
+                .trim();
+
+            const texts: { [key: string]: EmbedBuilder } = {
+                open: new EmbedBuilder()
+                    .setTitle(
+                        `🟢 Open (<t:${Math.trunc(
+                            new Date().valueOf() / 1000
+                        )}:R>)`
+                    )
+                    .setDescription(
+                        `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`
+                    )
+                    .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
+                    .setFooter(footer)
+                    .setFields(
+                        {
+                            name: "Positive",
+                            value: getBNPreferences.positive(bn),
+                            inline: true,
+                        },
+                        {
+                            name: "Negative",
+                            value: getBNPreferences.negative(bn),
+                            inline: true,
+                        }
+                    )
+                    .setColor(colors.green),
+                closed: new EmbedBuilder()
+                    .setTitle(
+                        `🔴 Closed (<t:${Math.trunc(
+                            new Date().valueOf() / 1000
+                        )}:R>)`
+                    )
+                    .setDescription(
+                        `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`
+                    )
+                    .setThumbnail(`https://a.ppy.sh/${bn.osuId}`)
+                    .setFooter(footer)
+                    .setColor(colors.red),
+            };
+
+            const buttons = new ActionRowBuilder<ButtonBuilder>();
+
+            const embed = texts[isOpen ? "open" : "closed"];
+
+            if (isOpen) {
+                const dmButton = new ButtonBuilder();
+                dmButton
+                    .setStyle(ButtonStyle.Link)
+                    .setLabel("Send message (osu!)")
+                    .setURL(
+                        `https://osu.ppy.sh/home/messages/users/${bn.osuId}`
+                    );
+                buttons.addComponents(dmButton);
+
+                if (
+                    bn.requestStatus.includes("personalQueue") &&
+                    bn.requestLink
+                ) {
+                    const siteName = new URL(bn.requestLink).hostname.split(
+                        "."
+                    )[0];
+                    const personalQueueButton = new ButtonBuilder();
+                    personalQueueButton
+                        .setStyle(ButtonStyle.Link)
+                        .setLabel(`Personal queue (${siteName})`)
+                        .setURL(bn.requestLink);
+                    buttons.addComponents(personalQueueButton);
+                }
+
+                if (bn.requestStatus.includes("globalQueue")) {
+                    const globalQueueButton = new ButtonBuilder();
+                    globalQueueButton
+                        .setStyle(ButtonStyle.Link)
+                        .setLabel(`Global queue`)
+                        .setURL(`https://bn.mappersguild.com/modrequests`);
+                    buttons.addComponents(globalQueueButton);
+                }
+            }
+
+            const guild = bot.guilds.cache.get(track.guild);
+
+            if (!guild) return;
+
+            const channel = guild.channels.cache.get(track.channel);
+
+            // ! deletes trackers upon booting for some reason dont use
+            // if (!channel) return tracks.findByIdAndDelete(track._id);
+
+            if (!channel) return;
+
+            function allowSend() {
+                let hasTarget = false;
+                let hasModes = false;
+
+                track.targets.modes.forEach((mode: string) => {
+                    if (bn.modes.includes(mode)) hasModes = true;
+                });
+
+                if (
+                    (isOpen && track.targets.open) ||
+                    (!isOpen && track.targets.closed)
+                )
+                    hasTarget = true;
+
+                if (!hasTarget || !hasModes) return false;
+
+                return true;
+            }
+
+            if (allowSend()) {
+                if (channel.isTextBased()) {
+                    return channel
+                        .send({
+                            embeds: [embed],
+                            components: isOpen ? [buttons] : [],
+                        })
+                        .catch((e) => {
+                            console.error(e);
+                        });
+                } else {
+                    return;
+                }
+            }
+
+            return void {};
         }
 
         return void {};
+    } catch (e) {
+        console.error(e);
     }
-
-    return void {};
 }
 
 export default qatTracking;
