@@ -61,20 +61,23 @@ export async function sendBeatmapCalculation({
 
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(
                     2
                 )} CS: ${difficulty.beatmap.difficulty.circleSize.toFixed(
                     2
                 )} AR: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(2)} HP: ${difficultyAttributes.drainRate.toFixed(2)}`;
             }
             case 1: {
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;
@@ -85,14 +88,16 @@ export async function sendBeatmapCalculation({
 
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(
                     2
                 )} CS: ${difficulty.beatmap.difficulty.circleSize.toFixed(
                     2
                 )} AR: ${multiplayDifficultyParameter(
                     difficultyAttributes.approachRate,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;
@@ -100,7 +105,8 @@ export async function sendBeatmapCalculation({
             case 3: {
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate
+                    rate,
+                    difficulty.performanceAttributes.mods
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;

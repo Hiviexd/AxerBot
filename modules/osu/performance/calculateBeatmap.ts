@@ -1,6 +1,7 @@
 import { BeatmapDecoder } from "osu-parsers";
 import {
     DifficultyAttributes,
+    ModCombination,
     PerformanceAttributes,
     RulesetBeatmap,
     ScoreInfo,
@@ -22,8 +23,17 @@ interface BeatmapPerformance {
     acc: number;
 }
 
-export function multiplayDifficultyParameter(parameter: number, rate: number) {
-    return parameter * rate;
+export function multiplayDifficultyParameter(
+    parameter: number,
+    rate: number,
+    mods: ModCombination
+) {
+    const calc = parameter * rate;
+
+    if (calc > 11 && mods.has("DTHR")) return 11;
+    if (calc > 10) return 10;
+    if (calc < 0) return 0;
+    return calc;
 }
 
 export function calculateOsuBeatmap(osu_file: string, mods?: string) {
