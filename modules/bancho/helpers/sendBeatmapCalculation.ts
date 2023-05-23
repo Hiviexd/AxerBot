@@ -124,7 +124,7 @@ export async function sendBeatmapCalculation({
                   )} (${Math.round(difficulty.beatmap.bpm)}BPM) `
                 : " "
         } | ${`BPM: ${Math.round(
-            difficulty.beatmap.bpmMax
+            difficulty.beatmap.bpmMax * rate
         )} ${getDifficultyAttributes(beatmap.mode_int)} Rate: ${rate}x |`}${
             convertMode
                 ? ` ${convertModeName[difficulty.beatmap.mode]} | `
