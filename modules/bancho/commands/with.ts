@@ -25,9 +25,10 @@ export default {
             return pm.user.sendMessage("Use /np before use this command!");
 
         const getRate = () => {
-            const rate = isNaN(Number(args[0].slice(0, -1)))
-                ? args[1].slice(0, -1)
-                : args[0].slice(0, -1); // remove x after the string "1.2x" example
+            const slots = [args[0] || "", args[1] || ""];
+            const rate = isNaN(Number(slots[0].slice(0, -1)))
+                ? slots[1].slice(0, -1)
+                : slots[0].slice(0, -1); // remove x after the string "1.2x" example
             const rateNumber = Number(rate);
 
             if (isNaN(rateNumber)) return 1;
