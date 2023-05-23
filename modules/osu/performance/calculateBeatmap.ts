@@ -1,5 +1,10 @@
 import { BeatmapDecoder } from "osu-parsers";
-import { DifficultyAttributes, RulesetBeatmap, ScoreInfo } from "osu-classes";
+import {
+    DifficultyAttributes,
+    PerformanceAttributes,
+    RulesetBeatmap,
+    ScoreInfo,
+} from "osu-classes";
 import { generateHitStatistics } from "./generateHitStatistics";
 import { createBeatmapInfo } from "./createBeatmapInfo";
 import { calculateAccuracy } from "./calculateAccuracy";
@@ -8,12 +13,17 @@ import { getRulesetById } from "./getRuleset";
 export interface BeatmapCalculationResult {
     beatmap: RulesetBeatmap;
     difficulty: DifficultyAttributes;
+    performanceAttributes: PerformanceAttributes;
     performance: BeatmapPerformance[];
 }
 
 interface BeatmapPerformance {
     pp: number;
     acc: number;
+}
+
+export function multiplayDifficultyParameter(parameter: number, rate: number) {
+    return parameter * rate;
 }
 
 export function calculateOsuBeatmap(osu_file: string, mods?: string) {
@@ -51,7 +61,8 @@ export function generateRulesetBeatmap(
 export function calculateBeatmap(
     osu_file: string,
     rulesetId: number,
-    mods?: string
+    mods?: string,
+    rate?: number
 ) {
     const decoder = new BeatmapDecoder();
     const ruleset = getRulesetById(rulesetId);
@@ -61,7 +72,10 @@ export function calculateBeatmap(
 
     const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
     const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
-    const difficulty = difficultyCalculator.calculateWithMods(combination);
+    const difficulty = difficultyCalculator.calculateWithMods(
+        combination,
+        rate
+    );
 
     const scoreInfo = new ScoreInfo();
     const accuracy = [100, 99, 98, 95];
@@ -89,9 +103,14 @@ export function calculateBeatmap(
         return { pp, acc };
     }) as BeatmapPerformance[];
 
+    const performanceAttributes =
+        ruleset.createPerformanceCalculator(difficulty);
+
     return {
         beatmap,
         difficulty,
+        performanceAttributes:
+            performanceAttributes.calculateAttributes(difficulty),
         performance,
     } as BeatmapCalculationResult;
 }

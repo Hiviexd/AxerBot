@@ -4,7 +4,10 @@ import { parseOsuBeatmapURL } from "../../../helpers/text/parseOsuBeatmapURL";
 import { sendBeatmapCalculation } from "./sendBeatmapCalculation";
 import { banchoUsers } from "../../../database";
 
-export async function calculateBeatmapFromAction(pm: PrivateMessage) {
+export async function calculateBeatmapFromAction(
+    pm: PrivateMessage,
+    rate?: number
+) {
     try {
         const action = pm.getAction();
 
@@ -34,7 +37,11 @@ export async function calculateBeatmapFromAction(pm: PrivateMessage) {
 
         if (!beatmapURL.data.beatmap_id) return;
 
-        sendBeatmapCalculation(pm, beatmapURL.data.beatmap_id);
+        sendBeatmapCalculation({
+            pm,
+            beatmap_id: beatmapURL.data.beatmap_id,
+            rate: rate ? Number(rate) : 1,
+        });
     } catch (e: any) {
         console.error(e);
         pm.user.sendMessage(

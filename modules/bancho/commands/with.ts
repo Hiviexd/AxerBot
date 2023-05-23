@@ -24,6 +24,23 @@ export default {
         if (!user.last_beatmap)
             return pm.user.sendMessage("Use /np before use this command!");
 
-        sendBeatmapCalculation(pm, user.last_beatmap, args[0]);
+        const getRate = () => {
+            const rate = isNaN(Number(args[0].slice(0, -1)))
+                ? args[1].slice(0, -1)
+                : args[0].slice(0, -1); // remove x after the string "1.2x" example
+            const rateNumber = Number(rate);
+
+            if (isNaN(rateNumber)) return 1;
+            if (rateNumber < 0.1 || rateNumber > 10.0) return 1;
+
+            return Number(rate);
+        };
+
+        sendBeatmapCalculation({
+            pm,
+            beatmap_id: user.last_beatmap,
+            mods: args[0],
+            rate: getRate(),
+        });
     },
 };
