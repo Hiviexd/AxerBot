@@ -119,9 +119,7 @@ export async function sendBeatmapCalculation({
             beatmap.beatmapset?.title
         } [${beatmap.version}]]${
             !difficulty.difficulty.mods.acronyms.includes("NM")
-                ? ` | +${difficulty.difficulty.mods.acronyms.join(
-                      ""
-                  )} (${Math.round(difficulty.beatmap.bpm)}BPM) `
+                ? ` | +${difficulty.difficulty.mods.acronyms.join("")}`
                 : " "
         } | ${`BPM: ${Math.round(
             difficulty.beatmap.bpmMax * rate
