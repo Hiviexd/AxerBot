@@ -27,7 +27,7 @@ export default async (button: ButtonInteraction) => {
     let targetVerification = await verifications.findOne({
         target_user: button.user.id,
         target_guild: button.guild.id,
-        type: VerificationType.default,
+        type: "verification",
     });
 
     if (!targetVerification)
