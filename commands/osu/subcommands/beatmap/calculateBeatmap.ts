@@ -1,17 +1,15 @@
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateErrorEmbedWithTitle";
-import { parseOsuBeatmapURL } from "../../helpers/text/parseOsuBeatmapURL";
-import { SlashCommand } from "../../models/commands/SlashCommand";
-import BeatmapsetEmbed from "../../responses/osu/BeatmapsetEmbed";
+import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
+import { parseOsuBeatmapURL } from "../../../../helpers/text/parseOsuBeatmapURL";
+import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+import osuApi from "../../../../modules/osu/fetcher/osuApi";
+import BeatmapsetEmbed from "../../../../responses/osu/BeatmapsetEmbed";
 
-const map = new SlashCommand(
-    ["map", "calculate"],
-    "Send beatmap info of a beatmap with pp",
-    "osu!",
-    true
+const calculateBeatmap = new SlashCommandSubcommand(
+    "calculate",
+    "Send beatmap info of a beatmap with pp"
 );
 
-map.builder
+calculateBeatmap.builder
     .addStringOption((o) =>
         o
             .setName("beatmap_url")
@@ -42,7 +40,7 @@ map.builder
             )
     );
 
-map.setExecuteFunction(async (command) => {
+calculateBeatmap.setExecuteFunction(async (command) => {
     const beatmapParameters = parseOsuBeatmapURL(
         command.options.getString("beatmap_url", true)
     );
@@ -160,4 +158,4 @@ map.setExecuteFunction(async (command) => {
     });
 });
 
-export default map;
+export default calculateBeatmap;

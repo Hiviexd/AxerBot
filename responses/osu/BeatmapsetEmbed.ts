@@ -89,7 +89,8 @@ export default {
         beatmap_id: string | null,
         mode: string,
         target: Message | ChatInputCommandInteraction,
-        _mods?: string[]
+        _mods?: string[],
+        extraMenu?: StringSelectMenuBuilder
     ) => {
         try {
             if (!beatmapset.beatmaps) return;
@@ -97,6 +98,11 @@ export default {
             const handshakeId = crypto.randomUUID();
             let isWaitingVideo = false;
             let video: IBeatmapVideo | undefined | null;
+            const extraButtonRow = new ActionRowBuilder<
+                typeof extraMenu | any
+            >();
+
+            if (extraMenu) extraButtonRow.addComponents(extraMenu);
 
             generateBeatmapVideo(beatmapset)
                 .then((data) => {
@@ -524,11 +530,18 @@ export default {
                         embeds: [embed],
                         content: "",
                         files: [],
-                        components: [
-                            staticButtonsRow,
-                            modsSelector,
-                            embedButtonsRow,
-                        ],
+                        components:
+                            extraButtonRow.components.length > 0
+                                ? [
+                                      extraButtonRow,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ]
+                                : [
+                                      modsSelector,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ],
                         allowedMentions: {
                             repliedUser: false,
                         },
@@ -620,11 +633,18 @@ export default {
                         embeds: [embed],
                         content: "",
                         files: [],
-                        components: [
-                            staticButtonsRow,
-                            modsSelector,
-                            embedButtonsRow,
-                        ],
+                        components:
+                            extraButtonRow.components.length > 0
+                                ? [
+                                      extraButtonRow,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ]
+                                : [
+                                      modsSelector,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ],
                         allowedMentions: {
                             repliedUser: false,
                         },
@@ -636,11 +656,18 @@ export default {
                         embeds: [embed],
                         files: [],
                         content: "",
-                        components: [
-                            staticButtonsRow,
-                            modsSelector,
-                            embedButtonsRow,
-                        ],
+                        components:
+                            extraButtonRow.components.length > 0
+                                ? [
+                                      extraButtonRow,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ]
+                                : [
+                                      modsSelector,
+                                      staticButtonsRow,
+                                      embedButtonsRow,
+                                  ],
                         allowedMentions: {
                             repliedUser: false,
                         },

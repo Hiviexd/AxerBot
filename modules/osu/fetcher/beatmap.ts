@@ -3,7 +3,7 @@ import axios from "axios";
 import {
     BeatmapGenre,
     BeatmapLanguage,
-} from "../../../commands/osu/subcommands/search/searchBeatmap";
+} from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
 import {
     consoleCheck,
     consoleError,
@@ -152,7 +152,8 @@ export async function searchBeatmapset(
     status?: string,
     stars?: string,
     genre?: BeatmapGenre,
-    language?: BeatmapLanguage
+    language?: BeatmapLanguage,
+    page?: number
 ): Promise<HTTPResponse<BeatmapsetSearchResponse>> {
     try {
         consoleLog("beatmap fetcher", `Searching beatmapsets "${query}"`);
@@ -163,11 +164,12 @@ export async function searchBeatmapset(
         language ? url.searchParams.set("l", language) : void {};
         status ? url.searchParams.set("s", status) : void {};
         mode ? url.searchParams.set("m", mode) : void {};
+        page ? url.searchParams.set("o", page.toString()) : void {};
 
         if (stars) {
-            url.searchParams.set("query", `${query} stars${stars}`);
+            url.searchParams.set("q", `${query} stars${stars}`);
         } else {
-            url.searchParams.set("query", `${query}`);
+            url.searchParams.set("q", `${query}`);
         }
 
         const req = await axios(url.href, {
