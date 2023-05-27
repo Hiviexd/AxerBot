@@ -10,24 +10,32 @@ import colors from "../../constants/colors";
 import { verifications } from "../../database";
 import { bot } from "../..";
 import { sendVerifiedEmbed } from "../../responses/verification/sendVerifiedEmbed";
+import { VerificationType } from "../../modules/verification/client/GenerateAuthToken";
+import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 
-export default async (interaction: ButtonInteraction, isStatic?: boolean) => {
-    if (!interaction.isButton()) return;
+export default async (button: ButtonInteraction) => {
+    if (!button.isButton()) return;
 
-    const targets = interaction.customId.split("|");
+    const targets = button.customId.split("|");
 
-    if (targets[0] != "verification") return;
+    if (targets[0] != "static_verification") return;
 
-    await interaction.deferReply({ ephemeral: true });
+    await button.deferReply({ ephemeral: true });
 
-    if (interaction.user.id != targets[1] && !isStatic)
-        return interaction.editReply("**You're not allowed to use this!**");
+    if (!button.guild) return;
 
-    if (!interaction.guild) return;
+    let targetVerification = await verifications.findOne({
+        target_user: button.user.id,
+        target_guild: button.guild.id,
+        type: VerificationType.default,
+    });
 
-    let targetVerification = await verifications.findById(targets[2]);
-
-    if (!targetVerification) return;
+    if (!targetVerification)
+        return button.editReply({
+            embeds: [
+                generateErrorEmbed("You don't have any pending verification!"),
+            ],
+        });
 
     const embed = new EmbedBuilder({
         title: "🔍 Verify your account",
@@ -39,7 +47,7 @@ export default async (interaction: ButtonInteraction, isStatic?: boolean) => {
             },
         ],
         thumbnail: {
-            url: interaction.guild?.iconURL() || "",
+            url: button.guild?.iconURL() || "",
         },
     }).setColor(colors.yellow);
 
@@ -53,19 +61,18 @@ export default async (interaction: ButtonInteraction, isStatic?: boolean) => {
     ]);
 
     bot.Bancho.onVerification(async (verification) => {
-        if (verification.member.id == interaction.user.id)
+        if (verification.member.id == button.user.id)
             sendVerifiedEmbed(
                 verification.user,
                 verification.guild,
                 verification.member,
                 undefined,
-                isStatic ? interaction : undefined
+                button
             );
     });
 
-    interaction.followUp({
+    button.editReply({
         embeds: [embed],
         components: [buttons],
-        ephemeral: true,
     });
 };

@@ -49,9 +49,6 @@ import burningtext from "./fun/burningtext";
 import bntracker from "./BNsite/bntracker";
 import bn from "./BNsite/bn";
 import openbns from "./BNsite/openbns";
-import map from "./osu/map";
-import search from "./osu/search";
-
 //? tools
 import { resizebg } from "./tools/resizebg";
 import spectro from "./tools/spectro";
@@ -70,6 +67,7 @@ import {
     MessageContextMenuCommandInteraction,
 } from "discord.js";
 import migrate from "./dev/migrate";
+import beatmap from "./osu/beatmap";
 
 export const AxerCommands = [
     // ? General
@@ -118,8 +116,7 @@ export const AxerCommands = [
     player,
     mapsetrank,
     mapper,
-    map,
-    search,
+    beatmap,
 
     // ? bnsite
     bn,

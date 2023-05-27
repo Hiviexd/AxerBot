@@ -4,6 +4,7 @@ import colors from "../../../../constants/colors";
 import { guilds } from "../../../../database";
 import { IMapperRole } from "./addMapperRole";
 import getEmoji from "../../../../helpers/text/getEmoji";
+import createNewGuild from "../../../../database/utils/createNewGuild";
 
 const verificationStatus = new SlashCommandSubcommand(
     "status",
@@ -13,10 +14,16 @@ const verificationStatus = new SlashCommandSubcommand(
 );
 
 verificationStatus.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
+    if (
+        !command.member ||
+        typeof command.member.permissions == "string" ||
+        !command.guild
+    )
         return;
 
     let guild = await guilds.findById(command.guildId);
+    if (!guild) guild = await createNewGuild(command.guild);
+
     if (!guild) return;
 
     const modes: { [key: string]: string } = {
@@ -41,6 +48,10 @@ verificationStatus.setExecuteFunction(async (command) => {
             {
                 name: "Verification Button",
                 value: guild.verification.button ? "🟢 Enabled" : "🔴 Disabled",
+            },
+            {
+                name: "Verification Type",
+                value: guild.verification.isStatic ? "Static" : "Default",
             },
             {
                 name: "Channel",

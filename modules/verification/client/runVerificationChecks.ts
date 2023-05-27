@@ -10,7 +10,7 @@ import { HTTPResponse } from "../../../types/qat";
 import { Beatmapset } from "../../../types/beatmap";
 import { IHTTPResponse } from "../../../types/http";
 import { bot } from "../../..";
-import { BeatmapStatus } from "../../../commands/osu/subcommands/search/searchBeatmap";
+import { BeatmapStatus } from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
 
 export async function runVerificationChecks(
     guild: Guild,

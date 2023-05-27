@@ -1,13 +1,24 @@
-import { EmbedBuilder, Guild, GuildMember } from "discord.js";
+import {
+    ButtonInteraction,
+    EmbedBuilder,
+    Guild,
+    GuildMember,
+} from "discord.js";
 import { User } from "../../types/user";
 import getEmoji from "../../helpers/text/getEmoji";
+import { guilds } from "../../database";
 
 export async function sendVerifiedEmbed(
     user: User,
     guild: Guild,
     member: GuildMember,
-    guild_db: any
+    guild_db?: any,
+    button?: ButtonInteraction
 ) {
+    if (!guild_db) guild_db = await guilds.findById(guild.id);
+
+    if (!guild_db) return;
+
     const usergroups = user.groups
         ?.map((group) => {
             return (
@@ -78,14 +89,21 @@ export async function sendVerifiedEmbed(
         ? embed.addFields({ name: "User group(s)", value: usergroups })
         : null;
 
-    const verificationChannel: any = await guild.client.channels.fetch(
-        guild_db.verification.channel
-    );
+    if (!button) {
+        const verificationChannel: any = await guild.client.channels.fetch(
+            guild_db.verification.channel
+        );
 
-    verificationChannel
-        .send({
-            content: `<@${member.id}>`,
+        verificationChannel
+            .send({
+                content: `<@${member.id}>`,
+                embeds: [embed],
+            })
+            .catch(console.error);
+    } else {
+        button.followUp({
             embeds: [embed],
-        })
-        .catch(console.error);
+            ephemeral: true,
+        });
+    }
 }

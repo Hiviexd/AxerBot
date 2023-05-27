@@ -12,6 +12,7 @@ import heardle from "../modules/heardle/heardle";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 import { handleSelectRoles } from "../modules/selectroles/handleSelectRoles";
 import { handleSyncButton } from "../modules/verification/interactions/handleSyncButton";
+import sendStaticVerificationLink from "../helpers/interactions/sendStaticVerificationLink";
 
 export default {
     name: "interactionCreate",
@@ -30,6 +31,7 @@ export default {
                 // ============ Buttons
                 if (interaction.componentType == ComponentType.Button) {
                     sendVerificationLink(interaction);
+                    sendStaticVerificationLink(interaction);
 
                     beatmapDownloader(interaction);
 

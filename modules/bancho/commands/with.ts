@@ -1,6 +1,7 @@
-import { BanchoClient, PrivateMessage } from "bancho.js";
+import { PrivateMessage } from "bancho.js";
 import getOrCreateBanchoUser from "../../../database/utils/getOrCreatBanchoUser";
 import { sendBeatmapCalculation } from "../helpers/sendBeatmapCalculation";
+import { AxerBancho } from "../client";
 
 export default {
     settings: {
@@ -10,7 +11,7 @@ export default {
     },
     run: async function (
         pm: PrivateMessage,
-        bancho: BanchoClient,
+        bancho: AxerBancho,
         args: string[]
     ) {
         const userApi = await pm.user.fetchFromAPI();

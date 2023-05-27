@@ -22,6 +22,7 @@ export default new Schema({
         type: Object,
         default: {
             enable: false,
+            isStatic: false,
             channel: "",
             message:
                 "Hello {member} and welcome to the server! To get access to the channels, click on the button below!",
@@ -31,18 +32,7 @@ export default new Schema({
                 default_roles: [],
                 group_roles: [],
                 mapper_roles: [],
-                rank_roles: [
-                    {
-                        id: String,
-                        type: { type: String, enum: ["country", "global"] },
-                        gamemode: {
-                            type: String,
-                            enum: ["osu", "taiko", "fruits", "mania"],
-                        },
-                        min_rank: Number,
-                        max_rank: Number,
-                    },
-                ],
+                rank_roles: [],
             },
             button: true,
         },
@@ -132,5 +122,5 @@ export default new Schema({
             ping: false,
             role: "",
         },
-    }
+    },
 });

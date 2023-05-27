@@ -15,7 +15,7 @@ const verificationSetChannel = new SlashCommandSubcommand(
 );
 
 verificationSetChannel.builder.addChannelOption((o) =>
-    o.setName("channel").setDescription("System channel")
+    o.setName("channel").setDescription("System channel").setRequired(true)
 );
 
 verificationSetChannel.setExecuteFunction(async (command) => {
@@ -44,7 +44,11 @@ verificationSetChannel.setExecuteFunction(async (command) => {
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
     command.editReply({
-        embeds: [generateSuccessEmbed(`Verification system is enabled and channel is set to <#${channel.id}>!`)],
+        embeds: [
+            generateSuccessEmbed(
+                `Verification system is enabled and channel is set to <#${channel.id}>!`
+            ),
+        ],
     });
 });
 

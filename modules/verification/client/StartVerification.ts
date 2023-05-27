@@ -26,6 +26,8 @@ export default async (member: GuildMember) => {
 
         const verification = await GenerateAuthToken(member);
 
+        console.log(verification);
+
         const verification_channel: GuildBasedChannel | undefined =
             member.client.guilds.cache
                 .get(member.guild.id)
@@ -60,11 +62,13 @@ export default async (member: GuildMember) => {
                 ?.permissionsIn(verification_channel)
                 .has(PermissionFlagsBits.SendMessages)
         ) {
-            consoleLog(
-                "Verification",
-                `Verification channel is not set or deleted in ${member.guild.name}`
-            );
-            return sendSystemError();
+            if (!guild_db.verification.isStatic) {
+                consoleLog(
+                    "Verification",
+                    `Verification channel is not set or deleted in ${member.guild.name}`
+                );
+                return sendSystemError();
+            }
         }
 
         if (
@@ -76,23 +80,7 @@ export default async (member: GuildMember) => {
             return sendSystemError();
 
         if (verification.status != 200 || !verification.data) {
-            const error = new EmbedBuilder({
-                title: "Something went wrong!",
-                description: verification.message,
-            }).setColor(colors.orange);
-
-            verification_channel
-                .send({
-                    embeds: [error],
-                })
-                .catch((error) => {
-                    if (error.rawError) {
-                        if (error.rawError.code == 50001)
-                            return sendSystemError();
-                    }
-                });
-
-            return;
+            return console.error(verification);
         }
 
         const buttons = new ActionRowBuilder<ButtonBuilder>();
@@ -106,26 +94,32 @@ export default async (member: GuildMember) => {
             }),
         ]);
 
-        verification_channel
-            .send({
-                content: parseMessagePlaceholderFromMember(
-                    guild_db.verification.message,
-                    member,
-                    guild_db
-                ),
-                components: guild_db.verification.button ? [buttons] : [],
-            })
-            .then(() => {
-                consoleLog(
-                    "Verification",
-                    `Sent verification to ${member.user.tag} in ${member.guild.name}`
-                );
-            })
-            .catch((error) => {
-                if (error.rawError) {
-                    if (error.rawError.code == 50001) return sendSystemError();
-                }
-            });
+        if (
+            !guild_db.verification.isStatic &&
+            verification_channel?.isTextBased()
+        ) {
+            verification_channel
+                .send({
+                    content: parseMessagePlaceholderFromMember(
+                        guild_db.verification.message,
+                        member,
+                        guild_db
+                    ),
+                    components: guild_db.verification.button ? [buttons] : [],
+                })
+                .then(() => {
+                    consoleLog(
+                        "Verification",
+                        `Sent verification to ${member.user.tag} in ${member.guild.name}`
+                    );
+                })
+                .catch((error) => {
+                    if (error.rawError) {
+                        if (error.rawError.code == 50001)
+                            return sendSystemError();
+                    }
+                });
+        }
     } catch (e) {
         console.error(e);
     }

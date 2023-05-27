@@ -1,6 +1,7 @@
-import { BanchoClient, PrivateMessage } from "bancho.js";
+import { PrivateMessage } from "bancho.js";
 
 import { BanchoCommands } from ".";
+import { AxerBancho } from "../client";
 
 export default {
     settings: {
@@ -9,7 +10,7 @@ export default {
     },
     run: async function (
         pm: PrivateMessage,
-        bancho: BanchoClient,
+        bancho: AxerBancho,
         args: string[]
     ) {
         const list = BanchoCommands.map(

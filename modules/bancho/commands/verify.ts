@@ -1,4 +1,4 @@
-import { BanchoClient, PrivateMessage } from "bancho.js";
+import { PrivateMessage } from "bancho.js";
 
 import { consoleLog } from "../../../helpers/core/logger";
 import osuApi from "../../../modules/osu/fetcher/osuApi";
@@ -9,6 +9,7 @@ import {
 } from "../../verification/client/GenerateAuthToken";
 import { validateVerificationSync } from "../../verification/client/validateVerificationSync";
 import { verifications } from "./../../../database";
+import { AxerBancho } from "../client";
 
 export default {
     settings: {
@@ -17,7 +18,7 @@ export default {
     },
     run: async function (
         pm: PrivateMessage,
-        bancho: BanchoClient,
+        bancho: AxerBancho,
         args: string[]
     ) {
         const code = Number(args[0]);
@@ -47,15 +48,14 @@ export default {
             switch (targetVerification.type) {
                 case VerificationType.default:
                     validateVerificationRequirements(
+                        bancho,
                         data.data,
                         targetVerification as unknown as IVerificationObject,
                         pm
                     ).catch((e) => {
                         console.error(e);
 
-                        pm.user.sendMessage(
-                            "Error! Please try again later."
-                        );
+                        pm.user.sendMessage("Error! Please try again later.");
                     });
                     break;
                 case VerificationType.validate:
@@ -66,9 +66,7 @@ export default {
                     ).catch((e) => {
                         console.error(e);
 
-                        pm.user.sendMessage(
-                            "Error! Please try again later."
-                        );
+                        pm.user.sendMessage("Error! Please try again later.");
                     });
                     break;
             }

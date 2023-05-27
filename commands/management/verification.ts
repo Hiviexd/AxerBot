@@ -7,6 +7,7 @@ import verificationAddRole from "./subcommands/verification/addRole";
 import verificationSetDisabled from "./subcommands/verification/disable";
 import verificationSetEnabled from "./subcommands/verification/enable";
 import verificationNewSyncEmbed from "./subcommands/verification/newSyncEmbed";
+import verificationNewVerifyEmbed from "./subcommands/verification/newVerifyEmbed";
 import verificationRemoveGroupRole from "./subcommands/verification/removeGroupRole";
 import verificationRemoveMapperRole from "./subcommands/verification/removeMapperRole";
 import verificationRemoveRankRole from "./subcommands/verification/removeRankRole";
@@ -15,6 +16,7 @@ import verificationSetButton from "./subcommands/verification/setButton";
 import verificationSetChannel from "./subcommands/verification/setChannel";
 import verificationSetFlags from "./subcommands/verification/setFlags";
 import verificationSetMessage from "./subcommands/verification/setMessage";
+import verificationSetType from "./subcommands/verification/setType";
 import verificationStatus from "./subcommands/verification/status";
 import verificationSync from "./subcommands/verification/sync";
 
@@ -50,7 +52,8 @@ commandGroupSET
     .addCommand(verificationSetButton)
     .addCommand(verificationSetChannel)
     .addCommand(verificationSetFlags)
-    .addCommand(verificationSetMessage);
+    .addCommand(verificationSetMessage)
+    .addCommand(verificationSetType);
 
 const commandGroupADD = new SlashCommandSubcommandGroup(
     "add",
@@ -73,7 +76,9 @@ const commandGroupNEW = new SlashCommandSubcommandGroup(
     "Create a new module value"
 );
 
-commandGroupNEW.addCommand(verificationNewSyncEmbed);
+commandGroupNEW
+    .addCommand(verificationNewSyncEmbed)
+    .addCommand(verificationNewVerifyEmbed);
 
 commandGroupREMOVE
     .addCommand(verificationRemoveRankRole)

@@ -8,8 +8,10 @@ import { sendVerifiedEmbed } from "../../../responses/verification/sendVerifiedE
 import { User } from "../../../types/user";
 import { runVerificationChecks } from "./runVerificationChecks";
 import { IVerificationObject, VerificationType } from "./GenerateAuthToken";
+import { AxerBancho } from "../../bancho/client";
 
 export default async (
+    bancho: AxerBancho,
     user: User,
     verification: IVerificationObject,
     pm: PrivateMessage
@@ -60,7 +62,13 @@ export default async (
             };
 
         await runVerificationChecks(guild, user, member);
-        sendVerifiedEmbed(user, guild, member, guild_db);
+
+        bancho.emit("verification", {
+            guild,
+            member,
+            user,
+        });
+
         sendLoggingEmbed(user, guild, member, guild_db);
         await verifications.deleteMany({
             target_guild: verification.target_guild,

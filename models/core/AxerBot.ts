@@ -6,17 +6,18 @@ import { existsSync, mkdirSync } from "fs";
 import eventHandler from "../../helpers/core/eventHandler";
 import registerCommands from "../../helpers/interactions/registerCommands";
 import { startAvatarListener } from "../../modules/avatar/avatarManager";
-import { connectToBancho } from "../../modules/bancho/client";
 import { handleDiscussionEvent } from "../../modules/osu/events/handleDiscussionEvent";
 import { UserEventsListener } from "./UserEventsListener";
 import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
 import { RemindersManager } from "../../modules/reminders/remindersChecker";
+import { AxerBancho } from "../../modules/bancho/client";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
     public Discussions = new DiscussionEventsListener();
     public UserEvents = new UserEventsListener();
     public Reminders = new RemindersManager(this);
+    public Bancho = new AxerBancho(this);
 
     constructor(options: ClientOptions) {
         super(options);
@@ -26,7 +27,7 @@ export class AxerBot extends Client {
     start() {
         this.Logger.printInfo("Starting AxerBot...");
         this.login(process.env.TOKEN).then(() => {
-            connectToBancho();
+            this.Bancho.connect().catch(console.error);
             eventHandler(this);
             registerCommands(this);
             startAvatarListener(this);
