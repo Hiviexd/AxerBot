@@ -40,7 +40,8 @@ export class AxerBancho extends BanchoClient {
     }
 
     onVerification(f: (verification: IVerificationEvent) => void) {
-        (this.on as any)("verification", f);
+        let cb = (this.on as any)("verification", f);
+        cb = undefined;
     }
 
     private handlePM(pm: PrivateMessage) {

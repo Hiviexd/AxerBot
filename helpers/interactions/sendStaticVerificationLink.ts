@@ -10,7 +10,6 @@ import colors from "../../constants/colors";
 import { verifications } from "../../database";
 import { bot } from "../..";
 import { sendVerifiedEmbed } from "../../responses/verification/sendVerifiedEmbed";
-import { VerificationType } from "../../modules/verification/client/GenerateAuthToken";
 import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 
 export default async (button: ButtonInteraction) => {
