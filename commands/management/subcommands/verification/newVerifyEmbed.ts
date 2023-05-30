@@ -122,8 +122,9 @@ verificationNewVerifyEmbed.setExecuteFunction(async (command) => {
 
     const syncProfileButton = new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setLabel("✅ Verify my Account")
-        .setCustomId(`static_verification`);
+        .setLabel("Verify my account")
+        .setCustomId(`static_verification`)
+        .setEmoji("982656610285527114");
 
     await (targetChannel as GuildTextBasedChannel).send({
         embeds: [embedData],

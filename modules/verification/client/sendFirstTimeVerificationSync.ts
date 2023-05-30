@@ -39,7 +39,7 @@ export async function sendFirstTimeVerificationSync(
 
         const embed = new EmbedBuilder({
             title: "🔍 Validate your account",
-            description: `This is your first time validating your account, you just need to do this **ONE** time. To verify with your osu! account, send the command below [here](https://osu.ppy.sh/home/messages/users/${process.env.IRC_OSU_ID})`,
+            description: `This is your first time validating your account, you just need to do this **ONE** time.\nTo verify with your osu! account, send the command below in the bot's osu! PMs, you can go there by clicking [here](https://osu.ppy.sh/home/messages/users/${process.env.IRC_OSU_ID}), or by clicking the button below.\n\n**Do NOT reveal this command to the public, as it can risk your identity being compromised on this server!**`,
             fields: [
                 {
                     name: "Copy and paste this:",
