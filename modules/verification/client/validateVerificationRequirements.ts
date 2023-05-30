@@ -62,6 +62,11 @@ export default async (
             };
 
         await runVerificationChecks(guild, user, member);
+        await verifications.deleteMany({
+            target_guild: verification.target_guild,
+            target_user: verification.target_user,
+            type: VerificationType.default,
+        });
 
         bancho.emit("verification", {
             guild,
@@ -70,11 +75,6 @@ export default async (
         });
 
         sendLoggingEmbed(user, guild, member, guild_db);
-        await verifications.deleteMany({
-            target_guild: verification.target_guild,
-            target_user: verification.target_user,
-            type: VerificationType.default,
-        });
 
         pm.user.sendMessage(`You're verified! Welcome to ${guild.name}.`);
 
