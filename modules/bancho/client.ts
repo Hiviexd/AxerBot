@@ -17,6 +17,7 @@ export interface IVerificationEvent {
 export class AxerBancho extends BanchoClient {
     private Logger = new LoggerClient("AxerBancho");
     public axer: AxerBot;
+    private cooldownUsers: string[] = [];
 
     constructor(axer: AxerBot) {
         super({
@@ -44,12 +45,35 @@ export class AxerBancho extends BanchoClient {
         cb = undefined;
     }
 
+    private isDuringCooldown(username: string) {
+        return this.cooldownUsers.includes(username);
+    }
+
+    private applyCooldownTo(username: string) {
+        this.cooldownUsers.push(username);
+
+        setTimeout(() => {
+            this.cooldownUsers = this.cooldownUsers.filter(
+                (u) => u != username
+            );
+        }, 3000);
+
+        return this.cooldownUsers;
+    }
+
     private handlePM(pm: PrivateMessage) {
         if (pm.user.ircUsername == process.env.IRC_USERNAME) return;
 
         if (pm.getAction()) return calculateBeatmapFromAction(pm);
 
         if (pm.content[0] != "!") return;
+
+        if (this.isDuringCooldown(pm.user.ircUsername))
+            return pm.user.sendMessage(
+                "Chill bro, you need to wait 3 seconds to use another command..."
+            );
+
+        this.applyCooldownTo(pm.user.ircUsername);
 
         const args = pm.content.split(" ");
 

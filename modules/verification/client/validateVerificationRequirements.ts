@@ -4,7 +4,6 @@ import { bot } from "../../../";
 import { guilds, users, verifications } from "../../../database";
 import { consoleCheck, consoleLog } from "../../../helpers/core/logger";
 import { sendLoggingEmbed } from "../../../responses/verification/sendLoggerEmbed";
-import { sendVerifiedEmbed } from "../../../responses/verification/sendVerifiedEmbed";
 import { User } from "../../../types/user";
 import { runVerificationChecks } from "./runVerificationChecks";
 import { IVerificationObject, VerificationType } from "./GenerateAuthToken";
