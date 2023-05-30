@@ -26,6 +26,7 @@ export class AxerBancho extends BanchoClient {
             port: Number(process.env.IRC_PORT) || 6667,
             apiKey: process.env.OSU_API_KEY,
             botAccount: true,
+            gamemode: 1,
         });
 
         this.axer = axer;
@@ -34,7 +35,14 @@ export class AxerBancho extends BanchoClient {
     }
 
     initializeEventListeners() {
-        this.on("PM", (pm) => this.handlePM.bind(this)(pm));
+        this.on("PM", (pm) => {
+            if (this.isDuringCooldown(pm.user.ircUsername))
+                return pm.user.sendMessage(
+                    "Chill bro, you need to wait 3 seconds to use another command..."
+                );
+
+            this.handlePM.bind(this)(pm);
+        });
         this.on("connected", () =>
             this.Logger.printSuccess("Connected to Bancho!")
         );
@@ -67,11 +75,6 @@ export class AxerBancho extends BanchoClient {
         if (pm.getAction()) return calculateBeatmapFromAction(pm);
 
         if (pm.content[0] != "!") return;
-
-        if (this.isDuringCooldown(pm.user.ircUsername))
-            return pm.user.sendMessage(
-                "Chill bro, you need to wait 3 seconds to use another command..."
-            );
 
         this.applyCooldownTo(pm.user.ircUsername);
 
