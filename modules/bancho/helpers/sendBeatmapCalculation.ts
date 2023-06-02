@@ -126,7 +126,7 @@ export async function sendBeatmapCalculation({
                 ? ` | ${difficulty.difficulty.starRating.toFixed(
                       2
                   )}* +${difficulty.difficulty.mods.acronyms.join("")}`
-                : `| ${difficulty.difficulty.starRating.toFixed(2)}* NoMod`
+                : ` | ${difficulty.difficulty.starRating.toFixed(2)}* NoMod`
         } | ${attributesText}${difficulty.performance
             .map((d) => `${d.acc}% ${Math.round(d.pp)}pp`)
             .join(" ▶ ")}`
