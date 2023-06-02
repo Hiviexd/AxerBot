@@ -25,10 +25,10 @@ interface BeatmapPerformance {
 
 export function multiplayDifficultyParameter(
     parameter: number,
-    rate: number,
-    mods: ModCombination
+    mods: ModCombination,
+    rate?: number
 ) {
-    const calc = parameter * rate;
+    const calc = parameter * (rate || 1);
 
     if (calc > 11 && mods.has("DTHR")) return 11;
     if (calc > 10) return 10;

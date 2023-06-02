@@ -8,7 +8,6 @@ import {
 } from "../../osu/performance/calculateBeatmap";
 import { PrivateMessage } from "bancho.js";
 import { StandardDifficultyAttributes } from "osu-standard-stable";
-import { TaikoDifficultyAttributes } from "osu-taiko-stable";
 import { CatchDifficultyAttributes } from "osu-catch-stable";
 
 export async function sendBeatmapCalculation({
@@ -41,8 +40,6 @@ export async function sendBeatmapCalculation({
     const convertMode = getMode(pm.message.replace(//g, ""));
     const convertModeName = [null, "osu!taiko", "osu!catch", "osu!mania"]; // First is null to ignore std
 
-    rate = rate || 1;
-
     const difficulty = calculateBeatmap(
         osuFile.data,
         convertMode || beatmapData.data.mode_int,
@@ -53,7 +50,6 @@ export async function sendBeatmapCalculation({
     const { data: beatmap } = beatmapData;
 
     function getDifficultyAttributes(mode: number) {
-        rate = rate || 1;
         switch (mode) {
             case 0: {
                 const difficultyAttributes =
@@ -61,23 +57,23 @@ export async function sendBeatmapCalculation({
 
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(
                     2
                 )} CS: ${difficulty.beatmap.difficulty.circleSize.toFixed(
                     2
                 )} AR: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(2)} HP: ${difficultyAttributes.drainRate.toFixed(2)}`;
             }
             case 1: {
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;
@@ -88,16 +84,16 @@ export async function sendBeatmapCalculation({
 
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(
                     2
                 )} CS: ${difficulty.beatmap.difficulty.circleSize.toFixed(
                     2
                 )} AR: ${multiplayDifficultyParameter(
                     difficultyAttributes.approachRate,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;
@@ -105,8 +101,8 @@ export async function sendBeatmapCalculation({
             case 3: {
                 return `OD: ${multiplayDifficultyParameter(
                     difficulty.beatmap.difficulty.overallDifficulty,
-                    rate,
-                    difficulty.performanceAttributes.mods
+                    difficulty.performanceAttributes.mods,
+                    rate
                 ).toFixed(
                     2
                 )} HP: ${difficulty.beatmap.difficulty.drainRate.toFixed(2)}`;
@@ -114,20 +110,24 @@ export async function sendBeatmapCalculation({
         }
     }
 
+    const attributesText = `${`BPM: ${Math.round(
+        difficulty.beatmap.bpmMax * (rate || 1)
+    )} ${getDifficultyAttributes(beatmap.mode_int)}${
+        rate ? ` Rate: ${rate}x` : ""
+    } |`}${
+        convertMode ? ` ${convertModeName[difficulty.beatmap.mode]} | ` : " "
+    }`;
+
     return pm.user.sendMessage(
         `[${beatmap.url} ${beatmap.beatmapset?.artist} - ${
             beatmap.beatmapset?.title
         } [${beatmap.version}]]${
             !difficulty.difficulty.mods.acronyms.includes("NM")
-                ? ` | +${difficulty.difficulty.mods.acronyms.join("")}`
-                : " "
-        } | ${`BPM: ${Math.round(
-            difficulty.beatmap.bpmMax * rate
-        )} ${getDifficultyAttributes(beatmap.mode_int)} Rate: ${rate}x |`}${
-            convertMode
-                ? ` ${convertModeName[difficulty.beatmap.mode]} | `
-                : " "
-        }${difficulty.performance
+                ? ` | ${difficulty.difficulty.starRating.toFixed(
+                      2
+                  )}* +${difficulty.difficulty.mods.acronyms.join("")}`
+                : `| ${difficulty.difficulty.starRating.toFixed(2)}* NoMod`
+        } | ${attributesText}${difficulty.performance
             .map((d) => `${d.acc}% ${Math.round(d.pp)}pp`)
             .join(" ▶ ")}`
     );

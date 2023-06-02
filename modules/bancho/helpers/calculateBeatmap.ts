@@ -40,7 +40,7 @@ export async function calculateBeatmapFromAction(
         sendBeatmapCalculation({
             pm,
             beatmap_id: beatmapURL.data.beatmap_id,
-            rate: rate ? Number(rate) : 1,
+            rate: rate,
         });
     } catch (e: any) {
         console.error(e);

@@ -32,8 +32,8 @@ export default {
                 : slots[0].slice(0, -1); // remove x after the string "1.2x" example
             const rateNumber = Number(rate);
 
-            if (isNaN(rateNumber)) return 1;
-            if (rateNumber < 0.1 || rateNumber > 10.0) return 1;
+            if (isNaN(rateNumber)) return undefined;
+            if (rateNumber < 0.1 || rateNumber > 10.0) return undefined;
 
             return Number(rate);
         };
