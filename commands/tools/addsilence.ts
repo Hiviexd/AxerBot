@@ -31,8 +31,8 @@ addsilent.builder
             .setName("duration")
             .setDescription("Duration of the silent section (in seconds)")
             .setRequired(true)
-            .setMinValue(0.1)
-            .setMaxValue(2.0)
+            .setMinValue(0.01)
+            .setMaxValue(5.0)
     );
 
 addsilent.setExecuteFunction(async (command) => {
@@ -51,7 +51,11 @@ addsilent.setExecuteFunction(async (command) => {
             )
         )
             return command.editReply({
-                embeds: [generateErrorEmbed("Max delay is `5 seconds`!")],
+                embeds: [
+                    generateErrorEmbed(
+                        "Invalid audio type! Allowed types are `mp3` and `ogg`!"
+                    ),
+                ],
             });
 
         await command.editReply({
