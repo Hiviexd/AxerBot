@@ -114,7 +114,22 @@ export default async function commandHandler(
                 .catch(() => void {});
         }
 
-        targetCommand.run(event);
+        try {
+            targetCommand.run(event);
+        } catch (e) {
+            console.error(e);
+            event
+                .reply({
+                    embeds: [generateErrorEmbed("Something went wrong...")],
+                })
+                .catch(() => void {});
+
+            event
+                .editReply({
+                    embeds: [generateErrorEmbed("Something went wrong...")],
+                })
+                .catch(() => void {});
+        }
     }
 
     if (targetCommand.isContextMenu() && event.isContextMenuCommand()) {
