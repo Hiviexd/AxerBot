@@ -100,7 +100,18 @@ export default async function commandHandler(
                     group: event.options.getSubcommandGroup(),
                 });
         } catch (e) {
-            void {};
+            console.error(e);
+            event
+                .reply({
+                    embeds: [generateErrorEmbed("Something went wrong...")],
+                })
+                .catch(() => void {});
+
+            event
+                .editReply({
+                    embeds: [generateErrorEmbed("Something went wrong...")],
+                })
+                .catch(() => void {});
         }
 
         targetCommand.run(event);
