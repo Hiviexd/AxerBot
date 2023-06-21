@@ -101,34 +101,12 @@ export default async function commandHandler(
                 });
         } catch (e) {
             console.error(e);
-            event
-                .reply({
-                    embeds: [generateErrorEmbed("Something went wrong...")],
-                })
-                .catch(() => void {});
-
-            event
-                .editReply({
-                    embeds: [generateErrorEmbed("Something went wrong...")],
-                })
-                .catch(() => void {});
         }
 
         try {
             targetCommand.run(event);
         } catch (e) {
             console.error(e);
-            event
-                .reply({
-                    embeds: [generateErrorEmbed("Something went wrong...")],
-                })
-                .catch(() => void {});
-
-            event
-                .editReply({
-                    embeds: [generateErrorEmbed("Something went wrong...")],
-                })
-                .catch(() => void {});
         }
     }
 
