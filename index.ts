@@ -16,6 +16,8 @@ const axer = new AxerBot({
         IntentsBitField.Flags.DirectMessages,
         IntentsBitField.Flags.DirectMessageReactions,
         IntentsBitField.Flags.DirectMessageTyping,
+        IntentsBitField.Flags.GuildVoiceStates,
+        IntentsBitField.Flags.GuildModeration,
     ],
 }).start();
 
