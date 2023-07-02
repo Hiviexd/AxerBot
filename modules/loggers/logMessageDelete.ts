@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, PartialMessage, AuditLogEvent } from "discord.js";
 import * as database from "../../database";
 import truncateString from "../../helpers/text/truncateString";
 import colors from "../../constants/colors";
@@ -20,16 +20,31 @@ export default async (message: Message<boolean> | PartialMessage) => {
         if (guild.logging.enabled === false) return;
         if (!message.guild.channels.cache.get(guild.logging.channel)) return;
 
+        const channel: any = message.guild.channels.cache.get(guild.logging.channel);
+        if (!channel) return;
+
         const count = 1950;
 
-        const truncatedMessage = truncateString(message.cleanContent, count);
+        let truncatedMessage = truncateString(message.cleanContent, count);
 
-        const embed = new EmbedBuilder()
+        //split by line
+        truncatedMessage = truncatedMessage.split("\n").join("\n- ");
+
+        truncatedMessage = "```diff\n- " + truncatedMessage + "```";
+
+        const auditLogs = await message.guild.fetchAuditLogs({
+            limit: 1,
+        });
+
+        const deleteLog = auditLogs.entries.first();
+
+        // this will be repetitive but idc
+        const selfDeleteEmbed = new EmbedBuilder()
             .setColor(colors.red)
             .setAuthor({
                 name: message.member.nickname
-                    ? `${message.member.nickname} (${message.author.tag})`
-                    : message.author.tag,
+                    ? `${message.member.nickname} (${message.author.username})`
+                    : message.author.username,
                 iconURL: message.author.displayAvatarURL(),
             })
             .setDescription(
@@ -39,51 +54,99 @@ export default async (message: Message<boolean> | PartialMessage) => {
                 { name: "Message id", value: message.id, inline: true },
                 {
                     name: "Message link",
-                    value: `[Message](${message.url})`,
+                    value: message.url,
                     inline: true,
                 },
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: "Channel id", value: message.channel.id, inline: true },
                 {
                     name: "Channel name",
-                    value: message.channel.name,
+                    value: `#${message.channel.name}`,
                     inline: true,
                 },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "User id", value: message.member.id, inline: true },
-                {
-                    name: "User tag",
-                    value: message.member.user.tag,
-                    inline: true,
-                }
+                { name: "User id", value: message.member.id, inline: true }
             )
             .setTimestamp();
-        message.member.nickname
-            ? embed.addFields({
-                  name: "Nickname",
-                  value: message.member.nickname,
-                  inline: true,
-              })
-            : embed.addFields({
-                  name: "\u200b",
-                  value: "\u200b",
-                  inline: true,
-              });
+
+        if (message.member.nickname)
+            selfDeleteEmbed.addFields(
+                {
+                    name: "Nickname",
+                    value: message.member.nickname,
+                    inline: true,
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true,
+                }
+            );
 
         if (message.attachments.size > 0) {
             const img = message.attachments.first()?.url;
 
             if (img) {
-                embed.setImage(img);
+                selfDeleteEmbed.setImage(img);
             }
         }
 
-        const channel: any = message.guild.channels.cache.get(
-            guild.logging.channel
-        );
-        if (!channel) return;
+        if (!deleteLog || deleteLog.action !== AuditLogEvent.MessageDelete)
+            return await channel
+                .send({ embeds: [selfDeleteEmbed] })
+                .catch((e: any) => console.error(e));
 
-        channel.send({ embeds: [embed] }).catch((e: any) => console.error(e));
+        const { executor } = deleteLog;
+
+        const deleteEmbed = new EmbedBuilder()
+            .setColor(colors.red)
+            .setAuthor({
+                name: executor?.username || "*Unknown*",
+                iconURL: executor?.displayAvatarURL(),
+            })
+            .setDescription(
+                `❌ ${executor} deleted ${message.member.user}'s message from from ${message.channel}\n\n**Message:** \n${truncatedMessage}`
+            )
+            .addFields(
+                { name: "Message id", value: message.id, inline: true },
+                {
+                    name: "Message link",
+                    value: message.url,
+                    inline: true,
+                },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "Channel id", value: message.channel.id, inline: true },
+                {
+                    name: "Channel name",
+                    value: `#${message.channel.name}`,
+                    inline: true,
+                },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "User id", value: message.member.id, inline: true },
+                {
+                    name: "Username",
+                    value: message.member.user.username,
+                    inline: true,
+                },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "Operator id", value: executor?.id || "*Unknown*", inline: true },
+                {
+                    name: "Operator",
+                    value: executor?.username || "*Unknown*",
+                    inline: true,
+                },
+                { name: "\u200b", value: "\u200b", inline: true }
+            )
+            .setTimestamp();
+
+        if (message.attachments.size > 0) {
+            const img = message.attachments.first()?.url;
+
+            if (img) {
+                deleteEmbed.setImage(img);
+            }
+        }
+        channel.send({ embeds: [deleteEmbed] }).catch((e: any) => console.error(e));
     } catch (e) {
         console.error(e);
     }

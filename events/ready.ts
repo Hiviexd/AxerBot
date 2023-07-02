@@ -16,7 +16,7 @@ export default {
             );
 
             //? Sets and updates the status of the bot every 15 seconds
-            presence(bot, bot_user, true); // ! false = not ready
+            presence(bot, bot_user, false); // ! false = not ready
 
             setInterval(() => {
                 presence(bot, bot_user, true); // ! true = ready
