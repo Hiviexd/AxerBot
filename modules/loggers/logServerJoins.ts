@@ -21,14 +21,18 @@ export default async function logServerJoins(
             .setColor(colors.yellowBright)
             .setAuthor({
                 name: member.nickname
-                    ? `${member.nickname} (${member.user.tag})`
-                    : member.user.tag,
+                    ? `${member.nickname} (${member.user.username})`
+                    : member.user.username,
                 iconURL: member.user.displayAvatarURL(),
             })
             .setDescription(`🔰 ${member.user} has joined the server!`)
             .addFields(
                 { name: "User id", value: member.id, inline: false },
-                { name: "User tag", value: member.user.tag, inline: false },
+                {
+                    name: "Username",
+                    value: member.user.username,
+                    inline: false,
+                },
                 {
                     name: "Account created",
                     value: `<t:${moment(member.user.createdAt).format("X")}:f>`,

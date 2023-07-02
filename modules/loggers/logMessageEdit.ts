@@ -42,26 +42,36 @@ export default async (
 
         const count = 1950;
 
-        const original = truncateString(oldMessage.cleanContent, count);
+        let original = truncateString(oldMessage.cleanContent, count);
 
-        const edited = truncateString(newMessage.cleanContent, count);
+        //split by line
+        original = original.split("\n").join("\n- ");
+
+        original = "```diff\n- " + original + "```";
+
+        let edited = truncateString(newMessage.cleanContent, count);
+
+        //split by line
+        edited = edited.split("\n").join("\n+ ");
+
+        edited = "```diff\n+ " + edited + "```";
 
         const embed = new EmbedBuilder()
             .setColor(colors.blue)
             .setAuthor({
                 name: newMessage.member.nickname
-                    ? `${newMessage.member.nickname} (${newMessage.author.tag})`
-                    : newMessage.author.tag,
+                    ? `${newMessage.member.nickname} (${newMessage.author.username})`
+                    : newMessage.author.username,
                 iconURL: newMessage.author.displayAvatarURL(),
             })
             .setDescription(
-                `📝 ${newMessage.member.user} edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n\n**After:** \n${edited}\n`
+                `📝 ${newMessage.member.user} edited a message in ${newMessage.channel}\n\n**Before:** \n${original}\n**After:** \n${edited}\n`
             )
             .addFields(
                 { name: "Message id", value: newMessage.id, inline: true },
                 {
                     name: "Message link",
-                    value: `[Message](${newMessage.url})`,
+                    value: newMessage.url,
                     inline: true,
                 },
                 { name: "\u200b", value: "\u200b", inline: true },
@@ -72,29 +82,29 @@ export default async (
                 },
                 {
                     name: "Channel name",
-                    value: (oldMessage.channel as GuildTextBasedChannel).name,
+                    value: `#${
+                        (oldMessage.channel as GuildTextBasedChannel).name
+                    }`,
                     inline: true,
                 },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "User id", value: newMessage.member.id, inline: true },
-                {
-                    name: "User tag",
-                    value: newMessage.member.user.tag,
-                    inline: true,
-                }
+                { name: "User id", value: newMessage.member.id, inline: true }
             )
             .setTimestamp();
-        newMessage.member.nickname
-            ? embed.addFields({
-                  name: "Nickname",
-                  value: newMessage.member.nickname,
-                  inline: true,
-              })
-            : embed.addFields({
-                  name: "\u200b",
-                  value: "\u200b",
-                  inline: true,
-              });
+
+        if (newMessage.member.nickname)
+            embed.addFields(
+                {
+                    name: "Nickname",
+                    value: newMessage.member.nickname,
+                    inline: true,
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true,
+                }
+            );
 
         if (newMessage.attachments.size > 0) {
             let img: any = newMessage.attachments.first();
