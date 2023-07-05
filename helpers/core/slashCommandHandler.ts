@@ -15,10 +15,7 @@ import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
 
-export function checkMemberPermissions(
-    member: GuildMember,
-    permissions: PermissionResolvable[]
-) {
+export function checkMemberPermissions(member: GuildMember, permissions: PermissionResolvable[]) {
     let pass = false;
 
     if (!member) return false;
@@ -46,8 +43,7 @@ export default async function commandHandler(
             c.names.includes(event.commandName) ||
             (
                 c as ContextMenuCommand<
-                    | UserContextMenuCommandInteraction
-                    | MessageContextMenuCommandInteraction
+                    UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction
                 >
             ).name == event.commandName
     );
@@ -56,31 +52,22 @@ export default async function commandHandler(
 
     if (!targetCommand.allowDM && !event.channel)
         return event.reply({
-            embeds: [
-                generateErrorEmbed("You need to run this command in a guild!"),
-            ],
+            embeds: [generateErrorEmbed("You need to run this command in a guild!")],
         }); // Command error message
 
     if (!targetCommand.allowDM && event.channel?.type == ChannelType.DM)
         return event.reply({
-            embeds: [
-                generateErrorEmbed("You need to run this command in a guild!"),
-            ],
+            embeds: [generateErrorEmbed("You need to run this command in a guild!")],
         }); // Command error message
 
     if (targetCommand.permissions.length != 0 && !event.member)
         return event.reply({
-            embeds: [
-                generateErrorEmbed("You need to run this command in a guild!"),
-            ],
+            embeds: [generateErrorEmbed("You need to run this command in a guild!")],
         });
 
     if (
         targetCommand.permissions.length != 0 &&
-        !checkMemberPermissions(
-            event.member as GuildMember,
-            targetCommand.permissions
-        )
+        !checkMemberPermissions(event.member as GuildMember, targetCommand.permissions)
     ) {
         return event.reply({
             embeds: [MissingPermissions],
@@ -91,16 +78,13 @@ export default async function commandHandler(
 
     if (targetCommand.isSlashCommand() && event.isChatInputCommand()) {
         try {
-            if (
-                event.options.getSubcommand() ||
-                event.options.getSubcommandGroup()
-            )
+            if (event.options.getSubcommand() || event.options.getSubcommandGroup())
                 return targetCommand.runSubcommand(event, {
                     name: event.options.getSubcommand(),
                     group: event.options.getSubcommandGroup(),
                 });
         } catch (e) {
-            console.error(e);
+            if (!String(e).includes("CommandInteractionOptionNoSubcommand")) console.error(e);
         }
 
         try {
