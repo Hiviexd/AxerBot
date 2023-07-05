@@ -1,4 +1,5 @@
 import {
+    ApplicationCommandOptionType,
     ChannelType,
     ChatInputCommandInteraction,
     Client,
@@ -78,11 +79,20 @@ export default async function commandHandler(
 
     if (targetCommand.isSlashCommand() && event.isChatInputCommand()) {
         try {
-            if (event.options.getSubcommand() || event.options.getSubcommandGroup())
-                return targetCommand.runSubcommand(event, {
-                    name: event.options.getSubcommand(),
-                    group: event.options.getSubcommandGroup(),
-                });
+            if (
+                event.command &&
+                event.command.options.find(
+                    (o) =>
+                        o.type == ApplicationCommandOptionType.Subcommand ||
+                        o.type == ApplicationCommandOptionType.SubcommandGroup
+                )
+            ) {
+                if (event.options.getSubcommand() || event.options.getSubcommandGroup())
+                    return targetCommand.runSubcommand(event, {
+                        name: event.options.getSubcommand(),
+                        group: event.options.getSubcommandGroup(),
+                    });
+            }
         } catch (e) {
             if (!String(e).includes("CommandInteractionOptionNoSubcommand")) console.error(e);
         }
