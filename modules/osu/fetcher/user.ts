@@ -71,7 +71,7 @@ export async function userRecentActivity(
         }
 
         return {
-            status: 500,
+            status: e.status || 404,
             data: e,
         };
     }
