@@ -50,19 +50,19 @@ evalCommand.setExecuteFunction(async (command) => {
         filter: (i) => i.customId == handshakeId,
     });
 
-    collector.on("collect", (modalData: ModalSubmitInteraction) => {
+    collector.on("collect", async (modalData: ModalSubmitInteraction) => {
         const code = modalData.fields.getTextInputValue("code");
 
-        modalData.deferUpdate();
+        await modalData.deferReply();
 
         try {
             const result = eval(code);
 
-            command.followUp({
+            command.modalData({
                 embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
             });
         } catch (e) {
-            command.followUp({
+            command.modalData({
                 embeds: [
                     generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
                 ],
