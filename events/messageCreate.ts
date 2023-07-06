@@ -1,9 +1,4 @@
-import {
-    ChannelType,
-    Client,
-    GuildChannelResolvable,
-    PermissionFlagsBits,
-} from "discord.js";
+import { ChannelType, Client, GuildChannelResolvable, PermissionFlagsBits } from "discord.js";
 
 import sendQuotes from "../helpers/general/sendQuotes";
 import checkOsuURL from "../modules/osu/url/checkOsuURL";
@@ -28,14 +23,19 @@ export default {
             )
                 return;
 
-            if (
-                message.guild &&
-                !message.guild.members.cache
-                    .get(bot.user.id)
-                    ?.permissionsIn(message.channel as GuildChannelResolvable)
-                    .has(PermissionFlagsBits.SendMessages)
-            )
-                return;
+            if (message.guild) {
+                const memberSelf = message.guild.members.cache.get(bot.user.id);
+
+                if (!memberSelf) return;
+                if (!message.channel) return;
+
+                if (
+                    !memberSelf
+                        .permissionsIn(message.channel as GuildChannelResolvable)
+                        .has(PermissionFlagsBits.SendMessages)
+                )
+                    return;
+            }
 
             sendQuotes(message, bot);
             checkOsuURL(message);
