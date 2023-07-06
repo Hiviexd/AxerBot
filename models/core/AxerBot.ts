@@ -26,6 +26,12 @@ export class AxerBot extends Client {
 
     start() {
         this.Logger.printInfo("Starting AxerBot...");
+
+        this.Discussions.listen.bind(this.Discussions);
+        this.Discussions.events.on.bind(this.Discussions);
+        this.UserEvents.listen.bind(this.UserEvents);
+        this.UserEvents.events.on.bind(this.UserEvents);
+
         this.login(process.env.TOKEN).then(() => {
             this.Bancho.connect().catch(console.error);
             eventHandler(this);
@@ -33,13 +39,14 @@ export class AxerBot extends Client {
             startAvatarListener(this);
             this.Reminders.start();
 
+            this.Discussions.listen();
+            this.Discussions.events.on("any", handleDiscussionEvent);
+
+            this.UserEvents.listen();
+            this.UserEvents.events.on("any", handleMapperTrackerUserEvent);
+
             this.Logger.printSuccess(`${this.user?.username} is online!`);
         });
-        this.Discussions.listen();
-        this.Discussions.events.on("any", handleDiscussionEvent);
-
-        this.UserEvents.listen();
-        this.UserEvents.events.on("any", handleMapperTrackerUserEvent);
 
         return this;
     }

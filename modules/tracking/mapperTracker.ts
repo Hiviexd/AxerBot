@@ -29,16 +29,13 @@ export async function handleMapperTrackerUserEvent(event: UserRecentEvent) {
     }
 
     async function sendForTracker(tracker: (typeof trackersMatchingMapper)[0]) {
-        console.log(tracker.userId, tracker.id, event.type);
         if (!tracker.channel) return;
 
         const channel = await bot.channels.fetch(tracker.channel);
 
         if (
             !channel ||
-            ![ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(
-                channel.type
-            )
+            ![ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(channel.type)
         )
             return;
 
@@ -80,9 +77,7 @@ export async function handleMapperTracker(event: BeatmapsetEvent) {
 
         if (
             !channel ||
-            ![ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(
-                channel.type
-            )
+            ![ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(channel.type)
         )
             return;
 
