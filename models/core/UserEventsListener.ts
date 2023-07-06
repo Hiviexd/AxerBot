@@ -58,21 +58,14 @@ export class UserEventsListener {
 
             const response = await userEvents.create({
                 _id: event.id,
-                beatmapId: event.beatmap?.url
-                    ? parseOsuPathId(event.beatmap.url)
-                    : null,
-                beatmapsetId: event.beatmapset?.url
-                    ? parseOsuPathId(event.beatmapset.url)
-                    : null,
+                beatmapId: event.beatmap?.url ? parseOsuPathId(event.beatmap.url) : null,
+                beatmapsetId: event.beatmapset?.url ? parseOsuPathId(event.beatmapset.url) : null,
                 createdAt: new Date(event.created_at),
                 type: event.type,
                 userId: parseOsuPathId(event.user.url),
             });
 
-            consoleCheck(
-                `UserEventsManager`,
-                `Inserted event ${event.id} with type ${event.type}`
-            );
+            consoleCheck(`UserEventsManager`, `Inserted event ${event.id} with type ${event.type}`);
 
             this.events.emit("any", event);
             this.events.emit(event.type, event);
@@ -101,21 +94,24 @@ export class UserEventsListener {
         const sanitizedTrackers: (typeof allMapperTrackers)[0][] = [];
 
         for (const tracker of allMapperTrackers) {
-            if (
-                !sanitizedTrackers.find(
-                    (t) => t.userId == tracker.userId && tracker.userId
-                )
-            )
+            if (!sanitizedTrackers.find((t) => t.userId == tracker.userId && tracker.userId))
                 sanitizedTrackers.push(tracker);
         }
 
         for (const tracker of sanitizedTrackers) {
-            const events = await osuApi.fetch.userRecentActivity(
-                tracker.userId || ""
-            );
+            const events = await osuApi.fetch.userRecentActivity(tracker.userId || "");
 
-            if (events.status != 200)
+            if (events.status != 200) {
+                if (events.status == 404) {
+                    await tracker.delete();
+                    consoleLog(
+                        "UserEventsManager",
+                        `Removed ${tracker.userId} from tracker because this user doesn't exists`
+                    );
+                }
+
                 return setTimeout(this.listen.bind(this), 300000);
+            }
 
             for (const event of events.data) {
                 await this.tryToInsertNewEvent(event);
