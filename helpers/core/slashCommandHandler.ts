@@ -75,8 +75,6 @@ export default async function commandHandler(
         });
     }
 
-    // const jokeChance = new Chance();
-
     if (targetCommand.isSlashCommand() && event.isChatInputCommand()) {
         try {
             if (
