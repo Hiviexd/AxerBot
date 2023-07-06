@@ -48,23 +48,15 @@ export class SlashCommandSubcommand {
     }
 
     async run(interaction: ChatInputCommandInteraction) {
-        if (!this.hasModal)
-            await interaction.deferReply({ ephemeral: this.ephemeral });
+        if (!this.hasModal) await interaction.deferReply({ ephemeral: this.ephemeral });
 
         if (
             this.permissions.length != 0 &&
-            !checkMemberPermissions(
-                interaction.member as GuildMember,
-                this.permissions
-            )
+            !checkMemberPermissions(interaction.member as GuildMember, this.permissions)
         ) {
-            return interaction.deferred
-                ? interaction.editReply({
-                      embeds: [MissingPermissions],
-                  })
-                : interaction.reply({
-                      embeds: [MissingPermissions],
-                  });
+            return interaction.editReply({
+                embeds: [MissingPermissions],
+            });
         }
 
         this._executeFunction(interaction);

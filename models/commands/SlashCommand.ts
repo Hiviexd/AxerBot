@@ -12,9 +12,7 @@ import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import { consoleLog } from "../../helpers/core/logger";
 import { ContextMenuCommand } from "./ContextMenuCommand";
 
-export type ISlashCommandExecuteFunction = (
-    interaction: ChatInputCommandInteraction
-) => any;
+export type ISlashCommandExecuteFunction = (interaction: ChatInputCommandInteraction) => any;
 
 export type PartialSubcommandExecutionParam = {
     name: string;
@@ -113,9 +111,7 @@ export class SlashCommand {
 
         return {
             result: true,
-            group: this._subcommand_groups.find((g) =>
-                g.builder.name.includes(name)
-            ),
+            group: this._subcommand_groups.find((g) => g.builder.name.includes(name)),
         };
     }
 
@@ -128,9 +124,7 @@ export class SlashCommand {
 
         return {
             result: true,
-            command: this._subcommands.find((c) =>
-                c.builder.name.includes(name)
-            ),
+            command: this._subcommands.find((c) => c.builder.name.includes(name)),
         };
     }
 
@@ -142,9 +136,7 @@ export class SlashCommand {
             return this.executeSubcommandWithGroup(interaction, subcommand);
 
         const target = this._subcommands.find(
-            (c) =>
-                c.builder.name == subcommand?.name ??
-                interaction.options.getSubcommand()
+            (c) => c.builder.name == subcommand?.name ?? interaction.options.getSubcommand()
         );
 
         if (!target) return;
@@ -168,21 +160,14 @@ export class SlashCommand {
                 )}`
             );
 
-        const targetGroup = this._subcommand_groups.find(
-            (g) => g.builder.name == subcommand.group
-        );
+        const targetGroup = this._subcommand_groups.find((g) => g.builder.name == subcommand.group);
 
         if (!targetGroup)
             return new Error(
-                `You didn't append this group to this command! ${JSON.stringify(
-                    subcommand
-                )}`
+                `You didn't append this group to this command! ${JSON.stringify(subcommand)}`
             );
 
-        targetGroup.runCommand(
-            interaction,
-            interaction.options.getSubcommand()
-        );
+        targetGroup.runCommand(interaction, interaction.options.getSubcommand());
     }
 
     isContextMenu(): this is ContextMenuCommand<any> {
@@ -194,28 +179,17 @@ export class SlashCommand {
     }
 
     async run(interaction: ChatInputCommandInteraction) {
-        consoleLog(
-            "CommandHandler",
-            `Executing command ${interaction.commandName}`
-        );
+        consoleLog("CommandHandler", `Executing command ${interaction.commandName}`);
 
-        if (!this.hasModal)
-            await interaction.deferReply({ ephemeral: this.ephemeral });
+        if (!this.hasModal) await interaction.deferReply({ ephemeral: this.ephemeral });
 
         if (
             this.permissions.length != 0 &&
-            !checkMemberPermissions(
-                interaction.member as GuildMember,
-                this.permissions
-            )
+            !checkMemberPermissions(interaction.member as GuildMember, this.permissions)
         ) {
-            return interaction.deferred
-                ? interaction.editReply({
-                      embeds: [MissingPermissions],
-                  })
-                : interaction.reply({
-                      embeds: [MissingPermissions],
-                  });
+            return interaction.editReply({
+                embeds: [MissingPermissions],
+            });
         }
 
         this._executeFunction(interaction);

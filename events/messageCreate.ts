@@ -29,12 +29,13 @@ export default {
                 if (!memberSelf) return;
                 if (!message.channel) return;
 
-                if (
-                    !memberSelf
-                        .permissionsIn(message.channel as GuildChannelResolvable)
-                        .has(PermissionFlagsBits.SendMessages)
-                )
-                    return;
+                const permissions = memberSelf.permissionsIn(
+                    message.channel as GuildChannelResolvable
+                );
+
+                if (!permissions) return;
+
+                if (permissions && !permissions.has(PermissionFlagsBits.SendMessages)) return;
             }
 
             sendQuotes(message, bot);
