@@ -17,10 +17,7 @@ const imagecolors = new SlashCommand(
 
 imagecolors.builder
     .addAttachmentOption((o) =>
-        o
-            .setName("image")
-            .setRequired(true)
-            .setDescription("Image to get colors")
+        o.setName("image").setRequired(true).setDescription("Image to get colors")
     )
     .addIntegerOption((o) =>
         o
@@ -62,9 +59,7 @@ imagecolors.setExecuteFunction(async (command) => {
             count: count,
             type: attachment.contentType || "image/png",
         })
-    ).map((color) =>
-        getFixedRGB(color.rgb()[0], color.rgb()[1], color.rgb()[2])
-    );
+    ).map((color) => getFixedRGB(color.rgb()[0], color.rgb()[1], color.rgb()[2]));
 
     const height = 50;
     const canvas = createCanvas(450, height * colors.length);
@@ -78,26 +73,17 @@ imagecolors.setExecuteFunction(async (command) => {
 
             ctx.fillRect(0, i == 0 ? 0 : height * i, canvas.width, height);
 
-            ctx.fillStyle = mustUseDarkText(
-                colors[i][0],
-                colors[i][1],
-                colors[i][2]
-            )
+            ctx.fillStyle = mustUseDarkText(colors[i][0], colors[i][1], colors[i][2])
                 ? "#000000"
                 : "#FFFFFF";
 
             ctx.font = "500 20px Quicksand";
 
-            const colorText = `#${colorconver.rgb.hex(
-                colors[i][0],
-                colors[i][1],
-                colors[i][2]
-            )}`;
+            const colorText = `#${colorconver.rgb.hex(colors[i][0], colors[i][1], colors[i][2])}`;
 
             const textMeasure = ctx.measureText(colorText);
             const textHeight =
-                textMeasure.actualBoundingBoxAscent +
-                textMeasure.actualBoundingBoxDescent;
+                textMeasure.actualBoundingBoxAscent + textMeasure.actualBoundingBoxDescent;
 
             ctx.fillText(
                 colorText,
@@ -151,21 +137,17 @@ imagecolors.setExecuteFunction(async (command) => {
         .addFields(
             {
                 name: "osu! Format",
-                value: colors
-                    .map((c, i) => `Combo${i + 1}: ${c.join(",")}`)
-                    .join("\n"),
+                value: colors.map((c, i) => `Combo${i + 1}: ${c.join(",")}`).join("\n"),
                 inline: true,
             },
             {
                 name: "HEX Colors",
-                value: colors
-                    .map((c) => `#${colorconver.rgb.hex(c)}`)
-                    .join("\n"),
+                value: colors.map((c) => `#${colorconver.rgb.hex(c)}`).join("\n"),
                 inline: true,
             }
         )
         .setFooter({
-            iconURL: command.user.avatarURL() || "",
+            iconURL: command.user.avatarURL() || undefined,
             text: `${command.user.tag}`,
         })
         .setThumbnail(attachment.url);
