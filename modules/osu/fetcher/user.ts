@@ -1,17 +1,10 @@
 import axios from "axios";
-import {
-    consoleCheck,
-    consoleError,
-    consoleLog,
-} from "../../../helpers/core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../../../helpers/core/logger";
 import { IHTTPResponse } from "../../../types/http";
 import { UserScoreResponse } from "../../../types/score";
 import { User, UserRecentEvent, UserResponse } from "../../../types/user";
 
-export async function user(
-    user_id: string,
-    mode?: string
-): Promise<UserResponse> {
+export async function user(user_id: string, mode?: string): Promise<UserResponse> {
     try {
         consoleLog("user fetcher", `Fetching user ${user_id}`);
 
@@ -56,14 +49,11 @@ export async function userRecentActivity(
     try {
         consoleLog("user fetcher", `Fetching user recent activity ${user_id}`);
 
-        const req = await axios(
-            `https://osu.ppy.sh/api/v2/users/${user_id}/recent_activity`,
-            {
-                headers: {
-                    authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
-                },
-            }
-        );
+        const req = await axios(`https://osu.ppy.sh/api/v2/users/${user_id}/recent_activity`, {
+            headers: {
+                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+            },
+        });
 
         const res = req.data;
 
@@ -75,7 +65,10 @@ export async function userRecentActivity(
         };
     } catch (e: any) {
         consoleError("user fetcher", "Wtf an error:");
-        console.error(e);
+
+        if (e.status != 404 || (e.response && e.response.status) != 404) {
+            console.error(e);
+        }
 
         return {
             status: 500,
@@ -84,10 +77,7 @@ export async function userRecentActivity(
     }
 }
 
-export async function users(
-    ids: string[],
-    mode?: string
-): Promise<IHTTPResponse<User[]>> {
+export async function users(ids: string[], mode?: string): Promise<IHTTPResponse<User[]>> {
     try {
         consoleLog("user fetcher", `Fetching users`);
 
