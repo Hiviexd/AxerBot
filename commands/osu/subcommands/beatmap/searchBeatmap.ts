@@ -54,7 +54,7 @@ export enum BeatmapStatus {
     Graveyard = "graveyard",
 }
 
-const searchBeatmap = new SlashCommandSubcommand("beatmap", "Search a beatmap");
+const searchBeatmap = new SlashCommandSubcommand("search", "Search a beatmap");
 
 searchBeatmap.builder
     .addStringOption((o) =>
@@ -64,9 +64,7 @@ searchBeatmap.builder
             .setRequired(true)
     )
     .addStringOption((o) =>
-        o
-            .setName("star_rating")
-            .setDescription("Filter by stars using operators like: <2, >3, <32")
+        o.setName("star_rating").setDescription("Filter by stars using operators like: <2, >3, <32")
     )
     .addStringOption((o) =>
         o
@@ -189,11 +187,9 @@ searchBeatmap.setExecuteFunction(async (command) => {
             beatmapsets.map((m, i) => {
                 return {
                     label: truncateString(
-                        `#${i + 1} | ${truncateString(
-                            `${m.artist} - ${m.title}`,
-                            70,
-                            true
-                        )} by ${m.creator}`,
+                        `#${i + 1} | ${truncateString(`${m.artist} - ${m.title}`, 70, true)} by ${
+                            m.creator
+                        }`,
                         100,
                         true
                     ),
@@ -233,15 +229,10 @@ searchBeatmap.setExecuteFunction(async (command) => {
     }
 
     function generateDescription() {
-        if (
-            searchData.status != 200 ||
-            !searchData.data ||
-            searchData.data.error
-        )
+        if (searchData.status != 200 || !searchData.data || searchData.data.error)
             return "No results found for your search...";
 
-        if (searchData.data.beatmapsets.length < 1)
-            return "No results found for your search...";
+        if (searchData.data.beatmapsets.length < 1) return "No results found for your search...";
 
         const result = beatmapsets
             .map(
