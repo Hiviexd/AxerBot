@@ -68,6 +68,7 @@ import {
 } from "discord.js";
 import migrate from "./dev/migrate";
 import beatmap from "./osu/beatmap";
+import evalCommand from "./dev/eval";
 
 export const AxerCommands = [
     // ? General
@@ -135,10 +136,8 @@ export const AxerCommands = [
     shutdown,
     rebuild,
     migrate,
+    evalCommand,
 ] as (
-    | ContextMenuCommand<
-          | UserContextMenuCommandInteraction
-          | MessageContextMenuCommandInteraction
-      >
+    | ContextMenuCommand<UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction>
     | SlashCommand
 )[];

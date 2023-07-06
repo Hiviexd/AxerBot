@@ -1,74 +1,74 @@
-// import { Client, Message } from "discord.js";
-// import { owners } from "../../config.json";
-// import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-// import * as db from "./../../database";
+import { randomUUID } from "crypto";
+import {
+    ActionRowBuilder,
+    InteractionCollector,
+    ModalBuilder,
+    ModalSubmitInteraction,
+    TextInputBuilder,
+    TextInputStyle,
+} from "discord.js";
+import util from "util";
+import config from "../../config.json";
+import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
+import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import truncateString from "../../helpers/text/truncateString";
+import { SlashCommand } from "../../models/commands/SlashCommand";
+import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
-// import util from "util";
+const evalCommand = new SlashCommand(
+    "eval",
+    "Evaluate code",
+    "Developers",
+    true,
+    undefined,
+    [],
+    true
+);
 
-// export default {
-// 	name: "eval",
-// 	help: {
-// 		description:
-// 			"Developer-exclusive command that allows you to execute arbitrary code.\n Usually used for debugging purposes.",
-// 		syntax: "/eval `<code>`",
-// 		example: '/eval `message.channel.send("Hello World!")`',
-// 	},
-// 	category: "dev",
-// 	run: async (bot: Client, message: Message, args: string[]) => {
-// 		const database: any = db;
-// 		try {
-// 			if (!args.join(" ")) return;
-// 			if (owners.includes(message.author.id)) {
-// 				let evaled;
-// 				try {
-// 					let argjoin = args.join(" ");
-// 					evaled = await eval(argjoin);
-// 					evaled = util.inspect(evaled, { depth: -1 });
-// 					message.channel
-// 						.send({
-// 							embeds: [
-// 								{
-// 									title: "Eval",
-// 									color: "WHITE",
-// 									fields: [
-// 										{
-// 											name: "▶️ Input:",
-// 											value: "`" + argjoin + "`",
-// 										},
-// 										{
-// 											name: "◀️ Result:",
-// 											value: "`" + evaled + "`",
-// 										},
-// 									],
-// 								},
-// 							],
-// 						})
-// 						.catch(console.error);
-// 				} catch (error) {
-// 					console.log(error);
-// 					message
-// 						.reply({
-// 							embeds: [
-// 								{
-// 									color: "RED",
-// 									description:
-// 										"🖨️ - __**Error**__\n`" + error + "`",
-// 								},
-// 							],
-// 						})
-// 						.catch(console.error);
-// 				}
-// 			} else {
-// 				message.reply({
-// 					embeds: [
-// 						generateErrorEmbed(
-// 							"❌ **Only bot developers allowed to use this!**"
-// 						),
-// 					],
-// 				});
-// 			}
-// 		} catch (e) {
-// 			console.error(e);
-// 		}
-// 	},
-// };
+evalCommand.setExecuteFunction(async (command) => {
+    if (!config.owners.includes(command.user.id))
+        return command.editReply({
+            embeds: [MissingPermissions],
+        });
+
+    const handshakeId = randomUUID();
+    const modal = new ModalBuilder().setTitle("Evaluate").setCustomId(handshakeId);
+
+    const input = new ActionRowBuilder<TextInputBuilder>().addComponents(
+        new TextInputBuilder()
+            .setLabel("code")
+            .setCustomId("code")
+            .setRequired(true)
+            .setStyle(TextInputStyle.Paragraph)
+    );
+
+    modal.addComponents(input);
+
+    await command.showModal(modal);
+
+    const collector = new InteractionCollector(command.client, {
+        filter: (i) => i.customId == handshakeId,
+    });
+
+    collector.on("collect", (modalData: ModalSubmitInteraction) => {
+        const code = modalData.fields.getTextInputValue("code");
+
+        modalData.deferUpdate();
+
+        try {
+            const result = eval(code);
+
+            command.followUp({
+                embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
+            });
+        } catch (e) {
+            command.followUp({
+                embeds: [
+                    generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
+                ],
+            });
+        }
+    });
+});
+
+export default evalCommand;
