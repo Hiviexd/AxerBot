@@ -74,7 +74,9 @@ export class UserEventsListener {
                 status: 200,
                 data: response,
             };
-        } catch (e) {
+        } catch (e: any) {
+            if (e.status == 404 || (e.response && e.response.status) == 404) return;
+
             console.error(e);
 
             return {
