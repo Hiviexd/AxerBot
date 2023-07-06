@@ -77,7 +77,7 @@ export class UserEventsListener {
         } catch (e: any) {
             if (e.status == 404 || (e.response && e.response.status) == 404) return;
 
-            console.error(e);
+            console.log(e);
 
             return {
                 status: 500,
@@ -103,15 +103,16 @@ export class UserEventsListener {
         for (const tracker of sanitizedTrackers) {
             const events = await osuApi.fetch.userRecentActivity(tracker.userId || "");
 
-            if (events.status != 200) {
-                if (events.status == 404) {
-                    await tracker.delete();
-                    consoleLog(
-                        "UserEventsManager",
-                        `Removed ${tracker.userId} from tracker because this user doesn't exists`
-                    );
-                }
+            if (events.status == 404) {
+                await tracker.delete({ _id: tracker._id });
 
+                consoleLog(
+                    "UserEventsManager",
+                    `Removed ${tracker.userId} from tracker because this user doesn't exists`
+                );
+            }
+
+            if (events.status != 200) {
                 return setTimeout(this.listen.bind(this), 300000);
             }
 
