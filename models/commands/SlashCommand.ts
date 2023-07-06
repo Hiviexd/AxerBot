@@ -192,6 +192,8 @@ export class SlashCommand {
             });
         }
 
+        // if (!this._executeFunction) return;
+
         this._executeFunction(interaction);
     }
 
