@@ -58,15 +58,19 @@ evalCommand.setExecuteFunction(async (command) => {
         try {
             const result = eval(code);
 
-            command.editReply({
-                embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
-            });
+            modalData
+                .editReply({
+                    embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
+                })
+                .catch(console.error);
         } catch (e) {
-            command.editReply({
-                embeds: [
-                    generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
-                ],
-            });
+            modalData
+                .editReply({
+                    embeds: [
+                        generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
+                    ],
+                })
+                .catch(console.error);
         }
     });
 });
