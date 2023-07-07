@@ -138,22 +138,15 @@ export default async (member: GuildMember) => {
         if (
             !verification_channel
                 ?.permissionsFor(botMember.roles.botRole || botMember)
-                .has(PermissionFlagsBits.SendMessages, true)
+                .has(PermissionFlagsBits.SendMessages, true) &&
+            !guild_db.verification.isStatic
         )
             return sendSystemError(VerificationSystemError.ChannelPermissions);
 
         if (
             !verification_channel
                 ?.permissionsFor(botMember.roles.botRole || botMember)
-                .has(
-                    [
-                        PermissionFlagsBits.SendMessages,
-
-                        PermissionFlagsBits.ManageNicknames,
-                        PermissionFlagsBits.ManageRoles,
-                    ],
-                    true
-                )
+                .has([PermissionFlagsBits.ManageNicknames, PermissionFlagsBits.ManageRoles], true)
         )
             return sendSystemError(VerificationSystemError.UserPermissions);
 
