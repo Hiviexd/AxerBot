@@ -53,16 +53,16 @@ evalCommand.setExecuteFunction(async (command) => {
     collector.on("collect", async (modalData: ModalSubmitInteraction) => {
         const code = modalData.fields.getTextInputValue("code");
 
-        await modalData.deferUpdate();
+        await modalData.deferReply();
 
         try {
             const result = eval(code);
 
-            command.followUp({
+            command.editReply({
                 embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
             });
         } catch (e) {
-            command.followUp({
+            command.editReply({
                 embeds: [
                     generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
                 ],
