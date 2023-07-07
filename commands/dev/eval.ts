@@ -58,11 +58,11 @@ evalCommand.setExecuteFunction(async (command) => {
         try {
             const result = eval(code);
 
-            modalData.followUp({
+            command.followUp({
                 embeds: [generateSuccessEmbed(util.inspect(result, { depth: -1 }))],
             });
         } catch (e) {
-            modalData.followUp({
+            command.followUp({
                 embeds: [
                     generateErrorEmbed(`\`\`\`bash\n${truncateString(String(e), 2030)}\`\`\``),
                 ],
