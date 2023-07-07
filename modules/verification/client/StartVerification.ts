@@ -43,7 +43,7 @@ export default async (member: GuildMember) => {
                 .setTitle("⚠️ Verification system alert")
                 .setColor(colors.yellowBright)
                 .setDescription(
-                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel?.id}>. To fix it you should add \`SEND_MESSAGES\` permission to the role <@&${botMember.roles.botRole}>. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel?.id}>. To fix it you should add \`SEND_MESSAGES\` permission to the role ${botMember.roles.botRole}. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
                     Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
                 );
 
@@ -59,7 +59,7 @@ export default async (member: GuildMember) => {
                 .setTitle("⚠️ Verification system alert")
                 .setColor(colors.yellowBright)
                 .setDescription(
-                    `The verification system in your server \`${member.guild.name}\` is not working properly. Check if I have the role <@&${botMember.roles.botRole}> has the following permissions: \`MANAGE_NICKNAMES\`, \`MANAGE_ROLES\` and \`SEND_MESSAGES\`. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                    `The verification system in your server \`${member.guild.name}\` is not working properly. Check if I have the role ${botMember.roles.botRole} has the following permissions: \`MANAGE_NICKNAMES\`, \`MANAGE_ROLES\` and \`SEND_MESSAGES\`. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
                     Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
                 );
 
@@ -136,24 +136,16 @@ export default async (member: GuildMember) => {
         if (!botMember) return;
 
         if (
-            !member.guild.members.cache
-                .get(member.client.user.id)
-                ?.permissionsIn(verification_channel as GuildChannelResolvable)
-                .has(PermissionFlagsBits.SendMessages, true) ||
-            verification_channel
+            !verification_channel
                 ?.permissionsFor(botMember.roles.botRole || botMember)
-                .missing(PermissionFlagsBits.SendMessages, true)
+                .has(PermissionFlagsBits.SendMessages, true)
         )
             return sendSystemError(VerificationSystemError.ChannelPermissions);
 
         if (
-            !member.guild.members.cache
-                .get(member.client.user.id)
-                ?.permissionsIn(verification_channel as GuildChannelResolvable)
-                .has(PermissionFlagsBits.SendMessages, true) ||
-            verification_channel
+            !verification_channel
                 ?.permissionsFor(botMember.roles.botRole || botMember)
-                .missing(
+                .has(
                     [
                         PermissionFlagsBits.SendMessages,
 
