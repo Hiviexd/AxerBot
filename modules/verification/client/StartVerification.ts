@@ -37,7 +37,7 @@ export default async (member: GuildMember) => {
             ?.channels.cache.get(guild_db.verification.channel);
 
         async function sendSystemError(type: VerificationSystemError) {
-            const guildModerationChannel = member.guild.systemChannel;
+            const guildModerationChannel = member.guild.publicUpdatesChannel;
 
             const channelPermissionsEmbed = new EmbedBuilder()
                 .setTitle("⚠️ Verification system alert")
@@ -120,7 +120,7 @@ export default async (member: GuildMember) => {
             !member.guild.members.cache
                 .get(member.client.user.id)
                 ?.permissionsIn(verification_channel)
-                .has(PermissionFlagsBits.SendMessages)
+                .has(PermissionFlagsBits.SendMessages, true)
         ) {
             if (!guild_db.verification.isStatic) {
                 consoleLog(
@@ -137,10 +137,10 @@ export default async (member: GuildMember) => {
             !member.guild.members.cache
                 .get(member.client.user.id)
                 ?.permissionsIn(verification_channel as GuildChannelResolvable)
-                .has(PermissionFlagsBits.SendMessages) ||
+                .has(PermissionFlagsBits.SendMessages, true) ||
             verification_channel
                 ?.permissionsFor(member.guild.members.me?.roles.botRole || member.guild.members.me)
-                .missing(PermissionFlagsBits.SendMessages)
+                .missing(PermissionFlagsBits.SendMessages, true)
         )
             return sendSystemError(VerificationSystemError.ChannelPermissions);
 
@@ -148,14 +148,18 @@ export default async (member: GuildMember) => {
             !member.guild.members.cache
                 .get(member.client.user.id)
                 ?.permissionsIn(verification_channel as GuildChannelResolvable)
-                .has(PermissionFlagsBits.SendMessages) ||
+                .has(PermissionFlagsBits.SendMessages, true) ||
             verification_channel
                 ?.permissionsFor(member.guild.members.me?.roles.botRole || member.guild.members.me)
-                .missing([
-                    PermissionFlagsBits.SendMessages,
-                    PermissionFlagsBits.ManageNicknames,
-                    PermissionFlagsBits.ManageRoles,
-                ])
+                .missing(
+                    [
+                        PermissionFlagsBits.SendMessages,
+
+                        PermissionFlagsBits.ManageNicknames,
+                        PermissionFlagsBits.ManageRoles,
+                    ],
+                    true
+                )
         )
             return sendSystemError(VerificationSystemError.UserPermissions);
 
