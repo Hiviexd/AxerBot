@@ -26,32 +26,92 @@ export default async (member: GuildMember) => {
 
         const verification = await GenerateAuthToken(member);
 
-        console.log(verification);
+        enum VerificationSystemError {
+            ChannelPermissions,
+            ChannelNotFound,
+            UserPermissions,
+        }
 
-        const verification_channel: GuildBasedChannel | undefined =
-            member.client.guilds.cache
-                .get(member.guild.id)
-                ?.channels.cache.get(guild_db.verification.channel);
+        const verification_channel: GuildBasedChannel | undefined = member.client.guilds.cache
+            .get(member.guild.id)
+            ?.channels.cache.get(guild_db.verification.channel);
 
-        async function sendSystemError() {
-            member.client.users.cache
-                .get(member.guild.ownerId)
-                ?.createDM()
-                .then((dm) => {
-                    dm.send({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("⚠️ Verification system alert")
-                                .setColor(colors.yellowBright)
-                                .setDescription(
-                                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel?.id}>.
-                \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
-                Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
-                                ),
-                        ],
-                    });
-                })
-                .catch(console.error);
+        async function sendSystemError(type: VerificationSystemError) {
+            const guildModerationChannel = member.guild.systemChannel;
+
+            const channelPermissionsEmbed = new EmbedBuilder()
+                .setTitle("⚠️ Verification system alert")
+                .setColor(colors.yellowBright)
+                .setDescription(
+                    `The verification system in your server \`${member.guild.name}\` is not working properly. I don't have permissions to send messages in the channel <#${verification_channel?.id}>. To fix it you should add \`SEND_MESSAGES\` permission to the role <@&${member.guild.members.me?.roles.botRole}>. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                    Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
+                );
+
+            const channelNotFoundEmbed = new EmbedBuilder()
+                .setTitle("⚠️ Verification system alert")
+                .setColor(colors.yellowBright)
+                .setDescription(
+                    `The verification system in your server \`${member.guild.name}\` is not working properly. The configured channel doesn't exist. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                    Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
+                );
+
+            const userPermissionsEmbed = new EmbedBuilder()
+                .setTitle("⚠️ Verification system alert")
+                .setColor(colors.yellowBright)
+                .setDescription(
+                    `The verification system in your server \`${member.guild.name}\` is not working properly. Check if I have the role <@&${member.guild.members.me?.roles.botRole}> has the following permissions: \`MANAGE_NICKNAMES\`, \`MANAGE_ROLES\` and \`SEND_MESSAGES\`. \`${member.user.tag}\` is waiting for verification. Please verify the user manually and fix the system.
+                    Reach out to a developer in the [support server](https://discord.gg/MAsnz96qGy) if you need help.`
+                );
+
+            if (guildModerationChannel) {
+                switch (type) {
+                    case VerificationSystemError.ChannelNotFound:
+                        guildModerationChannel
+                            .send({
+                                embeds: [channelNotFoundEmbed],
+                            })
+                            .catch(void {});
+                        break;
+                    case VerificationSystemError.ChannelPermissions:
+                        guildModerationChannel
+                            .send({
+                                embeds: [channelPermissionsEmbed],
+                            })
+                            .catch(void {});
+                        break;
+                    case VerificationSystemError.UserPermissions:
+                        guildModerationChannel
+                            .send({
+                                embeds: [userPermissionsEmbed],
+                            })
+                            .catch(void {});
+                        break;
+                }
+            } else {
+                member.client.users.cache
+                    .get(member.guild.ownerId)
+                    ?.createDM()
+                    .then((dm) => {
+                        switch (type) {
+                            case VerificationSystemError.ChannelNotFound:
+                                dm.send({
+                                    embeds: [channelNotFoundEmbed],
+                                }).catch(void {});
+                                break;
+                            case VerificationSystemError.ChannelPermissions:
+                                dm.send({
+                                    embeds: [channelPermissionsEmbed],
+                                }).catch(void {});
+                                break;
+                            case VerificationSystemError.UserPermissions:
+                                dm.send({
+                                    embeds: [userPermissionsEmbed],
+                                }).catch(void {});
+                                break;
+                        }
+                    })
+                    .catch(console.error);
+            }
         }
 
         if (
@@ -67,17 +127,37 @@ export default async (member: GuildMember) => {
                     "Verification",
                     `Verification channel is not set or deleted in ${member.guild.name}`
                 );
-                return sendSystemError();
+                return sendSystemError(VerificationSystemError.ChannelNotFound);
             }
         }
+
+        if (!member.guild.members.me) return;
 
         if (
             !member.guild.members.cache
                 .get(member.client.user.id)
                 ?.permissionsIn(verification_channel as GuildChannelResolvable)
-                .has(PermissionFlagsBits.SendMessages)
+                .has(PermissionFlagsBits.SendMessages) ||
+            verification_channel
+                ?.permissionsFor(member.guild.members.me?.roles.botRole || member.guild.members.me)
+                .missing(PermissionFlagsBits.SendMessages)
         )
-            return sendSystemError();
+            return sendSystemError(VerificationSystemError.ChannelPermissions);
+
+        if (
+            !member.guild.members.cache
+                .get(member.client.user.id)
+                ?.permissionsIn(verification_channel as GuildChannelResolvable)
+                .has(PermissionFlagsBits.SendMessages) ||
+            verification_channel
+                ?.permissionsFor(member.guild.members.me?.roles.botRole || member.guild.members.me)
+                .missing([
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ManageNicknames,
+                    PermissionFlagsBits.ManageRoles,
+                ])
+        )
+            return sendSystemError(VerificationSystemError.UserPermissions);
 
         if (verification.status != 200 || !verification.data) {
             return console.error(verification);
@@ -94,10 +174,7 @@ export default async (member: GuildMember) => {
             }),
         ]);
 
-        if (
-            !guild_db.verification.isStatic &&
-            verification_channel?.isTextBased()
-        ) {
+        if (!guild_db.verification.isStatic && verification_channel?.isTextBased()) {
             verification_channel
                 .send({
                     content: parseMessagePlaceholderFromMember(
@@ -116,7 +193,7 @@ export default async (member: GuildMember) => {
                 .catch((error) => {
                     if (error.rawError) {
                         if (error.rawError.code == 50001)
-                            return sendSystemError();
+                            return sendSystemError(VerificationSystemError.ChannelPermissions);
                     }
                 });
         }
