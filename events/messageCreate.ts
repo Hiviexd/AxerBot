@@ -1,12 +1,13 @@
-import { ChannelType, Client, GuildChannelResolvable, PermissionFlagsBits } from "discord.js";
+import { ChannelType, GuildChannelResolvable, PermissionFlagsBits } from "discord.js";
 
 import sendQuotes from "../helpers/general/sendQuotes";
+import { AxerBot } from "../models/core/AxerBot";
 import checkOsuURL from "../modules/osu/url/checkOsuURL";
 import { antiDumbass } from "../modules/verification/message/antiDumbass";
 
 export default {
     name: "messageCreate",
-    execute(bot: Client) {
+    execute(bot: AxerBot) {
         bot.on("messageCreate", async (message) => {
             if (message.author.bot || !bot.user) return;
 

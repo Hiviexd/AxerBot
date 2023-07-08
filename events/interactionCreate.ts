@@ -1,28 +1,22 @@
-import {
-    ApplicationCommandType,
-    Client,
-    ComponentType,
-    InteractionType,
-} from "discord.js";
+import { ApplicationCommandType, ComponentType, InteractionType } from "discord.js";
+
 import { helpAutocomplete } from "../helpers/commands/helpAutocomplete";
 import slashCommandHandler from "../helpers/core/slashCommandHandler";
+import sendStaticVerificationLink from "../helpers/interactions/sendStaticVerificationLink";
 import sendVerificationLink from "../helpers/interactions/sendVerificationLink";
+import { AxerBot } from "../models/core/AxerBot";
 import beatmapDownloader from "../modules/downloader/beatmapDownloader";
 import heardle from "../modules/heardle/heardle";
-import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 import { handleSelectRoles } from "../modules/selectroles/handleSelectRoles";
 import { handleSyncButton } from "../modules/verification/interactions/handleSyncButton";
-import sendStaticVerificationLink from "../helpers/interactions/sendStaticVerificationLink";
+import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
 
 export default {
     name: "interactionCreate",
-    execute(bot: Client) {
+    execute(bot: AxerBot) {
         bot.on("interactionCreate", async (interaction) => {
             // ============ Autocomplete
-            if (
-                interaction.type ==
-                InteractionType.ApplicationCommandAutocomplete
-            ) {
+            if (interaction.type == InteractionType.ApplicationCommandAutocomplete) {
                 helpAutocomplete(interaction);
                 return;
             }

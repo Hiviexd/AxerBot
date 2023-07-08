@@ -1,9 +1,9 @@
-import { Client } from "discord.js";
+import { AxerBot } from "../models/core/AxerBot";
 import logGuildBanAdd from "../modules/loggers/logGuildBanAdd";
 
 export default {
     name: "guildBanAdd",
-    execute(bot: Client) {
+    execute(bot: AxerBot) {
         try {
             bot.on("guildBanAdd", async (ban) => {
                 console.log("ban");

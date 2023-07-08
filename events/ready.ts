@@ -1,11 +1,11 @@
-import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
 import presence from "../modules/presence/presence";
 import qatTracking from "../modules/tracking/qatTracking";
+import { AxerBot } from "../models/core/AxerBot";
 
 export default {
     name: "ready",
-    execute(bot: Client) {
+    execute(bot: AxerBot) {
         bot.once("ready", () => {
             //? Log the bot's username and the amount of servers its in to console
             const bot_user: any = bot.user;
