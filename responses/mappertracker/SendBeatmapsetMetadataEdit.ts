@@ -1,9 +1,4 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { bot } from "../..";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
 import osuApi from "../../modules/osu/fetcher/osuApi";
@@ -14,9 +9,7 @@ export async function SendBeatmapsetMetadataEdit(
     event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(
-        event.beatmapset.id.toString()
-    );
+    const beatmapset = await osuApi.fetch.beatmapset(event.beatmapset.id.toString());
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
@@ -48,12 +41,7 @@ export async function SendBeatmapsetMetadataEdit(
                 event.comment.old as string,
                 event.comment.new as string
             )
-                .map(
-                    (value) =>
-                        `${getDiffChar(value.removed, value.added)} ${
-                            value.value
-                        }`
-                )
+                .map((value) => `${getDiffChar(value.removed, value.added)} ${value.value}`)
                 .join("\n")}\`\`\``;
 
         if (event.type == "offset_edit")
@@ -63,7 +51,7 @@ export async function SendBeatmapsetMetadataEdit(
             return `- Language changed from \`${event.comment.old}\` to \`${event.comment.new}\``;
 
         if (event.type == "beatmap_owner_change")
-            return `- GD Owner for [${event.comment.beatmap_version}](https://osu.ppy.sh/b/${event.comment.beatmap_id}) changed to ${event.comment.new_user_id}](https://osu.ppy.sh/b/${event.comment.new_user_username})`;
+            return `- GD Owner for [${event.comment.beatmap_version}](https://osu.ppy.sh/b/${event.comment.beatmap_id}) changed to [${event.comment.new_user_username}](https://osu.ppy.sh/b/${event.comment.new_user_id})`;
 
         return `- Something was changed from \`${event.comment.old}\` to \`${event.comment.new}\``;
 

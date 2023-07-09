@@ -3,8 +3,14 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "disc
 import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import osuApi from "../../modules/osu/fetcher/osuApi";
-import { BeatmapsetEvent } from "../../types/beatmap";
+import {
+    BeatmapsetCompact,
+    BeatmapsetDiscussionCompact,
+    BeatmapsetDiscussionPostCompact,
+    BeatmapsetEvent,
+} from "../../types/beatmap";
 import { MapperTracker } from "../../modules/mappertracker/mapperTrackerManager";
+import { UserCompact } from "../../types/user";
 
 export async function SendBeatmapNominationResetEmbed(
     event: BeatmapsetEvent,
@@ -15,16 +21,21 @@ export async function SendBeatmapNominationResetEmbed(
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
     async function fetchComment() {
-        const resetDiscussion = await osuApi.fetch.beatmapsetDiscussion(
-            event.comment.beatmap_discussion_id as number,
+        const resetDiscussion = await osuApi.fetch.beatmapsetDiscussionPost(
+            String(event.comment.beatmap_discussion_id as number),
             "first"
         );
 
         if (!resetDiscussion.data || resetDiscussion.status != 200) return null;
 
-        console.log(resetDiscussion.data);
-
-        return resetDiscussion.data.discussions[0].posts[0].posts[0] || null;
+        return (
+            (resetDiscussion.data as unknown as {
+                beatmapsets: BeatmapsetCompact[];
+                discussions: BeatmapsetDiscussionCompact[];
+                posts: BeatmapsetDiscussionPostCompact[];
+                users: UserCompact[];
+            }) || null
+        );
     }
 
     const resetComment = await fetchComment();
@@ -33,15 +44,15 @@ export async function SendBeatmapNominationResetEmbed(
 
     const embed = new EmbedBuilder()
         .setAuthor({
-            name: `${resetComment?.user_id || "deleted_user"}`,
-            iconURL: `https://a.ppy.sh/${resetComment?.user_id}`,
+            name: `${resetComment ? resetComment.users[0]?.id : "Unknown User"}`,
+            iconURL: `https://a.ppy.sh/${resetComment ? resetComment.users[0]?.id : ""}`,
         })
         .setTitle(`🗯️ Nomination Reset`)
         .setDescription(
             `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${
                 beatmapset.data.creator
             }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n${
-                resetComment?.message || "No comment provided..."
+                resetComment ? resetComment.posts[0]?.message : "No comment provided..."
             }`
         )
         .setColor("#CC2C2C")
