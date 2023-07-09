@@ -26,9 +26,7 @@ const mapperTrackerNewTracker = new SlashCommandSubcommand(
 );
 
 mapperTrackerNewTracker.builder
-    .addStringOption((o) =>
-        o.setName("mapper").setDescription("Mapper username").setRequired(true)
-    )
+    .addStringOption((o) => o.setName("mapper").setDescription("Mapper username").setRequired(true))
     .addChannelOption((o) =>
         o
             .setName("channel")
@@ -84,9 +82,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
 
     if (
         trackerCheck.find(
-            (t) =>
-                t.userId == mapperProfile.data.id.toString() &&
-                t.channel == channel.id
+            (t) => t.userId == mapperProfile.data.id.toString() && t.channel == channel.id
         )
     )
         return command.editReply({
@@ -109,52 +105,52 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
                     value: UserRecentEventType.BeatmapsetUpload,
                 },
                 {
-                    label: "Beatmap Update Upload",
+                    label: "Update Upload",
                     value: UserRecentEventType.BeatmapsetUpdate,
                 },
                 {
-                    label: "Beatmap Revive",
+                    label: "Revive",
                     value: UserRecentEventType.BeatmapsetRevive,
                 },
                 {
-                    label: "Beatmap Ranked",
+                    label: "Ranked",
                     value: BeatmapsetEventType.RANK,
                 },
                 {
-                    label: "Beatmap Nomination",
+                    label: "Nomination",
                     value: BeatmapsetEventType.NOMINATE,
                 },
                 {
-                    label: "Beatmap Qualified",
+                    label: "Qualified",
                     value: BeatmapsetEventType.QUALIFY,
                 },
                 {
-                    label: "Beatmap Disqualify",
+                    label: "Disqualify",
                     value: BeatmapsetEventType.DISQUALIFY,
                 },
                 {
-                    label: "Beatmap Loved",
+                    label: "Nomination Reset",
+                    value: BeatmapsetEventType.NOMINATION_RESET,
+                },
+                {
+                    label: "Loved",
                     value: BeatmapsetEventType.LOVE,
                 },
                 {
-                    label: "Beatmapset Tags Edit",
+                    label: "Tags Edit",
                     value: BeatmapsetEventType.TAGS_EDIT,
                 },
                 {
-                    label: "Beatmapset Genre Edit",
+                    label: "Genre Edit",
                     value: BeatmapsetEventType.GENRE_EDIT,
                 },
                 {
-                    label: "Beatmapset Language Edit",
+                    label: "Language Edit",
                     value: BeatmapsetEventType.LANGUAGE_EDIT,
                 },
                 {
-                    label: "Beatmap Owner Change",
+                    label: "Owner Change",
                     value: BeatmapsetEventType.BEATMAP_OWNER_CHANGE,
-                },
-                {
-                    label: "Beatmapset Timing Offset Edit",
-                    value: BeatmapsetEventType.OFFSET_EDIT,
                 }
             )
             .setMinValues(1);
@@ -188,9 +184,7 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
                 return command.editReply({
                     content: "",
                     components: [],
-                    embeds: [
-                        generateErrorEmbed("Time out! Don't leave me waiting."),
-                    ],
+                    embeds: [generateErrorEmbed("Time out! Don't leave me waiting.")],
                 });
             });
     }
@@ -205,7 +199,6 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
             rank: "Rank",
             genre_edit: "Genre Edit",
             language_edit: "Language Edit",
-            offset_edit: "Offset Edit",
             tags_edit: "Tags Edit",
             beatmap_owner_change: "Owner Change",
             beatmapsetRevive: "Revive",
@@ -238,15 +231,17 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
             return command.editReply({
                 content: "",
                 components: [],
-                embeds: [
-                    generateErrorEmbed("Time out! Don't leave me waiting."),
-                ],
+                embeds: [generateErrorEmbed("Time out! Don't leave me waiting.")],
             });
         });
     }
 
     async function createTracker() {
         const trackerId = crypto.randomBytes(15).toString("hex");
+
+        if (targets.includes(BeatmapsetEventType.NOMINATION_RESET)) {
+            targets.push(BeatmapsetEventType.NOMINATION_RESET_RECEIVED);
+        }
 
         await tracks.create({
             _id: trackerId,

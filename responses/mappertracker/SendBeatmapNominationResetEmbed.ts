@@ -1,9 +1,4 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 
 import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
@@ -15,43 +10,43 @@ export async function SendBeatmapNominationResetEmbed(
     event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(
-        event.beatmapset.id.toString()
-    );
+    const beatmapset = await osuApi.fetch.beatmapset(event.beatmapset.id.toString());
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
-    const nomUser = await fetchNominator(event.user_id);
+    async function fetchComment() {
+        const resetDiscussion = await osuApi.fetch.beatmapsetDiscussion(
+            event.comment.beatmap_discussion_id as number,
+            "first"
+        );
+
+        if (!resetDiscussion.data || resetDiscussion.status != 200) return null;
+
+        console.log(resetDiscussion.data);
+
+        return resetDiscussion.data.discussions[0].posts[0].posts[0] || null;
+    }
+
+    const resetComment = await fetchComment();
 
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
-            name: `${nomUser?.username || "deleted_user"}`,
-            iconURL: `https://a.ppy.sh/${nomUser?.id}`,
+            name: `${resetComment?.user_id || "deleted_user"}`,
+            iconURL: `https://a.ppy.sh/${resetComment?.user_id}`,
         })
         .setTitle(`🗯️ Nomination Reset`)
         .setDescription(
-            `**[${beatmapset.data.artist} - ${
-                beatmapset.data.title
-            }](${url})**\n Mapped by [${
+            `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${
                 beatmapset.data.creator
             }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n${
-                event.discussion?.starting_post.message ||
-                "No comment provided..."
+                resetComment?.message || "No comment provided..."
             }`
         )
         .setColor("#CC2C2C")
         .setTimestamp(new Date(event.created_at))
         .setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.data.id}l.jpg`);
-
-    async function fetchNominator(id: number) {
-        const u = await osuApi.fetch.user(id.toString());
-
-        if (!u.data || u.status != 200) return null;
-
-        return u.data;
-    }
 
     const guild = bot.guilds.cache.get(tracker.guild);
 

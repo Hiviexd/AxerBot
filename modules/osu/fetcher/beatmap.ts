@@ -4,11 +4,7 @@ import {
     BeatmapGenre,
     BeatmapLanguage,
 } from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
-import {
-    consoleCheck,
-    consoleError,
-    consoleLog,
-} from "../../../helpers/core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../../../helpers/core/logger";
 import {
     BeatmapResponse,
     Beatmapset,
@@ -23,25 +19,18 @@ import {
 } from "../../../types/beatmap";
 import { IHTTPResponse } from "../../../types/http";
 import { HTTPResponse } from "../../../types/qat";
-import {
-    FetchDownloadClient,
-    OsuAuthenticator,
-    OsuOfficialDownloader,
-} from "./downloader/beatmap";
+import { FetchDownloadClient, OsuAuthenticator, OsuOfficialDownloader } from "./downloader/beatmap";
 import { UserCompact } from "../../../types/user";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {
         consoleLog("beatmap fetcher", `Fetching beatmap ${beatmap_id}`);
 
-        const req = await axios(
-            "https://osu.ppy.sh/api/v2/beatmaps/".concat(beatmap_id),
-            {
-                headers: {
-                    authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
-                },
-            }
-        );
+        const req = await axios("https://osu.ppy.sh/api/v2/beatmaps/".concat(beatmap_id), {
+            headers: {
+                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+            },
+        });
 
         const res = req.data;
 
@@ -62,9 +51,7 @@ export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     }
 }
 
-export async function allBeatmapsetEvents(
-    types?: BeatmapsetEventType[]
-): Promise<
+export async function allBeatmapsetEvents(types?: BeatmapsetEventType[]): Promise<
     IHTTPResponse<{
         events: BeatmapsetEvent[];
         reviewsConfig: {
@@ -180,10 +167,7 @@ export async function searchBeatmapset(
 
         const res = req.data;
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Searching beatmapsets "${query}" results found!`
-        );
+        consoleCheck("beatmap fetcher", `Searching beatmapsets "${query}" results found!`);
 
         return {
             status: 200,
@@ -208,10 +192,7 @@ export async function download(beatmapset_id: string): Promise<
     } | null>
 > {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Downloading beatmapset ${beatmapset_id}`
-        );
+        consoleLog("beatmap fetcher", `Downloading beatmapset ${beatmapset_id}`);
 
         const account = {
             username: process.env.OSU_USERNAME ?? "username",
@@ -220,10 +201,7 @@ export async function download(beatmapset_id: string): Promise<
         // get session from username and password
         const session = await OsuAuthenticator.login(account);
         // construct new OsuOfficialDownloader
-        const bmsDownloader = new OsuOfficialDownloader(
-            new FetchDownloadClient(),
-            session
-        );
+        const bmsDownloader = new OsuOfficialDownloader(new FetchDownloadClient(), session);
         // download beatmapset with id 1220040
         const downloader = await bmsDownloader.download({
             beatmapsetId: beatmapset_id,
@@ -234,10 +212,7 @@ export async function download(beatmapset_id: string): Promise<
         const data = await downloader.buffer();
         const size = await downloader.size();
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Beatmapset ${beatmapset_id} downloaded!`
-        );
+        consoleCheck("beatmap fetcher", `Beatmapset ${beatmapset_id} downloaded!`);
 
         return {
             status: 200,
@@ -330,10 +305,7 @@ export async function beatmapsetDiscussionPost(
     type: string
 ): Promise<BeatmapsetDiscussionPostResponse> {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Fetching beatmapset discussion post ${post_id}`
-        );
+        consoleLog("beatmap fetcher", `Fetching beatmapset discussion post ${post_id}`);
 
         const req = await axios(
             `https://osu.ppy.sh/api/v2/beatmapsets/discussions/posts?beatmapset_discussion_id=${post_id}&types[]=${type}&limit=500`,
@@ -346,10 +318,7 @@ export async function beatmapsetDiscussionPost(
 
         const res = req.data;
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Beatmapset discussion post ${post_id} found!`
-        );
+        consoleCheck("beatmap fetcher", `Beatmapset discussion post ${post_id} found!`);
 
         return {
             status: 200,
@@ -367,17 +336,14 @@ export async function beatmapsetDiscussionPost(
 }
 
 export async function beatmapsetDiscussion(
-    beatmapset_id: string,
+    beatmapset_id: string | number,
     type: string
 ): Promise<{
     status: number;
     data: BeatmapsetDiscussion;
 }> {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Fetching beatmapset discussion ${beatmapset_id}`
-        );
+        consoleLog("beatmap fetcher", `Fetching beatmapset discussion ${beatmapset_id}`);
 
         const req = await axios(
             `https://osu.ppy.sh/api/v2/beatmapsets/discussions?message_types[]=${type}&sort=id_desc&beatmapset_id=${beatmapset_id}`,
@@ -388,14 +354,9 @@ export async function beatmapsetDiscussion(
             }
         );
 
-        console.log(process.env.OSU_API_ACCESS_TOKEN);
-
         const res = req.data;
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Beatmapset discussion ${beatmapset_id} found!`
-        );
+        consoleCheck("beatmap fetcher", `Beatmapset discussion ${beatmapset_id} found!`);
 
         return {
             status: 200,
@@ -417,10 +378,7 @@ export async function beatmapsetDiscussionVotes(
     type: string
 ): Promise<BeatmapsetDiscussionVoteResponse> {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Fetching beatmapset discussion votes ${post_id}`
-        );
+        consoleLog("beatmap fetcher", `Fetching beatmapset discussion votes ${post_id}`);
 
         const req = await axios(
             `https://osu.ppy.sh/api/v2/beatmapsets/discussions/votes?beatmapset_discussion_id=${post_id}&types[]=${type}&limit=500`,
@@ -431,10 +389,7 @@ export async function beatmapsetDiscussionVotes(
             }
         );
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Beatmapset discussion votes ${post_id} found!`
-        );
+        consoleCheck("beatmap fetcher", `Beatmapset discussion votes ${post_id} found!`);
 
         return {
             status: 200,
@@ -455,27 +410,18 @@ export async function BeatmapPreview(
     beatmapset_id: string
 ): Promise<{ status: number; data: string }> {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Fetching beatmapset preview ${beatmapset_id}`
-        );
+        consoleLog("beatmap fetcher", `Fetching beatmapset preview ${beatmapset_id}`);
 
-        const req = await axios(
-            `https://b.ppy.sh/preview/${beatmapset_id}.mp3`,
-            {
-                headers: {
-                    authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
-                    accept: "audio/mp3",
-                },
-            }
-        );
+        const req = await axios(`https://b.ppy.sh/preview/${beatmapset_id}.mp3`, {
+            headers: {
+                authorization: `Bearer ${process.env.OSU_API_ACCESS_TOKEN}`,
+                accept: "audio/mp3",
+            },
+        });
 
         const res = req.data;
 
-        consoleCheck(
-            "beatmap fetcher",
-            `Beatmapset preview ${beatmapset_id} found!`
-        );
+        consoleCheck("beatmap fetcher", `Beatmapset preview ${beatmapset_id} found!`);
 
         return {
             status: 200,
@@ -499,10 +445,7 @@ export async function basicUserBeatmap(
     offset?: number
 ) {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `fetching basic user beatmaps data for ${user_id}`
-        );
+        consoleLog("beatmap fetcher", `fetching basic user beatmaps data for ${user_id}`);
 
         const req = await axios(
             `https://osu.ppy.sh/api/v2/users/${user_id}/beatmapsets/${type}?limit=${
@@ -518,10 +461,7 @@ export async function basicUserBeatmap(
 
         const res = req.data;
 
-        consoleCheck(
-            "beatmap fetcher",
-            `basid user beatmaps data for ${user_id} found!`
-        );
+        consoleCheck("beatmap fetcher", `basid user beatmaps data for ${user_id} found!`);
 
         return {
             status: 200,
@@ -544,10 +484,7 @@ export async function userBeatmaps(
     offset?: number
 ): Promise<UserBeatmapetsResponse> {
     try {
-        consoleLog(
-            "beatmap fetcher",
-            `Fetching user (${user_id}) beatmapsets `
-        );
+        consoleLog("beatmap fetcher", `Fetching user (${user_id}) beatmapsets `);
 
         // * =============== Data fetching
         let search_types = ["graveyard", "loved", "pending", "ranked"];

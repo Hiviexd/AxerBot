@@ -1,9 +1,4 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { bot } from "../..";
 import qatApi from "../../helpers/qat/fetcher/qatApi";
 import osuApi from "../../modules/osu/fetcher/osuApi";
@@ -14,30 +9,28 @@ export async function SendBeatmapQualifyEmbed(
     event: BeatmapsetEvent,
     tracker: MapperTracker.IMapperTracker
 ) {
-    const beatmapset = await osuApi.fetch.beatmapset(
-        event.beatmapset.id.toString()
-    );
+    const beatmapset = await osuApi.fetch.beatmapset(event.beatmapset.id.toString());
 
     if (!beatmapset || !beatmapset.data || beatmapset.status != 200) return;
 
-    const nomUser = await fetchNominator(event.user_id);
+    const nomUser = await fetchNominator(beatmapset.data.current_nominations[0].user_id);
 
     const url = `https://osu.ppy.sh/s/${beatmapset.data.id}`;
 
     const embed = new EmbedBuilder()
         .setAuthor({
             name: `${`${nomUser?.username}` || "deleted_user"}`,
-            iconURL: `https://a.ppy.sh/${nomUser?.id}`,
+            iconURL: `https://a.ppy.sh/${nomUser?.id || "Unknown User"}`,
         })
         .setTitle(`❤️ Qualified`)
         .setDescription(
-            `**[${beatmapset.data.artist} - ${
-                beatmapset.data.title
-            }](${url})**\n Mapped by [${
+            `**[${beatmapset.data.artist} - ${beatmapset.data.title}](${url})**\n Mapped by [${
                 beatmapset.data.creator
             }](https://osu.ppy.sh/users/${beatmapset.data.user_id})\n\n${
-                event.discussion?.starting_post.message ||
-                "No comment provided..."
+                nomUser
+                    ? (await fetchNominationComment(nomUser.id))?.content ||
+                      "No comment provided..."
+                    : "No comment provided..."
             }`
         )
         .setColor("#ff4b63")
@@ -50,6 +43,18 @@ export async function SendBeatmapQualifyEmbed(
         if (!u.data || u.status != 200) return null;
 
         return u.data;
+    }
+
+    async function fetchNominationComment(nominatorId: number) {
+        const events = await qatApi.fetch.events(beatmapset.data.id);
+
+        if (!events.data || events.status != 200) return null;
+
+        return (
+            events.data
+                .sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf())
+                .find((event) => event.type == "qualify" && event.userId == nominatorId) || null
+        );
     }
 
     const guild = bot.guilds.cache.get(tracker.guild);

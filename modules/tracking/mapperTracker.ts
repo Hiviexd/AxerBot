@@ -16,8 +16,6 @@ import { sendBeatmapReviveEmbed } from "../../responses/mappertracker/SendBeatma
 import { sendBeatmapUpdateEmbed } from "../../responses/mappertracker/SendBeatmapUpdateEmbed";
 
 export async function handleMapperTrackerUserEvent(event: UserRecentEvent) {
-    console.log(event.user);
-
     const trackersMatchingMapper = await tracks.find({
         userId: parseOsuPathId(event.user.url),
         type: "mapper",
