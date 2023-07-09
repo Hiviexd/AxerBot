@@ -51,7 +51,7 @@ export async function SendBeatmapsetMetadataEdit(
             return `- Language changed from \`${event.comment.old}\` to \`${event.comment.new}\``;
 
         if (event.type == "beatmap_owner_change")
-            return `- GD Owner for [${event.comment.beatmap_version}](https://osu.ppy.sh/b/${event.comment.beatmap_id}) changed to [${event.comment.new_user_username}](https://osu.ppy.sh/b/${event.comment.new_user_id})`;
+            return `- GD Owner for [${event.comment.beatmap_version}](https://osu.ppy.sh/b/${event.comment.beatmap_id}) changed to [${event.comment.new_user_username}](https://osu.ppy.sh/users/${event.comment.new_user_id})`;
 
         return `- Something was changed from \`${event.comment.old}\` to \`${event.comment.new}\``;
 
