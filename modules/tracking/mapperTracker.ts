@@ -1,7 +1,7 @@
 import { ChannelType } from "discord.js";
 
 import { bot } from "../..";
-import { tracks } from "../../database";
+import { discussionEvents, tracks } from "../../database";
 import { SendBeatmapDisqualifyEmbed } from "../../responses/mappertracker/SendBeatmapDisqualifyEmbed";
 import { SendBeatmapNominationEmbed } from "../../responses/mappertracker/SendBeatmapNominationEmbed";
 import { SendBeatmapNominationResetEmbed } from "../../responses/mappertracker/SendBeatmapNominationResetEmbed";

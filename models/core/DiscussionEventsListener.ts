@@ -73,6 +73,26 @@ export class DiscussionEventsListener {
                     },
                 };
 
+            if (
+                [
+                    BeatmapsetEventType.NOMINATION_RESET_RECEIVED,
+                    BeatmapsetEventType.NOMINATION_RESET,
+                ].includes(event.type)
+            ) {
+                const hasEventWithDiscussion = await discussionEvents.find({
+                    discussionId: event.comment.beatmap_discussion_id,
+                    type: event.type,
+                });
+
+                if (hasEventWithDiscussion.length == 1)
+                    return {
+                        status: 302,
+                        data: {
+                            message: `Exists ${event.beatmapset?.artist} - ${event.beatmapset?.title} | ${event.type} | ${event.id}`,
+                        },
+                    };
+            }
+
             const response = await discussionEvents.create({
                 _id: event.id,
                 beatmapId: event.discussion?.beatmap?.id,
@@ -112,8 +132,7 @@ export class DiscussionEventsListener {
         consoleLog(`DiscussionEventsManager`, `Starting listener`);
         const events = await osuApi.fetch.allBeatmapsetEvents();
 
-        if (events.status != 200)
-            return setTimeout(this.listen.bind(this), 30000);
+        if (events.status != 200) return setTimeout(this.listen.bind(this), 30000);
 
         for (const event of events.data.events) {
             this.tryToInsertNewEvent(event);

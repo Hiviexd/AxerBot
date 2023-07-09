@@ -186,8 +186,8 @@ export interface BeatmapsetDiscussionResponse {
 
 export interface BeatmapsetDiscussionPost {
     beatmapsets: BeatmapsetCompact[];
-    discussions: [BeatmapsetDiscussionCompact];
-    posts: [BeatmapsetDiscussionPostCompact];
+    discussions: BeatmapsetDiscussionCompact[];
+    posts: BeatmapsetDiscussionPostCompact[];
 }
 
 export interface BeatmapsetDiscussionPostResponse {
