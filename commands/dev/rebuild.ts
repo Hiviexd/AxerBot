@@ -9,12 +9,7 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 import { StatusManager } from "../../modules/status/StatusManager";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 
-const rebuild = new SlashCommand(
-    "rebuild",
-    "Shutdown and build axer again",
-    "Developers",
-    true
-);
+const rebuild = new SlashCommand("rebuild", "Shutdown and build axer again", "Developers", true);
 
 rebuild.builder.addStringOption((o) =>
     o.setName("reason").setDescription("reason to rebuild").setRequired(false)
@@ -43,46 +38,32 @@ rebuild.setExecuteFunction(async (command) => {
         .catch(executeBuild);
 
     function executeBuild() {
-        exec(
-            `sudo -u ${process.env.LINUX_USER} git pull`,
-            (error, stdout, stderr) => {
-                if (error) return sendError(error);
+        exec(`sudo -u ${process.env.LINUX_USER} git pull`, (error, stdout, stderr) => {
+            if (error) return sendError(error);
 
-                if (stdout.trim() == "Already up to date.")
-                    return command.followUp({
-                        embeds: [
-                            generateWaitEmbed(stdout, "No need to build again"),
-                        ],
+            if (stdout.trim() == "Already up to date.")
+                return command.followUp({
+                    embeds: [generateWaitEmbed(stdout, "No need to build again")],
+                });
+
+            command
+                .followUp({
+                    embeds: [generateSuccessEmbed(codeBlock(stdout))],
+                })
+                .then(() => {
+                    exec(`tsc`, (error, stdout, stderr) => {
+                        if (error) return sendError(error);
+
+                        command
+                            .followUp({
+                                embeds: [generateSuccessEmbed("Build successful!")],
+                            })
+                            .then(() => {
+                                process.exit(1);
+                            });
                     });
-
-                command
-                    .followUp({
-                        embeds: [generateSuccessEmbed(codeBlock(stdout))],
-                    })
-                    .then(() => {
-                        exec(`tsc`, (error, stdout, stderr) => {
-                            if (error) return sendError(error);
-
-                            command
-                                .followUp({
-                                    embeds: [
-                                        generateSuccessEmbed(
-                                            "Build successful!"
-                                        ),
-                                    ],
-                                })
-                                .then(() => {
-                                    exec(
-                                        `pkill node`,
-                                        (error, stdout, stderr) => {
-                                            if (error) return sendError(error);
-                                        }
-                                    );
-                                });
-                        });
-                    });
-            }
-        );
+                });
+        });
     }
 
     function sendError(error: ExecException) {
@@ -91,10 +72,7 @@ rebuild.setExecuteFunction(async (command) => {
             embeds: [
                 generateErrorEmbed(
                     `${codeBlock(
-                        truncateString(
-                            `${error.message}\n` + error.stack || error.message,
-                            4096
-                        )
+                        truncateString(`${error.message}\n` + error.stack || error.message, 4096)
                     )}`
                 ),
             ],
