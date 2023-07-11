@@ -73,7 +73,7 @@ export default {
 
         let e = new EmbedBuilder({
             description: parseOsuTimestamps(
-                truncateString(metadata.concat(post.posts[0].message), 4096)
+                truncateString(metadata.concat(post.posts[0].message), 1024)
             ),
             thumbnail: {
                 url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
