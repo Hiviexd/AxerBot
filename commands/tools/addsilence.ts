@@ -21,10 +21,7 @@ const addsilent = new SlashCommand(
 
 addsilent.builder
     .addAttachmentOption((o) =>
-        o
-            .setName("audio")
-            .setRequired(true)
-            .setDescription("Audio file to manage")
+        o.setName("audio").setRequired(true).setDescription("Audio file to manage")
     )
     .addNumberOption((o) =>
         o
@@ -45,47 +42,37 @@ addsilent.setExecuteFunction(async (command) => {
                 embeds: [generateErrorEmbed("Max delay is `5 seconds`!")],
             });
 
-        if (
-            !["audio/mpeg", "audio/ogg"].includes(
-                attachment.contentType || "unknown"
-            )
-        )
+        if (!["audio/mpeg", "audio/ogg"].includes(attachment.contentType || "unknown"))
             return command.editReply({
                 embeds: [
-                    generateErrorEmbed(
-                        "Invalid audio type! Allowed types are `mp3` and `ogg`!"
-                    ),
+                    generateErrorEmbed("Invalid audio type! Allowed types are `mp3` and `ogg`!"),
                 ],
             });
 
         await command.editReply({
-            embeds: [
-                generateWaitEmbed(
-                    "Please wait...",
-                    "Adding delay to your audio..."
-                ),
-            ],
+            embeds: [generateWaitEmbed("Please wait...", "Adding delay to your audio...")],
         });
 
         const fileId = crypto.randomBytes(10).toString("hex");
         const filename = `${fileId}_${attachment.name}`;
 
         const f = ffmpeg(attachment.url);
+
         if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
 
+        const delayString = duration < 1 ? `${duration}ms` : `${duration}s`;
+
         f.audioFilters([
             {
                 filter: "adelay",
-                options: `delays=${duration}s:all=true`,
+                options: `delays=${delayString}:all=true`,
             },
         ]).saveToFile(path.resolve(`./temp/audios/${filename}`));
 
         f.on("end", async () => {
-            const audio = readFileSync(
-                path.resolve(`./temp/audios/${filename}`)
-            );
+            const audio = readFileSync(path.resolve(`./temp/audios/${filename}`));
 
             const audioAttachment = new AttachmentBuilder(audio, {
                 name: attachment.name || filename,
@@ -109,12 +96,7 @@ addsilent.setExecuteFunction(async (command) => {
             console.log(e);
 
             command.editReply({
-                embeds: [
-                    generateErrorEmbedWithTitle(
-                        "Something went wrong!",
-                        `\`${e}\``
-                    ),
-                ],
+                embeds: [generateErrorEmbedWithTitle("Something went wrong!", `\`${e}\``)],
             });
         });
     } catch (e) {
@@ -122,10 +104,7 @@ addsilent.setExecuteFunction(async (command) => {
 
         command.editReply({
             embeds: [
-                generateErrorEmbedWithTitle(
-                    "Something went wrong!",
-                    `Sorry... Try again later...`
-                ),
+                generateErrorEmbedWithTitle("Something went wrong!", `Sorry... Try again later...`),
             ],
         });
     }
