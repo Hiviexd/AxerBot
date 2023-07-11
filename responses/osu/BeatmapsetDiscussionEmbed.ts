@@ -1,10 +1,4 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-    Message,
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message } from "discord.js";
 import { QatEvent } from "types/qat";
 import generatePostEmbedDecoration from "../../helpers/text/embeds/generatePostEmbedDecoration";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
@@ -29,16 +23,9 @@ export default {
         const author = await osuApi.fetch.user(String(post.posts[0].user_id));
         const usergroup = getHighestUsergroup(author.data); // ? Get the highest usergroup
 
-        const embedDecoration = generatePostEmbedDecoration(
-            raw_posts,
-            post,
-            qatData,
-            type
-        );
+        const embedDecoration = generatePostEmbedDecoration(raw_posts, post, qatData, type);
 
-        const beatmap = await osuApi.fetch.beatmapset(
-            post.beatmapsets[0].id.toString()
-        );
+        const beatmap = await osuApi.fetch.beatmapset(post.beatmapsets[0].id.toString());
 
         if (!beatmap.data.beatmaps) return;
 
@@ -59,15 +46,11 @@ export default {
             if (!post.discussions[0].beatmap_id || !beatmapData) {
                 return getEmoji(beatmap.data.beatmaps[0].mode);
             }
-            return generateColoredModeIcon(
-                beatmapData?.mode,
-                beatmapData?.difficulty_rating
-            );
+            return generateColoredModeIcon(beatmapData?.mode, beatmapData?.difficulty_rating);
         }
 
         function getPostLocation() {
-            if (!post.discussions[0].beatmap_id)
-                return "General (All difficulties)";
+            if (!post.discussions[0].beatmap_id) return "General (All difficulties)";
 
             if (!beatmap.data.beatmaps) return "General (All difficulties)";
 
@@ -85,13 +68,12 @@ export default {
             if (url.includes("general") && !url.includes("generalAll"))
                 return `General (${sanitizedDiffname})`;
 
-            if (url.includes("timeline"))
-                return `Timeline (${sanitizedDiffname})`;
+            if (url.includes("timeline")) return `Timeline (${sanitizedDiffname})`;
         }
 
         let e = new EmbedBuilder({
             description: parseOsuTimestamps(
-                truncateString(metadata.concat(post.posts[0].message), 1024)
+                truncateString(metadata.concat(post.posts[0].message), 4096)
             ),
             thumbnail: {
                 url: `https://b.ppy.sh/thumb/${post.beatmapsets[0].id}l.jpg`,
