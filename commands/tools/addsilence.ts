@@ -62,7 +62,7 @@ addsilent.setExecuteFunction(async (command) => {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
 
-        const delayString = duration < 1 ? `${duration}ms` : `${duration}s`;
+        const delayString = duration < 1 ? `${duration}ms`.slice(2) : `${duration}s`;
 
         f.audioFilters([
             {
@@ -82,7 +82,7 @@ addsilent.setExecuteFunction(async (command) => {
                 .editReply({
                     embeds: [
                         generateSuccessEmbed(
-                            `Added \`${duration} seconds\` of delay at the beginning of your audio`
+                            `Added \`${delayString}\` of delay at the beginning of your audio`
                         ),
                     ],
                     files: [audioAttachment],
