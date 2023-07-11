@@ -23,21 +23,51 @@ addsilent.builder
     .addAttachmentOption((o) =>
         o.setName("audio").setRequired(true).setDescription("Audio file to manage")
     )
-    .addNumberOption((o) =>
+    .addStringOption((o) =>
         o
             .setName("duration")
-            .setDescription("Duration of the silent section (in seconds)")
+            .setDescription("Duration of the silent section (Ex: 200ms or 2s)")
             .setRequired(true)
-            .setMinValue(0.01)
-            .setMaxValue(5.0)
     );
 
 addsilent.setExecuteFunction(async (command) => {
     try {
         const attachment = command.options.getAttachment("audio", true);
-        const duration = command.options.getNumber("duration", true);
+        const durationInput = command.options
+            .getString("duration", true)
+            .replace(/ /g, "")
+            .replace(/-/g, "")
+            .trim()
+            .toLowerCase();
 
-        if (duration > 5)
+        const availableScales = ["ms", "s"];
+        let audioScale = String(durationInput).slice(-2);
+
+        // This will validate seconds input
+        if (!isNaN(Number(audioScale[0]))) audioScale = String(durationInput).slice(-1);
+
+        if (!availableScales.includes(audioScale))
+            return command.editReply({
+                embeds: [
+                    generateErrorEmbed(
+                        "Invalid input format! It should be `[number][scale]`. Example: `200ms` or `2s`"
+                    ),
+                ],
+            });
+
+        const duration = Number(durationInput.replace(audioScale, ""));
+        const decimalDuration = Number(audioScale == "ms" ? Math.floor(duration / 1000) : duration);
+
+        if (isNaN(duration))
+            return command.editReply({
+                embeds: [
+                    generateErrorEmbed(
+                        "Invalid input format! It should be `[number][scale]`. Example: `200ms` or `2s`"
+                    ),
+                ],
+            });
+
+        if (decimalDuration > 5)
             return command.editReply({
                 embeds: [generateErrorEmbed("Max delay is `5 seconds`!")],
             });
@@ -62,12 +92,10 @@ addsilent.setExecuteFunction(async (command) => {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
 
-        const delayString = duration < 1 ? `${duration}ms`.slice(2) : `${duration}s`;
-
         f.audioFilters([
             {
                 filter: "adelay",
-                options: `delays=${delayString}:all=true`,
+                options: `delays=${durationInput}:all=true`,
             },
         ]).saveToFile(path.resolve(`./temp/audios/${filename}`));
 
@@ -82,7 +110,7 @@ addsilent.setExecuteFunction(async (command) => {
                 .editReply({
                     embeds: [
                         generateSuccessEmbed(
-                            `Added \`${delayString}\` of delay at the beginning of your audio`
+                            `Added \`${durationInput}\` of delay at the beginning of your audio`
                         ),
                     ],
                     files: [audioAttachment],
