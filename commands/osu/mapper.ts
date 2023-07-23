@@ -1,9 +1,4 @@
-import {
-    ActionRowBuilder,
-    AttachmentBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-} from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { MapperCard } from "../../models/images/MapperCard";
@@ -12,22 +7,13 @@ import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 
-const mapper = new SlashCommand(
-    "mapper",
-    "Displays mapper statistics of a user",
-    "osu!",
-    true,
-    {
-        syntax: "/mapper `<user>`",
-        example:
-            "/mapper `Hivie`\n /mapper <@341321481390784512>\n /mapper `HEAVENLY MOON`",
-        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-    }
-);
+const mapper = new SlashCommand("mapper", "Displays mapper statistics of a user", "osu!", true, {
+    syntax: "/mapper `<user>`",
+    example: "/mapper `Hivie`\n /mapper <@341321481390784512>\n /mapper `HEAVENLY MOON`",
+    note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
+});
 
-mapper.builder.addStringOption((o) =>
-    o.setName("username").setDescription("Mapper username")
-);
+mapper.builder.addStringOption((o) => o.setName("username").setDescription("Mapper username"));
 
 mapper.setExecuteFunction(async (command) => {
     let { playerName, status } = await checkCommandPlayers(command);
@@ -41,18 +27,15 @@ mapper.setExecuteFunction(async (command) => {
             embeds: [UserNotFound],
         });
 
-    const mapper_beatmaps = await osuApi.fetch.userBeatmaps(
-        mapper.data.id.toString()
-    );
+    const beatmaps = await osuApi.fetch.userBeatmaps(mapper.data.id);
 
-    if (mapper_beatmaps.status != 200) return;
-
-    if (mapper_beatmaps.data.sets.length < 1)
+    if (beatmaps.status != 200)
         return command.editReply({
-            embeds: [UserNotMapper],
+            embeds: [UserNotFound],
         });
 
-    const image = new MapperCard(mapper.data.id, mapper_beatmaps);
+    const image = new MapperCard(mapper.data, beatmaps);
+
     image
         .render()
         .then((image) => {
@@ -64,13 +47,11 @@ mapper.setExecuteFunction(async (command) => {
                 new ButtonBuilder()
                     .setLabel("Mapper Profile")
                     .setStyle(ButtonStyle.Link)
-                    .setURL(`https://osu.ppy.sh/users/${mapper.data.id}`),
-                new ButtonBuilder()
-                    .setLabel("Latest Beatmap")
-                    .setStyle(ButtonStyle.Link)
-                    .setURL(
-                        `https://osu.ppy.sh/beatmapsets/${mapper_beatmaps.data.last.id}`
-                    )
+                    .setURL(`https://osu.ppy.sh/users/${mapper.data.id}`)
+                // new ButtonBuilder()
+                //     .setLabel("Latest Beatmap")
+                //     .setStyle(ButtonStyle.Link)
+                //     .setURL(`https://osu.ppy.sh/beatmapsets/${mapper_beatmaps.data.last.id}`)
             );
 
             command.editReply({
