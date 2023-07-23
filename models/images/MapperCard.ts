@@ -14,6 +14,7 @@ import { fetchOldestBeatmap } from "../../modules/osu/player/fetchOldestBeatmap"
 import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { Beatmapset, UserBeatmapetsResponse } from "../../types/beatmap";
 import { User, UserGroup } from "../../types/user";
+import config from "../../config.json";
 
 interface IndexableUsergroup extends UserGroup {
     index: number;
@@ -370,6 +371,14 @@ export class MapperCard {
         const usernameSizing = ["30px"];
         const usernamePosition = [150, 50];
         const usernameMaxWidth = this.canvas.width - usernamePosition[0] * 1.6;
+
+        if (config.ownersOsu.includes(this.mapper.id.toString())) {
+            if (this.mapper.title) {
+                this.mapper.title = this.mapper.title + " / " + "AxerBot Developer";
+            } else {
+                this.mapper.title = "AxerBot Developer";
+            }
+        }
 
         this.ctx.fillStyle = this.white;
         this.ctx.font = `600 ${usernameSizing} Quicksand, sans-serif`;
