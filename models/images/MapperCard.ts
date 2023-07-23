@@ -702,7 +702,7 @@ export class MapperCard {
             this.ctx.closePath();
 
             this.ctx.fillStyle = this.brownExtraLight;
-            this.ctx.fillText("None...", 206, 461);
+            this.ctx.fillText("None...", 206, 560);
         }
     }
 
