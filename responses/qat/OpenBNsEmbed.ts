@@ -12,10 +12,7 @@ export default {
         let openBNs: QatUser[] = [];
 
         qatAllUsers.data.forEach((user: QatUser) => {
-            if (
-                !user.requestStatus.includes("closed") &&
-                user.requestStatus.length > 0
-            ) {
+            if (!user.requestStatus.includes("closed") && user.requestStatus.length > 0) {
                 openBNs.push(user);
             }
         });
@@ -25,59 +22,40 @@ export default {
 
         if (gamemode) {
             e.setAuthor({
-                name: `${
-                    getOpenBNsPerMode(openBNs, gamemode, "link").split("\n")
-                        .length
-                } open osu!${gamemode === "osu" ? "" : gamemode} BNs`,
-                url: `https://bn.mappersguild.com/`,
+                name: `${getOpenBNsPerMode(openBNs, gamemode, "status", true)} open osu!${
+                    gamemode === "osu" ? "" : gamemode
+                } BNs`,
+                url: `https://bn.mappersguild.com/modrequests`,
                 iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
             })
-                .setDescription(
-                    `${getOpenBNsPerMode(openBNs, gamemode, "status")}`
-                )
+                .setDescription(`${getOpenBNsPerMode(openBNs, gamemode, "status")}`)
                 .setFooter({
                     text: `use \"/openbns\" to view all open BNs.`,
                 });
         } else {
             e.setAuthor({
                 name: `${openBNs.length} open BNs`,
-                url: "https://bn.mappersguild.com/",
+                url: "https://bn.mappersguild.com/modrequests",
                 iconURL: "https://bn.mappersguild.com/images/qatlogo.png",
             })
                 .addFields(
                     {
-                        name: `osu! (${
-                            getOpenBNsPerMode(openBNs, "osu", "link").split(
-                                "\n"
-                            ).length
-                        })`,
+                        name: `osu! (${getOpenBNsPerMode(openBNs, "osu", "link", true)})`,
                         value: `${getOpenBNsPerMode(openBNs, "osu", "link")}`,
                         inline: true,
                     },
                     {
-                        name: `osu!taiko (${
-                            getOpenBNsPerMode(openBNs, "taiko", "link").split(
-                                "\n"
-                            ).length
-                        })`,
+                        name: `osu!taiko (${getOpenBNsPerMode(openBNs, "taiko", "link", true)})`,
                         value: `${getOpenBNsPerMode(openBNs, "taiko", "link")}`,
                         inline: true,
                     },
                     {
-                        name: `osu!mania (${
-                            getOpenBNsPerMode(openBNs, "mania", "link").split(
-                                "\n"
-                            ).length
-                        })`,
+                        name: `osu!mania (${getOpenBNsPerMode(openBNs, "mania", "link", true)})`,
                         value: `${getOpenBNsPerMode(openBNs, "mania", "link")}`,
                         inline: true,
                     },
                     {
-                        name: `osu!catch (${
-                            getOpenBNsPerMode(openBNs, "catch", "link").split(
-                                "\n"
-                            ).length
-                        })`,
+                        name: `osu!catch (${getOpenBNsPerMode(openBNs, "catch", "link", true)})`,
                         value: `${getOpenBNsPerMode(openBNs, "catch", "link")}`,
                         inline: true,
                     }
