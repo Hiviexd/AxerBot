@@ -7,11 +7,7 @@ import { Beatmapset, UserBeatmapetsResponse } from "../../types/beatmap";
 import { UserResponse } from "../../types/user";
 
 export default {
-    send: async (
-        user: UserResponse,
-        beatmaps: UserBeatmapetsResponse,
-        message: Message
-    ) => {
+    send: async (user: UserResponse, beatmaps: UserBeatmapetsResponse, message: Message) => {
         const usergroup = parseUsergroup(user.data); // ? Get the highest usergroup
 
         const totalMapsets =
@@ -46,8 +42,7 @@ export default {
 
             maps.sort(
                 (a, b) =>
-                    new Date(a.submitted_date).valueOf() -
-                    new Date(b.submitted_date).valueOf()
+                    new Date(a.submitted_date).valueOf() - new Date(b.submitted_date).valueOf()
             );
 
             return maps[0];
@@ -63,10 +58,7 @@ export default {
                     name: "Mapping for",
                     value: parseDate(
                         new Date(
-                            new Date().getTime() -
-                                new Date(
-                                    mostOldBeatmap.submitted_date
-                                ).getTime()
+                            new Date().getTime() - new Date(mostOldBeatmap.submitted_date).getTime()
                         )
                     ),
                 },
@@ -92,9 +84,7 @@ export default {
                     inline: true,
                     value: `▶ ${beatmaps.data.sets_playcount.toLocaleString(
                         "en-US"
-                    )} 💖 ${beatmaps.data.sets_favourites.toLocaleString(
-                        "en-US"
-                    )}`,
+                    )} 💖 ${beatmaps.data.sets_favourites.toLocaleString("en-US")}`,
                 },
                 {
                     name: "Latest Map",
@@ -111,9 +101,13 @@ export default {
             },
         }).setColor(usergroup.colour);
 
-        message.reply({
-            embeds: [e],
-        });
+        message
+            .reply({
+                embeds: [e],
+            })
+            .catch(() => {
+                void {};
+            });
     },
     reply: async (
         user: UserResponse,
@@ -138,8 +132,7 @@ export default {
 
             if (user.data.title) return `*${user.data.title}*`;
 
-            if (devs.includes(user.data.id.toString()))
-                return `AxerBot Developer`;
+            if (devs.includes(user.data.id.toString())) return `AxerBot Developer`;
 
             if (!user.data.title) return undefined;
         }
@@ -154,10 +147,7 @@ export default {
                     name: "Mapping for",
                     value: parseDate(
                         new Date(
-                            new Date().getTime() -
-                                new Date(
-                                    mostOldBeatmap.submitted_date
-                                ).getTime()
+                            new Date().getTime() - new Date(mostOldBeatmap.submitted_date).getTime()
                         )
                     ),
                 },
@@ -183,9 +173,7 @@ export default {
                     inline: true,
                     value: `▶ ${beatmaps.data.sets_playcount.toLocaleString(
                         "en-US"
-                    )} 💖 ${beatmaps.data.sets_favourites.toLocaleString(
-                        "en-US"
-                    )}`,
+                    )} 💖 ${beatmaps.data.sets_favourites.toLocaleString("en-US")}`,
                 },
                 {
                     name: "Latest Map",

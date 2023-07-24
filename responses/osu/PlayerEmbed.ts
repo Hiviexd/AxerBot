@@ -1,9 +1,4 @@
-import {
-    AttachmentBuilder,
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    Message,
-} from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, EmbedBuilder, Message } from "discord.js";
 import moment from "moment";
 import getEmoji from "../../helpers/text/getEmoji";
 import generatePlayerRankChart from "../../modules/osu/player/generatePlayerRankChart";
@@ -17,10 +12,7 @@ export default {
 
         const attachment = user.data.statistics?.global_rank
             ? new AttachmentBuilder(
-                  await generatePlayerRankChart(
-                      user.data,
-                      String(usergroup.colour)
-                  ),
+                  await generatePlayerRankChart(user.data, String(usergroup.colour)),
                   {
                       name: "rank.png",
                   }
@@ -54,25 +46,19 @@ export default {
                     user.data.statistics?.grade_counts.ss || 0
                 }\` **|** ${getEmoji("S")} \`${
                     user.data.statistics?.grade_counts.s || 0
-                }\` **|** ${getEmoji("A")} \`${
-                    user.data.statistics?.grade_counts.a || 0
-                }\``
+                }\` **|** ${getEmoji("A")} \`${user.data.statistics?.grade_counts.a || 0}\``
             )
             .addFields(
                 {
                     name: "Ranking",
                     value: `:earth_americas: \`#${
                         user.data.statistics?.global_rank
-                            ? user.data.statistics?.global_rank.toLocaleString(
-                                  "en-US"
-                              )
+                            ? user.data.statistics?.global_rank.toLocaleString("en-US")
                             : "-"
                     }\`
 			:flag_${user.data.country_code.toLowerCase()}: \`#${
                         user.data.statistics?.country_rank
-                            ? user.data.statistics?.country_rank.toLocaleString(
-                                  "en-US"
-                              )
+                            ? user.data.statistics?.country_rank.toLocaleString("en-US")
                             : "-"
                     }\``,
                     inline: true,
@@ -82,9 +68,7 @@ export default {
                     value: `**PP**: \`${Math.round(
                         user.data.statistics?.pp ? user.data.statistics?.pp : 0
                     ).toLocaleString("en-US")}\`
-			**Ranked Score**: \`${user.data.statistics?.ranked_score.toLocaleString(
-                "en-US"
-            )}\``,
+			**Ranked Score**: \`${user.data.statistics?.ranked_score.toLocaleString("en-US")}\``,
                     inline: true,
                 },
                 {
@@ -94,16 +78,12 @@ export default {
                     )}\`
 			**Accuracy**: \`${
                 user.data.statistics?.hit_accuracy
-                    ? Number(
-                          user.data.statistics?.hit_accuracy.toFixed(2)
-                      ).toLocaleString("en-US")
+                    ? Number(user.data.statistics?.hit_accuracy.toFixed(2)).toLocaleString("en-US")
                     : 0
             }%\`
 			**Play Count**: \`${
                 user.data.statistics?.play_count
-                    ? Number(
-                          user.data.statistics?.play_count.toFixed(2)
-                      ).toLocaleString("en-US")
+                    ? Number(user.data.statistics?.play_count.toFixed(2)).toLocaleString("en-US")
                     : 0
             }\`
 			**Play Time**: \`${parsePlayTime(user.data.statistics)}\``,
@@ -117,32 +97,28 @@ export default {
                         ? "🟢 Currently online"
                         : `🔴 Offline${
                               user.data.last_visit
-                                  ? " • " +
-                                    moment(user.data.last_visit).fromNow()
+                                  ? " • " + moment(user.data.last_visit).fromNow()
                                   : ""
                           }`
                 }`,
             })
             .setColor(usergroup.colour);
 
-        message.channel.send({
-            embeds: [embed],
-            files: attachment ? [attachment] : [],
-        });
+        message.channel
+            .send({
+                embeds: [embed],
+                files: attachment ? [attachment] : [],
+            })
+            .catch(() => {
+                void {};
+            });
     },
-    reply: async (
-        user: UserResponse,
-        interaction: ChatInputCommandInteraction,
-        mode?: string
-    ) => {
+    reply: async (user: UserResponse, interaction: ChatInputCommandInteraction, mode?: string) => {
         const usergroup = parseUsergroup(user.data);
 
         const attachment = user.data.statistics?.global_rank
             ? new AttachmentBuilder(
-                  await generatePlayerRankChart(
-                      user.data,
-                      String(usergroup.colour)
-                  ),
+                  await generatePlayerRankChart(user.data, String(usergroup.colour)),
                   {
                       name: "rank.png",
                   }
@@ -174,25 +150,19 @@ export default {
                     user.data.statistics?.grade_counts.ss || 0
                 }\` **|** ${getEmoji("S")} \`${
                     user.data.statistics?.grade_counts.s || 0
-                }\` **|** ${getEmoji("A")} \`${
-                    user.data.statistics?.grade_counts.a || 0
-                }\``
+                }\` **|** ${getEmoji("A")} \`${user.data.statistics?.grade_counts.a || 0}\``
             )
             .addFields(
                 {
                     name: "Ranking",
                     value: `:earth_americas: \`#${
                         user.data.statistics?.global_rank
-                            ? user.data.statistics?.global_rank.toLocaleString(
-                                  "en-US"
-                              )
+                            ? user.data.statistics?.global_rank.toLocaleString("en-US")
                             : "-"
                     }\`
 			:flag_${user.data.country_code.toLowerCase()}: \`#${
                         user.data.statistics?.country_rank
-                            ? user.data.statistics?.country_rank.toLocaleString(
-                                  "en-US"
-                              )
+                            ? user.data.statistics?.country_rank.toLocaleString("en-US")
                             : "-"
                     }\``,
                     inline: true,
@@ -202,9 +172,7 @@ export default {
                     value: `**PP**: \`${Math.round(
                         user.data.statistics?.pp ? user.data.statistics?.pp : 0
                     ).toLocaleString("en-US")}\`
-			**Ranked Score**: \`${user.data.statistics?.ranked_score.toLocaleString(
-                "en-US"
-            )}\``,
+			**Ranked Score**: \`${user.data.statistics?.ranked_score.toLocaleString("en-US")}\``,
                     inline: true,
                 },
                 {
@@ -214,16 +182,12 @@ export default {
                     )}\`
 			**Accuracy**: \`${
                 user.data.statistics?.hit_accuracy
-                    ? Number(
-                          user.data.statistics?.hit_accuracy.toFixed(2)
-                      ).toLocaleString("en-US")
+                    ? Number(user.data.statistics?.hit_accuracy.toFixed(2)).toLocaleString("en-US")
                     : 0
             }%\`
 			**Play Count**: \`${
                 user.data.statistics?.play_count
-                    ? Number(
-                          user.data.statistics?.play_count.toFixed(2)
-                      ).toLocaleString("en-US")
+                    ? Number(user.data.statistics?.play_count.toFixed(2)).toLocaleString("en-US")
                     : 0
             }\`
 			**Play Time**: \`${parsePlayTime(user.data.statistics)}\``,
@@ -237,8 +201,7 @@ export default {
                         ? "🟢 Currently online"
                         : `🔴 Offline${
                               user.data.last_visit
-                                  ? " • " +
-                                    moment(user.data.last_visit).fromNow()
+                                  ? " • " + moment(user.data.last_visit).fromNow()
                                   : ""
                           }`
                 }`,
