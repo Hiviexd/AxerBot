@@ -93,7 +93,7 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
                 await member.roles.add(role);
             }
         } catch (e: any) {
-            console.error("adding default role", e.roles[0]);
+            console.error("adding default role", e.roles);
         }
     }
 
