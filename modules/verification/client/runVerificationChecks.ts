@@ -62,9 +62,20 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
                 (r) => r.country == user.country_code
             );
 
-            guild_db.country_roles[roleIndex].id = newRole.id;
+            let role = guild_db.country_roles[roleIndex];
+
+            if (!role) {
+                role = {
+                    country: user.country_code,
+                    id: newRole.id,
+                };
+            }
+
+            role.id = newRole.id;
 
             roleToAdd = newRole;
+
+            guild_db.country_roles.push(role);
 
             await guilds.findByIdAndUpdate(guild_db._id, guild_db);
         }
