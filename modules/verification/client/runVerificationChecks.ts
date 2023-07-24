@@ -12,11 +12,7 @@ import { IHTTPResponse } from "../../../types/http";
 import { bot } from "../../..";
 import { BeatmapStatus } from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
 
-export async function runVerificationChecks(
-    guild: Guild,
-    user: User,
-    member: GuildMember
-) {
+export async function runVerificationChecks(guild: Guild, user: User, member: GuildMember) {
     const guild_db = await guilds.findById(guild.id);
 
     if (!guild_db) return;
@@ -31,9 +27,9 @@ export async function runVerificationChecks(
     }
 
     if (guild_db.verification.targets.country_role) {
-        let roleDataForCountry = guild_db.country_roles.find(
-            (r) => r.country == user.country_code
-        );
+        if (!guild_db.country_roles) guild_db.country_roles = [];
+
+        let roleDataForCountry = guild_db.country_roles.find((r) => r.country == user.country_code);
 
         // ? Create role if doesn't exists
         if (!roleDataForCountry) {
@@ -51,7 +47,7 @@ export async function runVerificationChecks(
 
             roleDataForCountry = newData;
 
-            await guild_db.save();
+            await guilds.findByIdAndUpdate(guild_db._id, guild_db);
         }
 
         let roleToAdd = await guild.roles.fetch(String(roleDataForCountry.id));
@@ -70,7 +66,7 @@ export async function runVerificationChecks(
 
             roleToAdd = newRole;
 
-            await guild_db.save();
+            await guilds.findByIdAndUpdate(guild_db._id, guild_db);
         }
 
         member.roles.add(roleToAdd, "AxerBot Verification System");
@@ -97,11 +93,7 @@ export async function runVerificationChecks(
         }
     }
 
-    async function addRole(
-        role: string,
-        usergroup: UserGroup,
-        probationary: boolean
-    ) {
+    async function addRole(role: string, usergroup: UserGroup, probationary: boolean) {
         if (!guild_db) return;
 
         console.log(`adding ${role}`);
@@ -131,10 +123,7 @@ export async function runVerificationChecks(
                 try {
                     await member.roles.add(guildRole);
                 } catch (e: any) {
-                    console.error(
-                        `adding guild group role ${role} ${guildRole.id}`,
-                        e
-                    );
+                    console.error(`adding guild group role ${role} ${guildRole.id}`, e);
                 }
             } else {
                 console.log(`Role for ${role} not found`);
@@ -146,10 +135,7 @@ export async function runVerificationChecks(
         function hasRequiredPlaymodes() {
             let r = false;
 
-            if (
-                configuration.modes.includes("none") &&
-                (usergroup.playmodes || []).length == 0
-            )
+            if (configuration.modes.includes("none") && (usergroup.playmodes || []).length == 0)
                 return true;
 
             if (configuration.modes.length == 0) return true;
@@ -171,8 +157,7 @@ export async function runVerificationChecks(
 
         const roles = guild_db.verification.targets.rank_roles;
 
-        if (!roles || roles.length == 0)
-            return console.log("Server without configuration");
+        if (!roles || roles.length == 0) return console.log("Server without configuration");
 
         roles.forEach((r: any) => execute(r));
 
@@ -185,13 +170,11 @@ export async function runVerificationChecks(
 
             const osu = await osuApi.fetch.user(user.id.toString(), r.gamemode);
 
-            if (osu.status != 200 || !osu.data)
-                return console.log("Osu user not found!");
+            if (osu.status != 200 || !osu.data) return console.log("Osu user not found!");
 
             const osuData: User = osu.data;
 
-            if (!osuData.statistics)
-                return console.log("User without statistics!");
+            if (!osuData.statistics) return console.log("User without statistics!");
 
             if (
                 (r.type == "country" && !osuData.statistics.country_rank) ||
@@ -238,16 +221,10 @@ export async function runVerificationChecks(
             let maps: Beatmapset[] = [];
 
             for (const mode of modes) {
-                const b = await osuApi.fetch.searchBeatmapset(
-                    `creator=${user.id}`,
-                    mode,
-                    status
-                );
+                const b = await osuApi.fetch.searchBeatmapset(`creator=${user.id}`, mode, status);
 
                 if (b.status == 200 && b.data) {
-                    maps = maps.concat(
-                        b.data.beatmapsets.filter((b) => b.user_id == user.id)
-                    );
+                    maps = maps.concat(b.data.beatmapsets.filter((b) => b.user_id == user.id));
                 }
             }
 
@@ -257,13 +234,9 @@ export async function runVerificationChecks(
         async function fetchPendingAndGraveyard(modes: string[]) {
             let maps: Beatmapset[] = [];
 
-            const pending = await osuApi.fetch.basicUserBeatmaps(
-                user.id,
-                "pending"
-            );
+            const pending = await osuApi.fetch.basicUserBeatmaps(user.id, "pending");
 
-            if (!pending.data || pending.status != 200)
-                return [] as Beatmapset[];
+            if (!pending.data || pending.status != 200) return [] as Beatmapset[];
 
             const graveyard = await fetchBeatmapsWithMode(modes, "graveyard");
 
@@ -279,16 +252,10 @@ export async function runVerificationChecks(
 
             if (matchStatus.hasRequired) {
                 for (const roleId of role.roles) {
-                    if (
-                        role.target == MapperRoleType.RankedMapper &&
-                        matchStatus.isRanked
-                    )
+                    if (role.target == MapperRoleType.RankedMapper && matchStatus.isRanked)
                         await member.roles.add(roleId);
 
-                    if (
-                        role.target == MapperRoleType.LovedMapper &&
-                        matchStatus.isLoved
-                    )
+                    if (role.target == MapperRoleType.LovedMapper && matchStatus.isLoved)
                         await member.roles.add(roleId);
 
                     if (
@@ -300,10 +267,7 @@ export async function runVerificationChecks(
                 }
             }
 
-            async function isBeatmapAllowed(
-                modes: string[],
-                type: MapperRoleType
-            ) {
+            async function isBeatmapAllowed(modes: string[], type: MapperRoleType) {
                 const modeToInt = ["osu", "taiko", "fruits", "mania"];
                 const typesToStatus = {
                     r: await fetchBeatmapsWithMode(
