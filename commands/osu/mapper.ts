@@ -34,6 +34,17 @@ mapper.setExecuteFunction(async (command) => {
             embeds: [UserNotFound],
         });
 
+    const totalMapped =
+        mapper.data.ranked_and_approved_beatmapset_count +
+        mapper.data.loved_beatmapset_count +
+        mapper.data.pending_beatmapset_count +
+        mapper.data.graveyard_beatmapset_count;
+
+    if (totalMapped < 1)
+        return command.editReply({
+            embeds: [UserNotMapper],
+        });
+
     const image = new MapperCard(mapper.data, beatmaps);
 
     image
