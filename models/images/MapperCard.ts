@@ -541,9 +541,11 @@ export class MapperCard {
 
         const oldestBeatmap = await fetchOldestBeatmap(this.mapper);
 
-        const age = parseDate(
-            new Date(new Date().getTime() - new Date(oldestBeatmap.submitted_date).getTime())
-        );
+        const age = oldestBeatmap
+            ? parseDate(
+                  new Date(new Date().getTime() - new Date(oldestBeatmap.submitted_date).getTime())
+              )
+            : "today";
 
         const baseText = "mapping for";
 
