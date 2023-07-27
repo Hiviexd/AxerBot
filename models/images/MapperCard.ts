@@ -545,7 +545,7 @@ export class MapperCard {
             ? parseDate(
                   new Date(new Date().getTime() - new Date(oldestBeatmap.submitted_date).getTime())
               )
-            : "today";
+            : "0 days";
 
         const baseText = "mapping for";
 
