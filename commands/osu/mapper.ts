@@ -6,6 +6,7 @@ import osuApi from "../../modules/osu/fetcher/osuApi";
 import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
+import { calculateMapperScore } from "../../modules/osu/performance/calculateMapperScore";
 
 const mapper = new SlashCommand("mapper", "Displays mapper statistics of a user", "osu!", true, {
     syntax: "/mapper `<user>`",
@@ -65,8 +66,11 @@ mapper.setExecuteFunction(async (command) => {
                 //     .setURL(`https://osu.ppy.sh/beatmapsets/${mapper_beatmaps.data.last.id}`)
             );
 
+            const score = calculateMapperScore(beatmaps.data.sets);
+
             command.editReply({
                 files: [att],
+                content: `Performance: ${score.total}`,
                 components: [buttons],
             });
         })

@@ -1,5 +1,6 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import osuApi from "../../modules/osu/fetcher/osuApi";
+import { calculateScoreForBeatmapset } from "../../modules/osu/performance/calculateMapperScore";
 import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
@@ -18,29 +19,26 @@ const mapsetrank = new SlashCommand(
 );
 
 mapsetrank.builder
+    .addStringOption((o) => o.setName("username").setDescription("Mapper username"))
     .addStringOption((o) =>
-        o.setName("username").setDescription("Mapper username")
-    )
-    .addStringOption((o) =>
-        o
-            .setName("sort")
-            .setDescription("Generate a leaderboard with beatmaps:")
-            .addChoices(
-                {
-                    name: "favorites",
-                    value: "favourite_count",
-                },
-                {
-                    name: "plays",
-                    value: "play_count",
-                }
-            )
+        o.setName("sort").setDescription("Generate a leaderboard with beatmaps:").addChoices(
+            {
+                name: "performance",
+                value: "performance",
+            },
+            {
+                name: "favorites",
+                value: "favourite_count",
+            },
+            {
+                name: "plays",
+                value: "play_count",
+            }
+        )
     );
 
 mapsetrank.setExecuteFunction(async (command) => {
-    let sort = command.options.get("sort")
-        ? command.options.get("sort")?.value
-        : "play_count";
+    let sort = command.options.get("sort") ? command.options.get("sort")?.value : "performance";
 
     let decorator = {
         title: "Most played beatmaps", // ? {username} | Most played beatmaps
@@ -67,6 +65,12 @@ mapsetrank.setExecuteFunction(async (command) => {
             embeds: [UserNotMapper],
         });
 
+    const totalMapped =
+        mapper.data.ranked_and_approved_beatmapset_count +
+        mapper.data.loved_beatmapset_count +
+        mapper.data.pending_beatmapset_count +
+        mapper.data.graveyard_beatmapset_count;
+
     // ? Sort beatmaps
     const sorted_beatmaps: Beatmapset[] = beatmaps.data.sets;
     switch (sort) {
@@ -86,6 +90,21 @@ mapsetrank.setExecuteFunction(async (command) => {
             sorted_beatmaps.sort((a, b) => {
                 return Number(b.play_count) - Number(a.play_count);
             });
+
+            break;
+        }
+        case "performance": {
+            sorted_beatmaps.sort((a, b) => {
+                return (
+                    calculateScoreForBeatmapset(b, totalMapped) -
+                    calculateScoreForBeatmapset(a, totalMapped)
+                );
+            });
+
+            decorator = {
+                title: "Beatmap performance top", // ? {username} | Most played beatmaps
+                emoji: "📈", // ? {position} . {beatmap_link} | ▶
+            };
 
             break;
         }
