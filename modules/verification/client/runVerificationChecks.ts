@@ -47,7 +47,7 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
 
             roleDataForCountry = newData;
 
-            await guilds.findByIdAndUpdate(guild_db._id, guild_db);
+            await guild_db.save();
         }
 
         let roleToAdd = await guild.roles.fetch(String(roleDataForCountry.id));
@@ -57,27 +57,14 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
                 name: user.country.name || "Unknown Country",
                 reason: "AxerBot Verification System",
             });
-
             const roleIndex = guild_db.country_roles.findIndex(
                 (r) => r.country == user.country_code
             );
-
-            let role = guild_db.country_roles[roleIndex];
-
-            if (!role) {
-                role = {
-                    country: user.country_code,
-                    id: newRole.id,
-                };
-            }
-
-            role.id = newRole.id;
+            guild_db.country_roles[roleIndex].id = newRole.id;
 
             roleToAdd = newRole;
 
-            guild_db.country_roles.push(role);
-
-            await guilds.findByIdAndUpdate(guild_db._id, guild_db);
+            await guild_db.save();
         }
 
         member.roles.add(roleToAdd, "AxerBot Verification System");
