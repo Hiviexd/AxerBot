@@ -6,8 +6,6 @@ import {
     GuildMember,
     ChannelType,
     PermissionFlagsBits,
-    GuildChannel,
-    GuildChannelResolvable,
     GuildBasedChannel,
 } from "discord.js";
 import { guilds } from "../../../database";
