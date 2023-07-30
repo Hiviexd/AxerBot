@@ -24,6 +24,10 @@ export default async (member: GuildMember) => {
 
         if (!guild_db.verification.enable) return;
 
+        const botMember = await member.guild.members.fetch(member.client.user.id);
+
+        if (!botMember) return;
+
         const verification = await GenerateAuthToken(member);
 
         enum VerificationSystemError {
@@ -130,10 +134,6 @@ export default async (member: GuildMember) => {
                 return sendSystemError(VerificationSystemError.ChannelNotFound);
             }
         }
-
-        const botMember = await member.guild.members.fetch(member.client.user.id);
-
-        if (!botMember) return;
 
         if (
             !verification_channel
