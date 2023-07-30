@@ -44,7 +44,9 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
             const newRole = await guild.roles.create({
                 name: user.country.name || "Unknown Country",
                 reason: "AxerBot Verification System",
-                icon: canCreateIcon() ? countryFlags[user.country.code.toUpperCase()] : undefined,
+                unicodeEmoji: canCreateIcon()
+                    ? countryFlags[user.country.code.toUpperCase()]
+                    : undefined,
             });
 
             const newData = {
@@ -65,7 +67,9 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
             const newRole = await guild.roles.create({
                 name: user.country.name || "Unknown Country",
                 reason: "AxerBot Verification System",
-                icon: canCreateIcon() ? countryFlags[user.country.code.toUpperCase()] : undefined,
+                unicodeEmoji: canCreateIcon()
+                    ? countryFlags[user.country.code.toUpperCase()]
+                    : undefined,
             });
 
             const roleIndex = guild_db.country_roles.findIndex(
