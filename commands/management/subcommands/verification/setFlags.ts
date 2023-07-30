@@ -20,19 +20,20 @@ const verificationSetFlags = new SlashCommandSubcommand(
 
 verificationSetFlags.builder
     .addStringOption((o) =>
-        o
-            .setName("flag")
-            .setDescription("What do you want to manage?")
-            .addChoices(
-                {
-                    name: "username",
-                    value: "username",
-                },
-                {
-                    name: "country_role",
-                    value: "country_role",
-                }
-            )
+        o.setName("flag").setDescription("What do you want to manage?").addChoices(
+            {
+                name: "username",
+                value: "username",
+            },
+            {
+                name: "country_role",
+                value: "country_role",
+            },
+            {
+                name: "country_role_icons",
+                value: "country_role_icons",
+            }
+        )
     )
     .addStringOption((o) =>
         o.setName("status").setDescription("Set status").addChoices(
@@ -48,22 +49,26 @@ verificationSetFlags.builder
     );
 
 verificationSetFlags.setExecuteFunction(async (command) => {
-    if (!command.member) return;
+    if (!command.member || !command.guild) return;
 
     if (typeof command.member?.permissions == "string") return;
 
     const flag = command.options.getString("flag", true);
-    const status =
-        command.options.getString("status", true) == "true" ? true : false;
+    const status = command.options.getString("status", true) == "true" ? true : false;
 
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({
             embeds: [
                 generateErrorEmbed(
-                    "This guild isn't validated yet, try again after a few seconds.."
+                    "This guild isn't validated yet, try again after a few seconds..."
                 ),
             ],
+        });
+
+    if (flag == "country_role_icons" && !command.guild.features.includes("ROLE_ICONS"))
+        return command.editReply({
+            embeds: [generateErrorEmbed("This flag can't be enabled here!")],
         });
 
     guild.verification.targets[flag] = status;

@@ -11,6 +11,7 @@ import { Beatmapset } from "../../../types/beatmap";
 import { IHTTPResponse } from "../../../types/http";
 import { bot } from "../../..";
 import { BeatmapStatus } from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
+import { countryFlags } from "../../../constants/countryflags";
 
 export async function runVerificationChecks(guild: Guild, user: User, member: GuildMember) {
     const guild_db = await guilds.findById(guild.id);
@@ -31,11 +32,19 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
 
         let roleDataForCountry = guild_db.country_roles.find((r) => r.country == user.country_code);
 
+        function canCreateIcon() {
+            return (
+                guild.features.includes("ROLE_ICONS") &&
+                guild_db?.verification.targets.country_role_icons
+            );
+        }
+
         // ? Create role if doesn't exists
         if (!roleDataForCountry) {
             const newRole = await guild.roles.create({
                 name: user.country.name || "Unknown Country",
                 reason: "AxerBot Verification System",
+                icon: canCreateIcon() ? countryFlags[user.country.code.toUpperCase()] : undefined,
             });
 
             const newData = {
@@ -56,15 +65,22 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
             const newRole = await guild.roles.create({
                 name: user.country.name || "Unknown Country",
                 reason: "AxerBot Verification System",
+                icon: canCreateIcon() ? countryFlags[user.country.code.toUpperCase()] : undefined,
             });
+
             const roleIndex = guild_db.country_roles.findIndex(
                 (r) => r.country == user.country_code
             );
+
             guild_db.country_roles[roleIndex].id = newRole.id;
 
             roleToAdd = newRole;
 
             await guild_db.save();
+        }
+
+        if (!roleToAdd.icon && canCreateIcon()) {
+            await roleToAdd.setIcon(countryFlags[user.country.code.toUpperCase()]);
         }
 
         member.roles.add(roleToAdd, "AxerBot Verification System");
