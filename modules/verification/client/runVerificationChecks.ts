@@ -84,7 +84,7 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
         }
 
         if (!roleToAdd.icon && canCreateIcon()) {
-            await roleToAdd.setIcon(countryFlags[user.country.code.toUpperCase()]);
+            await roleToAdd.setUnicodeEmoji(countryFlags[user.country.code.toUpperCase()]);
         }
 
         member.roles.add(roleToAdd, "AxerBot Verification System");
