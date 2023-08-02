@@ -10,17 +10,14 @@ import discussionEvent from "./schemas/discussionEvent";
 import userEvent from "./schemas/userEvent";
 import selectRole from "./schemas/selectRole";
 import reminder from "./schemas/reminder";
+import guildUserBans from "./schemas/guildUserBans";
 
 consoleLog("database", "Starting database connection...");
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
     (e: any) => {
-        if (e)
-            return consoleError(
-                "database",
-                "An error has occurred:\n".concat(e.message)
-            );
+        if (e) return consoleError("database", "An error has occurred:\n".concat(e.message));
 
         consoleCheck("database", "Database connected!");
 
@@ -39,9 +36,7 @@ export const guilds = mongoose.model("Guilds", guild);
 export const heardles = mongoose.model("Heardles", heardle);
 export const tracks = mongoose.model("Tracks", track);
 export const selectRoles = mongoose.model("SelectRoles", selectRole);
-export const discussionEvents = mongoose.model(
-    "DiscussionEvents",
-    discussionEvent
-);
+export const discussionEvents = mongoose.model("DiscussionEvents", discussionEvent);
 export const reminders = mongoose.model("UserReminders", reminder);
 export const userEvents = mongoose.model("UserEvents", userEvent);
+export const guildUserAccountBans = mongoose.model("GuildUserBans", guildUserBans);
