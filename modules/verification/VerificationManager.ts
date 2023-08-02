@@ -43,15 +43,15 @@ export class VerificationManager {
 
         const database = await this.getOrCreateDocuments(member, member.guild);
 
-        if (database.error || !database.guild || !database.user) return console.error(database);
+        if (database.error) return console.error(database);
 
-        if (!database.guild.verification.enable) return;
+        if (!database.data.guild.verification.enable) return;
 
         if (!database.guild.verification.isStatic)
             this.tryToSendWelcomeMessage(member, database.guild);
     }
 
-    public async checkForVerificationRequestAndCreate(button: ButtonInteraction) {
+    public async checkForVerificationRequestAndCreateNew(button: ButtonInteraction) {
         // Void return type here means this isn't a verification request
 
         const targets = button.customId.split(",");
@@ -114,7 +114,7 @@ export class VerificationManager {
                     member.guild.members.me as GuildMember
                 )
             )
-                return;
+                return this.Errors.missingMessagePermissions(member);
 
             if (channel && channel.isTextBased()) {
                 this.logger.printInfo(
@@ -132,11 +132,11 @@ export class VerificationManager {
                         components: [components.button],
                     })
                     .catch((e) => {
-                        console.error(e);
+                        this.logger.printError(`Can't send verification message`, e);
                     });
             }
         } catch (e) {
-            console.error(e);
+            this.logger.printError("Error during welcome message request:", e);
         }
     }
 
@@ -145,7 +145,7 @@ export class VerificationManager {
         guildDocument: Awaited<ReturnType<typeof createNewGuild>>
     ) {
         const embed = new EmbedBuilder()
-            .setTitle("🔍 Verification Request")
+            .setTitle("🔐 Verification Request")
             .setDescription(
                 parseMessagePlaceholderFromMember(
                     guildDocument?.verification.message as string,
@@ -178,27 +178,36 @@ export class VerificationManager {
         if (!guildDocument) guildDocument = await createNewGuild(guild);
 
         if (!guildDocument)
-            return {
-                error: true,
-                guild: null,
-                user: null,
-            };
+            return this.createResponse<DocumentsResponse>(true, "Guild document not found!");
 
         let userDocument = await users.findById(member.id);
 
         if (!userDocument) userDocument = await createNewUser(guild);
 
-        if (!userDocument)
-            return {
-                error: true,
-                guild: null,
-                user: null,
-            };
+        if (!userDocument) return this.createResponse(true, "User document not found!");
 
-        return {
-            error: false,
+        interface DocumentsResponse {
+            guild: typeof guildDocument;
+            user: typeof userDocument;
+        }
+
+        return this.createResponse<DocumentsResponse>(false, "OK", {
             guild: guildDocument,
             user: userDocument,
-        };
+        });
+    }
+
+    private createResponse<T = null>(error: true | false, message: string, data?: T) {
+        return error == true
+            ? {
+                  error: true,
+                  message,
+                  data: null,
+              }
+            : {
+                  error: false,
+                  message,
+                  data: data as T,
+              };
     }
 }

@@ -29,29 +29,21 @@ export class VerificationProcessor {
 
             if (cloneStatus.isError) return cloneStatus;
 
-            return {
-                isError: false,
-                message: "OK",
-                data: clonedVerification,
-            };
+            return this.createResponse(false, "OK", clonedVerification);
         }
 
         this.logger.printInfo(
             `Creating verification for member ${member.user.tag} on ${member.guild.name} (${member.guild.id})`
         );
 
-        return {
-            isError: false,
-            message: "OK",
-            data: new UserVerification(this.axer, member, type),
-        };
+        return this.createResponse(false, "OK", new UserVerification(this.axer, member, type));
     }
 
-    private createError(message: string) {
+    private createResponse(error: boolean, message: string, data: any) {
         return {
             isError: true,
             message,
-            data: null,
+            data: data || null,
         };
     }
 }
