@@ -1,4 +1,10 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+} from "discord.js";
 import getTop3Genres from "../../helpers/qat/getters/genres/getTop3Genres";
 import getTop3Languages from "../../helpers/qat/getters/languages/getTop3Languages";
 import getTop3Mappers from "../../helpers/qat/getters/mappers/getTop3Mappers";
@@ -11,12 +17,14 @@ import getEmoji from "../../helpers/text/getEmoji";
 import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { QatUserResponse, UserActivityResponse } from "../../types/qat";
 import { UserResponse } from "../../types/user";
+import { bnRules } from "../../database";
+import bn from "../../commands/BNsite/bn";
 
 //! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
 // TODO: add BN finder count IF you're re-adding QA info
 
 export default {
-    reply: (
+    reply: async (
         osuUser: UserResponse,
         qatUser: QatUserResponse,
         activity: UserActivityResponse,
@@ -25,9 +33,14 @@ export default {
         const usergroup = parseUsergroup(osuUser.data); // ? Get the highest usergroup
 
         const latestNom =
-            activity.data.uniqueNominations[
-                activity.data.uniqueNominations.length - 1
-            ];
+            activity.data.uniqueNominations[activity.data.uniqueNominations.length - 1];
+
+        const userRules = await bnRules.findById(osuUser.data.id);
+
+        const rulesButton = new ButtonBuilder()
+            .setLabel("Request rules")
+            .setStyle(ButtonStyle.Secondary)
+            .setCustomId(`bnrules,${osuUser.data.id}`);
 
         let reqStatus = "";
         if (qatUser.data.requestStatus.length > 0) {
@@ -49,9 +62,7 @@ export default {
 
         let e = new EmbedBuilder()
             .setAuthor({
-                name: `${osuUser.data.username} • BN${
-                    qatUser.data.natDuration ? "/NAT" : ""
-                } info`,
+                name: `${osuUser.data.username} • BN${qatUser.data.natDuration ? "/NAT" : ""} info`,
                 url: `https://osu.ppy.sh/users/${osuUser.data.id}`,
                 iconURL: usergroup.icon ? usergroup.icon : undefined,
             })
@@ -74,9 +85,7 @@ export default {
                     name: `BN${qatUser.data.natDuration ? "/NAT" : ""} for`,
                     value: `${
                         qatUser.data.natDuration
-                            ? `🟠 ${calculateDuration(
-                                  qatUser.data.natDuration
-                              )}\n`
+                            ? `🟠 ${calculateDuration(qatUser.data.natDuration)}\n`
                             : ""
                     }🟣 ${calculateDuration(qatUser.data.bnDuration)}`,
                     inline: true,
@@ -120,10 +129,7 @@ export default {
             },
             {
                 name: "Resets Given",
-                value: `${parseResets(
-                    activity.data.disqualifications,
-                    activity.data.pops
-                )}`,
+                value: `${parseResets(activity.data.disqualifications, activity.data.pops)}`,
                 inline: true,
             },
             /*{
@@ -164,9 +170,7 @@ export default {
         );
 
         if (latestNom) {
-            let nomMessage = latestNom.content
-                ? latestNom.content.replace(/\r?\n|\r/g, " ")
-                : "";
+            let nomMessage = latestNom.content ? latestNom.content.replace(/\r?\n|\r/g, " ") : "";
             //truncate nomMessage
             if (nomMessage.length > 60) {
                 nomMessage = nomMessage.substring(0, 57) + "...";
@@ -191,6 +195,9 @@ export default {
 
         command.editReply({
             embeds: [e],
+            components: userRules
+                ? [new ActionRowBuilder<ButtonBuilder>().setComponents(rulesButton)]
+                : [],
         });
     },
 };

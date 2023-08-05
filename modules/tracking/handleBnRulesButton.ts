@@ -9,7 +9,7 @@ export async function handleBnRulesButton(button: ButtonInteraction) {
 
     const userId = targets[1];
 
-    if (!userId || !isNaN(Number(userId))) return;
+    if (!userId || isNaN(Number(userId))) return;
 
     await button.deferReply({ ephemeral: true });
 
