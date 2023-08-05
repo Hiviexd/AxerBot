@@ -11,6 +11,7 @@ import userEvent from "./schemas/userEvent";
 import selectRole from "./schemas/selectRole";
 import reminder from "./schemas/reminder";
 import guildUserBans from "./schemas/guildUserBans";
+import bnRule from "./schemas/bnRule";
 
 consoleLog("database", "Starting database connection...");
 
@@ -38,5 +39,6 @@ export const tracks = mongoose.model("Tracks", track);
 export const selectRoles = mongoose.model("SelectRoles", selectRole);
 export const discussionEvents = mongoose.model("DiscussionEvents", discussionEvent);
 export const reminders = mongoose.model("UserReminders", reminder);
+export const bnRules = mongoose.model("BNRules", bnRule);
 export const userEvents = mongoose.model("UserEvents", userEvent);
 export const guildUserAccountBans = mongoose.model("GuildUserBans", guildUserBans);

@@ -10,10 +10,7 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { VerificationType } from "../../../../modules/verification/client/GenerateAuthToken";
 
-const verificationSync = new SlashCommandSubcommand(
-    "sync",
-    "Sync your verified data!"
-);
+const verificationSync = new SlashCommandSubcommand("sync", "Sync your verified data!");
 
 verificationSync.setExecuteFunction(async (command) => {
     try {
@@ -49,11 +46,7 @@ verificationSync.setExecuteFunction(async (command) => {
                 embeds: [UserNotFound],
             });
 
-        runVerificationChecks(
-            command.guild as Guild,
-            userData.data,
-            command.member as GuildMember
-        )
+        runVerificationChecks(command.guild as Guild, userData.data, command.member as GuildMember)
             .then(() => {
                 command.editReply({
                     content: `<@${command.user.id}>`,

@@ -7,6 +7,7 @@ import { IVerificationObject, VerificationType } from "../../verification/client
 import { validateVerificationSync } from "../../verification/client/validateVerificationSync";
 import { verifications } from "./../../../database";
 import { AxerBancho } from "../client";
+import { validateAccountValidationRequest } from "../../verification/client/validateAccountValidationRequest";
 
 export default {
     settings: {
@@ -50,6 +51,17 @@ export default {
                     break;
                 case VerificationType.validate:
                     validateVerificationSync(
+                        data.data,
+                        targetVerification as unknown as IVerificationObject,
+                        pm
+                    ).catch((e) => {
+                        console.error(e);
+
+                        pm.user.sendMessage("Error! Please try again later.");
+                    });
+                    break;
+                case VerificationType.accountVerification:
+                    validateAccountValidationRequest(
                         data.data,
                         targetVerification as unknown as IVerificationObject,
                         pm

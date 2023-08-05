@@ -1,30 +1,17 @@
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    Client,
-    EmbedBuilder,
-} from "discord.js";
-import { tracks } from "../../database";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder } from "discord.js";
+import { bnRules, tracks } from "../../database";
 import { QatUser } from "../../types/qat";
 import getBNPreferences from "../../helpers/qat/getters/preferences/getBNPreferences";
 import getEmoji from "../../helpers/text/getEmoji";
 import colors from "../../constants/colors";
 import WebSocket from "ws";
-import {
-    consoleCheck,
-    consoleError,
-    consoleLog,
-} from "../../helpers/core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../../helpers/core/logger";
 import { StatusManager } from "../status/StatusManager";
 
 async function qatTracking(bot: Client) {
     try {
         if (!process.env.QAT_USER || !process.env.QAT_SECRET)
-            return consoleError(
-                "QatTracking",
-                "Can't connect to bnsite: Missing credentials"
-            );
+            return consoleError("QatTracking", "Can't connect to bnsite: Missing credentials");
 
         const websocketConfig = {
             headers: {
@@ -57,10 +44,7 @@ async function qatTracking(bot: Client) {
             );
 
             qatWebsocket.on("open", () => {
-                consoleCheck(
-                    "QatTracking",
-                    "Connected to bnsite via websocket"
-                );
+                consoleCheck("QatTracking", "Connected to bnsite via websocket");
             });
 
             qatWebsocket.on("message", messageListener);
@@ -92,9 +76,7 @@ async function qatTracking(bot: Client) {
                 }
             } catch (e: any) {
                 const statusManager = new StatusManager();
-                statusManager.sendErrorMessage(
-                    `Can't send bn update: ${e.message}`
-                );
+                statusManager.sendErrorMessage(`Can't send bn update: ${e.message}`);
                 console.error(e);
             }
         }
@@ -113,11 +95,7 @@ async function qatTracking(bot: Client) {
 
             const texts: { [key: string]: EmbedBuilder } = {
                 open: new EmbedBuilder()
-                    .setTitle(
-                        `🟢 Open (<t:${Math.trunc(
-                            new Date().valueOf() / 1000
-                        )}:R>)`
-                    )
+                    .setTitle(`🟢 Open (<t:${Math.trunc(new Date().valueOf() / 1000)}:R>)`)
                     .setDescription(
                         `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is now **accepting** BN requests!\n Check out their preferences below:`
                     )
@@ -137,11 +115,7 @@ async function qatTracking(bot: Client) {
                     )
                     .setColor(colors.green),
                 closed: new EmbedBuilder()
-                    .setTitle(
-                        `🔴 Closed (<t:${Math.trunc(
-                            new Date().valueOf() / 1000
-                        )}:R>)`
-                    )
+                    .setTitle(`🔴 Closed (<t:${Math.trunc(new Date().valueOf() / 1000)}:R>)`)
                     .setDescription(
                         `**[${bn.username}](https://osu.ppy.sh/users/${bn.osuId})** ${modeIcons} is **no longer** accepting BN requests.`
                     )
@@ -151,26 +125,29 @@ async function qatTracking(bot: Client) {
             };
 
             const buttons = new ActionRowBuilder<ButtonBuilder>();
+            const rulesRow = new ActionRowBuilder<ButtonBuilder>();
 
             const embed = texts[isOpen ? "open" : "closed"];
 
             if (isOpen) {
+                const userRules = await bnRules.findById(bn.osuId.toString());
+
                 const dmButton = new ButtonBuilder();
                 dmButton
                     .setStyle(ButtonStyle.Link)
                     .setLabel("Send message (osu!)")
-                    .setURL(
-                        `https://osu.ppy.sh/home/messages/users/${bn.osuId}`
-                    );
+                    .setURL(`https://osu.ppy.sh/home/messages/users/${bn.osuId}`);
                 buttons.addComponents(dmButton);
 
-                if (
-                    bn.requestStatus.includes("personalQueue") &&
-                    bn.requestLink
-                ) {
-                    const siteName = new URL(bn.requestLink).hostname.split(
-                        "."
-                    )[0];
+                const rulesButton = new ButtonBuilder()
+                    .setLabel("Request rules")
+                    .setStyle(ButtonStyle.Secondary)
+                    .setCustomId(`bnrules,${bn.osuId}`);
+
+                if (userRules) rulesRow.addComponents(rulesButton);
+
+                if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
+                    const siteName = new URL(bn.requestLink).hostname.split(".")[0];
                     const personalQueueButton = new ButtonBuilder();
                     personalQueueButton
                         .setStyle(ButtonStyle.Link)
@@ -208,10 +185,7 @@ async function qatTracking(bot: Client) {
                     if (bn.modes.includes(mode)) hasModes = true;
                 });
 
-                if (
-                    (isOpen && track.targets.open) ||
-                    (!isOpen && track.targets.closed)
-                )
+                if ((isOpen && track.targets.open) || (!isOpen && track.targets.closed))
                     hasTarget = true;
 
                 if (!hasTarget || !hasModes) return false;
@@ -224,7 +198,7 @@ async function qatTracking(bot: Client) {
                     return channel
                         .send({
                             embeds: [embed],
-                            components: isOpen ? [buttons] : [],
+                            components: isOpen ? [rulesRow, buttons] : [],
                         })
                         .catch((e) => {
                             console.error(e);
