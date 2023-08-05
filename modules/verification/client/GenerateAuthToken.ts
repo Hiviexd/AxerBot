@@ -6,6 +6,7 @@ import createNewUser from "../../../database/utils/createNewUser";
 export enum VerificationType {
     "validate" = "verification_validate",
     "default" = "verification",
+    accountVerification = "account",
 }
 
 export interface IVerificationObject {
@@ -56,8 +57,7 @@ export default async (
         target_user: user.id,
         createdAt: new Date(),
         type: type || VerificationType.default,
-        target_channel:
-            type == VerificationType.validate ? (channel as string) : undefined,
+        target_channel: type == VerificationType.validate ? (channel as string) : undefined,
     };
 
     if (!user_db)

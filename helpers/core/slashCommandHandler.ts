@@ -15,6 +15,7 @@ import { AxerCommands } from "../../commands";
 import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import generateErrorEmbed from "../text/embeds/generateErrorEmbed";
+import createNewUser from "../../database/utils/createNewUser";
 
 export function checkMemberPermissions(member: GuildMember, permissions: PermissionResolvable[]) {
     let pass = false;
@@ -74,6 +75,8 @@ export default async function commandHandler(
             embeds: [MissingPermissions],
         });
     }
+
+    await createNewUser(event.user);
 
     if (targetCommand.isSlashCommand() && event.isChatInputCommand()) {
         try {
