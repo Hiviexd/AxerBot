@@ -48,7 +48,11 @@ setBnRules.setExecuteFunction(async (command) => {
 
     const isBn = await qatApi.fetch.user(userObject.verified_id as number);
 
-    if (!isBn.data || isBn.status != 200)
+    if (
+        !isBn.data ||
+        isBn.status != 200 ||
+        !isBn.data.groups.find((g) => ["bn", "nat"].includes(g))
+    )
         return command.reply({
             embeds: [UserNotBNorNAT],
         });
