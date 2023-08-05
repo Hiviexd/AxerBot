@@ -1,4 +1,4 @@
-import { ButtonInteraction, EmbedBuilder } from "discord.js";
+import { ButtonInteraction, ColorResolvable, EmbedBuilder } from "discord.js";
 import { bnRules } from "../../database";
 import colors from "../../constants/colors";
 
@@ -20,7 +20,7 @@ export async function handleBnRulesButton(button: ButtonInteraction) {
 
     const embed = new EmbedBuilder()
         .setTitle(`📃 Request rules`)
-        .setColor(colors.pink)
+        .setColor((userRules.colour as ColorResolvable) || colors.pink)
         .setDescription(userRules.content)
         .setThumbnail(`https://a.ppy.sh/${userId}`);
 
