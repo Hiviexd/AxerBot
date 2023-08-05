@@ -4,6 +4,8 @@ import verificationAddGroupRole from "./subcommands/verification/addGroupRole";
 import verificationAddMapperRole from "./subcommands/verification/addMapperRole";
 import verificationAddRankRole from "./subcommands/verification/addRankRole";
 import verificationAddRole from "./subcommands/verification/addRole";
+import verificationBanList from "./subcommands/verification/banList";
+import verificationBanUser from "./subcommands/verification/banUser";
 import verificationSetDisabled from "./subcommands/verification/disable";
 import verificationSetEnabled from "./subcommands/verification/enable";
 import verificationNewSyncEmbed from "./subcommands/verification/newSyncEmbed";
@@ -19,6 +21,7 @@ import verificationSetMessage from "./subcommands/verification/setMessage";
 import verificationSetType from "./subcommands/verification/setType";
 import verificationStatus from "./subcommands/verification/status";
 import verificationSync from "./subcommands/verification/sync";
+import verificationUnbanUser from "./subcommands/verification/unbanUser";
 
 const verificationCommand = new SlashCommand(
     "verification",
@@ -43,10 +46,7 @@ verificationCommand.addSubcommand(verificationSetDisabled);
 verificationCommand.addSubcommand(verificationSetEnabled);
 verificationCommand.addSubcommand(verificationSync);
 
-const commandGroupSET = new SlashCommandSubcommandGroup(
-    "set",
-    "Set a value to a module option."
-);
+const commandGroupSET = new SlashCommandSubcommandGroup("set", "Set a value to a module option.");
 
 commandGroupSET
     .addCommand(verificationSetButton)
@@ -55,10 +55,7 @@ commandGroupSET
     .addCommand(verificationSetMessage)
     .addCommand(verificationSetType);
 
-const commandGroupADD = new SlashCommandSubcommandGroup(
-    "add",
-    "Add a value to a module option."
-);
+const commandGroupADD = new SlashCommandSubcommandGroup("add", "Add a value to a module option.");
 
 commandGroupADD
     .addCommand(verificationAddGroupRole)
@@ -71,25 +68,26 @@ const commandGroupREMOVE = new SlashCommandSubcommandGroup(
     "Remove a value to a module option."
 );
 
-const commandGroupNEW = new SlashCommandSubcommandGroup(
-    "new",
-    "Create a new module value"
-);
+const commandGroupNEW = new SlashCommandSubcommandGroup("new", "Create a new module value");
 
-commandGroupNEW
-    .addCommand(verificationNewSyncEmbed)
-    .addCommand(verificationNewVerifyEmbed);
+const commandGroupBAN = new SlashCommandSubcommandGroup("ban", "Restrict users");
 
+commandGroupNEW.addCommand(verificationNewSyncEmbed).addCommand(verificationNewVerifyEmbed);
 commandGroupREMOVE
     .addCommand(verificationRemoveRankRole)
     .addCommand(verificationRemoveRole)
     .addCommand(verificationRemoveGroupRole)
     .addCommand(verificationRemoveMapperRole);
+commandGroupBAN
+    .addCommand(verificationBanUser)
+    .addCommand(verificationUnbanUser)
+    .addCommand(verificationBanList);
 
 verificationCommand
     .addSubcommandGroup(commandGroupADD)
     .addSubcommandGroup(commandGroupREMOVE)
     .addSubcommandGroup(commandGroupSET)
-    .addSubcommandGroup(commandGroupNEW);
+    .addSubcommandGroup(commandGroupNEW)
+    .addSubcommandGroup(commandGroupBAN);
 
 export default verificationCommand;

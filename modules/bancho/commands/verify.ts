@@ -46,7 +46,7 @@ export default {
                     ).catch((e) => {
                         console.error(e);
 
-                        pm.user.sendMessage("Error! Please try again later.");
+                        pm.user.sendMessage(`Error: ${e.message}`);
                     });
                     break;
                 case VerificationType.validate:
