@@ -69,6 +69,8 @@ import {
 import migrate from "./dev/migrate";
 import beatmap from "./osu/beatmap";
 import evalCommand from "./dev/eval";
+import viewOsuProfile from "./ContextMenus/osu/viewOsuProfile";
+import viewMapperCard from "./ContextMenus/osu/viewMapperCard";
 
 export const AxerCommands = [
     // ? General
@@ -118,6 +120,8 @@ export const AxerCommands = [
     mapsetrank,
     mapper,
     beatmap,
+    viewOsuProfile,
+    viewMapperCard,
 
     // ? bnsite
     bn,
