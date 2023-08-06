@@ -127,6 +127,8 @@ async function qatTracking(bot: Client) {
             const buttons = new ActionRowBuilder<ButtonBuilder>();
             const rulesRow = new ActionRowBuilder<ButtonBuilder>();
 
+            const rows = [buttons];
+
             const embed = texts[isOpen ? "open" : "closed"];
 
             if (isOpen) {
@@ -144,7 +146,10 @@ async function qatTracking(bot: Client) {
                     .setStyle(ButtonStyle.Secondary)
                     .setCustomId(`bnrules,${bn.osuId}`);
 
-                if (userRules) rulesRow.addComponents(rulesButton);
+                if (userRules) {
+                    rulesRow.addComponents(rulesButton);
+                    rows.unshift(rulesRow);
+                }
 
                 if (bn.requestStatus.includes("personalQueue") && bn.requestLink) {
                     const siteName = new URL(bn.requestLink).hostname.split(".")[0];
@@ -198,7 +203,7 @@ async function qatTracking(bot: Client) {
                     return channel
                         .send({
                             embeds: [embed],
-                            components: isOpen ? [rulesRow, buttons] : [],
+                            components: isOpen ? rows : [],
                         })
                         .catch((e) => {
                             console.error(e);
