@@ -74,24 +74,38 @@ export default async (member: GuildMember) => {
                             .send({
                                 embeds: [channelNotFoundEmbed],
                             })
-                            .catch(void {});
+                            .catch(() => {
+                                sendViaDM(type);
+                            });
                         break;
                     case VerificationSystemError.ChannelPermissions:
                         guildModerationChannel
                             .send({
                                 embeds: [channelPermissionsEmbed],
                             })
-                            .catch(void {});
+                            .catch(() => {
+                                sendViaDM(type);
+                            });
                         break;
                     case VerificationSystemError.UserPermissions:
                         guildModerationChannel
                             .send({
                                 embeds: [userPermissionsEmbed],
                             })
-                            .catch(void {});
+                            .catch(() => {
+                                sendViaDM(type);
+                            });
                         break;
                 }
             } else {
+                try {
+                    sendViaDM(type);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            async function sendViaDM(type: VerificationSystemError) {
                 member.client.users.cache
                     .get(member.guild.ownerId)
                     ?.createDM()
