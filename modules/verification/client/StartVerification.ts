@@ -114,17 +114,23 @@ export default async (member: GuildMember) => {
                             case VerificationSystemError.ChannelNotFound:
                                 dm.send({
                                     embeds: [channelNotFoundEmbed],
-                                }).catch(void {});
+                                }).catch((e) => {
+                                    console.error(e);
+                                });
                                 break;
                             case VerificationSystemError.ChannelPermissions:
                                 dm.send({
                                     embeds: [channelPermissionsEmbed],
-                                }).catch(void {});
+                                }).catch((e) => {
+                                    console.error(e);
+                                });
                                 break;
                             case VerificationSystemError.UserPermissions:
                                 dm.send({
                                     embeds: [userPermissionsEmbed],
-                                }).catch(void {});
+                                }).catch((e) => {
+                                    console.error(e);
+                                });
                                 break;
                         }
                     })
