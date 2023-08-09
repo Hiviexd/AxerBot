@@ -48,7 +48,13 @@ export async function SendBeatmapQualifyEmbed(
     async function fetchNominationComment(nominatorId: number) {
         const events = await qatApi.fetch.events(beatmapset.data.id);
 
-        if (!events.data || events.status != 200) return null;
+        if (
+            !events.data ||
+            events.status != 200 ||
+            typeof events.data != "object" ||
+            !events.data.sort
+        )
+            return null;
 
         return (
             events.data
