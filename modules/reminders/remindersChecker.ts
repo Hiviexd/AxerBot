@@ -45,21 +45,17 @@ export class RemindersManager {
     async start() {
         const allReminders = await reminders.find();
 
-        if (!allReminders)
-            return this.Logger.printError("Can't fetch reminders!");
+        if (!allReminders) return this.Logger.printError("Can't fetch reminders!");
 
-        this.Logger.printInfo("Processing all reminders!");
+        this.Logger.printInfo("Processing all reminders...");
 
         const remindersAvailableForSend = allReminders.filter(
-            (r: (typeof allReminders)[0]) =>
-                moment().diff(moment(r.sendAt), "seconds") >= 0
+            (r: (typeof allReminders)[0]) => moment().diff(moment(r.sendAt), "seconds") >= 0
         );
 
         for (const reminder of remindersAvailableForSend) {
             if (!reminder.isPrivate) {
-                const publicReminderResult = await this.sendPublicReminder(
-                    reminder
-                );
+                const publicReminderResult = await this.sendPublicReminder(reminder);
 
                 publicReminderResult.status == 200
                     ? this.Logger.printSuccess(publicReminderResult.message)
