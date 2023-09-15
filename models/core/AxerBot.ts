@@ -1,6 +1,5 @@
 import { Client, ClientOptions } from "discord.js";
 import { LoggerClient } from "./LoggerClient";
-import "../../modules/osu/fetcher/startConnection";
 import { DiscussionEventsListener } from "./DiscussionEventsListener";
 import { existsSync, mkdirSync } from "fs";
 import eventHandler from "../../helpers/core/eventHandler";
@@ -11,6 +10,9 @@ import { UserEventsListener } from "./UserEventsListener";
 import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
 import { RemindersManager } from "../../modules/reminders/remindersChecker";
 import { AxerBancho } from "../../modules/bancho/client";
+
+import "../../modules/osu/fetcher/startConnection";
+import "../../modules/automation/start";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
