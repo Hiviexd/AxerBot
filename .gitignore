@@ -3,6 +3,7 @@ node_modules
 tests
 .env
 .enxexample
+config.json
 dist
 
 #cache
