@@ -1,6 +1,5 @@
 {
-    "prefix": "this sets up the default prefix of the bot",
-    "ownerId": "bot owner's discord id",
-    "owners": ["use this array to give certain people access to the dev commands (this inclues yourself)", "dev2 discord id", "dev3 discord id"],
-    "ownersOsu": ["owners osu! profile id"]
+    "owners": ["341321481390784512", "556639598172962818"],
+    "ownersOsu": ["15821708", "14102976"],
+    "automation": true
 }

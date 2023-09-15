@@ -73,6 +73,9 @@ If you want to contribute to this project, please read the following to learn ho
 - Clone the repository
 - `yarn`
 - Set up `config.json`
+  - `owners`: array of Discord user IDs that will be considered as bot owners
+  - `ownersOsuIds`: array of osu! user IDs that will be considered as bot owners
+  - `automation`: boolean that determines whether the bot should run automated tasks
 - Set up `.env` file starting from the `.env.example` file
   - `TOKEN`: bot's token
   - `CLIENT_ID`: bot's client ID
