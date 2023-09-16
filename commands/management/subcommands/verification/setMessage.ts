@@ -12,9 +12,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
 } from "discord.js";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
-import { ownerId } from "../../../../config.json";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import crypto from "crypto";
@@ -46,9 +44,7 @@ verificationSetMessage.setExecuteFunction(async (command) => {
         });
 
     const modalId = crypto.randomBytes(15).toString("hex").slice(10);
-    const modal = new ModalBuilder()
-        .setTitle("Verification welcome message")
-        .setCustomId(modalId);
+    const modal = new ModalBuilder().setTitle("Verification welcome message").setCustomId(modalId);
 
     const textInput = new TextInputBuilder()
         .setLabel("Message")
@@ -56,55 +52,47 @@ verificationSetMessage.setExecuteFunction(async (command) => {
         .setValue(guild.verification.message)
         .setCustomId("newWelcomeMessage");
 
-    const firstTextInput =
-        new ActionRowBuilder<TextInputBuilder>().addComponents(textInput);
+    const firstTextInput = new ActionRowBuilder<TextInputBuilder>().addComponents(textInput);
 
     modal.addComponents(firstTextInput);
 
     await command.showModal(modal);
 
-    command.client.on(
-        "interactionCreate",
-        async (interaction): Promise<any> => {
-            if (!interaction.isModalSubmit()) return;
-            if (interaction.customId != modalId) return;
+    command.client.on("interactionCreate", async (interaction): Promise<any> => {
+        if (!interaction.isModalSubmit()) return;
+        if (interaction.customId != modalId) return;
 
-            await interaction.deferReply();
-            const message =
-                interaction.fields.getTextInputValue("newWelcomeMessage");
+        await interaction.deferReply();
+        const message = interaction.fields.getTextInputValue("newWelcomeMessage");
 
-            let guild = await guilds.findById(command.guildId);
-            if (!guild)
-                return command.editReply({
-                    embeds: [
-                        generateErrorEmbed(
-                            "This guild isn't validated yet, try again after a few seconds.."
-                        ),
-                    ],
-                });
-
-            guild.verification.message = message;
-
-            await guilds.findByIdAndUpdate(command.guildId, guild);
-
-            const previewButton = new ButtonBuilder()
-                .setLabel("Preview message")
-                .setStyle(ButtonStyle.Primary)
-                .setCustomId(
-                    `verificationpreviewmessage|${interaction.user.id}`
-                );
-
-            const previewButtonActionRow =
-                new ActionRowBuilder<ButtonBuilder>().addComponents(
-                    previewButton
-                );
-
-            interaction.editReply({
-                embeds: [generateSuccessEmbed("Welcome message changed!")],
-                components: [previewButtonActionRow],
+        let guild = await guilds.findById(command.guildId);
+        if (!guild)
+            return command.editReply({
+                embeds: [
+                    generateErrorEmbed(
+                        "This guild isn't validated yet, try again after a few seconds.."
+                    ),
+                ],
             });
-        }
-    );
+
+        guild.verification.message = message;
+
+        await guilds.findByIdAndUpdate(command.guildId, guild);
+
+        const previewButton = new ButtonBuilder()
+            .setLabel("Preview message")
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(`verificationpreviewmessage|${interaction.user.id}`);
+
+        const previewButtonActionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            previewButton
+        );
+
+        interaction.editReply({
+            embeds: [generateSuccessEmbed("Welcome message changed!")],
+            components: [previewButtonActionRow],
+        });
+    });
 });
 
 export default verificationSetMessage;

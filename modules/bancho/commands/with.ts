@@ -1,19 +1,14 @@
 import { PrivateMessage } from "bancho.js";
-import getOrCreateBanchoUser from "../../../database/utils/getOrCreatBanchoUser";
+import getOrCreateBanchoUser from "../../../database/utils/getOrCreateBanchoUser";
 import { sendBeatmapCalculation } from "../helpers/sendBeatmapCalculation";
 import { AxerBancho } from "../client";
 
 export default {
     settings: {
         name: "with",
-        description:
-            "Calculate the latest /np beatmap pp with given mods (!with <mods>)",
+        description: "Calculate the latest /np beatmap pp with given mods (!with <mods>)",
     },
-    run: async function (
-        pm: PrivateMessage,
-        bancho: AxerBancho,
-        args: string[]
-    ) {
+    run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {
         const userApi = await pm.user.fetchFromAPI();
 
         if (!userApi) return pm.user.sendMessage("Can't fetch api user");
@@ -22,8 +17,7 @@ export default {
 
         if (!user) return pm.user.sendMessage("User not found! Try again.");
 
-        if (!user.last_beatmap)
-            return pm.user.sendMessage("Use /np before use this command!");
+        if (!user.last_beatmap) return pm.user.sendMessage("Use /np before use this command!");
 
         const getRate = () => {
             const slots = [args[0] || "", args[1] || ""];

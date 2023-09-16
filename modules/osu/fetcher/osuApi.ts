@@ -16,6 +16,7 @@ import { user, userRecent, userRecentActivity, users } from "./user";
 import { comment } from "./comment";
 import { fetchBeatmapEvents } from "./qat";
 import { downloadUnofficialReplay } from "./downloader/replay/downloadUnofficialReplay";
+import { kudosu } from "./rankings";
 
 export default {
     fetch: {
@@ -36,6 +37,7 @@ export default {
         userRecent: userRecent,
         comment: comment,
         osuFile: osuFile,
+        kudosuRankings: kudosu,
     },
     download: {
         beatmapset: download,

@@ -1,6 +1,4 @@
 import { Message, PermissionFlagsBits } from "discord.js";
-import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
-import { ownerId } from "./../../../../config.json";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -14,10 +12,7 @@ const quotesAddWord = new SlashCommandSubcommand(
 );
 
 quotesAddWord.builder.addStringOption((o) =>
-    o
-        .setName("phrase")
-        .setDescription("Phrase that you want to add")
-        .setRequired(true)
+    o.setName("phrase").setDescription("Phrase that you want to add").setRequired(true)
 );
 
 quotesAddWord.setExecuteFunction(async (command) => {
@@ -27,9 +22,7 @@ quotesAddWord.setExecuteFunction(async (command) => {
 
     if (guild.fun.mode != "custom")
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("This server is not in custom quotes mode."),
-            ],
+            embeds: [generateErrorEmbed("This server is not in custom quotes mode.")],
         });
 
     if (!command.guild) return;
