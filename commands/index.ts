@@ -55,7 +55,6 @@ import spectro from "./tools/spectro";
 import debloat from "./tools/debloat";
 import addsilent from "./tools/addsilence";
 import imagecolors from "./tools/imagecolors";
-import spectrogramMenu from "./ContextMenus/tools/spectrogramMenu";
 
 // ? dev
 import shutdown from "./dev/shutdown";
@@ -134,7 +133,6 @@ export const AxerCommands = [
     debloat,
     addsilent,
     imagecolors,
-    spectrogramMenu,
 
     // ? Dev
     shutdown,
