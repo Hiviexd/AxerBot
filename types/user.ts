@@ -271,6 +271,7 @@ export interface UserCompactBase {
     unread_pm_count?: unknown;
     user_achievements?: UserAchievement[];
     user_preferences?: unknown;
+    kudosu?: UserCompactKudosu;
 }
 
 /**
@@ -287,7 +288,7 @@ export interface UserCompact extends UserCompactBase {
     is_restricted?: boolean;
 }
 
-export interface UserCompactKusodo {
+export interface UserCompactKudosu {
     available: number;
     total: number;
 }
@@ -310,7 +311,7 @@ export interface User extends UserCompactBase {
     has_supported: boolean;
     interests?: string;
     join_date: Timestamp;
-    kudosu: UserCompactKusodo;
+    kudosu: UserCompactKudosu;
     location?: string;
     /**
      * maximum number of users allowed to be blocked

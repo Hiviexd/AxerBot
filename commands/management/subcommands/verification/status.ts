@@ -14,12 +14,7 @@ const verificationStatus = new SlashCommandSubcommand(
 );
 
 verificationStatus.setExecuteFunction(async (command) => {
-    if (
-        !command.member ||
-        typeof command.member.permissions == "string" ||
-        !command.guild
-    )
-        return;
+    if (!command.member || typeof command.member.permissions == "string" || !command.guild) return;
 
     let guild = await guilds.findById(command.guildId);
     if (!guild) guild = await createNewGuild(command.guild);
@@ -35,7 +30,7 @@ verificationStatus.setExecuteFunction(async (command) => {
 
     if (!guild.verification)
         return command.editReply(
-            `What? Nothing to display here... Use \`${guild.prefix}help verification\` to get help`
+            `What? Nothing to display here... Use \`/help verification\` to get help`
         );
 
     const embed = new EmbedBuilder({
@@ -102,9 +97,7 @@ verificationStatus.setExecuteFunction(async (command) => {
     function getMapperRoles() {
         if (!guild) return "None";
 
-        const roles =
-            (guild.verification.mapper_roles as IMapperRole[]) ||
-            ([] as IMapperRole[]);
+        const roles = (guild.verification.mapper_roles as IMapperRole[]) || ([] as IMapperRole[]);
 
         const emojis: { [key: string]: string } = {
             r: getEmoji("ranked"),
@@ -119,9 +112,7 @@ verificationStatus.setExecuteFunction(async (command) => {
                 (r, i) =>
                     `${emojis[r.target]} **|** ${r.roles
                         .map((roleId) => `<@&${roleId}>`)
-                        .join(", ")} **|** [${r.modes.join(", ")}] **|** ${
-                        r.min
-                    } -> ${r.max}`
+                        .join(", ")} **|** [${r.modes.join(", ")}] **|** ${r.min} -> ${r.max}`
             )
             .join("\n");
     }
@@ -137,9 +128,7 @@ verificationStatus.setExecuteFunction(async (command) => {
             if (!guild) return;
 
             if (flags.includes(flag)) {
-                val = val.concat(
-                    `\`${flag}\`: ${guild.verification.targets[flag]}\n`
-                );
+                val = val.concat(`\`${flag}\`: ${guild.verification.targets[flag]}\n`);
             }
         });
 
@@ -158,9 +147,9 @@ verificationStatus.setExecuteFunction(async (command) => {
         return guild.verification.targets.rank_roles
             .map(
                 (r: any) =>
-                    `<@&${r.id}> [#${r.min_rank} -> #${r.max_rank}] | ${
-                        modes[r.gamemode]
-                    } | ${r.type}`
+                    `<@&${r.id}> [#${r.min_rank} -> #${r.max_rank}] | ${modes[r.gamemode]} | ${
+                        r.type
+                    }`
             )
             .join("\n");
     }
@@ -168,11 +157,7 @@ verificationStatus.setExecuteFunction(async (command) => {
     function getGroupRoles() {
         let val = "";
 
-        function getRoleModeText(role: {
-            group: string;
-            id: string;
-            modes: string[];
-        }) {
+        function getRoleModeText(role: { group: string; id: string; modes: string[] }) {
             if (role.modes) {
                 return `${
                     role.modes.length == 0
@@ -194,11 +179,7 @@ verificationStatus.setExecuteFunction(async (command) => {
 
         guild.verification.targets.group_roles.forEach(
             (role: { group: string; id: string; modes: string[] }) => {
-                val = val.concat(
-                    `\`${role.group}\`: <@&${role.id}> [${getRoleModeText(
-                        role
-                    )}]\n`
-                );
+                val = val.concat(`\`${role.group}\`: <@&${role.id}> [${getRoleModeText(role)}]\n`);
             }
         );
 
