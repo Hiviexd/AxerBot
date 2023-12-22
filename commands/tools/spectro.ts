@@ -15,6 +15,7 @@ import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateError
 import truncateString from "../../helpers/text/truncateString";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { AudioSpectrogram } from "../../modules/osu/spectrogram/AudioSpectrogram";
+import { readFileSync } from "fs";
 
 const spectrum = new SlashCommand(
     "spectro",
@@ -49,7 +50,7 @@ spectrum.setExecuteFunction(async (command) => {
         });
 
     const audioFile = await axios(audioFileData.url, {
-        responseType: "stream",
+        responseType: "arraybuffer",
     });
 
     const progressEmbed = new EmbedBuilder()
@@ -60,54 +61,51 @@ spectrum.setExecuteFunction(async (command) => {
         embeds: [progressEmbed],
     });
 
-    const Spectro = new AudioSpectrogram();
+    const Spectro = new AudioSpectrogram(audioFile.data);
 
-    Spectro.setAudio(audioFile.data);
-    Spectro.start();
+    Spectro.generate()
+        .then((file) => {
+            const image = readFileSync(file.path);
 
-    Spectro.on("data", (image: Buffer) => {
-        const attachment = new AttachmentBuilder(image, {
-            name: "image.jpg",
+            const attachment = new AttachmentBuilder(image, {
+                name: "image.jpg",
+            });
+            const successEmbed = new EmbedBuilder()
+                .setTitle("📉 Spectro")
+                .setDescription(`Spectro for \`${audioFileData.name}\` generated!`)
+                .setImage("attachment://image.jpg")
+                .setColor(colors.blue);
+            const guideButton = new ButtonBuilder()
+                .setLabel("How to read spectrograms")
+                .setStyle(ButtonStyle.Link)
+                .setURL("https://github.com/AxerBot/axer-bot/wiki/Spectrogram-Guide");
+            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(guideButton);
+
+            command
+                .editReply({
+                    embeds: [successEmbed],
+                    files: [attachment],
+                    components: [row],
+                })
+                .then(() => Spectro.deleteFiles())
+                .catch(() => Spectro.deleteFiles());
+        })
+        .catch((error) => {
+            Spectro.deleteFiles();
+            console.error(error);
+
+            command.editReply({
+                embeds: [
+                    generateErrorEmbedWithTitle(
+                        ":x: Something went wrong!",
+                        `${error?.message || "**Error:**"}\n${truncateString(
+                            error?.stack || "",
+                            4096
+                        )}`
+                    ),
+                ],
+            });
         });
-
-        const successEmbed = new EmbedBuilder()
-            .setTitle("📉 Spectro")
-            .setDescription(`Spectro for \`${audioFileData.name}\` generated!`)
-            .setImage("attachment://image.jpg")
-            .setColor(colors.blue);
-
-        const guideButton = new ButtonBuilder()
-            .setLabel("How to read spectrograms")
-            .setStyle(ButtonStyle.Link)
-            .setURL(
-                "https://github.com/AxerBot/axer-bot/wiki/Spectrogram-Guide"
-            );
-
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            guideButton
-        );
-
-        command.editReply({
-            embeds: [successEmbed],
-            files: [attachment],
-            components: [row],
-        });
-    }).on("error", (error: ExecException) => {
-        console.error(error);
-
-        command.editReply({
-            embeds: [
-                generateErrorEmbedWithTitle(
-                    ":x: Something went wrong!",
-                    `${error?.message || "**Error:**"}\n${truncateString(
-                        error?.stack || "",
-                        4096
-                    )}`
-                ),
-            ],
-        });
-    });
-
     try {
     } catch (e) {
         console.error(e);
