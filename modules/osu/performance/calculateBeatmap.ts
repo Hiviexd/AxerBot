@@ -52,11 +52,7 @@ export function calculateManiaBeatmap(osu_file: string, mods?: string) {
     return calculateBeatmap(osu_file, 3, mods);
 }
 
-export function generateRulesetBeatmap(
-    osu_file: string,
-    rulesetId: number,
-    mods?: string
-) {
+export function generateRulesetBeatmap(osu_file: string, rulesetId: number, mods?: string) {
     const decoder = new BeatmapDecoder();
     const ruleset = getRulesetById(rulesetId);
 
@@ -82,45 +78,44 @@ export function calculateBeatmap(
 
     const beatmap = ruleset.applyToBeatmapWithMods(parsed, combination);
     const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
-    const difficulty = difficultyCalculator.calculateWithMods(
-        combination,
-        rate
-    );
+    const difficulty = difficultyCalculator.calculateWithMods(combination, rate);
 
     const scoreInfo = new ScoreInfo();
     const accuracy = [100, 99, 98, 95];
 
     const performance = accuracy.map((acc) => {
-        scoreInfo.maxCombo = beatmap.maxCombo;
-        scoreInfo.rulesetId = ruleset.id;
-        scoreInfo.beatmap = createBeatmapInfo(beatmap);
-        scoreInfo.statistics = generateHitStatistics({
-            accuracy: acc,
-            beatmap,
-        });
-        scoreInfo.mods = combination;
-        scoreInfo.accuracy = calculateAccuracy(scoreInfo);
+        try {
+            scoreInfo.maxCombo = beatmap.maxCombo;
+            scoreInfo.rulesetId = ruleset.id;
+            scoreInfo.beatmap = createBeatmapInfo(beatmap);
+            scoreInfo.statistics = generateHitStatistics({
+                accuracy: acc,
+                beatmap,
+            });
+            scoreInfo.mods = combination;
+            scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
-        const performanceCalculator = ruleset.createPerformanceCalculator(
-            difficulty,
-            scoreInfo
-        );
+            const performanceCalculator = ruleset.createPerformanceCalculator(
+                difficulty,
+                scoreInfo
+            );
 
-        performanceCalculator.calculateAttributes(difficulty, scoreInfo);
+            performanceCalculator.calculateAttributes(difficulty, scoreInfo);
 
-        const pp = Math.round(performanceCalculator.calculate());
+            const pp = Math.round(performanceCalculator.calculate());
 
-        return { pp, acc };
+            return { pp, acc };
+        } catch (e) {
+            return { pp: 0, acc };
+        }
     }) as BeatmapPerformance[];
 
-    const performanceAttributes =
-        ruleset.createPerformanceCalculator(difficulty);
+    const performanceAttributes = ruleset.createPerformanceCalculator(difficulty);
 
     return {
         beatmap,
         difficulty,
-        performanceAttributes:
-            performanceAttributes.calculateAttributes(difficulty),
+        performanceAttributes: performanceAttributes.calculateAttributes(difficulty),
         performance,
     } as BeatmapCalculationResult;
 }
