@@ -29,10 +29,7 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
 
         this.validateTempFolders();
 
-        writeFileSync(
-            path.join(this.ImportFolder, beatmapsetId).concat(".zip"),
-            osz
-        );
+        writeFileSync(path.join(this.ImportFolder, beatmapsetId).concat(".zip"), osz);
     }
 
     private getBeatmapsetId() {
@@ -52,11 +49,7 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
 
         for (const beatmapFile of beatmapFiles) {
             const fileContent = readFileSync(
-                path.join(
-                    this.getImportFolder(),
-                    this.getBeatmapsetId(),
-                    beatmapFile
-                ),
+                path.join(this.getImportFolder(), this.getBeatmapsetId(), beatmapFile),
                 "utf8"
             );
 
@@ -76,9 +69,7 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
 
     public getAudioFileFrom(beatmapId: number) {
         try {
-            const mapData = this.Beatmaps.find(
-                (b) => b.metadata.beatmapId == beatmapId
-            );
+            const mapData = this.Beatmaps.find((b) => b.metadata.beatmapId == beatmapId);
 
             if (!mapData) return null;
 
@@ -106,9 +97,7 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
 
         try {
             yauzl.open(
-                path
-                    .join(this.getImportFolder(), this.getBeatmapsetId())
-                    .concat(".zip"),
+                path.join(this.getImportFolder(), this.getBeatmapsetId()).concat(".zip"),
                 { lazyEntries: true },
                 (err, zipfile) => {
                     if (err) throw err;
@@ -116,8 +105,10 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
                     zipfile.readEntry();
 
                     zipfile.on("entry", (entry) => {
+                        entry.fileName = entry.fileName.replace(/\\/g, "_");
+
                         /// * Check if the entry is a folder
-                        if (entry.fileName.split("/").length != 1) {
+                        if (entry.fileName.replace(/\\/g, "_").split("/").length != 1) {
                             this.createFolders(
                                 entry.fileName
                                     .split("/")
@@ -160,11 +151,7 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
     }
 
     public deleteOsz() {
-        unlinkSync(
-            path
-                .join(this.getImportFolder(), this.getBeatmapsetId())
-                .concat(".zip")
-        );
+        unlinkSync(path.join(this.getImportFolder(), this.getBeatmapsetId()).concat(".zip"));
     }
 
     private createFolders(paths: string[]) {
@@ -175,22 +162,8 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
         for (const _path of paths) {
             target.push(_path);
 
-            if (
-                !existsSync(
-                    path.join(
-                        this.ImportFolder,
-                        this.BeatmapsetId,
-                        target.join("/")
-                    )
-                )
-            )
-                mkdirSync(
-                    path.join(
-                        this.ImportFolder,
-                        this.BeatmapsetId,
-                        target.join("/")
-                    )
-                );
+            if (!existsSync(path.join(this.ImportFolder, this.BeatmapsetId, target.join("/"))))
+                mkdirSync(path.join(this.ImportFolder, this.BeatmapsetId, target.join("/")));
         }
     }
 
@@ -201,11 +174,9 @@ export class LegacyBeatmapsetImporter extends EventEmitter {
     }
 
     private validateTempFolders() {
-        if (!existsSync(path.resolve(this.ImportFolder)))
-            mkdirSync(this.ImportFolder);
+        if (!existsSync(path.resolve(this.ImportFolder))) mkdirSync(this.ImportFolder);
 
-        if (existsSync(path.join(this.ImportFolder, this.BeatmapsetId)))
-            this.deleteBeatmap();
+        if (existsSync(path.join(this.ImportFolder, this.BeatmapsetId))) this.deleteBeatmap();
 
         mkdirSync(path.join(this.ImportFolder, this.BeatmapsetId));
     }
