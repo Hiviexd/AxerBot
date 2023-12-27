@@ -1,18 +1,15 @@
 import { PrivateMessage } from "bancho.js";
-import { ExecException } from "child_process";
 
 import getOrCreateBanchoUser from "../../../database/utils/getOrCreateBanchoUser";
-import { bufferToStream } from "../../../helpers/transform/bufferToStream";
 import { LegacyBeatmapsetImporter } from "../../osu/fetcher/beatmap/LegacyBeatmapImporter";
 import osuApi from "../../osu/fetcher/osuApi";
-import { AudioSpectrogram } from "../../osu/spectrogram/AudioSpectrogram";
 import { AxerBancho } from "../client";
 import { BeatmapRateChanger } from "../../osu/ratechanger/BeatmapRateChanger";
 
 export default {
     settings: {
         name: "ratechange",
-        description: "Generate a spectrogram image from the latest /np beatmap",
+        description: "Change beatmap playback rate",
     },
     run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {
         const userApi = await pm.user.fetchFromAPI();
@@ -106,7 +103,7 @@ export default {
             rateChanger.generate().then((fileId) => {
                 rateChanger.packToOSZ().then(() => {
                     pm.user.sendMessage(
-                        `Beatmap rate changed to ${sanitizedRate}x! [https://${process.env.RATECHANGER_URL}/ratechange/download/${fileId} Download]`
+                        `Beatmap rate changed to ${sanitizedRate}x! [${process.env.RATECHANGER_URL}/ratechange/download/${fileId} Download]`
                     );
                 });
             });
