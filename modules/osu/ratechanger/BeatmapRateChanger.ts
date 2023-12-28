@@ -15,6 +15,7 @@ import { bufferToStream } from "../../../helpers/transform/bufferToStream";
 import { BeatmapEncoder, HoldableObject, SpinnableObject } from "osu-parsers";
 import Ffmpeg from "fluent-ffmpeg";
 import archiver from "archiver";
+import { bot } from "../../..";
 
 export interface BeatmapRateChangerOptions {
     scaleOd?: boolean;
@@ -43,7 +44,14 @@ export class BeatmapRateChanger {
         this.options = options;
     }
 
+    private addToDeletionQueue() {
+        console.log("test");
+        bot.RateChangeDeletionManager.addToQueue(this.fileHash, new Date());
+    }
+
     generate() {
+        this.addToDeletionQueue.bind(this);
+
         return new Promise<string>((resolve, reject) => {
             const encoder = new BeatmapEncoder();
 
@@ -64,7 +72,11 @@ export class BeatmapRateChanger {
 
                     encoder
                         .encodeToPath(path.join(this.tempPath, output), this.beatmap)
-                        .then(() => resolve(this.fileHash));
+                        .then(() => {
+                            this.addToDeletionQueue();
+
+                            resolve(this.fileHash);
+                        });
                 })
                 .catch(reject);
         });
