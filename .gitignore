@@ -17,3 +17,4 @@ temp/debloater/*.mp3
 temp/spectro/audio/*.wav
 temp/spectro/images/*.png
 beatmapsets
+temp/ratechange/

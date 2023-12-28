@@ -1,14 +1,5 @@
 import { randomBytes } from "crypto";
-import {
-    createWriteStream,
-    existsSync,
-    mkdirSync,
-    readFileSync,
-    readdirSync,
-    rename,
-    statSync,
-    writeFileSync,
-} from "fs";
+import { createWriteStream, existsSync, mkdirSync } from "fs";
 import {
     Beatmap,
     ControlPoint,
@@ -70,9 +61,9 @@ export class BeatmapRateChanger {
                             .replace(/\\/g, " ")
                             .replace(/\//g, "");
 
-                    encoder.encodeToPath(path.join(this.tempPath, output), this.beatmap);
-
-                    resolve(this.fileHash);
+                    encoder
+                        .encodeToPath(path.join(this.tempPath, output), this.beatmap)
+                        .then(() => resolve(this.fileHash));
                 })
                 .catch(reject);
         });
@@ -129,6 +120,7 @@ export class BeatmapRateChanger {
         this.beatmap.metadata.version = `${this.beatmap.metadata.version} ${this.rate}x`;
         this.beatmap.general.audioFilename = `(${this.rate}x) ${this.beatmap.general.audioFilename}`;
         this.beatmap.general.previewTime = Math.round(this.beatmap.general.previewTime / this.rate);
+        this.beatmap.metadata.beatmapId = -1;
         this.beatmap.metadata.tags.push("axerbot");
     }
 
