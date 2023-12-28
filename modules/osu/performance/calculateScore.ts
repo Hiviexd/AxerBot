@@ -1,12 +1,10 @@
 import { BeatmapDecoder } from "osu-parsers";
-import { ModCombination, RulesetBeatmap, ScoreInfo } from "osu-classes";
-import { createBeatmapInfo } from "./createBeatmapInfo";
-import { calculateAccuracy } from "./calculateAccuracy";
+import { HitResult, RulesetBeatmap, ScoreInfo } from "osu-classes";
+import { createBeatmapInfo } from "@kionell/osu-pp-calculator";
 import { getRulesetById } from "./getRuleset";
 import { Score } from "../../../types/score";
 import { getTotalHits } from "./calculateHits";
 import { GameMode } from "../../../types/game_mode";
-import { ScoreCalculator } from "@kionell/osu-pp-calculator";
 
 interface ScorePerformance {
     pp: number;
@@ -18,22 +16,22 @@ interface ScorePerformance {
 }
 
 export function calculateOsuScore(osu_file: string, score: Score) {
-    return calculateScore(osu_file, 0, score);
+    return calculateScore(osu_file, GameMode.osu, score);
 }
 
 export function calculateTaikoScore(osu_file: string, score: Score) {
-    return calculateScore(osu_file, 1, score);
+    return calculateScore(osu_file, GameMode.taiko, score);
 }
 
 export function calculateFruitsScore(osu_file: string, score: Score) {
-    return calculateScore(osu_file, 2, score);
+    return calculateScore(osu_file, GameMode.fruits, score);
 }
 
 export function calculateManiaScore(osu_file: string, score: Score) {
-    return calculateScore(osu_file, 3, score);
+    return calculateScore(osu_file, GameMode.mania, score);
 }
 
-export function calculateScore(osu_file: string, rulesetId: number, score: Score) {
+export function calculateScore(osu_file: string, rulesetId: GameMode, score: Score) {
     const decoder = new BeatmapDecoder();
     const ruleset = getRulesetById(rulesetId);
 
@@ -114,41 +112,48 @@ export function generateScoreInfo(osu_file: string, rulesetId: number, score: Sc
 
 export function simulateFC(beatmap: RulesetBeatmap, scoreInfo: ScoreInfo): ScoreInfo {
     const newScoreInfo = scoreInfo.clone();
-    const statistics = newScoreInfo.statistics.toJSON();
+    const statistics = newScoreInfo.statistics;
     const totalHits = getTotalHits(beatmap);
 
     switch (scoreInfo.rulesetId) {
-        case GameMode.fruits:
-            statistics.great =
-                totalHits -
-                Number(statistics.largeTickHit) -
-                Number(statistics.smallTickHit) -
-                Number(statistics.smallTickMiss) -
-                Number(statistics.miss);
+        case GameMode.fruits: {
+            const largeTickHit = statistics.get(HitResult.LargeTickHit);
+            const smallTickHit = statistics.get(HitResult.SmallTickHit);
+            const smallTickMiss = statistics.get(HitResult.SmallTickMiss);
+            const miss = statistics.get(HitResult.Miss);
 
-            statistics.largeTickHit = statistics.largeTickHit || 0;
-            statistics.largeTickHit += Number(statistics.miss);
+            statistics.set(
+                HitResult.Great,
+                totalHits - largeTickHit - smallTickHit - smallTickMiss - miss,
+            );
 
-            break;
-
-        case GameMode.mania:
-            statistics.perfect =
-                totalHits -
-                Number(statistics.great) -
-                Number(statistics.good) -
-                Number(statistics.ok) -
-                Number(statistics.meh);
+            statistics.set(HitResult.LargeTickHit, largeTickHit + miss);
 
             break;
+        }
 
-        default:
-            statistics.great = totalHits - (statistics.ok || 0) - (statistics.meh || 0);
+        case GameMode.mania: {
+            const great = statistics.get(HitResult.Great);
+            const good = statistics.get(HitResult.Good);
+            const ok = statistics.get(HitResult.Ok);
+            const meh = statistics.get(HitResult.Meh);
+
+            statistics.set(HitResult.Perfect, totalHits - great - good - ok - meh);
+
+            break;
+        }
+
+        default: {
+            const ok = statistics.get(HitResult.Ok);
+            const meh = statistics.get(HitResult.Meh);
+
+            statistics.set(HitResult.Great, totalHits - ok - meh);
+        }
     }
 
-    statistics.miss = 0;
+    statistics.set(HitResult.Miss, 0);
 
     newScoreInfo.maxCombo = beatmap.maxCombo;
-    newScoreInfo.accuracy = calculateAccuracy(newScoreInfo);
     newScoreInfo.perfect = true;
     newScoreInfo.passed = true;
 

@@ -5,7 +5,7 @@
 	"main": "index.ts",
 	"dependencies": {
 		"@jimp/plugin-shadow": "^0.22.4",
-		"@kionell/osu-pp-calculator": "^3.2.9",
+		"@kionell/osu-pp-calculator": "^4.0.0",
 		"@types/archiver": "^6.0.2",
 		"@types/color-convert": "^2.0.0",
 		"@types/diff": "^5.0.3",
