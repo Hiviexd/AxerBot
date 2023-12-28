@@ -51,6 +51,7 @@ export class BeatmapRateChanger {
             this.scaleObjects();
             this.changeMetadata();
             this.scaleDifficulty();
+            this.scaleBreakTimes();
 
             this.createFolders();
 
@@ -59,7 +60,7 @@ export class BeatmapRateChanger {
                     const output =
                         `${this.beatmap.metadata.artist} - ${this.beatmap.metadata.title} (${this.beatmap.metadata.creator}) [${this.beatmap.metadata.version}]`
                             .replace(/\\/g, " ")
-                            .replace(/\//g, "");
+                            .replace(/\//g, ""); // Prevent folder creation
 
                     encoder
                         .encodeToPath(path.join(this.tempPath, output), this.beatmap)
@@ -67,6 +68,15 @@ export class BeatmapRateChanger {
                 })
                 .catch(reject);
         });
+    }
+
+    private scaleBreakTimes() {
+        const allBreakTimes = this.beatmap.events.breaks;
+
+        for (const breakTime of allBreakTimes) {
+            breakTime.startTime = Math.round(breakTime.startTime / this.rate);
+            breakTime.endTime = Math.round(this.rate);
+        }
     }
 
     private scaleDifficulty() {
@@ -92,7 +102,7 @@ export class BeatmapRateChanger {
             const outputOSZFilename =
                 `${this.beatmap.metadata.beatmapSetId} ${this.beatmap.metadata.artist} - ${this.beatmap.metadata.title}`
                     .replace(/\\/g, " ")
-                    .replace(/\//g, "");
+                    .replace(/\//g, ""); // Prevent folder creation
 
             const outputPath = path.join(
                 this.baseTempPath,
@@ -159,36 +169,27 @@ export class BeatmapRateChanger {
 
             const newTimingPoint = this.getNewPointInstance(point.pointType);
 
-            if (point.pointType == ControlPointType.TimingPoint) {
-                (newTimingPoint as TimingPoint).timeSignature = (
-                    point as TimingPoint
-                ).timeSignature;
-                (newTimingPoint as TimingPoint).beatLength =
-                    (point as TimingPoint).beatLength / this.rate;
+            if (point instanceof TimingPoint && newTimingPoint instanceof TimingPoint) {
+                newTimingPoint.timeSignature = point.timeSignature;
+                newTimingPoint.beatLength = point.beatLength / this.rate;
             }
 
-            if (point.pointType == ControlPointType.EffectPoint) {
-                (newTimingPoint as EffectPoint).kiai = (point as EffectPoint).kiai;
-                (newTimingPoint as EffectPoint).omitFirstBarLine = (
-                    point as EffectPoint
-                ).omitFirstBarLine;
-                (newTimingPoint as EffectPoint).scrollSpeed = (point as EffectPoint).scrollSpeed;
+            if (point instanceof EffectPoint && newTimingPoint instanceof EffectPoint) {
+                newTimingPoint.kiai = point.kiai;
+                newTimingPoint.omitFirstBarLine = point.omitFirstBarLine;
+                newTimingPoint.scrollSpeed = point.scrollSpeed;
             }
 
-            if (point.pointType == ControlPointType.DifficultyPoint) {
-                (newTimingPoint as DifficultyPoint).sliderVelocity = (
-                    point as DifficultyPoint
-                ).sliderVelocity;
-                (newTimingPoint as DifficultyPoint).bpmMultiplier = (
-                    point as DifficultyPoint
-                ).bpmMultiplier;
+            if (point instanceof DifficultyPoint && newTimingPoint instanceof DifficultyPoint) {
+                newTimingPoint.sliderVelocity = point.sliderVelocity;
+                newTimingPoint.bpmMultiplier = point.bpmMultiplier;
             }
 
-            if (point.pointType == ControlPointType.SamplePoint) {
-                (newTimingPoint as SamplePoint).volume = (point as SamplePoint).volume;
-                (newTimingPoint as SamplePoint).customIndex = (point as SamplePoint).customIndex;
-                (newTimingPoint as SamplePoint).sampleSet = (point as SamplePoint).sampleSet;
-                (newTimingPoint as SamplePoint).customIndex = (point as SamplePoint).customIndex;
+            if (point instanceof SamplePoint && newTimingPoint instanceof SamplePoint) {
+                newTimingPoint.volume = point.volume;
+                newTimingPoint.customIndex = point.customIndex;
+                newTimingPoint.sampleSet = point.sampleSet;
+                newTimingPoint.customIndex = point.customIndex;
             }
 
             newPoints.push([newTimingPoint, newStartTime]);
@@ -204,6 +205,7 @@ export class BeatmapRateChanger {
     private overallDifficultyToMs(od: number) {
         return -6.0 * od + 79.5;
     }
+
     private msToOverallDifficulty(ms: number) {
         return (79.5 - ms) / 6.0;
     }
@@ -219,7 +221,7 @@ export class BeatmapRateChanger {
         return this.clamp(newbpmOD, 0, 11);
     }
 
-    calculateMultipliedAR(): number {
+    private calculateMultipliedAR(): number {
         const newbpmMs: number =
             this.approachRateToMs(this.beatmap.difficulty.approachRate) / this.rate;
         const newbpmAR: number = this.msToApproachRate(newbpmMs);

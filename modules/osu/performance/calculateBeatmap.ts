@@ -1,5 +1,6 @@
 import { BeatmapDecoder } from "osu-parsers";
 import {
+    BeatmapInfo,
     DifficultyAttributes,
     ModCombination,
     PerformanceAttributes,
@@ -106,7 +107,11 @@ export function calculateBeatmap(
 
             performanceCalculator.calculateAttributes(difficulty, scoreInfo);
 
-            const pp = Math.round(performanceCalculator.calculate());
+            const result = performanceCalculator.calculate();
+
+            const pp = Math.round(result);
+
+            console.log(result);
 
             return { pp, acc };
         } catch (e) {
