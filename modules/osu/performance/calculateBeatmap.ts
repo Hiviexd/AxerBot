@@ -2,18 +2,15 @@ import { BeatmapDecoder } from "osu-parsers";
 import {
     BeatmapInfo,
     DifficultyAttributes,
-    HitResult,
-    HitStatistics,
     ModCombination,
     PerformanceAttributes,
     RulesetBeatmap,
     ScoreInfo,
 } from "osu-classes";
+import { createBeatmapInfo } from "@kionell/osu-pp-calculator";
 import { generateHitStatistics } from "./generateHitStatistics";
-import { createBeatmapInfo } from "./createBeatmapInfo";
-import { calculateAccuracy } from "./calculateAccuracy";
 import { getRulesetById } from "./getRuleset";
-import { calculateScore } from "./calculateScore";
+import { GameMode } from "../../../types/game_mode";
 
 export interface BeatmapCalculationResult {
     beatmap: RulesetBeatmap;
@@ -41,22 +38,22 @@ export function multiplayDifficultyParameter(
 }
 
 export function calculateOsuBeatmap(osu_file: string, mods?: string) {
-    return calculateBeatmap(osu_file, 0, mods);
+    return calculateBeatmap(osu_file, GameMode.osu, mods);
 }
 
 export function calculateTaikoBeatmap(osu_file: string, mods?: string) {
-    return calculateBeatmap(osu_file, 1, mods);
+    return calculateBeatmap(osu_file, GameMode.taiko, mods);
 }
 
 export function calculateFruitsBeatmap(osu_file: string, mods?: string) {
-    return calculateBeatmap(osu_file, 2, mods);
+    return calculateBeatmap(osu_file, GameMode.fruits, mods);
 }
 
 export function calculateManiaBeatmap(osu_file: string, mods?: string) {
-    return calculateBeatmap(osu_file, 3, mods);
+    return calculateBeatmap(osu_file, GameMode.mania, mods);
 }
 
-export function generateRulesetBeatmap(osu_file: string, rulesetId: number, mods?: string) {
+export function generateRulesetBeatmap(osu_file: string, rulesetId: GameMode, mods?: string) {
     const decoder = new BeatmapDecoder();
     const ruleset = getRulesetById(rulesetId);
 
@@ -93,17 +90,8 @@ export function calculateBeatmap(
                 beatmap,
             });
 
-            console.log(hits);
-
             const scoreInfo = new ScoreInfo({
-                rulesetId: rulesetId,
-                count300: hits.count300 || 0,
-                count100: hits.count100 || 0,
-                count50: hits.count50 || 0,
-                countMiss: hits.countMiss || 0,
-                countKatu: hits.countKatu || 0,
-                countGeki: hits.countGeki || 0,
-                accuracy: acc / 100,
+                statistics: hits,
                 mods: combination,
             });
 
@@ -111,7 +99,6 @@ export function calculateBeatmap(
             scoreInfo.rulesetId = ruleset.id;
             scoreInfo.beatmap = createBeatmapInfo(beatmap);
             scoreInfo.mods = combination;
-            scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
             const performanceCalculator = ruleset.createPerformanceCalculator(
                 difficulty,
