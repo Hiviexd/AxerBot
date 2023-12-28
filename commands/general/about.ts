@@ -2,6 +2,7 @@ import { Client, EmbedBuilder } from "discord.js";
 import colors from "../../constants/colors";
 import getWebsiteStatus from "./../../helpers/general/getWebsiteStatus";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import axios from "axios";
 
 const about = new SlashCommand(
     ["about", "info", "status"],
@@ -29,6 +30,14 @@ about.setExecuteFunction(async (command) => {
         },
     };
 
+    function pingCDN() {
+        return new Promise<boolean>((resolve, reject) => {
+            axios(`${process.env.RATECHANGER_URL}/ping`)
+                .then(() => resolve(true))
+                .catch(() => resolve(false));
+        });
+    }
+
     const embed = new EmbedBuilder()
         .setTitle("ℹ️ About")
         .setDescription(
@@ -37,8 +46,8 @@ about.setExecuteFunction(async (command) => {
         .setColor(colors.blue)
         .addFields(
             {
-                name: "Bot",
-                value: `Invite: [Link](${info.bot.invite})\nGitHub: [Link](${info.bot.github})\nSupport server: [Link](${info.bot.server})`,
+                name: "Links",
+                value: `[Add me](${info.bot.invite})\n[GitHub](${info.bot.github})\n[Support Server](${info.bot.server})`,
                 inline: true,
             },
             {
@@ -48,7 +57,9 @@ about.setExecuteFunction(async (command) => {
             },
             {
                 name: "Status",
-                value: `Ping: \`${command.client.ws.ping} ms\``,
+                value: `Ping: \`${command.client.ws.ping} ms\`\nCDN (File Server): ${
+                    (await pingCDN()) ? "🟢" : "🔴"
+                }`,
             }
         );
 
