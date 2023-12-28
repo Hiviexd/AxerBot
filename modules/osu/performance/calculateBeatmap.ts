@@ -1,5 +1,6 @@
 import { BeatmapDecoder } from "osu-parsers";
 import {
+    BeatmapInfo,
     DifficultyAttributes,
     HitResult,
     ModCombination,
@@ -113,13 +114,13 @@ export function calculateBeatmap(
             });
 
             const scoreInfo = new ScoreInfo({
-                count300: hits.count300,
-                count100: hits.count100,
-                count50: hits.count50,
-                countMiss: hits.countMiss,
-                countKatu: hits.countKatu,
-                countGeki: hits.countGeki,
-                mods: combination,
+                count300: hits.count300 || 0,
+                count100: hits.count100 || 0,
+                count50: hits.count50 || 0,
+                countMiss: hits.countMiss || 0,
+                countKatu: hits.countKatu || 0,
+                countGeki: hits.countGeki || 0,
+                accuracy: acc / 100,
             });
 
             scoreInfo.maxCombo = beatmap.maxCombo;
@@ -136,7 +137,9 @@ export function calculateBeatmap(
 
             performanceCalculator.calculateAttributes(difficulty, scoreInfo);
 
-            const pp = Math.round(performanceCalculator.calculate());
+            const result = performanceCalculator.calculate();
+
+            const pp = Math.round(result);
 
             return { pp, acc };
         } catch (e) {
