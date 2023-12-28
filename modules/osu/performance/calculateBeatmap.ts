@@ -1,6 +1,7 @@
 import { BeatmapDecoder } from "osu-parsers";
 import {
     DifficultyAttributes,
+    HitResult,
     ModCombination,
     PerformanceAttributes,
     RulesetBeatmap,
@@ -64,6 +65,28 @@ export function generateRulesetBeatmap(osu_file: string, rulesetId: number, mods
     return beatmap;
 }
 
+function getHitResultFromString(hitTypeString: string) {
+    const hits = {
+        0: HitResult.None,
+        1: HitResult.Miss,
+        2: HitResult.Meh,
+        3: HitResult.Ok,
+        4: HitResult.Good,
+        5: HitResult.Great,
+        6: HitResult.Perfect,
+        7: HitResult.SmallTickMiss,
+        8: HitResult.SmallTickHit,
+        9: HitResult.LargeTickMiss,
+        10: HitResult.LargeTickHit,
+        11: HitResult.SmallBonus,
+        12: HitResult.LargeBonus,
+        13: HitResult.IgnoreMiss,
+        14: HitResult.IgnoreHit,
+    } as { [key: string | number]: HitResult };
+
+    return hits[hitTypeString];
+}
+
 export function calculateBeatmap(
     osu_file: string,
     rulesetId: number,
@@ -88,10 +111,18 @@ export function calculateBeatmap(
             scoreInfo.maxCombo = beatmap.maxCombo;
             scoreInfo.rulesetId = ruleset.id;
             scoreInfo.beatmap = createBeatmapInfo(beatmap);
-            scoreInfo.statistics = generateHitStatistics({
+
+            const hits = generateHitStatistics({
                 accuracy: acc,
                 beatmap,
-            });
+            }) as { [key: string]: number };
+
+            const hitResults = Object.keys(hits);
+
+            for (const hit of hitResults) {
+                scoreInfo.statistics.set(getHitResultFromString(hit), hits[hit]);
+            }
+
             scoreInfo.mods = combination;
             scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
