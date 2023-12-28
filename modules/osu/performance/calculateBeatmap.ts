@@ -111,8 +111,6 @@ export function calculateBeatmap(
 
             const pp = Math.round(result);
 
-            console.log(result);
-
             return { pp, acc };
         } catch (e) {
             return { pp: 0, acc };
