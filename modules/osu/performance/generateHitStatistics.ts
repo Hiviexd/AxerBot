@@ -123,8 +123,6 @@ function generateCatchHitStatistics(options: IHitStatisticsInput): IHitStatistic
 
     const tinyMisses = maxTinyDroplets - tinyDroplets;
 
-    console.log(maxTinyDroplets, tinyDroplets);
-
     return {
         count300: MathUtils.clamp(fruits, 0, maxFruits),
         count100: MathUtils.clamp(droplets, 0, maxDroplets),

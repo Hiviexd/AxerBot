@@ -112,8 +112,6 @@ export function calculateBeatmap(
                 beatmap,
             });
 
-            console.log(hits);
-
             const scoreInfo = new ScoreInfo({
                 count300: hits.count300,
                 count100: hits.count100,
