@@ -101,9 +101,9 @@ export default {
             );
 
             rateChanger.generate().then((fileId) => {
-                rateChanger.packToOSZ().then(() => {
+                return rateChanger.packToOSZ().then(() => {
                     pm.user.sendMessage(
-                        `Beatmap rate changed to ${sanitizedRate}x! [${process.env.RATECHANGER_URL}/ratechange/download/${fileId} Download]`
+                        `Beatmap rate changed to ${sanitizedRate}x! [${process.env.RATECHANGER_URL}/ratechange/download/${fileId} Download] (This link is unique-use)`
                     );
                 });
             });
