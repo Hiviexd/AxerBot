@@ -103,25 +103,30 @@ export function calculateBeatmap(
     const difficultyCalculator = ruleset.createDifficultyCalculator(beatmap);
     const difficulty = difficultyCalculator.calculateWithMods(combination, rate);
 
-    const scoreInfo = new ScoreInfo();
     const accuracy = [100, 99, 98, 95];
 
     const performance = accuracy.map((acc) => {
         try {
-            scoreInfo.maxCombo = beatmap.maxCombo;
-            scoreInfo.rulesetId = ruleset.id;
-            scoreInfo.beatmap = createBeatmapInfo(beatmap);
-
             const hits = generateHitStatistics({
                 accuracy: acc,
                 beatmap,
-            }) as { [key: string]: number };
+            });
 
-            const hitResults = Object.keys(hits);
+            console.log(hits);
 
-            for (const hit of hitResults) {
-                scoreInfo.statistics.set(getHitResultFromString(hit), hits[hit]);
-            }
+            const scoreInfo = new ScoreInfo({
+                count300: hits.count300,
+                count100: hits.count100,
+                count50: hits.count50,
+                countMiss: hits.countMiss,
+                countKatu: hits.countKatu,
+                countGeki: hits.countGeki,
+                mods: combination,
+            });
+
+            scoreInfo.maxCombo = beatmap.maxCombo;
+            scoreInfo.rulesetId = ruleset.id;
+            scoreInfo.beatmap = createBeatmapInfo(beatmap);
 
             scoreInfo.mods = combination;
             scoreInfo.accuracy = calculateAccuracy(scoreInfo);

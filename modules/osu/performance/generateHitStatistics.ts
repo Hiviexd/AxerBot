@@ -12,6 +12,15 @@ interface IHitStatisticsInput {
     countKatu?: number;
 }
 
+interface IHitStatisticsOutput {
+    countMiss?: number;
+    count50?: number;
+    count100?: number;
+    count300?: number;
+    countGeki?: number;
+    countKatu?: number;
+}
+
 export function generateHitStatistics(options: IHitStatisticsInput) {
     switch (options.beatmap.mode) {
         case GameMode.taiko:
@@ -27,7 +36,7 @@ export function generateHitStatistics(options: IHitStatisticsInput) {
     return generateOsuHitStatistics(options);
 }
 
-function generateOsuHitStatistics(options: IHitStatisticsInput): IJsonableHitStatistics {
+function generateOsuHitStatistics(options: IHitStatisticsInput): IHitStatisticsOutput {
     const beatmap = options.beatmap;
     const accuracy = getAccuracy(options);
     const totalHits = getTotalHits(beatmap);
@@ -39,23 +48,22 @@ function generateOsuHitStatistics(options: IHitStatisticsInput): IJsonableHitSta
     countMiss = MathUtils.clamp(countMiss, 0, totalHits);
     count50 = count50 ? MathUtils.clamp(count50, 0, totalHits - countMiss) : 0;
 
-    if (typeof count100 !== "number") {
-        count100 = Math.round((totalHits - totalHits * accuracy) * 1.5);
-    } else {
-        count100 = MathUtils.clamp(count100, 0, totalHits - count50 - countMiss);
-    }
+    count100 =
+        typeof count100 !== "number"
+            ? Math.round((totalHits - totalHits * accuracy) * 1.5)
+            : MathUtils.clamp(count100, 0, totalHits - count50 - countMiss);
 
     const count300 = totalHits - count100 - count50 - countMiss;
 
-    return getValidHitStatistics({
-        great: count300,
-        ok: count100,
-        meh: count50,
-        miss: countMiss,
-    });
+    return {
+        count300: count300,
+        count100: count100,
+        count50: count50,
+        countMiss: countMiss,
+    };
 }
 
-function generateTaikoHitStatistics(options: IHitStatisticsInput): IJsonableHitStatistics {
+function generateTaikoHitStatistics(options: IHitStatisticsInput): IHitStatisticsOutput {
     const beatmap = options.beatmap;
     const accuracy = getAccuracy(options);
     const totalHits = getTotalHits(beatmap);
@@ -77,14 +85,14 @@ function generateTaikoHitStatistics(options: IHitStatisticsInput): IJsonableHitS
         count300 = totalHits - count100 - countMiss;
     }
 
-    return getValidHitStatistics({
-        great: count300,
-        ok: count100,
-        miss: countMiss,
-    });
+    return {
+        count300: count300,
+        count100: count100,
+        countMiss: countMiss,
+    };
 }
 
-function generateCatchHitStatistics(options: IHitStatisticsInput): IJsonableHitStatistics {
+function generateCatchHitStatistics(options: IHitStatisticsInput): IHitStatisticsOutput {
     const beatmap = options.beatmap;
     const accuracy = getAccuracy(options);
     const count50 = options.count50;
@@ -115,16 +123,18 @@ function generateCatchHitStatistics(options: IHitStatisticsInput): IJsonableHitS
 
     const tinyMisses = maxTinyDroplets - tinyDroplets;
 
-    return getValidHitStatistics({
-        great: MathUtils.clamp(fruits, 0, maxFruits),
-        largeTickHit: MathUtils.clamp(droplets, 0, maxDroplets),
-        smallTickHit: tinyDroplets,
-        smallTickMiss: tinyMisses,
-        miss: countMiss,
-    });
+    console.log(maxTinyDroplets, tinyDroplets);
+
+    return {
+        count300: MathUtils.clamp(fruits, 0, maxFruits),
+        count100: MathUtils.clamp(droplets, 0, maxDroplets),
+        count50: tinyDroplets,
+        countKatu: tinyMisses,
+        countMiss: countMiss,
+    };
 }
 
-function generateManiaHitStatistics(options: IHitStatisticsInput): IJsonableHitStatistics {
+function generateManiaHitStatistics(options: IHitStatisticsInput): IHitStatisticsOutput {
     // Accuracy = (n50 / 6 + n100 / 3 + katu / 1.5 + (n300 + geki)) / total
 
     const beatmap = options.beatmap;
@@ -177,14 +187,14 @@ function generateManiaHitStatistics(options: IHitStatisticsInput): IJsonableHitS
 
     const countGeki = totalHits - count300 - countKatu - count100 - count50 - countMiss;
 
-    return getValidHitStatistics({
-        perfect: countGeki,
-        great: count300,
-        good: countKatu,
-        ok: count100,
-        meh: count50,
-        miss: countMiss,
-    });
+    return {
+        countGeki: countGeki,
+        count300: count300,
+        countKatu: countKatu,
+        count100: count100,
+        count50: count50,
+        countMiss: countMiss,
+    };
 }
 
 function getAccuracy(options: IHitStatisticsInput): number {
@@ -195,22 +205,22 @@ function getAccuracy(options: IHitStatisticsInput): number {
     return options.accuracy;
 }
 
-function getValidHitStatistics(original?: Partial<IJsonableHitStatistics>) {
-    return {
-        perfect: original?.perfect ?? 0,
-        great: original?.great ?? 0,
-        good: original?.good ?? 0,
-        ok: original?.ok ?? 0,
-        meh: original?.meh ?? 0,
-        largeTickHit: original?.largeTickHit ?? 0,
-        smallTickMiss: original?.smallTickMiss ?? 0,
-        smallTickHit: original?.smallTickHit ?? 0,
-        miss: original?.miss ?? 0,
-        largeBonus: 0,
-        largeTickMiss: 0,
-        smallBonus: 0,
-        ignoreHit: 0,
-        ignoreMiss: 0,
-        none: 0,
-    };
-}
+// function getValidHitStatistics(original?: Partial<IHitStatisticsOutput>) {
+//     return {
+//         perfect: original?.perfect ?? 0,
+//         great: original?.great ?? 0,
+//         good: original?.good ?? 0,
+//         ok: original?.ok ?? 0,
+//         meh: original?.meh ?? 0,
+//         largeTickHit: original?.largeTickHit ?? 0,
+//         smallTickMiss: original?.smallTickMiss ?? 0,
+//         smallTickHit: original?.smallTickHit ?? 0,
+//         miss: original?.miss ?? 0,
+//         largeBonus: 0,
+//         largeTickMiss: 0,
+//         smallBonus: 0,
+//         ignoreHit: 0,
+//         ignoreMiss: 0,
+//         none: 0,
+//     };
+// }
