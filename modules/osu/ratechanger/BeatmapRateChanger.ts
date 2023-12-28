@@ -51,6 +51,7 @@ export class BeatmapRateChanger {
             this.scaleObjects();
             this.changeMetadata();
             this.scaleDifficulty();
+            this.scaleBreakTimes();
 
             this.createFolders();
 
@@ -67,6 +68,15 @@ export class BeatmapRateChanger {
                 })
                 .catch(reject);
         });
+    }
+
+    private scaleBreakTimes() {
+        const allBreakTimes = this.beatmap.events.breaks;
+
+        for (const breakTime of allBreakTimes) {
+            breakTime.startTime = Math.round(breakTime.startTime / this.rate);
+            breakTime.endTime = Math.round(this.rate);
+        }
     }
 
     private scaleDifficulty() {
