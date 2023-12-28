@@ -195,6 +195,7 @@ export class BeatmapRateChanger {
     private overallDifficultyToMs(od: number) {
         return -6.0 * od + 79.5;
     }
+
     private msToOverallDifficulty(ms: number) {
         return (79.5 - ms) / 6.0;
     }
@@ -210,7 +211,7 @@ export class BeatmapRateChanger {
         return this.clamp(newbpmOD, 0, 11);
     }
 
-    calculateMultipliedAR(): number {
+    private calculateMultipliedAR(): number {
         const newbpmMs: number =
             this.approachRateToMs(this.beatmap.difficulty.approachRate) / this.rate;
         const newbpmAR: number = this.msToApproachRate(newbpmMs);
