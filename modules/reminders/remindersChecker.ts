@@ -47,8 +47,6 @@ export class RemindersManager {
 
         if (!allReminders) return this.Logger.printError("Can't fetch reminders!");
 
-        this.Logger.printInfo("Processing all reminders...");
-
         const remindersAvailableForSend = allReminders.filter(
             (r: (typeof allReminders)[0]) => moment().diff(moment(r.sendAt), "seconds") >= 0
         );
