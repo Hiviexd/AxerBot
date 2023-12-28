@@ -59,7 +59,7 @@ export class BeatmapRateChanger {
                     const output =
                         `${this.beatmap.metadata.artist} - ${this.beatmap.metadata.title} (${this.beatmap.metadata.creator}) [${this.beatmap.metadata.version}]`
                             .replace(/\\/g, " ")
-                            .replace(/\//g, "");
+                            .replace(/\//g, ""); // Prevent folder creation
 
                     encoder
                         .encodeToPath(path.join(this.tempPath, output), this.beatmap)
@@ -92,7 +92,7 @@ export class BeatmapRateChanger {
             const outputOSZFilename =
                 `${this.beatmap.metadata.beatmapSetId} ${this.beatmap.metadata.artist} - ${this.beatmap.metadata.title}`
                     .replace(/\\/g, " ")
-                    .replace(/\//g, "");
+                    .replace(/\//g, ""); // Prevent folder creation
 
             const outputPath = path.join(
                 this.baseTempPath,
