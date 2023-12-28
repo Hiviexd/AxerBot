@@ -3,6 +3,7 @@ import {
     BeatmapInfo,
     DifficultyAttributes,
     HitResult,
+    HitStatistics,
     ModCombination,
     PerformanceAttributes,
     RulesetBeatmap,
@@ -12,6 +13,7 @@ import { generateHitStatistics } from "./generateHitStatistics";
 import { createBeatmapInfo } from "./createBeatmapInfo";
 import { calculateAccuracy } from "./calculateAccuracy";
 import { getRulesetById } from "./getRuleset";
+import { calculateScore } from "./calculateScore";
 
 export interface BeatmapCalculationResult {
     beatmap: RulesetBeatmap;
@@ -66,28 +68,6 @@ export function generateRulesetBeatmap(osu_file: string, rulesetId: number, mods
     return beatmap;
 }
 
-function getHitResultFromString(hitTypeString: string) {
-    const hits = {
-        0: HitResult.None,
-        1: HitResult.Miss,
-        2: HitResult.Meh,
-        3: HitResult.Ok,
-        4: HitResult.Good,
-        5: HitResult.Great,
-        6: HitResult.Perfect,
-        7: HitResult.SmallTickMiss,
-        8: HitResult.SmallTickHit,
-        9: HitResult.LargeTickMiss,
-        10: HitResult.LargeTickHit,
-        11: HitResult.SmallBonus,
-        12: HitResult.LargeBonus,
-        13: HitResult.IgnoreMiss,
-        14: HitResult.IgnoreHit,
-    } as { [key: string | number]: HitResult };
-
-    return hits[hitTypeString];
-}
-
 export function calculateBeatmap(
     osu_file: string,
     rulesetId: number,
@@ -113,7 +93,10 @@ export function calculateBeatmap(
                 beatmap,
             });
 
+            console.log(hits);
+
             const scoreInfo = new ScoreInfo({
+                rulesetId: rulesetId,
                 count300: hits.count300 || 0,
                 count100: hits.count100 || 0,
                 count50: hits.count50 || 0,
@@ -121,12 +104,12 @@ export function calculateBeatmap(
                 countKatu: hits.countKatu || 0,
                 countGeki: hits.countGeki || 0,
                 accuracy: acc / 100,
+                mods: combination,
             });
 
             scoreInfo.maxCombo = beatmap.maxCombo;
             scoreInfo.rulesetId = ruleset.id;
             scoreInfo.beatmap = createBeatmapInfo(beatmap);
-
             scoreInfo.mods = combination;
             scoreInfo.accuracy = calculateAccuracy(scoreInfo);
 
@@ -140,6 +123,8 @@ export function calculateBeatmap(
             const result = performanceCalculator.calculate();
 
             const pp = Math.round(result);
+
+            console.log(result);
 
             return { pp, acc };
         } catch (e) {
