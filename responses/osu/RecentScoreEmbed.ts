@@ -17,6 +17,7 @@ import { Score } from "../../types/score";
 import { User } from "../../types/user";
 import abbreviation from "./../../helpers/text/abbreviation";
 import { GameMode } from "./../../types/game_mode";
+import { HitResult } from "osu-classes";
 
 export default {
     send: async (command: ChatInputCommandInteraction, score: Score, user: User) => {
@@ -81,7 +82,11 @@ export default {
                     accuracy: score.accuracy,
                 });
 
-                return `[${hitStatistics.count300}/${hitStatistics.count100}/${hitStatistics.count50}/${hitStatistics.countMiss}]`;
+                return `[${hitStatistics.get(HitResult.Great)}/${hitStatistics.get(
+                    HitResult.LargeTickHit
+                )}/${hitStatistics.get(HitResult.SmallTickHit)}/${hitStatistics.get(
+                    HitResult.SmallTickMiss
+                )}/${hitStatistics.get(HitResult.Miss)}]`;
             }
 
             if (score.mode_int == GameMode.mania) {
@@ -90,7 +95,11 @@ export default {
                     accuracy: score.accuracy,
                 });
 
-                return `[${hitStatistics.countGeki}/${hitStatistics.count300}/${hitStatistics.countKatu}/${hitStatistics.count100}${hitStatistics.count50}/${hitStatistics.countMiss}]`;
+                return `[${hitStatistics.get(HitResult.Perfect)}/${hitStatistics.get(
+                    HitResult.Good
+                )}/${hitStatistics.get(HitResult.Great)}/${hitStatistics.get(
+                    HitResult.Ok
+                )}${hitStatistics.get(HitResult.Meh)}/${hitStatistics.get(HitResult.Miss)}]`;
             }
         }
 
