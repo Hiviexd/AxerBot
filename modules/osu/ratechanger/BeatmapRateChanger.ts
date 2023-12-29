@@ -51,7 +51,7 @@ export class BeatmapRateChanger {
     }
 
     private getRateText() {
-        return `(${this.rate.toFixed(2)}x [${Math.round(this.beatmap.bpm)}])`;
+        return `(${this.rate.toFixed(2)}x [${Math.round(this.beatmap.bpm)}bpm])`;
     }
 
     generate() {
