@@ -4,7 +4,51 @@ import getOrCreateBanchoUser from "../../../database/utils/getOrCreateBanchoUser
 import { LegacyBeatmapsetImporter } from "../../osu/fetcher/beatmap/LegacyBeatmapImporter";
 import osuApi from "../../osu/fetcher/osuApi";
 import { AxerBancho } from "../client";
-import { BeatmapRateChanger } from "../../osu/ratechanger/BeatmapRateChanger";
+import {
+    BeatmapRateChanger,
+    BeatmapRateChangerOptions,
+} from "../../osu/ratechanger/BeatmapRateChanger";
+
+export enum RateChangeInputType {
+    BPM,
+    Rate,
+    Invalid,
+}
+
+function isRateOrBpmInput(input: string) {
+    const sanitizedInput = input.trim().toLowerCase();
+
+    if (!sanitizedInput) return { value: 0, type: RateChangeInputType.Invalid };
+
+    if (sanitizedInput.endsWith("bpm")) {
+        if (isNaN(Number(sanitizedInput.slice(0, -3))))
+            return { value: 0, type: RateChangeInputType.Invalid };
+
+        const bpmValue = Number(sanitizedInput.slice(0, -3));
+
+        if (bpmValue > 800 || bpmValue < 60) return { value: 0, type: RateChangeInputType.Invalid };
+
+        return { value: Number(sanitizedInput.slice(0, -3)), type: RateChangeInputType.BPM };
+    }
+
+    if (!isNaN(Number(sanitizedInput.replace("x", "")))) {
+        const rateInput = Number(sanitizedInput.replace("x", ""));
+
+        if (rateInput > 5 || rateInput < 0.2)
+            return { value: 0, type: RateChangeInputType.Invalid };
+
+        return { value: rateInput, type: RateChangeInputType.Rate };
+    }
+
+    return { value: 0, type: RateChangeInputType.Invalid };
+}
+
+function getRateFromBpm(baseBpm: number, targetBpm: number): number {
+    if (baseBpm == 0) baseBpm = 1;
+    if (targetBpm == 0) targetBpm = 1;
+
+    return targetBpm / baseBpm;
+}
 
 export default {
     settings: {
@@ -20,20 +64,28 @@ export default {
 
         if (!user.last_beatmapset) return pm.user.sendMessage("Use /np before use this command!");
 
-        const rateInput = args[0];
-
-        if (!rateInput || isNaN(Number(rateInput.replace("x", ""))))
-            return pm.user.sendMessage("You should include output rate: !ratechange 1.2x");
-
-        const sanitizedRate = Number(rateInput.replace("x", ""));
-
-        if (sanitizedRate < 0.1 || sanitizedRate > 5)
-            return pm.user.sendMessage("Rate should be 0.1x - 5.0x");
-
-        pm.user.sendMessage("Downloading beatmap... This can take a while.");
         const beatmapInfo = await osuApi.fetch.beatmapset(user.last_beatmapset);
 
         if (beatmapInfo.status != 200) return pm.user.sendMessage("Can't find this beatmap!");
+
+        const rateInput = args[0];
+
+        const rateInputStatistics = isRateOrBpmInput(rateInput);
+
+        if (rateInputStatistics.type == RateChangeInputType.Invalid)
+            return pm.user.sendMessage(
+                "You should include output rate: !ratechange 1.2x or !ratechange 220bpm"
+            );
+
+        const sanitizedRate =
+            rateInputStatistics.type == RateChangeInputType.Rate
+                ? Number(rateInputStatistics.value.toFixed(2))
+                : getRateFromBpm(beatmapInfo.data.bpm, rateInputStatistics.value);
+
+        if (sanitizedRate < 0.1 || sanitizedRate > 5 || sanitizedRate == 1)
+            return pm.user.sendMessage("Rate should be between 0.2x - 5.0x and not 1.0x");
+
+        pm.user.sendMessage("Downloading beatmap... This can take a while.");
 
         if (
             (beatmapInfo.data.beatmaps?.sort((b, a) => a.total_length - b.total_length)[0]
@@ -73,7 +125,7 @@ export default {
                 return pm.user.sendMessage("This difficulty doesn't have an audio file!");
             }
 
-            function parseOptions() {
+            function shouldScaleArOrOd() {
                 const validOptions = ["-noscaleod", "-noscalear"];
 
                 let scaleAr = true;
@@ -93,17 +145,26 @@ export default {
                 };
             }
 
+            const scaleArOrOd = shouldScaleArOrOd();
+            const options = {
+                scaleAr: scaleArOrOd.scaleAr,
+                scaleOd: scaleArOrOd.scaleOd,
+                inputType: rateInputStatistics.type,
+            } as BeatmapRateChangerOptions;
+
             const rateChanger = new BeatmapRateChanger(
                 targetDifficulty,
                 audioFile,
                 sanitizedRate,
-                parseOptions()
+                options
             );
 
             rateChanger.generate().then((fileId) => {
                 return rateChanger.packToOSZ().then(() => {
                     pm.user.sendMessage(
-                        `Beatmap rate changed to ${sanitizedRate}x! [${process.env.RATECHANGER_URL}/ratechange/download/${fileId} Download]`
+                        `Beatmap rate changed to ${sanitizedRate.toFixed(2)}x! [${
+                            process.env.RATECHANGER_URL
+                        }/ratechange/download/${fileId} Download]`
                     );
                 });
             });

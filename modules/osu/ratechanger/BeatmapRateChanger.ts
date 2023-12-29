@@ -16,11 +16,13 @@ import { BeatmapEncoder, HoldableObject, SpinnableObject } from "osu-parsers";
 import Ffmpeg from "fluent-ffmpeg";
 import archiver from "archiver";
 import { bot } from "../../..";
+import { RateChangeInputType } from "../../bancho/commands/ratechange";
 
 export interface BeatmapRateChangerOptions {
     scaleOd?: boolean;
     scaleAr?: boolean;
     modifyAudioPitch?: boolean;
+    inputType?: RateChangeInputType;
 }
 
 export class BeatmapRateChanger {
@@ -45,8 +47,11 @@ export class BeatmapRateChanger {
     }
 
     private addToDeletionQueue() {
-        console.log("test");
         bot.RateChangeDeletionManager.addToQueue(this.fileHash, new Date());
+    }
+
+    private getRateText() {
+        return `(${this.rate.toFixed(2)}x [${Math.round(this.beatmap.bpm)}])`;
     }
 
     generate() {
@@ -139,8 +144,10 @@ export class BeatmapRateChanger {
     }
 
     private changeMetadata() {
-        this.beatmap.metadata.version = `${this.beatmap.metadata.version} ${this.rate}x`;
-        this.beatmap.general.audioFilename = `(${this.rate}x) ${this.beatmap.general.audioFilename}`;
+        this.beatmap.metadata.version = `${this.beatmap.metadata.version} ${this.getRateText()}`;
+        this.beatmap.general.audioFilename = `(${this.rate.toFixed(6)}x) ${
+            this.beatmap.general.audioFilename
+        }`;
         this.beatmap.general.previewTime = Math.round(this.beatmap.general.previewTime / this.rate);
         this.beatmap.metadata.beatmapId = -1;
         this.beatmap.metadata.tags.push("axerbot");
