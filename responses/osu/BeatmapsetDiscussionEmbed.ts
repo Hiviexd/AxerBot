@@ -110,12 +110,14 @@ export default {
             ]);
         }
 
-        message.reply({
-            embeds: [e],
-            components: [buttons],
-            allowedMentions: {
-                repliedUser: false,
-            },
-        });
+        message
+            .reply({
+                embeds: [e],
+                components: [buttons],
+                allowedMentions: {
+                    repliedUser: false,
+                },
+            })
+            .catch(console.error);
     },
 };
