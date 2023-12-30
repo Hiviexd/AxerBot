@@ -11,6 +11,7 @@ import { AxerBancho } from "../client";
 export default {
     settings: {
         name: "spectro",
+        aliases: ["sp"],
         description: "Generate a spectrogram image from the latest /np beatmap",
     },
     run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {

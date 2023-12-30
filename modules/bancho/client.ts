@@ -43,9 +43,7 @@ export class AxerBancho extends BanchoClient {
 
             this.handlePM.bind(this)(pm);
         });
-        this.on("connected", () =>
-            this.Logger.printSuccess("Connected to Bancho!")
-        );
+        this.on("connected", () => this.Logger.printSuccess("Connected to Bancho!"));
     }
 
     onVerification(f: (verification: IVerificationEvent) => void) {
@@ -61,9 +59,7 @@ export class AxerBancho extends BanchoClient {
         this.cooldownUsers.push(username);
 
         setTimeout(() => {
-            this.cooldownUsers = this.cooldownUsers.filter(
-                (u) => u != username
-            );
+            this.cooldownUsers = this.cooldownUsers.filter((u) => u != username);
         }, 3000);
 
         return this.cooldownUsers;
@@ -83,14 +79,11 @@ export class AxerBancho extends BanchoClient {
         const commandName = args.splice(0, 1)[0].slice(1);
 
         const requestedCommand = BanchoCommands.find(
-            (c) => c.settings.name == commandName
+            (c) => c.settings.name == commandName || c.settings.aliases.includes(commandName)
         );
 
         if (!requestedCommand) {
-            consoleLog(
-                "BanchoCommandHandler",
-                `Command ${commandName} not found!`
-            );
+            consoleLog("BanchoCommandHandler", `Command ${commandName} not found!`);
 
             return;
         }

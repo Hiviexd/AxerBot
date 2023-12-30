@@ -12,6 +12,7 @@ import { validateAccountValidationRequest } from "../../verification/client/vali
 export default {
     settings: {
         name: "verify",
+        aliases: ["v"],
         description: "Verify your discord account!",
     },
     run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {

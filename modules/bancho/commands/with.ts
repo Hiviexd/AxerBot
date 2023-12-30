@@ -6,6 +6,7 @@ import { AxerBancho } from "../client";
 export default {
     settings: {
         name: "with",
+        aliases: ["w"],
         description: "Calculate the latest /np beatmap pp with given mods (!with <mods>)",
     },
     run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {

@@ -16,6 +16,8 @@ export enum RateChangeInputType {
 }
 
 function isRateOrBpmInput(input: string) {
+    input = input || "";
+
     const sanitizedInput = input.trim().toLowerCase();
 
     if (!sanitizedInput) return { value: 0, type: RateChangeInputType.Invalid };
@@ -53,6 +55,7 @@ function getRateFromBpm(baseBpm: number, targetBpm: number): number {
 export default {
     settings: {
         name: "ratechange",
+        aliases: ["rc"],
         description: "Change beatmap playback rate",
     },
     run: async function (pm: PrivateMessage, bancho: AxerBancho, args: string[]) {
