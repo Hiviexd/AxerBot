@@ -47,7 +47,17 @@ export class BeatmapRateChanger {
     }
 
     private addToDeletionQueue() {
-        bot.RateChangeDeletionManager.addToQueue(this.fileHash, new Date());
+        bot.TempFileDeletionManager.addToQueue(
+            this.fileHash,
+            path.join(this.baseTempPath, this.fileHash),
+            new Date()
+        );
+
+        bot.TempFileDeletionManager.addToQueue(
+            `osz.${this.fileHash}`,
+            path.join(this.baseTempPath, "osz", this.fileHash),
+            new Date()
+        );
     }
 
     private getRateText() {

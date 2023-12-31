@@ -4,28 +4,29 @@ import { existsSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "fs"
 import path from "path";
 import { LoggerClient } from "../../../models/core/LoggerClient";
 
-export interface RateChangeTempFile {
+export interface TempFileConfiguration {
     info: string;
     format: string;
     duration: number;
-    files: RateChangeTempFileEntry[];
+    files: TempFileEntry[];
 }
 
-export interface RateChangeTempFileEntry {
+export interface TempFileEntry {
     fileId: string;
+    path: string;
     createdAt: string;
 }
 
-export class RateChangeDeletionManager {
-    private tempFilePath = path.resolve(path.join("./temp/ratechange/temp.json"));
-    private baseTempPath = path.resolve("./temp/ratechange");
-    private logger = new LoggerClient("RateChangeDeletionManager");
+export class TempFileDeletionManager {
+    private tempFilePath = path.resolve(path.join("./temp/temp.json"));
+    private baseTempPath = path.resolve("./temp/");
+    private logger = new LoggerClient("TempFileDeletionManager");
 
     constructor() {}
 
     private tempFileBase = {
         info: "Files here will be deleted after the time scheduled below",
-        format: "{ fileId: string, createdAt: Date }",
+        format: "{ fileId: string, filePath:string, createdAt: Date }",
         duration: 300,
         files: [],
     };
@@ -38,13 +39,16 @@ export class RateChangeDeletionManager {
         }
     }
 
-    public addToQueue(fileId: string, createdAt?: Date) {
-        const fileContent: RateChangeTempFile = JSON.parse(readFileSync(this.tempFilePath, "utf8"));
+    public addToQueue(fileId: string, filePath: string, createdAt?: Date) {
+        const fileContent: TempFileConfiguration = JSON.parse(
+            readFileSync(this.tempFilePath, "utf8")
+        );
 
         if (fileContent.files.find((file) => file.fileId == fileId)) return;
 
         fileContent.files.push({
             fileId: fileId.trim(),
+            path: filePath,
             createdAt: (createdAt || new Date()).toISOString(),
         });
 
@@ -54,7 +58,9 @@ export class RateChangeDeletionManager {
     }
 
     public removeFromQueue(fileId: string) {
-        const fileContent: RateChangeTempFile = JSON.parse(readFileSync(this.tempFilePath, "utf8"));
+        const fileContent: TempFileConfiguration = JSON.parse(
+            readFileSync(this.tempFilePath, "utf8")
+        );
 
         if (!fileContent.files.find((file) => file.fileId == fileId)) return;
 
@@ -66,7 +72,9 @@ export class RateChangeDeletionManager {
     }
 
     private getMaxFileAge() {
-        const fileContent: RateChangeTempFile = JSON.parse(readFileSync(this.tempFilePath, "utf8"));
+        const fileContent: TempFileConfiguration = JSON.parse(
+            readFileSync(this.tempFilePath, "utf8")
+        );
 
         return fileContent.duration;
     }
@@ -80,7 +88,9 @@ export class RateChangeDeletionManager {
     }
 
     private checkQueue() {
-        const fileContent: RateChangeTempFile = JSON.parse(readFileSync(this.tempFilePath, "utf8"));
+        const fileContent: TempFileConfiguration = JSON.parse(
+            readFileSync(this.tempFilePath, "utf8")
+        );
         const entries = fileContent.files;
 
         const filesToDelete = entries.filter((entry) =>
@@ -91,8 +101,7 @@ export class RateChangeDeletionManager {
             try {
                 this.logger.printInfo(`Removing ${file.fileId}...`);
 
-                rmSync(path.join(this.baseTempPath, file.fileId), { recursive: true });
-                rmSync(path.join(this.baseTempPath, "osz", file.fileId), { recursive: true });
+                rmSync(path.join(file.path), { recursive: true });
 
                 this.removeFromQueue(file.fileId);
 

@@ -10,7 +10,7 @@ import { UserEventsListener } from "./UserEventsListener";
 import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
 import { RemindersManager } from "../../modules/reminders/remindersChecker";
 import { AxerBancho } from "../../modules/bancho/client";
-import { RateChangeDeletionManager } from "../../modules/osu/ratechanger/RateChangeDeletionManager";
+import { TempFileDeletionManager } from "../../modules/osu/helpers/TempFileDeletionManager";
 import "../../modules/osu/fetcher/startConnection";
 import "../../modules/automation/start";
 
@@ -20,7 +20,7 @@ export class AxerBot extends Client {
     public UserEvents = new UserEventsListener();
     public Reminders = new RemindersManager(this);
     public Bancho = new AxerBancho(this);
-    public RateChangeDeletionManager = new RateChangeDeletionManager();
+    public TempFileDeletionManager = new TempFileDeletionManager();
 
     constructor(options: ClientOptions) {
         super(options);
@@ -34,7 +34,7 @@ export class AxerBot extends Client {
         this.Discussions.events.on.bind(this.Discussions);
         this.UserEvents.listen.bind(this.UserEvents);
         this.UserEvents.events.on.bind(this.UserEvents);
-        this.RateChangeDeletionManager.listen.bind(this.RateChangeDeletionManager);
+        this.TempFileDeletionManager.listen.bind(this.TempFileDeletionManager);
 
         this.login(process.env.TOKEN).then(() => {
             this.Bancho.connect().catch(console.error);
@@ -43,7 +43,7 @@ export class AxerBot extends Client {
             startAvatarListener(this);
             this.Reminders.start();
 
-            this.RateChangeDeletionManager.listen();
+            this.TempFileDeletionManager.listen();
 
             this.Discussions.listen();
             this.Discussions.events.on("any", handleDiscussionEvent);
