@@ -13,6 +13,7 @@ import { AxerBancho } from "../../modules/bancho/client";
 import { TempFileDeletionManager } from "../../modules/osu/helpers/TempFileDeletionManager";
 import "../../modules/osu/fetcher/startConnection";
 import "../../modules/automation/start";
+import { QATTracker } from "../../modules/tracking/qatTracking";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
@@ -20,6 +21,7 @@ export class AxerBot extends Client {
     public UserEvents = new UserEventsListener();
     public Reminders = new RemindersManager(this);
     public Bancho = new AxerBancho(this);
+    public QatTracker = new QATTracker(this);
     public TempFileDeletionManager = new TempFileDeletionManager();
 
     constructor(options: ClientOptions) {
@@ -35,6 +37,7 @@ export class AxerBot extends Client {
         this.UserEvents.listen.bind(this.UserEvents);
         this.UserEvents.events.on.bind(this.UserEvents);
         this.TempFileDeletionManager.listen.bind(this.TempFileDeletionManager);
+        this.QatTracker.listen.bind(this);
 
         this.login(process.env.TOKEN).then(() => {
             this.Bancho.connect().catch(console.error);
@@ -42,6 +45,8 @@ export class AxerBot extends Client {
             registerCommands(this);
             startAvatarListener(this);
             this.Reminders.start();
+
+            this.QatTracker.listen();
 
             this.TempFileDeletionManager.listen();
 

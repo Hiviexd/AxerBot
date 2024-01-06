@@ -1,11 +1,7 @@
 import { GameModeName } from "./game_mode";
 import { Timestamp } from "./timestamp";
 
-export type EventType =
-    | "nominate"
-    | "qualify"
-    | "disqualify"
-    | "nomination_reset";
+export type EventType = "nominate" | "qualify" | "disqualify" | "nomination_reset";
 
 export interface InterOpEvent {
     modes: GameModeName[];
@@ -203,14 +199,11 @@ export interface QatUser {
     probationModes: string[];
     bnDuration: number;
     natDuration: number;
+    requestInfo: string;
     id: string;
 }
 
-export type QatEventType =
-    | "qualify"
-    | "disqualify"
-    | "nominate"
-    | "nomination_reset";
+export type QatEventType = "qualify" | "disqualify" | "nominate" | "nomination_reset";
 
 export interface QatEvent {
     modes: string[];

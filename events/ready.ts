@@ -1,7 +1,6 @@
 import { Client } from "discord.js";
 import { consoleCheck } from "../helpers/core/logger";
 import presence from "../modules/presence/presence";
-import qatTracking from "../modules/tracking/qatTracking";
 
 export default {
     name: "ready",
@@ -21,9 +20,6 @@ export default {
             setInterval(() => {
                 presence(bot, bot_user, true); // ! true = ready
             }, 15000);
-
-            //? checks for reminders every 1 second
-            qatTracking(bot);
         });
     },
 };

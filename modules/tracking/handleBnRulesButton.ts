@@ -1,6 +1,7 @@
 import { ButtonInteraction, ColorResolvable, EmbedBuilder } from "discord.js";
-import { bnRules } from "../../database";
 import colors from "../../constants/colors";
+import qatApi from "../../helpers/qat/fetcher/qatApi";
+import truncateString from "../../helpers/text/truncateString";
 
 export async function handleBnRulesButton(button: ButtonInteraction) {
     const targets = button.customId.split(",");
@@ -13,15 +14,15 @@ export async function handleBnRulesButton(button: ButtonInteraction) {
 
     await button.deferReply({ ephemeral: true });
 
-    const userRules = await bnRules.findById(userId);
+    const user = await qatApi.fetch.user(Number(userId));
 
-    if (!userRules || !userRules.content)
+    if (!user || !user.data || user.status != 200)
         return button.editReply("This user doesn't has rules set.");
 
     const embed = new EmbedBuilder()
         .setTitle(`📃 Request rules`)
-        .setColor((userRules.colour as ColorResolvable) || colors.pink)
-        .setDescription(userRules.content)
+        .setColor(colors.pink)
+        .setDescription(truncateString(user.data.requestInfo, 4080))
         .setThumbnail(`https://a.ppy.sh/${userId}`);
 
     button.editReply({
