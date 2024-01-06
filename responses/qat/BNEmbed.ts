@@ -35,10 +35,10 @@ export default {
         const latestNom =
             activity.data.uniqueNominations[activity.data.uniqueNominations.length - 1];
 
-        const userRules = await bnRules.findById(osuUser.data.id);
+        const userRules = qatUser.data.requestInfo;
 
         const rulesButton = new ButtonBuilder()
-            .setLabel("Request rules")
+            .setLabel("Request Info")
             .setStyle(ButtonStyle.Secondary)
             .setCustomId(`bnrules,${osuUser.data.id}`);
 
