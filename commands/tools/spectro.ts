@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ExecException } from "child_process";
+import { ExecException, spawn } from "child_process";
 import crypto from "crypto";
 import {
     ActionRowBuilder,
@@ -16,6 +16,7 @@ import truncateString from "../../helpers/text/truncateString";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { AudioSpectrogram } from "../../modules/osu/spectrogram/AudioSpectrogram";
 import { readFileSync } from "fs";
+import { FFProbe } from "../../modules/audio/FFProbe";
 
 const spectrum = new SlashCommand(
     "spectro",
@@ -63,6 +64,26 @@ spectrum.setExecuteFunction(async (command) => {
 
     const Spectro = new AudioSpectrogram(audioFile.data);
 
+    const ffprobe = spawn("ffprobe", [
+        "-v",
+        "error",
+        "-show_entries",
+        "format=bit_rate",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        audioFileData.url,
+    ]);
+
+    ffprobe.on("error", (error) => {
+        console.error(error);
+
+        command.editReply({
+            embeds: [generateErrorEmbedWithTitle("Something went wrong!", `\`${error}\``)],
+        });
+    });
+
+    const audioProperties = await new FFProbe(audioFileData.url).getAudioProperties();
+
     Spectro.generate()
         .then((file) => {
             const image = readFileSync(file.path);
@@ -70,9 +91,22 @@ spectrum.setExecuteFunction(async (command) => {
             const attachment = new AttachmentBuilder(image, {
                 name: "image.jpg",
             });
+
             const successEmbed = new EmbedBuilder()
                 .setTitle("📉 Spectro")
                 .setDescription(`Spectro for \`${audioFileData.name}\` generated!`)
+                .addFields(
+                    {
+                        name: "Bit Rate",
+                        value: `${Math.round(audioProperties.bitRate / 1000)}kbps`,
+                        inline: true,
+                    },
+                    {
+                        name: "Sample Rate",
+                        value: `${Math.round(audioProperties.sampleRate)}Hz`,
+                        inline: true,
+                    }
+                )
                 .setImage("attachment://image.jpg")
                 .setColor(colors.blue);
             const guideButton = new ButtonBuilder()
