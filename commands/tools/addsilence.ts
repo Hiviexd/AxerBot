@@ -97,7 +97,9 @@ addsilent.setExecuteFunction(async (command) => {
                 filter: "adelay",
                 options: `delays=${durationInput}:all=true`,
             },
-        ]).saveToFile(path.resolve(`./temp/audios/${filename}`));
+        ])
+            .addOptions("-q:a 0")
+            .saveToFile(path.resolve(`./temp/audios/${filename}`));
 
         f.on("end", async () => {
             const audio = readFileSync(path.resolve(`./temp/audios/${filename}`));
