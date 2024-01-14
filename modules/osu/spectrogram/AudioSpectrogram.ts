@@ -1,8 +1,9 @@
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { randomBytes } from "crypto";
 import Ffmpeg from "fluent-ffmpeg";
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
 import path from "path";
+import truncateString from "../../../helpers/text/truncateString";
 
 export class AudioSpectrogram {
     public audio: Buffer;
@@ -52,12 +53,29 @@ export class AudioSpectrogram {
         this.saveAudioFile();
 
         return new Promise((resolve, reject) => {
-            const command = `ffmpeg -i ${this.audioFilePath()} -lavfi showspectrumpic=s=960x540:orientation=0 ${this.imageFilePath()}`;
+            const ffmpeg = spawn("ffmpeg", [
+                "-i",
+                this.audioFilePath(),
+                "-lavfi",
+                "showspectrumpic=s=1280x720:mode=combined:color=cool",
+                "-frames:v",
+                "1",
+                this.imageFilePath(),
+            ]);
 
-            exec(command, (error, stdout) => {
-                if (error) return reject();
+            ffmpeg.on("close", (code) => {
+                if (code === 0) {
+                    resolve({ path: this.imageFilePath(), id: this.fileId });
+                } else {
+                    reject("ffmpeg closed with code 1");
+                    console.error(`ffmpeg process exited with code ${code}`);
+                }
+            });
 
-                return resolve({ path: this.imageFilePath(), id: this.fileId });
+            ffmpeg.stderr.on("data", (e) => console.error(e.toString()));
+
+            ffmpeg.on("error", (err) => {
+                return reject(truncateString(err.toString(), 4080));
             });
         }) as Promise<{ path: string; id: string }>;
     }

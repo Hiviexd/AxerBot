@@ -81,17 +81,16 @@ spectrum.setExecuteFunction(async (command) => {
                 .setURL("https://github.com/AxerBot/axer-bot/wiki/Spectrogram-Guide");
             const row = new ActionRowBuilder<ButtonBuilder>().addComponents(guideButton);
 
-            command
-                .editReply({
-                    embeds: [successEmbed],
-                    files: [attachment],
-                    components: [row],
-                })
-                .then(() => Spectro.deleteFiles())
-                .catch(() => Spectro.deleteFiles());
+            command.editReply({
+                embeds: [successEmbed],
+                files: [attachment],
+                components: [row],
+            });
+            // .then(() => Spectro.deleteFiles())
+            // .catch(() => Spectro.deleteFiles());
         })
         .catch((error) => {
-            Spectro.deleteFiles();
+            // Spectro.deleteFiles();
             console.error(error);
 
             command.editReply({
