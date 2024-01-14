@@ -57,7 +57,7 @@ export class AudioSpectrogram {
                 "-i",
                 this.audioFilePath(),
                 "-lavfi",
-                "showspectrumpic=s=1280x720:mode=combined:color=cool",
+                "showspectrumpic=s=1280x720:mode=combined:color=cool:stop=22000",
                 "-frames:v",
                 "1",
                 this.imageFilePath(),
