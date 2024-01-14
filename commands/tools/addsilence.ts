@@ -8,6 +8,7 @@ import { AttachmentBuilder } from "discord.js";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
+import { spawn } from "child_process";
 
 const addsilent = new SlashCommand(
     ["addsilence", "silentbegin"],
@@ -86,47 +87,68 @@ addsilent.setExecuteFunction(async (command) => {
         const fileId = crypto.randomBytes(10).toString("hex");
         const filename = `${fileId}_${attachment.name}`;
 
-        const f = ffmpeg(attachment.url);
+        const ffprobe = spawn("ffprobe", [
+            "-v",
+            "error",
+            "-show_entries",
+            "format=bit_rate",
+            "-of",
+            "default=noprint_wrappers=1:nokey=1",
+            attachment.url,
+        ]);
 
-        if (process.platform == "win32") {
-            f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
-        }
-
-        f.audioFilters([
-            {
-                filter: "adelay",
-                options: `delays=${durationInput}:all=true`,
-            },
-        ])
-            .addOptions("-q:a 0")
-            .saveToFile(path.resolve(`./temp/audios/${filename}`));
-
-        f.on("end", async () => {
-            const audio = readFileSync(path.resolve(`./temp/audios/${filename}`));
-
-            const audioAttachment = new AttachmentBuilder(audio, {
-                name: attachment.name || filename,
-            });
-
-            return command
-                .editReply({
-                    embeds: [
-                        generateSuccessEmbed(
-                            `Added \`${durationInput}\` of delay at the beginning of your audio`
-                        ),
-                    ],
-                    files: [audioAttachment],
-                })
-                .then(() => {
-                    unlinkSync(path.resolve(`./temp/audios/${filename}`));
-                });
-        });
-
-        f.on("error", (e) => {
-            console.log(e);
+        ffprobe.on("error", (error) => {
+            console.error(error);
 
             command.editReply({
-                embeds: [generateErrorEmbedWithTitle("Something went wrong!", `\`${e}\``)],
+                embeds: [generateErrorEmbedWithTitle("Something went wrong!", `\`${error}\``)],
+            });
+        });
+
+        ffprobe.stdout.on("data", (data) => {
+            const audioBitRate = parseInt(data.toString().trim());
+
+            const f = ffmpeg(attachment.url);
+
+            if (process.platform == "win32") {
+                f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
+            }
+
+            f.audioFilters([
+                {
+                    filter: "adelay",
+                    options: `delays=${durationInput}:all=true`,
+                },
+            ])
+                .audioBitrate(`${Math.round(audioBitRate / 1000)}k`)
+                .saveToFile(path.resolve(`./temp/audios/${filename}`))
+                .on("end", async () => {
+                    const audio = readFileSync(path.resolve(`./temp/audios/${filename}`));
+
+                    const audioAttachment = new AttachmentBuilder(audio, {
+                        name: attachment.name || filename,
+                    });
+
+                    return command
+                        .editReply({
+                            embeds: [
+                                generateSuccessEmbed(
+                                    `Added \`${durationInput}\` of delay at the beginning of your audio`
+                                ),
+                            ],
+                            files: [audioAttachment],
+                        })
+                        .then(() => {
+                            unlinkSync(path.resolve(`./temp/audios/${filename}`));
+                        });
+                });
+
+            f.on("error", (e) => {
+                console.error(e);
+
+                command.editReply({
+                    embeds: [generateErrorEmbedWithTitle("Something went wrong!", `\`${e}\``)],
+                });
             });
         });
     } catch (e) {

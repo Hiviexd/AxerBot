@@ -18,3 +18,4 @@ temp/spectro/audio/*.wav
 temp/spectro/images/*.png
 beatmapsets
 temp/ratechange/
+temp/temp.json
