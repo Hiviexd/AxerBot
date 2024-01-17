@@ -110,12 +110,17 @@ export class QATTrackingEmbed extends EmbedBuilder {
         }
 
         if (requestMethods.personalQueue && this.user.requestLink) {
-            buttonsRow.addComponents(
-                new ButtonBuilder()
-                    .setLabel(this.getPersonalQueueWebsite())
-                    .setStyle(ButtonStyle.Link)
-                    .setURL(`https://osu.ppy.sh/home/messages/users/${this.user.osuId}`)
-            );
+            // Use try catch to prevent errors if the request link isn't an URL
+            try {
+                buttonsRow.addComponents(
+                    new ButtonBuilder()
+                        .setLabel(this.getPersonalQueueWebsite())
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(this.user.requestLink)
+                );
+            } catch (e) {
+                void {};
+            }
         }
 
         if (this.user.requestInfo) {
