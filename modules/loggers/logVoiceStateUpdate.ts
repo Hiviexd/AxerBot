@@ -4,7 +4,6 @@ import * as database from "../../database";
 
 export default async (oldState: VoiceState, newState: VoiceState) => {
     try {
-        console.log("start");
         if (!oldState.guild || !oldState.member) return;
         if (!newState.guild || !newState.member) return;
 
