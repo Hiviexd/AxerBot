@@ -7,7 +7,7 @@ import { AxerBancho } from "../client";
 import {
     BeatmapRateChanger,
     BeatmapRateChangerOptions,
-} from "../../osu/ratechanger/BeatmapRateChanger";
+} from "../../osu/BeatmapEditor/ratechanger/BeatmapRateChanger";
 
 export enum RateChangeInputType {
     BPM,

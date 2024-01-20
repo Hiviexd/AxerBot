@@ -11,12 +11,12 @@ import {
 } from "osu-classes";
 import path from "path";
 import internal from "stream";
-import { bufferToStream } from "../../../helpers/transform/bufferToStream";
+import { bufferToStream } from "../../../../helpers/transform/bufferToStream";
 import { BeatmapEncoder, HoldableObject, SpinnableObject } from "osu-parsers";
 import Ffmpeg from "fluent-ffmpeg";
 import archiver from "archiver";
-import { bot } from "../../..";
-import { RateChangeInputType } from "../../bancho/commands/ratechange";
+import { bot } from "../../../..";
+import { RateChangeInputType } from "../../../bancho/commands/ratechange";
 
 export interface BeatmapRateChangerOptions {
     scaleOd?: boolean;
