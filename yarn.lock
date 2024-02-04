@@ -382,10 +382,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kionell/osu-pp-calculator@^3.2.9":
-  version "3.2.9"
-  resolved "https://registry.npmjs.org/@kionell/osu-pp-calculator/-/osu-pp-calculator-3.2.9.tgz"
-  integrity sha512-/A9qHZKIP5iotJRj6NheurQsHzJC3NfnXIP9mDlQkIw2RD5hUdGqRt6sZbVdao/WyE/lKB2C1rLz8MYYDCM0aw==
+"@kionell/osu-pp-calculator@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@kionell/osu-pp-calculator/-/osu-pp-calculator-4.0.0.tgz#c53bcfa0d2faf3f7d9c270f44096b3d5c90ad00f"
+  integrity sha512-hCrz5mcoreD+vOdTuwbs37AQ99O62JQc3l1CsSCHI9R9xBzqiN/tH8wMbRnfKATQmzy6vDdSsHQWbsNIt4aUcA==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.10"

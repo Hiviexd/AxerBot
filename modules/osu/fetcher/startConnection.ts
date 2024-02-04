@@ -4,13 +4,11 @@
  */
 
 import axios from "axios";
-import {
-    consoleCheck,
-    consoleError,
-    consoleLog,
-} from "../../../helpers/core/logger";
+import { consoleCheck, consoleError, consoleLog } from "../../../helpers/core/logger";
 const osu_client_id = process.env.OSU_CLIENT_ID;
 const osu_client_secret = process.env.OSU_CLIENT_SECRET;
+import http from "http";
+import https from "https";
 
 async function listen() {
     consoleLog("getServerAuthToken", "Refreshing server authorization token");
@@ -18,9 +16,12 @@ async function listen() {
     let tokens: any = {};
 
     try {
-        let _t = await axios("https://osu.ppy.sh/oauth/token", {
+        let _t = await axios.create({
+            httpAgent: new http.Agent({ keepAlive: true }),
+            httpsAgent: new https.Agent({ keepAlive: true }),
+            timeout: 60000,
+        })("https://osu.ppy.sh/oauth/token", {
             method: "post",
-            timeout: 999999,
             headers: {
                 "Content-Type": "application/json",
             },
@@ -40,17 +41,14 @@ async function listen() {
         process.env.OSU_API_ACCESS_TOKEN = tokens.access_token;
         console.log(process.env.OSU_API_ACCESS_TOKEN);
 
-        consoleCheck(
-            "getServerAuthToken",
-            "Server authorization token refreshed"
-        );
+        consoleCheck("getServerAuthToken", "Server authorization token refreshed");
 
         return tokens;
     } catch (e: any) {
         consoleError("getServerAuthToken", "Error during token refresh:\n");
         console.error(e);
 
-        setTimeout(listen, 5000);
+        setTimeout(() => listen(), 5000);
         return tokens;
     }
 }
