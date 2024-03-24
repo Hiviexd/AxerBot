@@ -7,8 +7,7 @@ import axios from "axios";
 import { consoleCheck, consoleError, consoleLog } from "../../../helpers/core/logger";
 const osu_client_id = process.env.OSU_CLIENT_ID;
 const osu_client_secret = process.env.OSU_CLIENT_SECRET;
-import http from "http";
-import https from "https";
+import querystring from "querystring";
 
 async function listen() {
     consoleLog("getServerAuthToken", "Refreshing server authorization token");
@@ -16,21 +15,18 @@ async function listen() {
     let tokens: any = {};
 
     try {
-        let _t = await axios.create({
-            httpAgent: new http.Agent({ keepAlive: true }),
-            httpsAgent: new https.Agent({ keepAlive: true }),
-            timeout: 60000,
-        })("https://osu.ppy.sh/oauth/token", {
+        let _t = await axios("https://osu.ppy.sh/oauth/token", {
             method: "post",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "user-agent": "axerbot",
             },
-            data: {
+            data: querystring.encode({
                 client_id: osu_client_id,
                 client_secret: osu_client_secret,
                 grant_type: "client_credentials",
                 scope: "public",
-            },
+            }),
         });
 
         tokens = _t.data;

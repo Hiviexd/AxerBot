@@ -7,7 +7,7 @@ import {
     loadImage,
     registerFont,
 } from "canvas";
-import path from "path";
+import path, { resolve } from "path";
 import parseDate from "../../helpers/text/parseDate";
 import { truncateCanvasText } from "../../helpers/transform/truncateCanvasText";
 import { fetchOldestBeatmap } from "../../modules/osu/player/fetchOldestBeatmap";
@@ -15,6 +15,7 @@ import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { Beatmapset, UserBeatmapetsResponse } from "../../types/beatmap";
 import { User, UserGroup } from "../../types/user";
 import config from "../../config.json";
+import { readFileSync } from "fs";
 
 interface IndexableUsergroup extends UserGroup {
     index: number;
@@ -27,28 +28,20 @@ export class MapperCard {
     private ctx: CanvasRenderingContext2D;
 
     // images
-    private defaultCover =
-        "https://raw.githubusercontent.com/ppy/osu-resources/master/osu.Game.Resources/Textures/Headers/news.png";
+    private defaultCover = readFileSync(resolve("./assets/icons/default_cover.png"));
     private defaultAvatar = "https://a.ppy.sh/0";
     private icons = {
-        followers:
-            "https://media.discordapp.net/attachments/1132790597099462746/1132790657732317204/bell.png",
-        subscribers:
-            "https://media.discordapp.net/attachments/1132790597099462746/1132790657732317204/bell.png",
-        total_mapped:
-            "https://cdn.discordapp.com/attachments/959908232736952420/1087773942871244850/map-solid_1.png",
-        gd: "https://cdn.discordapp.com/attachments/959908232736952420/1087122243684933662/user-group-solid_1.png",
-        ranked: "https://cdn.discordapp.com/attachments/959908232736952420/1087122340829212752/image_7.png",
-        nominated:
-            "https://cdn.discordapp.com/attachments/959908232736952420/1087122495997493360/thumbs-up-solid_1.png",
-        loved: "https://cdn.discordapp.com/attachments/959908232736952420/1087122302979813517/Vector.png",
-        pending:
-            "https://cdn.discordapp.com/attachments/959908232736952420/1087122453790212096/circle-question-solid_1.png",
-        kudosu: "https://media.discordapp.net/attachments/1132790597099462746/1132790657459703889/kudosu.png",
-        playcount:
-            "https://media.discordapp.net/attachments/1132790597099462746/1132790657971388456/plays.png",
-        favorited:
-            "https://media.discordapp.net/attachments/1132790597099462746/1132790658218872872/favorited.png",
+        followers: readFileSync(resolve("./assets/icons/bell.png")),
+        subscribers: readFileSync(resolve("./assets/icons/bell.png")),
+        total_mapped: readFileSync(resolve("./assets/icons/map.png")),
+        gd: readFileSync(resolve("./assets/icons/users.png")),
+        ranked: readFileSync(resolve("./assets/icons/ranked.png")),
+        nominated: readFileSync(resolve("./assets/icons/thumbs-up.png")),
+        loved: readFileSync(resolve("./assets/icons/heart.png")),
+        pending: readFileSync(resolve("./assets/icons/unknown.png")),
+        kudosu: readFileSync(resolve("./assets/icons/kudosu.png")),
+        playcount: readFileSync(resolve("./assets/icons/plays.png")),
+        favorited: readFileSync(resolve("./assets/icons/favorited.png")),
     };
 
     // colors
@@ -78,91 +71,91 @@ export class MapperCard {
             PPY: {
                 index: 0,
                 name: "peppy",
-                icon: "https://media.discordapp.net/attachments/959908232736952420/1037830827784020111/ppy.png",
+                icon: readFileSync(resolve("./assets/icons/ppy.png")),
                 colour: "#0066FF",
             },
             SPT: {
                 index: 1,
                 name: "Support Team",
-                icon: "https://media.discordapp.net/attachments/950107895754784908/953775607395807242/spt.png",
+                icon: readFileSync(resolve("./assets/icons/spt.png")),
                 colour: "#ebd047",
             },
             DEV: {
                 index: 2,
                 name: "Developer",
-                icon: "https://media.discordapp.net/attachments/950107895754784908/953774037790769182/dev.png",
+                icon: readFileSync(resolve("./assets/icons/dev.png")),
                 colour: "#eb47d0",
             },
             GMT: {
                 index: 3,
                 name: "Global Moderator",
-                icon: "https://media.discordapp.net/attachments/941102492857557023/948649173396361226/gmt.png",
+                icon: readFileSync(resolve("./assets/icons/gmt.png")),
                 colour: "#99eb47",
             },
             NAT: {
                 index: 4,
                 name: "Nomination Assessment Team",
-                icon: "https://media.discordapp.net/attachments/941102492857557023/948649173794832414/nat2.png",
+                icon: readFileSync(resolve("./assets/icons/nat.png")),
                 colour: "#eb8c47",
             },
             FA: {
                 index: 5,
                 name: "Featured Artist",
                 colour: "#00ffff",
-                icon: "https://media.discordapp.net/attachments/950107895754784908/1000854297745043506/fa.png",
+                icon: readFileSync(resolve("./assets/icons/fa.png")),
             },
             BN: {
                 index: 6,
                 name: "Beatmap Nominator",
-                icon: "https://media.discordapp.net/attachments/941102492857557023/948649173199249438/bn2.png",
+                icon: readFileSync(resolve("./assets/icons/bn.png")),
                 probationary: {
                     name: "Beatmap Nominator (Probationary)",
-                    icon: "https://media.discordapp.net/attachments/941102492857557023/948649173983592548/probo.png",
+                    icon: readFileSync(resolve("./assets/icons/bn-probation.png")),
                     colour: "#d6c8fc",
                 },
                 elite: {
                     name: "Elite Nominator",
-                    icon: "https://media.discordapp.net/attachments/941102492857557023/991137703288635462/bn22.png",
+                    icon: readFileSync(resolve("./assets/icons/bn-elite.png")),
                     colour: "#ffc05b",
                 },
             },
             ALM: {
                 index: 7,
                 name: "Alumni",
-                icon: "https://media.discordapp.net/attachments/941102492857557023/948649174197489694/alm.png",
+                icon: readFileSync(resolve("./assets/icons/alm.png")),
                 colour: "#999999",
             },
             LVD: {
                 index: 8,
                 name: "Project Loved",
-                icon: "https://media.discordapp.net/attachments/941102492857557023/948649173576740915/lvd.png",
+                icon: readFileSync(resolve("./assets/icons/lvd.png")),
                 colour: "#ffd1dc",
             },
             BSC: {
                 index: 9,
                 name: "Beatmap Spotlight Curator",
-                icon: "https://media.discordapp.net/attachments/959908232736952420/1037829623142174811/bsc.png",
+                icon: readFileSync(resolve("./assets/icons/bsc.png")),
                 colour: "#76AEBC",
             },
             BOT: {
                 index: 10,
                 name: "BOT",
                 colour: "#ffffff",
-                icon: "https://media.discordapp.net/attachments/865037717590245436/955965426964258906/bot.png",
+                icon: readFileSync(resolve("./assets/icons/bot.png")),
             },
         } as {
             [key: string]: {
                 index: number;
                 name: string;
-                icon: string;
+                icon: Buffer;
                 probationary?: {
                     name: string;
-                    icon: string;
+                    icon: Buffer;
                     colour: string;
                 };
                 elite?: {
                     name: string;
-                    icon: string;
+                    icon: Buffer;
                     colour: string;
                 };
             };
@@ -262,16 +255,21 @@ export class MapperCard {
 
     private fetchImageOrFallbackTo(
         imageUrl: string | undefined | null,
-        fallbackImage: string
+        fallbackImage: string | Buffer
     ): Promise<Image> {
         return new Promise(async (resolve) => {
+            if (!imageUrl && fallbackImage instanceof Buffer)
+                return resolve(loadImage(fallbackImage));
+
             try {
-                const coverImage = await axios(imageUrl || fallbackImage, {
+                const coverImage = await axios(imageUrl || "", {
                     responseType: "arraybuffer",
                 });
 
                 return resolve(loadImage(coverImage.data));
             } catch (e) {
+                if (fallbackImage instanceof Buffer) return resolve(loadImage(fallbackImage));
+
                 const coverImage = await axios(fallbackImage, {
                     responseType: "arraybuffer",
                 });
@@ -524,7 +522,7 @@ export class MapperCard {
 
                 if (icon) {
                     const iconImage = await loadImage(
-                        group.is_probationary ? (icon.probationary?.icon as string) : icon.icon
+                        group.is_probationary ? (icon.probationary?.icon as Buffer) : icon.icon
                     );
 
                     this.ctx.drawImage(iconImage, iconXPosition, iconYPosition, 24, 24);
