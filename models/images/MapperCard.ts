@@ -411,7 +411,7 @@ export class MapperCard {
 
         // ? ========== Country and flag
         const countryFlag = await this.fetchImageOrFallbackTo(
-            `https://purecatamphetamine.github.io/country-flag-icons/3x2/${this.mapper.country.code}.svg`,
+            `https://flagsapi.com/${this.mapper.country.code.toUpperCase()}/flat/64.png`,
             "https://raw.githubusercontent.com/ppy/osu-web/master/public/images/flags/fallback.png"
         );
 
