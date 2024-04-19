@@ -13,6 +13,7 @@ const colors = {
     gold: "#ffac00" as ColorResolvable,
     purple: "#5639ac" as ColorResolvable,
     qat: "#27b6b3" as ColorResolvable,
+    gray: "#bfbfbf" as ColorResolvable,
 };
 
 export default colors;
