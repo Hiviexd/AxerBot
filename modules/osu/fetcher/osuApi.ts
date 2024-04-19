@@ -17,6 +17,7 @@ import { comment } from "./comment";
 import { fetchBeatmapEvents } from "./qat";
 import { downloadUnofficialReplay } from "./downloader/replay/downloadUnofficialReplay";
 import { kudosu } from "./rankings";
+import { wikiPage } from "./wikiPage";
 
 export default {
     fetch: {
@@ -38,6 +39,7 @@ export default {
         comment: comment,
         osuFile: osuFile,
         kudosuRankings: kudosu,
+        wikiPage: wikiPage,
     },
     download: {
         beatmapset: download,
