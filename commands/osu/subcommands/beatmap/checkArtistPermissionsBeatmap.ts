@@ -154,13 +154,17 @@ checkArtistPermissionsBeatmap.setExecuteFunction(async (command) => {
         ? `${artistInfo?.notes}\n\n${monstercatNote}`
         : artistInfo?.notes;
 
-    const embed = new EmbedBuilder().setColor(color).setTitle(title).setDescription(description);
+    const embed = new EmbedBuilder()
+        .setColor(color)
+        .setTitle(title)
+        .setDescription(description)
+        .setFooter({ text: "Getting explicit permission from the artist always overrides this!" });
 
     if (lookupStatus !== "unknown")
         embed.addFields(
             {
                 name: "Artist",
-                value: artistInfo?.artist.name || "Unknown",
+                value: artistInfo?.artist.id ? `[${artistInfo?.artist.name}](https://osu.ppy.sh/beatmaps/artists/${artistInfo?.artist.id})` : artistInfo?.artist.name || "Unknown",
                 inline: true,
             },
             {
