@@ -10,7 +10,7 @@ import {
     PermissionResolvable,
     UserContextMenuCommandInteraction,
 } from "discord.js";
-
+import config from "config.json";
 import { AxerCommands } from "../../commands";
 import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
@@ -21,6 +21,8 @@ export function checkMemberPermissions(member: GuildMember, permissions: Permiss
     let pass = false;
 
     if (!member) return false;
+
+    if (config.owners.includes(member.user.id)) return true;
 
     if (permissions.length == 0) return true;
 
