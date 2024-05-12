@@ -10,7 +10,7 @@ import {
     PermissionResolvable,
     UserContextMenuCommandInteraction,
 } from "discord.js";
-import config from "config.json";
+import config from "../../config.json";
 import { AxerCommands } from "../../commands";
 import { ContextMenuCommand } from "../../models/commands/ContextMenuCommand";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
