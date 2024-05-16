@@ -41,9 +41,7 @@ verificationSetType.setExecuteFunction(async (command) => {
 
     if (!guildData)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("This guild isn't validated! Try again."),
-            ],
+            embeds: [generateErrorEmbed("This guild isn't validated! Try again.")],
         });
 
     guildData.verification.isStatic = type == "static";
@@ -54,7 +52,7 @@ verificationSetType.setExecuteFunction(async (command) => {
             generateSuccessEmbed(
                 guildData.verification.isStatic
                     ? `Welcome messages disabled! If you don't have any static embed, use \`/verification new verifyembed\``
-                    : `Welcome messages enabled again! Now the system will send messages on <@${guildData.verification.channel}>`
+                    : `Welcome messages enabled again! Now the system will send messages on <#${guildData.verification.channel}>`
             ),
         ],
     });
