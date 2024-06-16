@@ -1,6 +1,6 @@
 import { ActivityType, Client } from "discord.js";
 
-export default async function presence(bot: Client, bot_user: any, ready: boolean) {
+export default async function presence(bot: Client, ready: boolean) {
     ready
         ? bot.user?.setPresence({
               status: "online",
