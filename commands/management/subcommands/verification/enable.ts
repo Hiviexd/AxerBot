@@ -4,14 +4,12 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetEnabled = new SlashCommandSubcommand(
-    "enable",
-    "Enable the system manually",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationSetEnabled = new SlashCommandSubcommand()
+    .setName("enable")
+    .setDescription("Enable the system manually")
+    .setPermissions("ManageGuild");
 
-verificationSetEnabled.setExecuteFunction(async (command) => {
+verificationSetEnabled.setExecutable(async (command) => {
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({
@@ -40,4 +38,4 @@ verificationSetEnabled.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationSetEnabled;
+export { verificationSetEnabled };

@@ -1,15 +1,19 @@
-import { ChatInputCommandInteraction, PermissionFlagsBits } from "discord.js";
+import {
+    ChatInputCommandInteraction,
+    PermissionFlagsBits,
+    SlashCommandRoleOption,
+    SlashCommandStringOption,
+} from "discord.js";
 import MissingPermissions from "../../../../responses/embeds/MissingPermissions";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationAddGroupRole = new SlashCommandSubcommand(
-    "grouprole",
-    "Sets the roles that users with X usergroups will recieve",
-    {
-        syntax: "/verification `add grouprole` `group:<Group Name>` `role:<Role Id|Role Mention>` `[modes_1:<modes> ...]`",
+const verificationAddGroupRole = new SlashCommandSubcommand()
+    .setName("grouprole")
+    .setDescription("Add discord roles for users that has roles on osu!")
+    .setHelp({
         groups: [
             "`DEV`: osu!dev",
             "`SPT`: Support Team",
@@ -25,18 +29,15 @@ const verificationAddGroupRole = new SlashCommandSubcommand(
             "`taiko`: osu!taiko",
             "`fruits`: osu!catch",
             "`mania`: osu!mania",
-            "`none`: This is for groups without modes, like LVD",
+            "`No Modes`: This is for groups without modes, like GMT",
         ],
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
-
-verificationAddGroupRole.builder
-    .addRoleOption((o) =>
-        o.setName("role").setDescription("Target role").setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+    })
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("role")
+            .setDescription("Target role")
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("group")
             .setDescription("Role usergroup")
             .addChoices(
@@ -77,10 +78,8 @@ verificationAddGroupRole.builder
                     value: "BSC",
                 }
             )
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("mode")
             .setDescription("Game Mode of the role")
             .addChoices(
@@ -89,7 +88,7 @@ verificationAddGroupRole.builder
                     value: "all",
                 },
                 {
-                    name: "None (Like loved captains)",
+                    name: "No Modes",
                     value: "none",
                 },
                 {
@@ -110,9 +109,10 @@ verificationAddGroupRole.builder
                 }
             )
             .setRequired(true)
-    );
+    )
+    .setPermissions("ManageGuild");
 
-verificationAddGroupRole.setExecuteFunction(async (command) => {
+verificationAddGroupRole.setExecutable(async (command) => {
     if (!command.guild) return;
 
     const group = command.options.getString("group", true);
@@ -129,9 +129,7 @@ verificationAddGroupRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    const botAsMember = await command.guild.members.fetch(
-        command.client.user.id
-    );
+    const botAsMember = await command.guild.members.fetch(command.client.user.id);
 
     if (role.position >= botAsMember.roles.highest.position)
         return command.editReply({
@@ -187,4 +185,4 @@ verificationAddGroupRole.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationAddGroupRole;
+export { verificationAddGroupRole };

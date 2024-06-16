@@ -1,18 +1,15 @@
-import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { guilds } from "../../../../database";
 import colors from "../../../../constants/colors";
 
-const loggingStatus = new SlashCommandSubcommand(
-    "status",
-    "Displays system settings",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const loggingStatus = new SlashCommandSubcommand()
+    .setName("status")
+    .setDescription("Display system's settings")
+    .setPermissions("ManageGuild");
 
-loggingStatus.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
-        return;
+loggingStatus.setExecutable(async (command) => {
+    if (!command.member || typeof command.member.permissions == "string") return;
 
     let guild = await guilds.findById(command.guildId);
     if (!guild) return;
@@ -28,9 +25,7 @@ loggingStatus.setExecuteFunction(async (command) => {
             },
             {
                 name: "Channel",
-                value: guild.logging.channel
-                    ? `<#${guild.logging.channel}>`
-                    : "Not set",
+                value: guild.logging.channel ? `<#${guild.logging.channel}>` : "Not set",
                 inline: false,
             }
         );
@@ -38,4 +33,4 @@ loggingStatus.setExecuteFunction(async (command) => {
     command.editReply({ embeds: [embed] });
 });
 
-export default loggingStatus;
+export { loggingStatus };

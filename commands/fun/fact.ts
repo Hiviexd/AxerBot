@@ -1,28 +1,35 @@
 import axios from "axios";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandStringOption } from "discord.js";
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const fact = new SlashCommand("fact", "Get a random fact!", "Fun", true, {
-    syntax: "/fact",
-    options: `\`today\`: Gets the fact of the day.`,
-    example: `/fact\n /fact type:today`,
-});
-
-fact.builder.addStringOption((o) =>
-    o.setName("type").setDescription("Daily or random?").addChoices(
-        {
-            name: "daily",
-            value: "today",
-        },
-        {
-            name: "random",
-            value: "random",
-        }
+const fact = new SlashCommand()
+    .setName("fact")
+    .setDescription("Get a random fact!")
+    .setCategory(CommandCategory.Fun)
+    .setHelp({
+        options: `\`today\`: Gets the fact of the day.`,
+        example: `/fact\n /fact type:today`,
+    })
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("type")
+            .setDescription("Daily or random?")
+            .addChoices(
+                {
+                    name: "daily",
+                    value: "today",
+                },
+                {
+                    name: "random",
+                    value: "random",
+                }
+            )
     )
-);
+    .setDMPermission(true);
 
-fact.setExecuteFunction(async (command) => {
+fact.setExecutable(async (command) => {
     let type = command.options.getString("type") ?? "random";
 
     if (type == "today") {
@@ -57,4 +64,4 @@ fact.setExecuteFunction(async (command) => {
     }
 });
 
-export default fact;
+export { fact };

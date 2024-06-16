@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, StringSelectMenuBuilder } from "discord.js";
+import { StringSelectMenuBuilder } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -7,12 +7,10 @@ import { generateStepEmbedWithChoices } from "../../../../helpers/commands/gener
 import truncateString from "../../../../helpers/text/truncateString";
 import crypto from "crypto";
 
-const verificationRemoveRankRole = new SlashCommandSubcommand(
-    "rankrole",
-    "Remove a rank role from the system",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationRemoveRankRole = new SlashCommandSubcommand()
+    .setName("rankrole")
+    .setDescription("Remove a rank role from the system")
+    .setPermissions("ModerateMembers");
 
 export interface IRankRole {
     id: string;
@@ -22,7 +20,7 @@ export interface IRankRole {
     max_rank: number;
 }
 
-verificationRemoveRankRole.setExecuteFunction(async (command) => {
+verificationRemoveRankRole.setExecutable(async (command) => {
     if (!command.member || !command.guild || !command.client.user) return;
 
     let guild = await guilds.findById(command.guildId);
@@ -35,10 +33,7 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    if (
-        !guild.verification.targets.rank_roles ||
-        guild.verification.targets.rank_roles.length == 0
-    )
+    if (!guild.verification.targets.rank_roles || guild.verification.targets.rank_roles.length == 0)
         return command.editReply({
             embeds: [generateErrorEmbed("No rank roles found.")],
         });
@@ -47,24 +42,19 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
         .setMaxValues(guild.verification.targets.rank_roles.length)
         .setMinValues(1)
         .setOptions(
-            guild.verification.targets.rank_roles.map(
-                (role: IRankRole, i: number) => {
-                    const nonce = crypto.randomBytes(10).toString("hex");
-                    return {
-                        label: `#${i + 1} | ${truncateString(
-                            `@${
-                                command.guild?.roles.cache.get(role.id)?.name ||
-                                "@Deleted Role"
-                            } | ${role.min_rank} -> ${role.max_rank} | ${
-                                role.gamemode
-                            }`,
-                            100,
-                            true
-                        )}`,
-                        value: `${nonce},role.id`,
-                    };
-                }
-            )
+            guild.verification.targets.rank_roles.map((role: IRankRole, i: number) => {
+                const nonce = crypto.randomBytes(10).toString("hex");
+                return {
+                    label: `#${i + 1} | ${truncateString(
+                        `@${command.guild?.roles.cache.get(role.id)?.name || "@Deleted Role"} | ${
+                            role.min_rank
+                        } -> ${role.max_rank} | ${role.gamemode}`,
+                        100,
+                        true
+                    )}`,
+                    value: `${nonce},role.id`,
+                };
+            })
         );
 
     generateStepEmbedWithChoices(
@@ -99,11 +89,7 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
 
                     command.editReply({
                         content: "",
-                        embeds: [
-                            generateErrorEmbed(
-                                "Can't save your changes. Sorry..."
-                            ),
-                        ],
+                        embeds: [generateErrorEmbed("Can't save your changes. Sorry...")],
                         components: [],
                     });
                 });
@@ -113,15 +99,11 @@ verificationRemoveRankRole.setExecuteFunction(async (command) => {
 
             command.editReply({
                 content: "",
-                embeds: [
-                    generateErrorEmbed(
-                        "Time expired! Don't leave me waiting, please."
-                    ),
-                ],
+                embeds: [generateErrorEmbed("Time expired! Don't leave me waiting, please.")],
             });
         });
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 });
 
-export default verificationRemoveRankRole;
+export { verificationRemoveRankRole };

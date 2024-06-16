@@ -7,16 +7,12 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { reminders } from "../../../../database";
 
-const removeReminder = new SlashCommandSubcommand(
-    "remove",
-    "remove a reminder",
-    undefined,
-    undefined,
-    false,
-    true
-);
+const removeReminder = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("Remove one or more reminders")
+    .setEphemeral(true);
 
-removeReminder.setExecuteFunction(async (command) => {
+removeReminder.setExecutable(async (command) => {
     const userReminders = await reminders.find({ userId: command.user.id });
 
     if (!userReminders || userReminders.length == 0)
@@ -30,15 +26,8 @@ removeReminder.setExecuteFunction(async (command) => {
 
     userReminders.forEach((r, i) => {
         remindersSelectMenu.addOptions({
-            label: `#${i + 1} | (${vanillaRelativeTime(
-                new Date(r.sendAt || ""),
-                new Date()
-            )})`,
-            description: `${truncateString(
-                r.content || "No Content",
-                25,
-                true
-            )}`,
+            label: `#${i + 1} | (${vanillaRelativeTime(new Date(r.sendAt || ""), new Date())})`,
+            description: `${truncateString(r.content || "No Content", 25, true)}`,
             value: r._id,
         });
 
@@ -46,10 +35,7 @@ removeReminder.setExecuteFunction(async (command) => {
         remindersSelectMenu.setMinValues(1);
     });
 
-    console.log(
-        remindersSelectMenu.data.min_values,
-        remindersSelectMenu.data.max_values
-    );
+    console.log(remindersSelectMenu.data.min_values, remindersSelectMenu.data.max_values);
 
     generateStepEmbedWithChoices(
         command,
@@ -84,14 +70,9 @@ removeReminder.setExecuteFunction(async (command) => {
 
             command.editReply({
                 content: "",
-                embeds: [
-                    generateErrorEmbedWithTitle(
-                        "Error",
-                        "Something went wrong..."
-                    ),
-                ],
+                embeds: [generateErrorEmbedWithTitle("Error", "Something went wrong...")],
             });
         });
 });
 
-export default removeReminder;
+export { removeReminder };

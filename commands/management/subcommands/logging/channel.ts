@@ -1,20 +1,20 @@
-import { PermissionFlagsBits } from "discord.js";
+import { SlashCommandChannelOption } from "discord.js";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const loggingChannel = new SlashCommandSubcommand(
-    "channel",
-    "Set system channel",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const loggingChannel = new SlashCommandSubcommand()
+    .setName("channel")
+    .setDescription("Set a channel to send all logs")
+    .setPermissions("ManageGuild")
+    .addOptions(
+        new SlashCommandChannelOption()
+            .setName("channel")
+            .setDescription("Channel to set")
+            .setRequired(true)
+    );
 
-loggingChannel.builder.addChannelOption((o) =>
-    o.setName("channel").setDescription("Channel to set").setRequired(true)
-);
-
-loggingChannel.setExecuteFunction(async (command) => {
+loggingChannel.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const channel = await command.options.getChannel("channel", true);
@@ -29,12 +29,8 @@ loggingChannel.setExecuteFunction(async (command) => {
     });
 
     return command.editReply({
-        embeds: [
-            generateSuccessEmbed(
-                `✅ Logging system channel changed to ${channel}`
-            ),
-        ],
+        embeds: [generateSuccessEmbed(`✅ Logging system channel changed to ${channel}`)],
     });
 });
 
-export default loggingChannel;
+export { loggingChannel };

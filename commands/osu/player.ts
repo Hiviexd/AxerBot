@@ -1,48 +1,44 @@
+import { SlashCommandStringOption } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import PlayerEmbed from "../../responses/osu/PlayerEmbed";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const player = new SlashCommand(
-    ["player", "profile"],
-    "Check statistics for a player",
-    "osu!",
-    true,
-    {
-        syntax: "/player `<name>` `<-?mode>`",
-        example: "/player `username:Hivie` `mode:osu`",
-        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-    }
-);
-
-player.builder
-    .addStringOption((o) =>
-        o.setName("username").setDescription("Username of the player")
-    )
-    .addStringOption((o) =>
-        o.setName("mode").setDescription("Profile game mode").addChoices(
-            {
-                name: "osu!",
-                value: "osu",
-            },
-            {
-                name: "osu!taiko",
-                value: "taiko",
-            },
-            {
-                name: "osu!catch",
-                value: "fruits",
-            },
-            {
-                name: "osu!mania",
-                value: "mania",
-            }
-        )
+const player = new SlashCommand()
+    .setName("player")
+    .setNameAliases(["profile"])
+    .setDescription("Check statistics of an osu! player")
+    .setCategory(CommandCategory.Osu)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandStringOption().setName("username").setDescription("Username of the player"),
+        new SlashCommandStringOption()
+            .setName("mode")
+            .setDescription("Profile game mode")
+            .addChoices(
+                {
+                    name: "osu!",
+                    value: "osu",
+                },
+                {
+                    name: "osu!taiko",
+                    value: "taiko",
+                },
+                {
+                    name: "osu!catch",
+                    value: "fruits",
+                },
+                {
+                    name: "osu!mania",
+                    value: "mania",
+                }
+            )
     );
 
-player.setExecuteFunction(async (command) => {
+player.setExecutable(async (command) => {
     const mode = command.options.getString("mode") || undefined;
 
     let { playerName, status } = await checkCommandPlayers(command);
@@ -59,11 +55,7 @@ player.setExecuteFunction(async (command) => {
 
     if (!player.data.is_active)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    `${player.data.username} is inactive in this game mode`
-                ),
-            ],
+            embeds: [generateErrorEmbed(`${player.data.username} is inactive in this game mode`)],
             allowedMentions: {
                 repliedUser: false,
             },
@@ -72,65 +64,4 @@ player.setExecuteFunction(async (command) => {
     return PlayerEmbed.reply(player, command, mode);
 });
 
-export default player;
-/*
-export default {
-	name: "player",
-	help: {
-		description: "Check statistics for a player",
-		syntax: "/player `<name|mention>` `<-?mode>`",
-		example: "/player `Hivie` `-osu`\n /player <@341321481390784512> ",
-		note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-	},
-	category: "osu",
-	config: {
-		type: 1,
-		options: [
-			{
-				name: "username",
-				description: "By osu! username",
-				type: 3,
-				max_value: 1,
-			},
-			/*{
-				name: "usermention",
-				description: "By user mention (This doesn't ping the user)",
-				type: 6,
-				max_value: 1,
-			},
-			{
-				name: "mode",
-				description: "Gamemode info to view",
-				type: 3,
-				max_value: 1,
-				choices: [
-					{
-						name: "osu",
-						value: "osu",
-					},
-					{
-						name: "taiko",
-						value: "taiko",
-					},
-					{
-						name: "catch",
-						value: "fruits",
-					},
-					{
-						name: "mania",
-						value: "mania",
-					},
-				],
-			},
-		],
-	},
-	interaction: true,
-	run: async (
-		bot: Client,
-		command: ChatInputCommandInteraction,
-		args: string[]
-	) => {
-		
-	},
-};
-*/
+export { player };

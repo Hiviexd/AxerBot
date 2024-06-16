@@ -1,8 +1,4 @@
-import {
-    ChannelType,
-    PermissionFlagsBits,
-    StringSelectMenuBuilder,
-} from "discord.js";
+import { ChannelType, SlashCommandChannelOption, StringSelectMenuBuilder } from "discord.js";
 import { tracks } from "../../../../database";
 import crypto from "crypto";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -10,22 +6,19 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 
-const addTracker = new SlashCommandSubcommand(
-    "add",
-    "Create a new tracker",
-    {
-        syntax: "/bntracker add `channel:#channel`",
-    },
-    [PermissionFlagsBits.ManageChannels]
-);
+const bntrackerAddTracker = new SlashCommandSubcommand()
+    .setName("add")
+    .setDescription("Add a new tracker to a channel")
+    .setPermissions("ManageChannels")
+    .addOptions(
+        new SlashCommandChannelOption()
+            .setName("channel")
+            .setDescription("Channel to announce")
+            .setRequired(true)
+    );
 
-addTracker.builder.addChannelOption((o) =>
-    o.setName("channel").setDescription("Channel to announce").setRequired(true)
-);
-
-addTracker.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
-        return;
+bntrackerAddTracker.setExecutable(async (command) => {
+    if (!command.member || typeof command.member.permissions == "string") return;
 
     const channel = command.options.getChannel("channel", true);
 
@@ -46,9 +39,7 @@ addTracker.setExecuteFunction(async (command) => {
 
     if (channel.type != ChannelType.GuildText)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("You need to provide a valid text channel."),
-            ],
+            embeds: [generateErrorEmbed("You need to provide a valid text channel.")],
         });
 
     const config = {
@@ -151,4 +142,4 @@ addTracker.setExecuteFunction(async (command) => {
     }
 });
 
-export default addTracker;
+export { bntrackerAddTracker };

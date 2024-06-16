@@ -1,14 +1,15 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import gtfLeaderboard from "./subcommands/gtf/leaderboard";
-import gtfNewGame from "./subcommands/gtf/newGame";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
+import { gtfLeaderboard } from "./subcommands/gtf/leaderboard";
+import { gtfNewGame } from "./subcommands/gtf/newGame";
 
-const guesstheflag = new SlashCommand(
-    ["guesstheflag", "gtf"],
-    'A fun "Guess the Flag" minigame!',
-    "Fun",
-    true
-);
+const guesstheflag = new SlashCommand()
+    .setName("guesstheflag")
+    .setNameAliases(["gtf"])
+    .setDescription('Play a "guess the flag" game')
+    .setCategory(CommandCategory.Fun)
+    .setDMPermission(false)
+    .addSubcommand(gtfNewGame)
+    .addSubcommand(gtfLeaderboard);
 
-guesstheflag.addSubcommand(gtfNewGame).addSubcommand(gtfLeaderboard);
-
-export default guesstheflag;
+export { guesstheflag };

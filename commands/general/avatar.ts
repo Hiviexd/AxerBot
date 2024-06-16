@@ -4,37 +4,34 @@ import {
     Message,
     EmbedBuilder,
     User,
+    SlashCommandUserOption,
+    SlashCommandStringOption,
 } from "discord.js";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import colors from "../../constants/colors";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import abbreviation from "../../helpers/text/abbreviation";
 import osuApi from "../../modules/osu/fetcher/osuApi";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const avatar = new SlashCommand(
-    "avatar",
-    "Displays the avatar of the mentioned user or the author.",
-    "General",
-    true,
-    {
-        description: "Displays the avatar of the mentioned user or the author.",
-        syntax: "/avatar <option>",
+const avatar = new SlashCommand()
+    .setName("avatar")
+    .setDescription("Displays the avatar of the mentioned user or the author.")
+    .setCategory(CommandCategory.General)
+    .setDMPermission(false)
+    .setHelp({
+        syntax: "/avatar user:<id | mention>",
         example: "/avatar\n /avatar @Hivie\n /avatar <userid>",
-    }
-);
-
-avatar.builder
-    .addUserOption((option) =>
-        option.setName("user").setDescription("Get avatar by user")
-    )
-    .addStringOption((option) =>
-        option.setName("id").setDescription("Get avatar by user id")
-    )
-    .addStringOption((option) =>
-        option.setName("osu_username").setDescription("Get user's osu avatar")
+    })
+    .addOptions(
+        new SlashCommandUserOption().setName("user").setDescription("Get avatar by user"),
+        new SlashCommandStringOption().setName("id").setDescription("Get avatar by user id"),
+        new SlashCommandStringOption()
+            .setName("osu_username")
+            .setDescription("Get user's osu avatar")
     );
 
-avatar.setExecuteFunction(async (command) => {
+avatar.setExecutable(async (command) => {
     // ? prevent errors
 
     let user: User | undefined = undefined;
@@ -98,4 +95,4 @@ avatar.setExecuteFunction(async (command) => {
     command.editReply({ embeds: [avatarEmbed] }).catch(console.error);
 });
 
-export default avatar;
+export { avatar };

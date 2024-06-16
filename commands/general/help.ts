@@ -3,6 +3,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
+    SlashCommandStringOption,
 } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import getEmoji from "../../helpers/text/getEmoji";
@@ -11,26 +12,25 @@ import { AxerCommands } from "..";
 import CommandNotFound from "../../responses/embeds/CommandNotFound";
 import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandSubcommandGroup";
 import { SlashCommandSubcommand } from "../../models/commands/SlashCommandSubcommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const help = new SlashCommand(
-    ["help", "commands"],
-    "Need help?",
-    "General",
-    true,
-    {
+const help = new SlashCommand()
+    .setName("help")
+    .setNameAliases(["commands"])
+    .setCategory(CommandCategory.General)
+    .setDescription("Do you need help?")
+    .setHelp({
         syntax: "/help command:<command>",
         example: "/help command:`/verification set channel`",
-    }
-);
+    })
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("command")
+            .setDescription("Example: /verification set channel")
+            .setAutocomplete(true)
+    );
 
-help.builder.addStringOption((o) =>
-    o
-        .setName("command")
-        .setDescription("Example: /verification set channel")
-        .setAutocomplete(true)
-);
-
-help.setExecuteFunction(async (command) => {
+help.setExecutable(async (command) => {
     const input = command.options.getString("command");
 
     if (!input) return sendGeneralHelp();
@@ -40,39 +40,29 @@ help.setExecuteFunction(async (command) => {
 
         if (args.length == 1) return sendBaseCommandHelp(args[0]);
 
-        if (args.length == 2)
-            return sendGroupOrSubcommandHelp(args[0], args[1]);
+        if (args.length == 2) return sendGroupOrSubcommandHelp(args[0], args[1]);
 
-        if (args.length == 3)
-            return sendSubcommandWithGroup(args[0], args[1], args[2]);
+        if (args.length == 3) return sendSubcommandWithGroup(args[0], args[1], args[2]);
     }
 
-    function sendSubcommandWithGroup(
-        commandName: string,
-        group: string,
-        subcommand: string
-    ) {
-        const targetCommand = AxerCommands.filter((command) =>
-            command.isSlashCommand()
-        ).find((c) => c.names.includes(commandName)) as SlashCommand;
+    function sendSubcommandWithGroup(commandName: string, group: string, subcommand: string) {
+        const targetCommand = AxerCommands.find((c) =>
+            c.allNames.includes(commandName)
+        ) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
                 embeds: [CommandNotFound],
             });
 
-        const targetGroup = targetCommand.subcommandGroups.find(
-            (c) => c.builder.name == group
-        );
+        const targetGroup = targetCommand.getGroup(group);
 
         if (!targetGroup)
             return command.editReply({
                 embeds: [CommandNotFound],
             });
 
-        const targetSubcommand = targetGroup.subcommands.find(
-            (c) => c.builder.name == subcommand
-        );
+        const targetSubcommand = targetGroup.getCommand(subcommand);
 
         if (!targetSubcommand)
             return command.editReply({
@@ -82,7 +72,7 @@ help.setExecuteFunction(async (command) => {
         const embed = new EmbedBuilder()
             .setTitle(`${getEmoji("infopink")} | /${commandName} ${subcommand}`)
             .setColor(colors.pink)
-            .setDescription(targetSubcommand.builder.description);
+            .setDescription(targetSubcommand.description);
 
         mapEmbedFields(embed, targetSubcommand);
 
@@ -91,49 +81,35 @@ help.setExecuteFunction(async (command) => {
         });
     }
 
-    function sendGroupOrSubcommandHelp(
-        commandName: string,
-        subcommand: string
-    ) {
-        const targetCommand = AxerCommands.filter((command) =>
-            command.isSlashCommand()
-        ).find((c) => c.names.includes(commandName)) as SlashCommand;
+    function sendGroupOrSubcommandHelp(commandName: string, subcommand: string) {
+        const targetCommand = AxerCommands.find((c) =>
+            c.allNames.includes(commandName)
+        ) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
                 embeds: [CommandNotFound],
             });
 
-        if (targetCommand.subcommands.find((c) => c.builder.name == subcommand))
-            return sendSubcommand();
+        if (targetCommand.getSubcommand(subcommand)) return sendSubcommand();
 
-        if (
-            targetCommand.subcommandGroups.find(
-                (c) => c.builder.name == subcommand
-            )
-        )
-            return sendGroup();
+        if (targetCommand.getGroup(subcommand)) return sendGroup();
 
         function sendGroup() {
-            const targetGroup = targetCommand?.subcommandGroups.find(
-                (c) => c.builder.name == subcommand
-            );
+            const targetGroup = targetCommand?.getGroup(subcommand);
 
             if (!targetCommand || !targetGroup) return;
 
             const embed = new EmbedBuilder()
-                .setTitle(
-                    `${getEmoji("infopink")} | /${commandName} ${subcommand}`
-                )
+                .setTitle(`${getEmoji("infopink")} | /${commandName} ${subcommand}`)
                 .setColor(colors.pink)
                 .setDescription("All commands of this command group:");
 
             let subcommands = "";
-            targetGroup.subcommands.forEach((command) => {
+
+            targetGroup.commands.forEach((command) => {
                 subcommands = subcommands.concat(
-                    `${getEmoji("small_dot")} **/${
-                        targetCommand.names[0]
-                    }** \`${command.builder.name}\`\n`
+                    `${getEmoji("small_dot")} **/${targetCommand.name}** \`${command.name}\`\n`
                 );
             });
 
@@ -148,18 +124,14 @@ help.setExecuteFunction(async (command) => {
         }
 
         function sendSubcommand() {
-            const targetSubcommand = targetCommand?.subcommands.find(
-                (c) => c.builder.name == subcommand
-            );
+            const targetSubcommand = targetCommand?.getSubcommand(subcommand);
 
             if (!targetCommand || !targetSubcommand) return;
 
             const embed = new EmbedBuilder()
-                .setTitle(
-                    `${getEmoji("infopink")} | /${commandName} ${subcommand}`
-                )
+                .setTitle(`${getEmoji("infopink")} | /${commandName} ${subcommand}`)
                 .setColor(colors.pink)
-                .setDescription(targetSubcommand.builder.description);
+                .setDescription(targetSubcommand.description);
 
             mapEmbedFields(embed, targetSubcommand);
 
@@ -169,31 +141,28 @@ help.setExecuteFunction(async (command) => {
         }
     }
 
-    function mapEmbedFields(
-        embed: EmbedBuilder,
-        command: SlashCommand | SlashCommandSubcommand
-    ) {
-        Object.keys(command.help).forEach((key: string) => {
+    function mapEmbedFields(embed: EmbedBuilder, command: SlashCommand | SlashCommandSubcommand) {
+        Object.keys(command.helpFields).forEach((key: string) => {
             if (key == "description") return;
 
-            if (typeof command.help[key] == "string") {
+            if (typeof command.helpFields[key] == "string") {
                 embed.addFields({
                     name: key,
-                    value: command.help[key] as string,
+                    value: command.helpFields[key] as string,
                 });
             } else {
                 embed.addFields({
                     name: key,
-                    value: (command.help[key] as string[]).join("\n"),
+                    value: (command.helpFields[key] as string[]).join("\n"),
                 });
             }
         });
     }
 
     function sendBaseCommandHelp(commandName: string) {
-        const targetCommand = AxerCommands.filter((command) =>
-            command.isSlashCommand()
-        ).find((c) => c.names.includes(commandName)) as SlashCommand;
+        const targetCommand = AxerCommands.find((c) =>
+            c.allNames.includes(commandName)
+        ) as SlashCommand;
 
         if (!targetCommand)
             return command.editReply({
@@ -203,14 +172,12 @@ help.setExecuteFunction(async (command) => {
         const embed = new EmbedBuilder()
             .setTitle(`${getEmoji("infopink")} | /${commandName}`)
             .setColor(colors.pink)
-            .setDescription(targetCommand.builder.description);
+            .setDescription(targetCommand.description);
 
         let subcommands = "";
         targetCommand.subcommands.forEach((command) => {
             subcommands = subcommands.concat(
-                `${getEmoji("small_dot")} **/${targetCommand.names[0]}** \`${
-                    command.builder.name
-                }\`\n`
+                `${getEmoji("small_dot")} **/${targetCommand.name}** \`${command.name}\`\n`
             );
         });
 
@@ -219,11 +186,11 @@ help.setExecuteFunction(async (command) => {
         });
 
         function mapGroupCommands(group: SlashCommandSubcommandGroup) {
-            group.subcommands.forEach((command) => {
+            group.commands.forEach((command) => {
                 subcommands = subcommands.concat(
-                    `${getEmoji("small_dot")} **/${
-                        targetCommand?.names[0]
-                    }** \`${group.builder.name}\` \`${command.builder.name}\`\n`
+                    `${getEmoji("small_dot")} **/${targetCommand?.name}** \`${group.name}\` \`${
+                        command.name
+                    }\`\n`
                 );
             });
         }
@@ -255,42 +222,28 @@ help.setExecuteFunction(async (command) => {
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
                 .setLabel("GitHub")
-                .setURL(
-                    process.env.GITHUB_URL ||
-                        "https://github.com/axer-bot/axerbot"
-                ),
+                .setURL(process.env.GITHUB_URL || "https://github.com/axer-bot/axerbot"),
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
                 .setLabel("Support Server")
-                .setURL(
-                    process.env.SUPPORT_SERVER ||
-                        "https://discord.gg/h93K87WbrN"
-                )
+                .setURL(process.env.SUPPORT_SERVER || "https://discord.gg/h93K87WbrN")
         );
 
         const categories: { [key: string]: SlashCommand[] } = {};
 
         // Generate command categories list
-        AxerCommands.filter((command) => command.isSlashCommand()).forEach(
-            (command) => {
-                if (!categories[command.category]) {
-                    return (categories[command.category] = [
-                        command as SlashCommand,
-                    ]);
-                } else {
-                    return categories[command.category].push(
-                        command as SlashCommand
-                    );
-                }
+        AxerCommands.forEach((command) => {
+            if (!categories[command.category]) {
+                return (categories[command.category] = [command as SlashCommand]);
+            } else {
+                return categories[command.category].push(command as SlashCommand);
             }
-        );
+        });
 
         Object.keys(categories).forEach((category) => {
             embed.addFields({
                 name: `${getEmoji("dot")} ${category}`,
-                value: categories[category]
-                    .map((c) => `\`/${c.names[0]}\``)
-                    .join(", "),
+                value: categories[category].map((c) => `\`/${c.name}\``).join(", "),
             });
         });
 
@@ -301,4 +254,4 @@ help.setExecuteFunction(async (command) => {
     }
 });
 
-export default help;
+export { help };

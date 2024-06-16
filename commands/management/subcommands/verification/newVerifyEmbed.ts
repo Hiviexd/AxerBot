@@ -9,6 +9,7 @@ import {
     GuildTextBasedChannel,
     ModalBuilder,
     PermissionFlagsBits,
+    SlashCommandChannelOption,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
@@ -19,27 +20,24 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 import colors from "../../../../constants/colors";
 import { randomBytes } from "crypto";
 
-const verificationNewVerifyEmbed = new SlashCommandSubcommand(
-    "verifyembed",
-    "Send a new static verify embed on the given channel",
-    undefined,
-    [PermissionFlagsBits.ManageGuild],
-    true
-);
+const verificationNewVerifyEmbed = new SlashCommandSubcommand()
+    .setName("verifyembed")
+    .setDescription("Send a new static verification embed to the channel")
+    .setPermissions("ModerateMembers")
+    .addOptions(
+        new SlashCommandChannelOption()
+            .setName("target_channel")
+            .setDescription("Channel to send the embed")
+            .setRequired(true)
+            .addChannelTypes(
+                ChannelType.GuildAnnouncement,
+                ChannelType.GuildForum,
+                ChannelType.GuildText
+            )
+    )
+    .setModal(true);
 
-verificationNewVerifyEmbed.builder.addChannelOption((o) =>
-    o
-        .setName("target_channel")
-        .setDescription("Channel to send the embed")
-        .setRequired(true)
-        .addChannelTypes(
-            ChannelType.GuildAnnouncement,
-            ChannelType.GuildForum,
-            ChannelType.GuildText
-        )
-);
-
-verificationNewVerifyEmbed.setExecuteFunction(async (command) => {
+verificationNewVerifyEmbed.setExecutable(async (command) => {
     const targetChannel = command.options.getChannel("target_channel", true);
 
     if (!command.guild) return;
@@ -59,9 +57,7 @@ verificationNewVerifyEmbed.setExecuteFunction(async (command) => {
     )
         return command.reply({
             embeds: [
-                generateErrorEmbed(
-                    "I don't have permissions to send messages on that channel!"
-                ),
+                generateErrorEmbed("I don't have permissions to send messages on that channel!"),
             ],
         });
 
@@ -128,11 +124,7 @@ verificationNewVerifyEmbed.setExecuteFunction(async (command) => {
 
     await (targetChannel as GuildTextBasedChannel).send({
         embeds: [embedData],
-        components: [
-            new ActionRowBuilder<ButtonBuilder>().setComponents(
-                syncProfileButton
-            ),
-        ],
+        components: [new ActionRowBuilder<ButtonBuilder>().setComponents(syncProfileButton)],
     });
 
     guildDb.verification.isStatic = true;
@@ -147,4 +139,4 @@ verificationNewVerifyEmbed.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationNewVerifyEmbed;
+export { verificationNewVerifyEmbed };

@@ -1,64 +1,140 @@
 import {
+    ApplicationCommandOptionType,
     ChatInputCommandInteraction,
-    GuildMember,
     PermissionResolvable,
-    SlashCommandBuilder,
+    PermissionsBitField,
+    SlashCommandAttachmentOption,
+    SlashCommandBooleanOption,
+    SlashCommandChannelOption,
+    SlashCommandIntegerOption,
+    SlashCommandMentionableOption,
+    SlashCommandNumberOption,
+    SlashCommandRoleOption,
+    SlashCommandStringOption,
     SlashCommandSubcommandBuilder,
+    SlashCommandUserOption,
 } from "discord.js";
-import { ISlashCommandExecuteFunction } from "./SlashCommand";
-import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
+import { SlashCommandMainFunction } from "./SlashCommand";
 
 export class SlashCommandSubcommand {
-    private _executeFunction!: ISlashCommandExecuteFunction;
-    public allowDM = false;
-    public help: { [key: string]: string | string[] } = {};
-    public permissions: PermissionResolvable[] = [];
-    public builder = new SlashCommandSubcommandBuilder();
-    public hasModal: boolean;
-    public ephemeral: boolean = false;
+    private _ = new SlashCommandSubcommandBuilder();
+    private _permissions = new PermissionsBitField();
+    private _ephemeral = false;
+    private _hasModal = false;
+    private _helpFields = {} as { [key: string]: string | string[] };
+    private _main: SlashCommandMainFunction = (command: ChatInputCommandInteraction) => void {};
 
-    constructor(
-        name: string,
-        description: string,
-        help?: { [key: string | number]: string | string[] },
-        permissions?: PermissionResolvable[],
-        hasModal?: boolean,
-        ephemeral?: boolean
+    constructor() {}
+
+    public setName(name: string) {
+        this._.setName(name.toLowerCase().trim());
+        return this;
+    }
+
+    public setDescription(description: string) {
+        this._.setDescription(description);
+        return this;
+    }
+
+    public setPermissions(...permissions: PermissionResolvable[]) {
+        this._permissions.add(permissions);
+        return this;
+    }
+
+    public setEphemeral(isEphemeral: boolean) {
+        this._ephemeral = isEphemeral;
+        return this;
+    }
+
+    public setModal(hasModal: boolean) {
+        this._hasModal = hasModal;
+        return this;
+    }
+
+    public addOptions(
+        ...options: (
+            | SlashCommandAttachmentOption
+            | SlashCommandStringOption
+            | SlashCommandRoleOption
+            | SlashCommandUserOption
+            | SlashCommandUserOption
+            | SlashCommandNumberOption
+            | SlashCommandBooleanOption
+            | SlashCommandChannelOption
+            | SlashCommandIntegerOption
+            | SlashCommandMentionableOption
+        )[]
     ) {
-        this.builder.setName(name);
-        this.builder.setDescription(description);
-
-        this.hasModal = hasModal || false;
-        this.ephemeral = ephemeral || false;
-
-        this.help = Object.assign({ description: description }, help);
-
-        if (permissions) this.permissions = permissions;
-    }
-
-    setHelp(help: { [key: string | number]: string | string[] }) {
-        this.help = help;
-    }
-
-    setExecuteFunction(fn: ISlashCommandExecuteFunction) {
-        this._executeFunction = fn;
+        for (const option of options) {
+            if (option.type == ApplicationCommandOptionType.Attachment)
+                this._.addAttachmentOption(option);
+            if (option.type == ApplicationCommandOptionType.Boolean)
+                this._.addBooleanOption(option);
+            if (option.type == ApplicationCommandOptionType.Channel)
+                this._.addChannelOption(option);
+            if (option.type == ApplicationCommandOptionType.Integer)
+                this._.addIntegerOption(option);
+            if (option.type == ApplicationCommandOptionType.Mentionable)
+                this._.addMentionableOption(option);
+            if (option.type == ApplicationCommandOptionType.Number) this._.addNumberOption(option);
+            if (option.type == ApplicationCommandOptionType.Role) this._.addRoleOption(option);
+            if (option.type == ApplicationCommandOptionType.String) this._.addStringOption(option);
+            if (option.type == ApplicationCommandOptionType.User) this._.addUserOption(option);
+        }
 
         return this;
     }
 
-    async run(interaction: ChatInputCommandInteraction) {
-        if (!this.hasModal) await interaction.deferReply({ ephemeral: this.ephemeral });
+    public setHelp(helpFields: { [key: string]: string | string[] }) {
+        this._helpFields = helpFields;
 
-        if (
-            this.permissions.length != 0 &&
-            !checkMemberPermissions(interaction.member as GuildMember, this.permissions)
-        ) {
-            return interaction.editReply({
-                embeds: [MissingPermissions],
-            });
-        }
+        return this;
+    }
 
-        this._executeFunction(interaction);
+    public setExecutable(f: SlashCommandMainFunction) {
+        this._main = f;
+
+        return this;
+    }
+
+    public execute(command: ChatInputCommandInteraction) {
+        this._main(command);
+
+        return this;
+    }
+
+    public get permissions() {
+        return this._permissions;
+    }
+
+    public get isEphemeral() {
+        return this._ephemeral;
+    }
+
+    public get hasModal() {
+        return this._hasModal;
+    }
+
+    public get name() {
+        return this._.name;
+    }
+
+    public get description() {
+        return this._.description;
+    }
+
+    public get helpFields() {
+        return this._helpFields;
+    }
+
+    /**
+     * # Internal usage
+     */
+    public onlyBuilder() {
+        return this._;
+    }
+
+    public toJSON() {
+        return this._.toJSON();
     }
 }

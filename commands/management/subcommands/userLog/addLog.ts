@@ -3,28 +3,29 @@ import {
     GuildMember,
     EmbedBuilder,
     PermissionFlagsBits,
+    SlashCommandStringOption,
 } from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../../../constants/colors";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const userlogAddLog = new SlashCommandSubcommand(
-    "new",
-    "Add a new log to a member",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers]
-);
-
-userlogAddLog.builder
-    .addStringOption((o) =>
-        o.setName("username").setDescription("User to log").setRequired(true)
+const userlogAddLog = new SlashCommandSubcommand()
+    .setName("new")
+    .setDescription("Add a new log to a member")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("username")
+            .setDescription("User to log")
+            .setRequired(true),
+        new SlashCommandStringOption()
+            .setName("reason")
+            .setDescription("Log description")
+            .setRequired(true)
     )
-    .addStringOption((o) =>
-        o.setName("reason").setDescription("Log description").setRequired(true)
-    );
+    .setPermissions("ModerateMembers");
 
-userlogAddLog.setExecuteFunction(async (command) => {
+userlogAddLog.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const user = command.options.getString("username", true);
@@ -32,9 +33,7 @@ userlogAddLog.setExecuteFunction(async (command) => {
 
     if (reason.length > 1000) {
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("Reason is too long! (1000 characters max)"),
-            ],
+            embeds: [generateErrorEmbed("Reason is too long! (1000 characters max)")],
         });
     }
 
@@ -84,4 +83,4 @@ userlogAddLog.setExecuteFunction(async (command) => {
     });
 });
 
-export default userlogAddLog;
+export { userlogAddLog };

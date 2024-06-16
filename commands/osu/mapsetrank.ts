@@ -1,3 +1,4 @@
+import { SlashCommandStringOption } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
@@ -5,24 +6,17 @@ import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
 import MapsetRankEmbed from "../../responses/osu/MapsetRankEmbed";
 import { Beatmapset } from "../../types/beatmap";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const mapsetrank = new SlashCommand(
-    ["mapsetrank", "mr"],
-    "Displays beatmapset statistics of a user",
-    "osu!",
-    true,
-    {
-        example: "/mapsetrank `username:Hivie` `sort:favorites`\n/mapsetrank",
-        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-    }
-);
-
-mapsetrank.builder
-    .addStringOption((o) =>
-        o.setName("username").setDescription("Mapper username")
-    )
-    .addStringOption((o) =>
-        o
+const mapsetrank = new SlashCommand()
+    .setName("mapranking")
+    .setNameAliases(["mr"])
+    .setDescription("Display a ranking of played/favorited beatmaps of an user")
+    .setDMPermission(true)
+    .setCategory(CommandCategory.Osu)
+    .addOptions(
+        new SlashCommandStringOption().setName("username").setDescription("Mapper username"),
+        new SlashCommandStringOption()
             .setName("sort")
             .setDescription("Generate a leaderboard with beatmaps:")
             .addChoices(
@@ -37,10 +31,8 @@ mapsetrank.builder
             )
     );
 
-mapsetrank.setExecuteFunction(async (command) => {
-    let sort = command.options.get("sort")
-        ? command.options.get("sort")?.value
-        : "play_count";
+mapsetrank.setExecutable(async (command) => {
+    let sort = command.options.get("sort") ? command.options.get("sort")?.value : "play_count";
 
     let decorator = {
         title: "Most played beatmaps", // ? {username} | Most played beatmaps
@@ -94,4 +86,4 @@ mapsetrank.setExecuteFunction(async (command) => {
     MapsetRankEmbed.reply(mapper, sorted_beatmaps, command, decorator);
 });
 
-export default mapsetrank;
+export { mapsetrank };

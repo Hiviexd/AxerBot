@@ -1,23 +1,19 @@
+import { SlashCommandStringOption } from "discord.js";
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { parseOsuBeatmapURL } from "../../../../helpers/text/parseOsuBeatmapURL";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
 import BeatmapsetEmbed from "../../../../responses/osu/BeatmapsetEmbed";
 
-const calculateBeatmap = new SlashCommandSubcommand(
-    "calculate",
-    "Send beatmap info of a beatmap with pp"
-);
-
-calculateBeatmap.builder
-    .addStringOption((o) =>
-        o
+const calculateBeatmap = new SlashCommandSubcommand()
+    .setName("calculate")
+    .setDescription("Calculate performance statistics of a beatmap")
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("beatmap_url")
             .setDescription("Beatmap URL to fetch")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("mode")
             .setDescription("Select mode for converted beatmaps")
             .addChoices(
@@ -40,18 +36,15 @@ calculateBeatmap.builder
             )
     );
 
-calculateBeatmap.setExecuteFunction(async (command) => {
-    const beatmapParameters = parseOsuBeatmapURL(
-        command.options.getString("beatmap_url", true)
-    );
+calculateBeatmap.setExecutable(async (command) => {
+    const beatmapParameters = parseOsuBeatmapURL(command.options.getString("beatmap_url", true));
 
     const mode = command.options.getString("mode");
 
     if (
         beatmapParameters.error ||
         !beatmapParameters.data ||
-        (!beatmapParameters.data.beatmap_id &&
-            !beatmapParameters.data.beatmapset_id)
+        (!beatmapParameters.data.beatmap_id && !beatmapParameters.data.beatmapset_id)
     )
         return command.editReply({
             embeds: [
@@ -65,13 +58,8 @@ calculateBeatmap.setExecuteFunction(async (command) => {
             ],
         });
 
-    if (
-        beatmapParameters.data.beatmap_id &&
-        !beatmapParameters.data.beatmapset_id
-    ) {
-        const beatmapData = await osuApi.fetch.beatmap(
-            beatmapParameters.data.beatmap_id
-        );
+    if (beatmapParameters.data.beatmap_id && !beatmapParameters.data.beatmapset_id) {
+        const beatmapData = await osuApi.fetch.beatmap(beatmapParameters.data.beatmap_id);
 
         if (!beatmapData || !beatmapData.data || beatmapData.status != 200)
             return command.editReply({
@@ -90,11 +78,7 @@ calculateBeatmap.setExecuteFunction(async (command) => {
             beatmapData.data.beatmapset_id.toString()
         );
 
-        if (
-            !beatmapsetData ||
-            !beatmapsetData.data ||
-            beatmapsetData.status != 200
-        )
+        if (!beatmapsetData || !beatmapsetData.data || beatmapsetData.status != 200)
             return command.editReply({
                 embeds: [
                     generateErrorEmbedWithTitle(
@@ -116,15 +100,9 @@ calculateBeatmap.setExecuteFunction(async (command) => {
     }
 
     if (beatmapParameters.data.beatmapset_id) {
-        const beatmapsetData = await osuApi.fetch.beatmapset(
-            beatmapParameters.data.beatmapset_id
-        );
+        const beatmapsetData = await osuApi.fetch.beatmapset(beatmapParameters.data.beatmapset_id);
 
-        if (
-            !beatmapsetData ||
-            !beatmapsetData.data ||
-            beatmapsetData.status != 200
-        )
+        if (!beatmapsetData || !beatmapsetData.data || beatmapsetData.status != 200)
             return command.editReply({
                 embeds: [
                     generateErrorEmbedWithTitle(
@@ -158,4 +136,4 @@ calculateBeatmap.setExecuteFunction(async (command) => {
     });
 });
 
-export default calculateBeatmap;
+export { calculateBeatmap };

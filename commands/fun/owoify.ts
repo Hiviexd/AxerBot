@@ -1,22 +1,26 @@
-import { Client } from "discord.js";
+import { SlashCommandStringOption } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 const { default: owo } = require("owoify-js");
 
-const owoify = new SlashCommand(
-    ["owoify", "owotext"],
-    "Turn your text into owo text!\n I'm not sorry.",
-    "Fun",
-    true
-);
+// TODO: Rewrite owoify-js
+const owoify = new SlashCommand()
+    .setName("owoify")
+    .setNameAliases(["owotext"])
+    .setDescription("I'm not sorry")
+    .setCategory(CommandCategory.Fun)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("text")
+            .setDescription(owo("Type your text"))
+            .setRequired(true)
+    );
 
-owoify.builder.addStringOption((o) =>
-    o.setName("text").setDescription(owo("Type your text"))
-);
-
-owoify.setExecuteFunction(async (command) => {
+owoify.setExecutable(async (command) => {
     const text = command.options.getString("text", true);
 
     command.editReply(owo(text));
 });
 
-export default owoify;
+export { owoify };

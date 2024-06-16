@@ -1,34 +1,23 @@
-import {
-    Client,
-    Channel,
-    ChatInputCommandInteraction,
-    PermissionFlagsBits,
-} from "discord.js";
+import { Channel, SlashCommandStringOption } from "discord.js";
 import * as database from "../../database";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const embeds = new SlashCommand(
-    "embeds",
-    "configure where and which embed will be allowed in X channels",
-    "Management",
-    false,
-    {
-        description:
-            "configure where and which embed will be allowed in X channels",
+const embeds = new SlashCommand()
+    .setName("embeds")
+    .setDescription("Manage where and which embed will be allowed")
+    .setCategory(CommandCategory.Management)
+    .setHelp({
         syntax: "/embeds `<categories> <#channels>`",
         example:
             "/embeds `player,discussion,beatmap #osu #commands` \n/embeds `player,discussion,beatmap all` \n /embeds `player,discussion,beatmap none`",
         categories: ["`player`", "`comment`", "`beatmap`", "`discussion`"],
         extra: "You can use `all` or `none` to select all channels, or none",
-    },
-    [PermissionFlagsBits.ManageChannels]
-);
-
-embeds.builder
-    .addStringOption((o) =>
-        o
+    })
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("embed")
             .setDescription("Which embed type do you want to manage?")
             .setRequired(true)
@@ -49,18 +38,17 @@ embeds.builder
                     name: "modding",
                     value: "discussion",
                 }
-            )
-    )
-    .addStringOption((o) =>
-        o
+            ),
+        new SlashCommandStringOption()
             .setName("channels")
             .setDescription(
                 `You can mention channels or type "all" for all channels or "none" for block.`
             )
             .setRequired(true)
-    );
+    )
+    .setPermissions("ManageChannels");
 
-embeds.setExecuteFunction(async (command) => {
+embeds.setExecutable(async (command) => {
     if (!command.guild) return;
 
     if (!command.member || !command.guild) return;
@@ -69,11 +57,7 @@ embeds.setExecuteFunction(async (command) => {
 
     const channel = command.options.getString("channels", true);
 
-    const channelIds = channel
-        .replace(/ /g, ",")
-        .replace(/<#/g, "")
-        .replace(/>/g, "")
-        .split(",");
+    const channelIds = channel.replace(/ /g, ",").replace(/<#/g, "").replace(/>/g, "").split(",");
 
     const mentionedChannels: Channel[] = [];
 
@@ -94,11 +78,7 @@ embeds.setExecuteFunction(async (command) => {
 
         if (mentionedChannels.length < 1)
             return command.editReply({
-                embeds: [
-                    generateErrorEmbed(
-                        ":x: You need to mention valid **TEXT CHANNELS**"
-                    ),
-                ],
+                embeds: [generateErrorEmbed(":x: You need to mention valid **TEXT CHANNELS**")],
             });
     }
 
@@ -165,12 +145,10 @@ embeds.setExecuteFunction(async (command) => {
     return await command.editReply({
         embeds: [
             generateSuccessEmbed(
-                ["all", "none"].includes(channel)
-                    ? texts[channel]
-                    : texts["channel"]
+                ["all", "none"].includes(channel) ? texts[channel] : texts["channel"]
             ),
         ],
     });
 });
 
-export default embeds;
+export { embeds };

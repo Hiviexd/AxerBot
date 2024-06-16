@@ -7,6 +7,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
+    SlashCommandAttachmentOption,
 } from "discord.js";
 
 import colors from "../../constants/colors";
@@ -17,19 +18,21 @@ import { SlashCommand } from "../../models/commands/SlashCommand";
 import { AudioSpectrogram } from "../../modules/osu/spectrogram/AudioSpectrogram";
 import { readFileSync } from "fs";
 import { FFProbe } from "../../modules/audio/FFProbe";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const spectrum = new SlashCommand(
-    "spectro",
-    "Generate a frequency spectrogram from an audio file.",
-    "Tools",
-    true
-);
+const spectrogram = new SlashCommand()
+    .setName("spectro")
+    .setDescription("Generate a frequency spectrogram from an audio file.")
+    .setCategory(CommandCategory.Tools)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandAttachmentOption()
+            .setName("audio")
+            .setDescription("Audio file")
+            .setRequired(true)
+    );
 
-spectrum.builder.addAttachmentOption((o) =>
-    o.setName("audio").setDescription("Audio file").setRequired(true)
-);
-
-spectrum.setExecuteFunction(async (command) => {
+spectrogram.setExecutable(async (command) => {
     const audioFileData = command.options.getAttachment("audio", true);
 
     const mimes = ["audio/ogg", "audio/wav", "audio/x-wav", "audio/mpeg"];
@@ -149,4 +152,4 @@ spectrum.setExecuteFunction(async (command) => {
     }
 });
 
-export default spectrum;
+export { spectrogram };

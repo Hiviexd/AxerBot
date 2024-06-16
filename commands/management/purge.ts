@@ -1,26 +1,26 @@
-import { PermissionFlagsBits } from "discord.js";
+import { PermissionFlagsBits, SlashCommandIntegerOption } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const purge = new SlashCommand(
-    ["purge", "clear"],
-    "Deletes x amount of messages from a channel.\nMax amount is `99` because of Discord limitations.",
-    "Management",
-    false,
-    undefined,
-    [PermissionFlagsBits.ManageMessages]
-);
+const purge = new SlashCommand()
+    .setName("purge")
+    .setNameAliases("clear")
+    .setDescription(
+        "Deletes x amount of messages from a channel.\nMax amount is `98` because of Discord limitations."
+    )
+    .setCategory(CommandCategory.Management)
+    .setPermissions("ManageMessages")
+    .addOptions(
+        new SlashCommandIntegerOption()
+            .setName("amount")
+            .setDescription("How many messages?")
+            .setRequired(true)
+            .setMinValue(1)
+            .setMaxValue(98)
+    );
 
-purge.builder.addIntegerOption((o) =>
-    o
-        .setName("amount")
-        .setDescription("How many messages?")
-        .setRequired(true)
-        .setMinValue(1)
-        .setMaxValue(98)
-);
-
-purge.setExecuteFunction(async (command) => {
+purge.setExecutable(async (command) => {
     let purge = (channel: any, amount: number) => {
         channel.bulkDelete(amount + 1).catch((e: any) => {
             command.editReply({
@@ -46,4 +46,4 @@ purge.setExecuteFunction(async (command) => {
     purge(command.channel, amount);
 });
 
-export default purge;
+export { purge };

@@ -1,34 +1,31 @@
-import { PermissionFlagsBits } from "discord.js";
+import { SlashCommandStringOption } from "discord.js";
 import * as database from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const loggingToggle = new SlashCommandSubcommand(
-    "toggle",
-    "Enable or disable logging system",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const loggingToggle = new SlashCommandSubcommand()
+    .setName("toggle")
+    .setDescription("Enable or disable this system")
+    .setPermissions("ManageGuild")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("state")
+            .setDescription("Enable or disable?")
+            .setRequired(true)
+            .addChoices(
+                {
+                    name: "Enable",
+                    value: "enabled",
+                },
+                {
+                    name: "Disable",
+                    value: "disabled",
+                }
+            )
+    );
 
-loggingToggle.builder.addStringOption((o) =>
-    o
-        .setName("state")
-        .setDescription("Enable or disable?")
-        .setRequired(true)
-        .addChoices(
-            {
-                name: "Enable",
-                value: "enabled",
-            },
-            {
-                name: "Disable",
-                value: "disabled",
-            }
-        )
-);
-
-loggingToggle.setExecuteFunction(async (command) => {
+loggingToggle.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const state = command.options.getString("state", true);
@@ -38,11 +35,7 @@ loggingToggle.setExecuteFunction(async (command) => {
 
     if (state == "enabled" && !guild.logging.channel)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    "You need to set a channel before enable the system!"
-                ),
-            ],
+            embeds: [generateErrorEmbed("You need to set a channel before enable the system!")],
         });
 
     guild.logging.enabled = state == "enabled";
@@ -53,11 +46,9 @@ loggingToggle.setExecuteFunction(async (command) => {
 
     return command.editReply({
         embeds: [
-            generateSuccessEmbed(
-                `${state == "enabled" ? "🟢" : "🔴"} Logging system ${state}!`
-            ),
+            generateSuccessEmbed(`${state == "enabled" ? "🟢" : "🔴"} Logging system ${state}!`),
         ],
     });
 });
 
-export default loggingToggle;
+export { loggingToggle };

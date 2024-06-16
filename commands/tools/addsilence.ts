@@ -4,34 +4,38 @@ import ffmpeg from "fluent-ffmpeg";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { unlinkSync, readFileSync, mkdirSync, existsSync } from "fs";
 import crypto from "crypto";
-import { AttachmentBuilder } from "discord.js";
+import {
+    AttachmentBuilder,
+    SlashCommandAttachmentOption,
+    SlashCommandStringOption,
+} from "discord.js";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbedWithTitle from "../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
 import { spawn } from "child_process";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const addsilent = new SlashCommand(
-    ["addsilence", "silentbegin"],
-    "Add a silent begin to an audio file",
-    "Tools",
-    true,
-    {
-        "Allowed files": ["`mp3`", "`ogg`"],
-    }
-);
-
-addsilent.builder
-    .addAttachmentOption((o) =>
-        o.setName("audio").setRequired(true).setDescription("Audio file to manage")
-    )
-    .addStringOption((o) =>
-        o
+const addsilent = new SlashCommand()
+    .setName("addsilence")
+    .setNameAliases("silentbegin")
+    .setDescription("Add a silent begin to an audio file")
+    .setCategory(CommandCategory.Tools)
+    .setDMPermission(true)
+    .setHelp({
+        "Allowed files": ["`mp3`"],
+    })
+    .addOptions(
+        new SlashCommandAttachmentOption()
+            .setName("audio")
+            .setRequired(true)
+            .setDescription("Audio file to manage"),
+        new SlashCommandStringOption()
             .setName("duration")
             .setDescription("Duration of the silent section (Ex: 200ms or 2s)")
             .setRequired(true)
     );
 
-addsilent.setExecuteFunction(async (command) => {
+addsilent.setExecutable(async (command) => {
     try {
         const attachment = command.options.getAttachment("audio", true);
         const durationInput = command.options
@@ -73,7 +77,7 @@ addsilent.setExecuteFunction(async (command) => {
                 embeds: [generateErrorEmbed("Max delay is `5 seconds`!")],
             });
 
-        if (!["audio/mpeg", "audio/ogg"].includes(attachment.contentType || "unknown"))
+        if (!["audio/mpeg"].includes(attachment.contentType || "unknown"))
             return command.editReply({
                 embeds: [
                     generateErrorEmbed("Invalid audio type! Allowed types are `mp3` and `ogg`!"),
@@ -162,4 +166,4 @@ addsilent.setExecuteFunction(async (command) => {
     }
 });
 
-export default addsilent;
+export { addsilent };

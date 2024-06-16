@@ -1,22 +1,14 @@
-import { PermissionFlagsBits } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import loggingChannel from "./subcommands/logging/channel";
-import loggingStatus from "./subcommands/logging/status";
-import loggingToggle from "./subcommands/logging/toggle";
+import { loggingChannel } from "./subcommands/logging/channel";
+import { loggingStatus } from "./subcommands/logging/status";
+import { loggingToggle } from "./subcommands/logging/toggle";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const logging = new SlashCommand(
-    "logging",
-    "Configure the logging system",
-    "Management",
-    false,
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const logging = new SlashCommand()
+    .setName("logging")
+    .setDescription("Configure logging system")
+    .setCategory(CommandCategory.Management)
+    .setPermissions("ManageGuild")
+    .addSubcommands(loggingChannel, loggingStatus, loggingToggle);
 
-logging.setExecuteFunction(() => {});
-logging
-    .addSubcommand(loggingChannel)
-    .addSubcommand(loggingStatus)
-    .addSubcommand(loggingToggle);
-
-export default logging;
+export { logging };

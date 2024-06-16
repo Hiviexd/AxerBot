@@ -18,9 +18,9 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 import { CountryCodes } from "../../../../types/flags";
 import abbreviation from "../../../../helpers/text/abbreviation";
 
-const gtfNewGame = new SlashCommandSubcommand("start", "Start a new game");
+const gtfNewGame = new SlashCommandSubcommand().setName("new").setDescription("Start a new game");
 
-gtfNewGame.setExecuteFunction(async (command) => {
+gtfNewGame.setExecutable(async (command) => {
     const codes = countryCodes;
 
     let score = 0;
@@ -47,10 +47,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
         });
 
     function getRandomFlag() {
-        const code =
-            Object.keys(codes)[
-                Math.floor(Math.random() * Object.keys(codes).length)
-            ];
+        const code = Object.keys(codes)[Math.floor(Math.random() * Object.keys(codes).length)];
 
         const name = countryCodes[code];
 
@@ -61,9 +58,9 @@ gtfNewGame.setExecuteFunction(async (command) => {
     }
 
     function getSelectMenuFor(currentTurn: string) {
-        let randomizedCodes = randomizeArray<keyof CountryCodes>(
-            Object.keys(codes)
-        ).filter((c) => c != currentTurn);
+        let randomizedCodes = randomizeArray<keyof CountryCodes>(Object.keys(codes)).filter(
+            (c) => c != currentTurn
+        );
 
         randomizedCodes = randomizedCodes.slice(0, 4);
         randomizedCodes.push(currentTurn);
@@ -124,14 +121,10 @@ gtfNewGame.setExecuteFunction(async (command) => {
 
         leaderboard.sort((a, b) => (b.score || 0) - (a.score || 0));
 
-        const currentPosition = leaderboard.find(
-            (s) => s.userId == command.user.id
-        );
+        const currentPosition = leaderboard.find((s) => s.userId == command.user.id);
 
         if (currentPosition && (currentPosition.score || 0) < score) {
-            const index = leaderboard.findIndex(
-                (s) => s.userId == command.user.id
-            );
+            const index = leaderboard.findIndex((s) => s.userId == command.user.id);
 
             if (index != -1) leaderboard[index].score = score;
         }
@@ -157,9 +150,7 @@ gtfNewGame.setExecuteFunction(async (command) => {
     function sendGameOver() {
         const embed = new EmbedBuilder()
             .setTitle(`Game over!`)
-            .setDescription(
-                `You lost all your lifes. Your final score is \`${score}\` points`
-            )
+            .setDescription(`You lost all your lifes. Your final score is \`${score}\` points`)
             .setColor(colors.red);
 
         getMessage()
@@ -263,4 +254,4 @@ gtfNewGame.setExecuteFunction(async (command) => {
     }
 });
 
-export default gtfNewGame;
+export { gtfNewGame };

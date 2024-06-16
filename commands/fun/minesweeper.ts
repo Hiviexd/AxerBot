@@ -1,67 +1,41 @@
-import { Client, GuildMember, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandIntegerOption } from "discord.js";
 import Minesweeper from "discord.js-minesweeper";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const minesweeper = new SlashCommand(
-    "minesweeper",
-    "Play a game of minesweeper! \nDefault settings are 9 x 9 grid, 10 mines.",
-    "Fun",
-    true,
-    {
+const minesweeper = new SlashCommand()
+    .setName("minesweeper")
+    .setDescription("Play a game of minesweeper!")
+    .setCategory(CommandCategory.Fun)
+    .setDMPermission(true)
+    .setHelp({
+        "default settings": "Default settings are 9 x 9 grid, 10 mines.",
         syntax: "/minesweeper\n /minesweeper `<rows>` `<columns>` `<mines>`",
-        example:
-            "/minesweeper\n /minesweeper `rows: 8` `columns: 8` `mines: 12`",
-    }
-);
-
-minesweeper.builder
-    .addIntegerOption((o) =>
-        o
+        example: "/minesweeper\n /minesweeper `rows: 8` `columns: 8` `mines: 12`",
+    })
+    .addOptions(
+        new SlashCommandIntegerOption()
             .setName("rows")
             .setDescription("Number of rows")
             .setMinValue(2)
-            .setMaxValue(9)
-    )
-    .addIntegerOption((o) =>
-        o
+            .setMaxValue(9),
+        new SlashCommandIntegerOption()
             .setName("columns")
             .setDescription("Number of columns")
             .setMinValue(2)
-            .setMaxValue(9)
-    )
-    .addIntegerOption((o) =>
-        o
+            .setMaxValue(9),
+        new SlashCommandIntegerOption()
             .setName("mines")
             .setDescription("Number of mines")
             .setMaxValue(20)
             .setMinValue(1)
     );
 
-minesweeper.setExecuteFunction(async (command) => {
+minesweeper.setExecutable(async (command) => {
     const rows = command.options.getInteger("rows") ?? 9;
     const columns = command.options.getInteger("columns") ?? 9;
     const mines = command.options.getInteger("mines") ?? 10;
-
-    // if (rows < 2 || rows > 9) {
-    //     return command.editReply({
-    //         embeds: [generateErrorEmbed("Rows must be between 2 and 9!")],
-    //     });
-    // }
-
-    // if (columns < 2 || columns > 9) {
-    //     return command.editReply({
-    //         embeds: [
-    //             generateErrorEmbed("Columns must be between 2 and 9!"),
-    //         ],
-    //     });
-    // }
-
-    // if (mines < 1 || mines > 20) {
-    //     return command.editReply({
-    //         embeds: [generateErrorEmbed("Mines must be between 1 and 20!")],
-    //     });
-    // }
 
     const minesweeper = new Minesweeper({
         rows,
@@ -72,8 +46,6 @@ minesweeper.setExecuteFunction(async (command) => {
 
     const matrix = minesweeper.start();
 
-    if (!(command.member instanceof GuildMember)) return;
-
     matrix
         ? command.editReply(
               `Now playing a **${rows}** x **${columns}** game with **${mines}** mines!\n${matrix}`
@@ -83,4 +55,4 @@ minesweeper.setExecuteFunction(async (command) => {
           });
 });
 
-export default minesweeper;
+export { minesweeper };

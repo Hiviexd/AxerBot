@@ -1,31 +1,26 @@
-import { ChannelType, PermissionFlagsBits } from "discord.js";
+import { ChannelType, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetChannel = new SlashCommandSubcommand(
-    "channel",
-    "Sets the channel for the system",
-    {
-        syntax: "/verification `set channel` `text_channel:<channel>`",
-        example: "/verification `set channel` `text_channel:#arrival`",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationSetChannel = new SlashCommandSubcommand()
+    .setName("channel")
+    .setDescription("Change system's channel")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("channel")
+            .setDescription("System channel")
+            .setRequired(true)
+    )
+    .setPermissions("ModerateMembers");
 
-verificationSetChannel.builder.addChannelOption((o) =>
-    o.setName("channel").setDescription("System channel").setRequired(true)
-);
-
-verificationSetChannel.setExecuteFunction(async (command) => {
+verificationSetChannel.setExecutable(async (command) => {
     const channel = command.options.getChannel("channel", true);
 
     if (channel.type != ChannelType.GuildText)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("You need to provide a **TEXT** channel."),
-            ],
+            embeds: [generateErrorEmbed("You need to provide a **TEXT** channel.")],
         });
 
     let guild = await guilds.findById(command.guildId);
@@ -52,4 +47,4 @@ verificationSetChannel.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationSetChannel;
+export { verificationSetChannel };

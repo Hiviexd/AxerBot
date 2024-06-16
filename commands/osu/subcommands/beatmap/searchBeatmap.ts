@@ -1,4 +1,4 @@
-import { EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
 
 import colors from "../../../../constants/colors";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
@@ -9,65 +9,25 @@ import getEmoji from "../../../../helpers/text/getEmoji";
 import truncateString from "../../../../helpers/text/truncateString";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 import BeatmapsetEmbed from "../../../../responses/osu/BeatmapsetEmbed";
+import {
+    BeatmapGenre,
+    BeatmapLanguage,
+    BeatmapStatus,
+} from "../../../../struct/beatmaps/SearchTypes";
 
-export enum BeatmapGenre {
-    any = "0",
-    Unspecified = "1",
-    VideoGame = "2",
-    Anime = "3",
-    Rock = "4",
-    Pop = "5",
-    Other = "6",
-    Novelty = "7",
-    HipHop = "9",
-    Electronic = "10",
-    Metal = "11",
-    Classical = "12",
-    Folk = "13",
-    Jazz = "14",
-}
-
-export enum BeatmapLanguage {
-    Any = "0",
-    Unspecified = "1",
-    English = "2",
-    Japanese = "3",
-    Chinese = "4",
-    Instrumental = "5",
-    Korean = "6",
-    French = "7",
-    German = "8",
-    Swedish = "9",
-    Spanish = "10",
-    Italian = "11",
-    Russian = "12",
-    Polish = "13",
-    Other = "14",
-}
-
-export enum BeatmapStatus {
-    WIP = "wip",
-    Ranked = "ranked",
-    Pending = "pending",
-    Loved = "loved",
-    Qualified = "qualified",
-    Graveyard = "graveyard",
-}
-
-const searchBeatmap = new SlashCommandSubcommand("search", "Search a beatmap");
-
-searchBeatmap.builder
-    .addStringOption((o) =>
-        o
+const searchBeatmap = new SlashCommandSubcommand()
+    .setName("search")
+    .setDescription("Search a beatmap")
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("query")
             .setDescription("Beatmap title, artist, creator or something...")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o.setName("star_rating").setDescription("Filter by stars using operators like: <2, >3, <32")
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+
+        new SlashCommandStringOption()
+            .setName("star_rating")
+            .setDescription("Filter by stars using operators like: <2, >3, <32"),
+        new SlashCommandStringOption()
             .setName("mode")
             .setDescription("Filter beatmaps that contain mode:")
             .addChoices(
@@ -75,10 +35,9 @@ searchBeatmap.builder
                 { name: "osu!taiko", value: "1" },
                 { name: "osu!catch", value: "2" },
                 { name: "osu!mania", value: "3" }
-            )
-    )
-    .addStringOption((o) =>
-        o
+            ),
+
+        new SlashCommandStringOption()
             .setName("status")
             .setDescription("Filter by status")
             .addChoices(
@@ -88,10 +47,8 @@ searchBeatmap.builder
                 { name: "Pending", value: BeatmapStatus.Pending },
                 { name: "WIP", value: BeatmapStatus.WIP },
                 { name: "Graveyard", value: BeatmapStatus.Graveyard }
-            )
-    )
-    .addStringOption((o) =>
-        o
+            ),
+        new SlashCommandStringOption()
             .setName("genre")
             .setDescription("Filter results by genre")
             .addChoices(
@@ -107,10 +64,9 @@ searchBeatmap.builder
                 { name: "Folk", value: BeatmapGenre.Folk },
                 { name: "Jazz", value: BeatmapGenre.Jazz },
                 { name: "Other", value: BeatmapGenre.Other }
-            )
-    )
-    .addStringOption((o) =>
-        o
+            ),
+
+        new SlashCommandStringOption()
             .setName("language")
             .setDescription("Filter results by language")
             .addChoices(
@@ -130,7 +86,7 @@ searchBeatmap.builder
             )
     );
 
-searchBeatmap.setExecuteFunction(async (command) => {
+searchBeatmap.setExecutable(async (command) => {
     const query = command.options.getString("query", true);
     let starRating = command.options.getString("star_rating") || "";
     const genre = command.options.getString("genre") || "";
@@ -251,4 +207,4 @@ searchBeatmap.setExecuteFunction(async (command) => {
     });
 });
 
-export default searchBeatmap;
+export { searchBeatmap };

@@ -5,28 +5,28 @@ import {
     EmbedBuilder,
     GuildResolvable,
     InteractionCollector,
+    SlashCommandUserOption,
     TextBasedChannelResolvable,
 } from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import abbreviation from "../../helpers/text/abbreviation";
 import colors from "../../constants/colors";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const rps = new SlashCommand(
-    "rps",
-    "Play a rock paper scissors game!",
-    "Fun",
-    false
-);
+const rps = new SlashCommand()
+    .setName("rps")
+    .setDescription("Play a rock paper scissors game!")
+    .setCategory(CommandCategory.Fun)
+    .setDMPermission(false)
+    .addOptions(
+        new SlashCommandUserOption()
+            .setName("opponent")
+            .setDescription("Your fight opponent")
+            .setRequired(true)
+    );
 
-rps.builder.addUserOption((o) =>
-    o
-        .setName("opponent")
-        .setDescription("Your fight opponent")
-        .setRequired(true)
-);
-
-rps.setExecuteFunction(async (command) => {
+rps.setExecutable(async (command) => {
     const opponent = command.options.getUser("opponent", true);
 
     if (opponent.bot)
@@ -149,11 +149,7 @@ rps.setExecuteFunction(async (command) => {
 
         if (user.choice == opponent.choice) return sendResult(`Tie!`);
 
-        if (
-            ((values[user.choice] | (1 << 2)) -
-                (values[opponent.choice] | (0 << 2))) %
-            3
-        ) {
+        if (((values[user.choice] | (1 << 2)) - (values[opponent.choice] | (0 << 2))) % 3) {
             return sendResult(
                 `<@${user.user}> Won with ${emojis[values[user.choice]]} vs ${
                     emojis[values[opponent.choice]]
@@ -162,9 +158,9 @@ rps.setExecuteFunction(async (command) => {
         }
 
         return sendResult(
-            `<@${opponent.user}> Won with ${
-                emojis[values[opponent.choice]]
-            } vs ${emojis[values[user.choice]]}!`
+            `<@${opponent.user}> Won with ${emojis[values[opponent.choice]]} vs ${
+                emojis[values[user.choice]]
+            }!`
         );
     }
 
@@ -178,4 +174,4 @@ rps.setExecuteFunction(async (command) => {
     });
 });
 
-export default rps;
+export { rps };

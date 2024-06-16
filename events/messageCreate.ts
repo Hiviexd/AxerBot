@@ -38,7 +38,7 @@ export default {
                 if (permissions && !permissions.has(PermissionFlagsBits.SendMessages)) return;
             }
 
-            sendQuotes(message, bot);
+            // sendQuotes(message, bot);
             checkOsuURL(message);
             antiDumbass(message);
         });

@@ -1,24 +1,21 @@
-import { PermissionFlagsBits } from "discord.js";
+import { PermissionFlagsBits, SlashCommandRoleOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationAddRole = new SlashCommandSubcommand(
-    "role",
-    "Adds a role to the default verification role(s) of the server",
-    {
-        syntax: "/verification `add` `role` `target_role:<Role>`",
-        example: "/verification `add` `role` `target_role:@Verified`",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationAddRole = new SlashCommandSubcommand()
+    .setName("role")
+    .setDescription("Adds a role to devault verification roles of the server")
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("target_role")
+            .setDescription("Target role")
+            .setRequired(true)
+    )
+    .setPermissions("ModerateMembers");
 
-verificationAddRole.builder.addRoleOption((o) =>
-    o.setName("target_role").setDescription("Target role").setRequired(true)
-);
-
-verificationAddRole.setExecuteFunction(async (command) => {
+verificationAddRole.setExecutable(async (command) => {
     if (!command.guild) return;
 
     const role = command.options.getRole("target_role", true);
@@ -33,9 +30,7 @@ verificationAddRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    const botAsMember = await command.guild.members.fetch(
-        command.client.user.id
-    );
+    const botAsMember = await command.guild.members.fetch(command.client.user.id);
 
     if (role.position >= botAsMember.roles.highest.position)
         return command.editReply({
@@ -64,4 +59,4 @@ verificationAddRole.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationAddRole;
+export { verificationAddRole };

@@ -3,7 +3,6 @@ import { LoggerClient } from "./LoggerClient";
 import { DiscussionEventsListener } from "./DiscussionEventsListener";
 import { existsSync, mkdirSync } from "fs";
 import eventHandler from "../../helpers/core/eventHandler";
-import registerCommands from "../../helpers/interactions/registerCommands";
 import { startAvatarListener } from "../../modules/avatar/avatarManager";
 import { handleDiscussionEvent } from "../../modules/osu/events/handleDiscussionEvent";
 import { UserEventsListener } from "./UserEventsListener";
@@ -14,6 +13,7 @@ import { TempFileDeletionManager } from "../../modules/osu/helpers/TempFileDelet
 import "../../modules/osu/fetcher/startConnection";
 import "../../modules/automation/start";
 import { QATTracker } from "../../modules/tracking/qatTracking";
+import { EventManager } from "../../events/EventManager";
 
 export class AxerBot extends Client {
     public Logger = new LoggerClient("AxerBot Client");
@@ -23,6 +23,7 @@ export class AxerBot extends Client {
     public Bancho = new AxerBancho(this);
     public QatTracker = new QATTracker(this);
     public TempFileDeletionManager = new TempFileDeletionManager();
+    public EventManager = new EventManager(this);
 
     constructor(options: ClientOptions) {
         super(options);
@@ -42,7 +43,10 @@ export class AxerBot extends Client {
         this.login(process.env.TOKEN).then(() => {
             this.Bancho.connect().catch(console.error);
             eventHandler(this);
-            registerCommands(this);
+
+            this.EventManager.initialize();
+            this.EventManager.CommandsManager.initializeCommands();
+
             startAvatarListener(this);
             this.Reminders.start();
 

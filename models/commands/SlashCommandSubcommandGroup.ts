@@ -1,40 +1,54 @@
-import {
-    ChatInputCommandInteraction,
-    SlashCommandSubcommandGroupBuilder,
-} from "discord.js";
+import { SlashCommandSubcommandGroupBuilder } from "discord.js";
 import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
-import { consoleLog } from "../../helpers/core/logger";
 
 export class SlashCommandSubcommandGroup {
-    private commands: SlashCommandSubcommand[] = [];
-    public builder = new SlashCommandSubcommandGroupBuilder();
+    private _ = new SlashCommandSubcommandGroupBuilder();
+    private _commands: SlashCommandSubcommand[] = [];
 
-    constructor(name: string, description: string) {
-        this.builder.setName(name);
-        this.builder.setDescription(description);
+    constructor() {}
+
+    public setName(name: string) {
+        this._.setName(name.toLowerCase().trim());
+        return this;
     }
 
-    addCommand(subcommand: SlashCommandSubcommand) {
-        this.commands.push(subcommand);
-        this.builder.addSubcommand(subcommand.builder);
+    public setDescription(description: string) {
+        this._.setDescription(description);
+        return this;
+    }
+
+    public addCommands(...commands: SlashCommandSubcommand[]) {
+        this._commands = this._commands.concat(commands);
 
         return this;
     }
 
-    get subcommands() {
-        return this.commands;
+    public getCommand(commandName: string) {
+        return this._commands.find(
+            (c) => c.name.toLowerCase().trim() == commandName.toLowerCase().trim()
+        );
     }
 
-    runCommand(interaction: ChatInputCommandInteraction, subcommand: string) {
-        const target = this.commands.find((c) => c.builder.name == subcommand);
+    public get name() {
+        return this._.name;
+    }
 
-        if (!target) return;
+    public get description() {
+        return this._.description;
+    }
 
-        consoleLog(
-            "CommandHandler",
-            `Executing command ${interaction.commandName} ${this.builder.name} ${target.builder.name}`
-        );
+    public get commands() {
+        return this._commands;
+    }
 
-        target.run(interaction);
+    /**
+     * # Internal usage
+     */
+    public onlyBuilder() {
+        return this._;
+    }
+
+    public toJSON() {
+        return this._.toJSON();
     }
 }

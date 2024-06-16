@@ -1,22 +1,26 @@
-import { Image, createCanvas, loadImage } from "canvas";
+import { createCanvas } from "canvas";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import Jimp from "jimp";
-import { AttachmentBuilder } from "discord.js";
+import {
+    AttachmentBuilder,
+    SlashCommandAttachmentOption,
+    SlashCommandIntegerOption,
+    SlashCommandStringOption,
+} from "discord.js";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-export const resizebg = new SlashCommand(
-    "resizebg",
-    "Transform a square image to a 16:9 image",
-    "Tools",
-    true
-);
-
-resizebg.builder
-    .addAttachmentOption((o) =>
-        o.setName("base").setDescription("Image to resize").setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+const resizebg = new SlashCommand()
+    .setName("resizebg")
+    .setDescription("Transform a square image to a 16:9 image")
+    .setCategory(CommandCategory.Tools)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandAttachmentOption()
+            .setName("base")
+            .setDescription("Image to resize")
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("base_size")
             .setDescription("Base image size to cover the canvas")
             .addChoices(
@@ -41,10 +45,8 @@ resizebg.builder
                     value: "0.4",
                 }
             )
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("output_size")
             .setDescription("Output image size")
             .addChoices(
@@ -57,10 +59,8 @@ resizebg.builder
                     value: "1280,720",
                 }
             )
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("shadow_size")
             .setDescription("Overlay image shadow size")
             .addChoices(
@@ -77,37 +77,30 @@ resizebg.builder
                     value: "big",
                 }
             )
-            .setRequired(true)
-    )
-    .addIntegerOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandIntegerOption()
             .setName("background_brightness")
-            .setDescription(
-                "Overlay image shadow size (use negative values to darker background)"
-            )
+            .setDescription("Overlay image shadow size (use negative values to darker background)")
             .setMinValue(0)
             .setMaxValue(100)
             .setRequired(true)
             .setRequired(true)
     );
 
-resizebg.setExecuteFunction(async (command) => {
+resizebg.setExecutable(async (command) => {
     const attachment = command.options.getAttachment("base", true);
     const shadowSettings = command.options.getString("shadow_size", true);
     const percentage = Number(command.options.getString("base_size", true));
-    let backgroundBrightness =
-        1 - command.options.getInteger("background_brightness", true) / 100;
+    let backgroundBrightness = 1 - command.options.getInteger("background_brightness", true) / 100;
 
     const sizing = command.options
         .getString("output_size", true)
         .split(",")
         .map((s) => Number(s));
 
-    if (command.options.getInteger("background_brightness", true) == 100)
-        backgroundBrightness = 0;
+    if (command.options.getInteger("background_brightness", true) == 100) backgroundBrightness = 0;
 
-    if (command.options.getInteger("background_brightness", true) == 0)
-        backgroundBrightness = 1;
+    if (command.options.getInteger("background_brightness", true) == 0) backgroundBrightness = 1;
 
     const shadowPresets: {
         [key: string]: {
@@ -149,9 +142,7 @@ resizebg.setExecuteFunction(async (command) => {
     if (!validImageMimes.includes(attachment.contentType || ""))
         return command.editReply({
             embeds: [
-                generateErrorEmbed(
-                    "Invalid image type! Image type must be `jpg`, `jpeg` or `png`"
-                ),
+                generateErrorEmbed("Invalid image type! Image type must be `jpg`, `jpeg` or `png`"),
             ],
         });
 
@@ -180,18 +171,12 @@ resizebg.setExecuteFunction(async (command) => {
     backgroundBrightnessOverlay.opacity(backgroundBrightness);
     jimpBase.composite(backgroundBrightnessOverlay, 0, 0);
 
-    jimpOverlay.scaleToFit(
-        canvas.width * percentage,
-        canvas.height * percentage
-    );
+    jimpOverlay.scaleToFit(canvas.width * percentage, canvas.height * percentage);
 
     const shadowMask = await Jimp.read(
         "https://cdn.discordapp.com/attachments/950107895754784908/1077594060627390575/BLANK_ICON.png"
     );
-    shadowMask.resize(
-        jimpOverlay.getWidth() * 1.2,
-        jimpOverlay.getHeight() * 1.2
-    );
+    shadowMask.resize(jimpOverlay.getWidth() * 1.2, jimpOverlay.getHeight() * 1.2);
     shadowMask.composite(
         jimpOverlay,
         shadowMask.getWidth() / 2 - jimpOverlay.getWidth() / 2,
@@ -205,11 +190,11 @@ resizebg.setExecuteFunction(async (command) => {
         canvas.height / 2 - shadowMask.getHeight() / 2
     );
 
-    const image = new AttachmentBuilder(
-        await jimpBase.getBufferAsync(Jimp.MIME_PNG)
-    );
+    const image = new AttachmentBuilder(await jimpBase.getBufferAsync(Jimp.MIME_PNG));
 
     command.editReply({
         files: [image],
     });
 });
+
+export { resizebg };

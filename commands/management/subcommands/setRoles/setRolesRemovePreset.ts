@@ -1,20 +1,17 @@
-import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const setRolesAddPreset = new SlashCommandSubcommand(
-    "remove",
-    "removes a role preset",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers]
-);
+const setRolesRemovePreset = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("Removes a role preset")
+    .setPermissions("ModerateMembers")
+    .addOptions(
+        new SlashCommandStringOption().setDescription("Role preset name").setRequired(true)
+    );
 
-setRolesAddPreset.builder.addStringOption((o) =>
-    o.setName("name").setDescription("Role preset name").setRequired(true)
-);
-
-setRolesAddPreset.setExecuteFunction(async (command) => {
+setRolesRemovePreset.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const name = command.options.getString("name", true);
@@ -54,19 +51,15 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
             },
             {
                 name: "Roles to add",
-                value:
-                    preset.roles_add.map((r) => `<@&${r}>`).join(", ") ||
-                    "*None*",
+                value: preset.roles_add.map((r) => `<@&${r}>`).join(", ") || "*None*",
             },
             {
                 name: "Roles to remove",
-                value:
-                    preset.roles_remove.map((r) => `<@&${r}>`).join(", ") ||
-                    "*None*",
+                value: preset.roles_remove.map((r) => `<@&${r}>`).join(", ") || "*None*",
             }
         );
 
     return command.editReply({ embeds: [embed] });
 });
 
-export default setRolesAddPreset;
+export { setRolesRemovePreset };

@@ -1,72 +1,58 @@
-import { EmbedBuilder, PermissionFlagsBits, Role, APIRole } from "discord.js";
+import {
+    EmbedBuilder,
+    PermissionFlagsBits,
+    Role,
+    APIRole,
+    SlashCommandStringOption,
+    SlashCommandRoleOption,
+} from "discord.js";
 import { guilds } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import colors from "../../../../constants/colors";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const setRolesAddPreset = new SlashCommandSubcommand(
-    "add",
-    "adds a role preset",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers]
-);
-
-setRolesAddPreset.builder
-    .addStringOption((o) =>
-        o.setName("name").setDescription("Role preset name").setRequired(true)
-    )
-    .addRoleOption((o) =>
-        o
+const setRolesAddPreset = new SlashCommandSubcommand()
+    .setName("add")
+    .setDescription("Crate a new role preset")
+    .setPermissions("ModerateMembers")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("name")
+            .setDescription("Role preset name")
+            .setRequired(true),
+        new SlashCommandRoleOption()
             .setName("role_add_1")
-            .setDescription("Role addition to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role addition to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_add_2")
-            .setDescription("Role addition to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role addition to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_add_3")
-            .setDescription("Role addition to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role addition to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_add_4")
-            .setDescription("Role addition to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role addition to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_add_5")
-            .setDescription("Role addition to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role addition to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_remove_1")
-            .setDescription("Role removal to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role removal to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_remove_2")
-            .setDescription("Role removal to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role removal to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_remove_3")
-            .setDescription("Role removal to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role removal to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_remove_4")
-            .setDescription("Role removal to add to the preset")
-    )
-    .addRoleOption((o) =>
-        o
+            .setDescription("Role removal to add to the preset"),
+        new SlashCommandRoleOption()
             .setName("role_remove_5")
             .setDescription("Role removal to add to the preset")
     );
 
-setRolesAddPreset.setExecuteFunction(async (command) => {
+setRolesAddPreset.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const name = command.options.getString("name", true);
@@ -92,17 +78,13 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
                 r.push(role.id);
             }
         }
-        
+
         return r;
     }
 
     if (!roleAdd1 && !roleRemove1) {
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    "You must provide at least one role to add or remove"
-                ),
-            ],
+            embeds: [generateErrorEmbed("You must provide at least one role to add or remove")],
         });
     }
 
@@ -165,4 +147,4 @@ setRolesAddPreset.setExecuteFunction(async (command) => {
     });
 });
 
-export default setRolesAddPreset;
+export { setRolesAddPreset };

@@ -6,14 +6,12 @@ import { IMapperRole } from "./addMapperRole";
 import getEmoji from "../../../../helpers/text/getEmoji";
 import createNewGuild from "../../../../database/utils/createNewGuild";
 
-const verificationStatus = new SlashCommandSubcommand(
-    "status",
-    "Display all parameters of this module",
-    {},
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationStatus = new SlashCommandSubcommand()
+    .setName("status")
+    .setDescription("Display all parameters of this module")
+    .setPermissions("ModerateMembers");
 
-verificationStatus.setExecuteFunction(async (command) => {
+verificationStatus.setExecutable(async (command) => {
     if (!command.member || typeof command.member.permissions == "string" || !command.guild) return;
 
     let guild = await guilds.findById(command.guildId);
@@ -203,4 +201,4 @@ verificationStatus.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationStatus;
+export { verificationStatus };

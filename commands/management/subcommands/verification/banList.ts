@@ -7,22 +7,18 @@ import {
     ChatInputCommandInteraction,
     EmbedBuilder,
     InteractionCollector,
-    PermissionFlagsBits,
 } from "discord.js";
 import moment from "moment";
 import colors from "../../../../constants/colors";
 import { guildUserAccountBans } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
+const verificationBanList = new SlashCommandSubcommand()
+    .setName("list")
+    .setDescription("List all restricted users here")
+    .setPermissions("BanMembers");
 
-const verificationBanList = new SlashCommandSubcommand(
-    "list",
-    "List all restricted users here",
-    undefined,
-    [PermissionFlagsBits.BanMembers]
-);
-
-verificationBanList.setExecuteFunction(async (command) => {
+verificationBanList.setExecutable(async (command) => {
     const bansList = await guildUserAccountBans
         .find({
             guildId: command.guildId,
@@ -170,4 +166,4 @@ verificationBanList.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationBanList;
+export { verificationBanList };

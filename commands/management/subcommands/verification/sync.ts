@@ -10,9 +10,12 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { VerificationType } from "../../../../modules/verification/client/GenerateAuthToken";
 
-const verificationSync = new SlashCommandSubcommand("sync", "Sync your verified data!");
+const verificationSync = new SlashCommandSubcommand()
+    .setName("sync")
+    .setDescription("Sync your verified data")
+    .setPermissions("ModerateMembers");
 
-verificationSync.setExecuteFunction(async (command) => {
+verificationSync.setExecutable(async (command) => {
     try {
         if (!command.guild) return;
 
@@ -67,4 +70,4 @@ verificationSync.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationSync;
+export { verificationSync };

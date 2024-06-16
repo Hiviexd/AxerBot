@@ -1,34 +1,28 @@
-import { PermissionFlagsBits } from "discord.js";
+import { SlashCommandStringOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import createNewGuild from "../../../../database/utils/createNewGuild";
 
-const verificationSetType = new SlashCommandSubcommand(
-    "type",
-    "Disable or enable welcome verification messages",
-    {
-        syntax: "/verification `set type` `type:<static | default>`",
-        example: "/verification `set type` `type:static`",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
-
-verificationSetType.builder.addStringOption((o) =>
-    o.setName("type").setDescription("System type").addChoices(
-        {
-            name: "default",
-            value: "default",
-        },
-        {
-            name: "static",
-            value: "static",
-        }
+const verificationSetType = new SlashCommandSubcommand()
+    .setName("type")
+    .setDescription("Disable or enable welcome message by changing system's type")
+    .addOptions(
+        new SlashCommandStringOption().setName("type").setDescription("System type").addChoices(
+            {
+                name: "default",
+                value: "default",
+            },
+            {
+                name: "static",
+                value: "static",
+            }
+        )
     )
-);
+    .setPermissions("ModerateMembers");
 
-verificationSetType.setExecuteFunction(async (command) => {
+verificationSetType.setExecutable(async (command) => {
     const type = command.options.getString("type", true);
 
     let guildData = await guilds.findById(command.guildId);
@@ -58,4 +52,4 @@ verificationSetType.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationSetType;
+export { verificationSetType };

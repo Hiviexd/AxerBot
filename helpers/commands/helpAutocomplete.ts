@@ -5,56 +5,49 @@ import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandS
 
 export async function helpAutocomplete(command: AutocompleteInteraction) {
     if (command.commandName != "help") return;
-    const input = command.options
-        .getString("command", true)
-        .replace("/", "")
-        .replace(/\s+/g, " ");
+    const input = command.options.getString("command", true).replace("/", "").replace(/\s+/g, " ");
 
     const args = input.split(" ");
 
     const list: string[] = [];
 
     if (args.length == 1) {
-        AxerCommands.filter((command) => command.isSlashCommand()).forEach(
-            (c) => {
-                if (nameIncludesString(args[0], c.names)) {
-                    list.push(`/${c.names[0]}`);
+        AxerCommands.forEach((c) => {
+            if (nameIncludesString(args[0], c.allNames)) {
+                list.push(`/${c.name}`);
 
-                    includeSubcommandsAndGroups(c as SlashCommand);
-                }
+                includeSubcommandsAndGroups(c as SlashCommand);
             }
-        );
+        });
     }
 
     if (args.length == 2) {
-        const targetCommand = AxerCommands.filter((command) =>
-            command.isSlashCommand()
-        ).find((c) => c.names.includes(args[0])) as SlashCommand;
+        const targetCommand = AxerCommands.find((c) =>
+            c.allNames.includes(args[0])
+        ) as SlashCommand;
 
         if (targetCommand) {
             targetCommand.subcommands.forEach((c) => {
-                if (c.builder.name.includes(args[1]))
-                    list.push(`/${targetCommand.names[0]} ${args[1]}`);
+                if (c.name.includes(args[1])) list.push(`/${targetCommand.name} ${args[1]}`);
             });
 
             targetCommand.subcommandGroups.forEach((c) => {
-                if (c.builder.name.includes(args[1])) {
+                if (c.name.includes(args[1])) {
                     mapGroupCommands(c, targetCommand);
-                    list.push(`/${targetCommand.names[0]} ${args[1]}`);
+                    list.push(`/${targetCommand.name} ${args[1]}`);
                 }
             });
         }
     }
 
     if (args.length == 3) {
-        const targetCommand = AxerCommands.filter((command) =>
-            command.isSlashCommand()
-        ).find((c) => c.names.includes(args[0])) as SlashCommand;
+        const targetCommand = AxerCommands.find((c) =>
+            c.allNames.includes(args[0])
+        ) as SlashCommand;
 
         if (targetCommand) {
             targetCommand.subcommandGroups.forEach((c) => {
-                if (c.builder.name.includes(args[1]))
-                    list.push(`/${targetCommand.names[0]} ${args[1]}`);
+                if (c.name.includes(args[1])) list.push(`/${targetCommand.name} ${args[1]}`);
 
                 filterGroupCommands(c, targetCommand, args[2]);
             });
@@ -66,40 +59,29 @@ export async function helpAutocomplete(command: AutocompleteInteraction) {
         targetCommand: SlashCommand,
         subcommand: string
     ) {
-        group.subcommands.forEach((c) => {
-            if (c.builder.name.includes(subcommand))
-                list.push(
-                    `/${targetCommand.names[0]} ${group.builder.name} ${c.builder.name}`
-                );
+        group.commands.forEach((c) => {
+            if (c.name.includes(subcommand))
+                list.push(`/${targetCommand.name} ${group.name} ${c.name}`);
         });
     }
 
-    function mapGroupCommands(
-        group: SlashCommandSubcommandGroup,
-        targetCommand: SlashCommand
-    ) {
-        group.subcommands.forEach((c) => {
-            list.push(
-                `/${targetCommand.names[0]} ${group.builder.name} ${c.builder.name}`
-            );
+    function mapGroupCommands(group: SlashCommandSubcommandGroup, targetCommand: SlashCommand) {
+        group.commands.forEach((c) => {
+            list.push(`/${targetCommand.name} ${group.name} ${c.name}`);
         });
     }
 
     function includeSubcommandsAndGroups(command: SlashCommand) {
         command.subcommands.forEach((c) => {
-            list.push(`/${command.names[0]} ${c.builder.name}`);
+            list.push(`/${command.name} ${c.name}`);
         });
 
         command.subcommandGroups.forEach((c) => addCommandGroups(c));
 
         function addCommandGroups(g: SlashCommandSubcommandGroup) {
-            list.push(`/${command.names[0]} ${g.builder.name}`);
+            list.push(`/${command.name} ${g.name}`);
 
-            g.subcommands.forEach((c) =>
-                list.push(
-                    `/${command.names[0]} ${g.builder.name} ${c.builder.name}`
-                )
-            );
+            g.commands.forEach((c) => list.push(`/${command.name} ${g.name} ${c.name}`));
         }
     }
 

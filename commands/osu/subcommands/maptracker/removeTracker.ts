@@ -1,20 +1,17 @@
-import { PermissionFlagsBits, StringSelectMenuBuilder } from "discord.js";
+import { StringSelectMenuBuilder } from "discord.js";
 
 import { tracks } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
-import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
 
-const IMapperTrackerRemoveTracker = new SlashCommandSubcommand(
-    "remove",
-    "Remove a mapper tracker from a channel",
-    undefined,
-    [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
-);
+const mapperTrackerRemoveTracker = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("remove a mapper tracker from a channel")
+    .setPermissions("ManageChannels", "ManageMessages");
 
-IMapperTrackerRemoveTracker.setExecuteFunction(async (command) => {
+mapperTrackerRemoveTracker.setExecutable(async (command) => {
     if (!command.guild) return;
 
     let allTrackers = await tracks.find({
@@ -22,22 +19,17 @@ IMapperTrackerRemoveTracker.setExecuteFunction(async (command) => {
         type: "mapper",
     });
 
-    const trackers = new StringSelectMenuBuilder()
-        .setMaxValues(allTrackers.length)
-        .setMinValues(1);
+    const trackers = new StringSelectMenuBuilder().setMaxValues(allTrackers.length).setMinValues(1);
 
-    const users = await osuApi.fetch.users(
-        allTrackers.map((t) => t.userId || "")
-    );
+    const users = await osuApi.fetch.users(allTrackers.map((t) => t.userId || ""));
 
     for (const tracker of allTrackers) {
         trackers.addOptions({
             label: `${
-                users.data.find((u) => u.id.toString() == tracker.userId)
-                    ?.username || "Unknown User"
+                users.data.find((u) => u.id.toString() == tracker.userId)?.username ||
+                "Unknown User"
             } | #${
-                command.guild.channels.cache.get(String(tracker.channel))
-                    ?.name || "Deleted Channel"
+                command.guild.channels.cache.get(String(tracker.channel))?.name || "Deleted Channel"
             }`,
             value: tracker._id,
         });
@@ -64,4 +56,4 @@ IMapperTrackerRemoveTracker.setExecuteFunction(async (command) => {
     });
 });
 
-export default IMapperTrackerRemoveTracker;
+export { mapperTrackerRemoveTracker };

@@ -1,24 +1,20 @@
-import { PermissionFlagsBits } from "discord.js";
+import { PermissionFlagsBits, SlashCommandRoleOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const reportSetPing = new SlashCommandSubcommand(
-    "ping",
-    "Enables report pings and sets the role to ping",
-    {
-        syntax: "/report `set` `ping` `target_role:<Role>`",
-        example: "/report `set` `ping` `target_role:@Moderator`",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
+const reportSetPing = new SlashCommandSubcommand()
+    .setName("pingrole")
+    .setPermissions("ManageGuild")
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("target_role")
+            .setDescription("Target role")
+            .setRequired(true)
+    );
 
-reportSetPing.builder.addRoleOption((o) =>
-    o.setName("target_role").setDescription("Target role").setRequired(true)
-);
-
-reportSetPing.setExecuteFunction(async (command) => {
+reportSetPing.setExecutable(async (command) => {
     if (!command.guild) return;
 
     const role = command.options.getRole("target_role", true);
@@ -36,22 +32,13 @@ reportSetPing.setExecuteFunction(async (command) => {
     // prevent @everyone
     if (role.id == command.guildId)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    "You need to provide a role that isn't @everyone."
-                ),
-            ],
+            embeds: [generateErrorEmbed("You need to provide a role that isn't @everyone.")],
         });
 
     // check if role is mentionable or if the bot has the permission to mention it
-    const botAsMember = await command.guild.members.fetch(
-        command.client.user.id
-    );
+    const botAsMember = await command.guild.members.fetch(command.client.user.id);
 
-    if (
-        !role.mentionable &&
-        !botAsMember.permissions.has(PermissionFlagsBits.MentionEveryone)
-    )
+    if (!role.mentionable && !botAsMember.permissions.has(PermissionFlagsBits.MentionEveryone))
         return command.editReply({
             embeds: [
                 generateErrorEmbed(
@@ -70,4 +57,4 @@ reportSetPing.setExecuteFunction(async (command) => {
     });
 });
 
-export default reportSetPing;
+export { reportSetPing };
