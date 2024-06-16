@@ -1,9 +1,4 @@
 import axios from "axios";
-
-import {
-    BeatmapGenre,
-    BeatmapLanguage,
-} from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
 import { consoleCheck, consoleError, consoleLog } from "../../../helpers/core/logger";
 import {
     BeatmapResponse,
@@ -21,6 +16,7 @@ import { IHTTPResponse } from "../../../types/http";
 import { HTTPResponse } from "../../../types/qat";
 import { FetchDownloadClient, OsuAuthenticator, OsuOfficialDownloader } from "./downloader/beatmap";
 import { UserCompact } from "../../../types/user";
+import { BeatmapGenre, BeatmapLanguage } from "../../../struct/beatmaps/SearchTypes";
 
 export async function beatmap(beatmap_id: string): Promise<BeatmapResponse> {
     try {

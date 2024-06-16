@@ -17,8 +17,6 @@ import getEmoji from "../../helpers/text/getEmoji";
 import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { QatUserResponse, UserActivityResponse } from "../../types/qat";
 import { UserResponse } from "../../types/user";
-import { bnRules } from "../../database";
-import bn from "../../commands/BNsite/bn";
 
 //! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
 // TODO: add BN finder count IF you're re-adding QA info

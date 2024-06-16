@@ -1,17 +1,14 @@
 import { Guild, GuildMember } from "discord.js";
-import { guilds, users, verifications } from "../../../database";
+import { guilds, users } from "../../../database";
 import { User, UserGroup } from "../../../types/user";
 import osuApi from "../../../modules/osu/fetcher/osuApi";
 import {
     IMapperRole,
     MapperRoleType,
 } from "../../../commands/management/subcommands/verification/addMapperRole";
-import { HTTPResponse } from "../../../types/qat";
 import { Beatmapset } from "../../../types/beatmap";
-import { IHTTPResponse } from "../../../types/http";
-import { bot } from "../../..";
-import { BeatmapStatus } from "../../../commands/osu/subcommands/beatmap/searchBeatmap";
 import { countryFlags } from "../../../constants/countryflags";
+import { BeatmapStatus } from "../../../struct/beatmaps/SearchTypes";
 
 export async function runVerificationChecks(guild: Guild, user: User, member: GuildMember) {
     const guild_db = await guilds.findById(guild.id);
