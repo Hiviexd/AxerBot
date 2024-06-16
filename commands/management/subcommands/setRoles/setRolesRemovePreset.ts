@@ -8,7 +8,10 @@ const setRolesRemovePreset = new SlashCommandSubcommand()
     .setDescription("Removes a role preset")
     .setPermissions("ModerateMembers")
     .addOptions(
-        new SlashCommandStringOption().setDescription("Role preset name").setRequired(true)
+        new SlashCommandStringOption()
+            .setName("name")
+            .setDescription("Role preset name")
+            .setRequired(true)
     );
 
 setRolesRemovePreset.setExecutable(async (command) => {

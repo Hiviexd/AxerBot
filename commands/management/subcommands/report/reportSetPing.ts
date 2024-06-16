@@ -6,6 +6,7 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 
 const reportSetPing = new SlashCommandSubcommand()
     .setName("pingrole")
+    .setDescription("Disable ping when a report is sent")
     .setPermissions("ManageGuild")
     .addOptions(
         new SlashCommandRoleOption()

@@ -23,7 +23,7 @@ import { generateConfirmEmbedWithChoices } from "../../../../helpers/commands/ge
 const mapperTrackerNewTracker = new SlashCommandSubcommand()
     .setName("new")
     .setDescription("Create a new mapper tracker")
-    .setPermissions("ManageChannels", "ManageMessages")
+    .setPermissions("ManageChannels")
     .addOptions(
         new SlashCommandStringOption()
             .setName("mapper")

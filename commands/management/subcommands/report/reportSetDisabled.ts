@@ -5,7 +5,8 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 
 const reportSetDisabled = new SlashCommandSubcommand()
     .setName("disabled")
-    .setDescription("Disable report system");
+    .setDescription("Disable report system")
+    .setPermissions("ManageGuild");
 
 reportSetDisabled.setExecutable(async (command) => {
     let guild = await guilds.findById(command.guildId);

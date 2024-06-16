@@ -18,7 +18,7 @@ interface MapperTracker {
 const mapperTrackerListTracker = new SlashCommandSubcommand()
     .setName("list")
     .setDescription("List all mapper trackers")
-    .setPermissions("ManageChannels", "ManageMessages");
+    .setPermissions("ManageChannels");
 
 mapperTrackerListTracker.setExecutable(async (command) => {
     if (!command.guild) return;

@@ -18,7 +18,12 @@ export class SlashCommandSubcommandGroup {
     }
 
     public addCommands(...commands: SlashCommandSubcommand[]) {
-        this._commands = this._commands.concat(commands);
+        for (const command of commands) {
+            if (!this.getCommand(command.name)) {
+                this._commands.push(command);
+                this._.addSubcommand(command.onlyBuilder());
+            }
+        }
 
         return this;
     }

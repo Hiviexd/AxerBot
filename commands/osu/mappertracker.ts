@@ -8,7 +8,7 @@ const mapperTracker = new SlashCommand()
     .setName("mappertracker")
     .setDescription("Track mapper beatmap events")
     .setCategory(CommandCategory.Osu)
-    .setPermissions("ManageChannels", "ManageMessages")
+    .setPermissions("ManageChannels")
     .setHelp({
         "Which data can be tracked?": [
             "`User beatmap uploads`",
