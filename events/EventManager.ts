@@ -1,9 +1,6 @@
-import { readdirSync } from "fs";
 import { AxerBot } from "../models/core/AxerBot";
 import { CommandsManager } from "./CommandsManager";
 import { InteractionManager } from "./InteractionManager";
-import path from "path";
-import { EventObject } from "../struct/events/EventObject";
 import { ClientEvents } from "discord.js";
 import { ClientReadyEvent } from "./client/ClientReadyEvent";
 import { GuildBanAddEvent } from "./guild/GuildBanAddEvent";
