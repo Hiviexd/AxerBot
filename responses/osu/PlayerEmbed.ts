@@ -5,7 +5,6 @@ import generatePlayerRankChart from "../../modules/osu/player/generatePlayerRank
 import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import parsePlayTime from "../../modules/osu/player/parsePlayTime";
 import { UserResponse } from "../../types/user";
-import { ContextMenuType } from "../../models/commands/ContextMenuCommand";
 
 export default {
     send: async (user: UserResponse, message: Message, mode?: string) => {
@@ -114,11 +113,7 @@ export default {
                 void {};
             });
     },
-    reply: async (
-        user: UserResponse,
-        interaction: ChatInputCommandInteraction | ContextMenuType.Message | ContextMenuType.User,
-        mode?: string
-    ) => {
+    reply: async (user: UserResponse, interaction: ChatInputCommandInteraction, mode?: string) => {
         const usergroup = parseUsergroup(user.data);
 
         const attachment = user.data.statistics?.global_rank

@@ -16,7 +16,7 @@
 // import { sendBeatmapHypeEmbed } from "../../responses/IMapperTracker/SendBeatmapHypeEmbed";
 // import { sendBeatmapFavoriteEmbed } from "../../responses/IMapperTracker/SendBeatmapFavoriteEmbed";
 
-import { MapperTrackerType } from "../../commands/osu/mappertracker";
+import { MapperTrackerType } from "../../struct/mapperTracker/TrackerTypes";
 
 // export interface MapperTracker {
 //     _id: string;
