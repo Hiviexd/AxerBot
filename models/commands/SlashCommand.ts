@@ -125,30 +125,40 @@ export class SlashCommand {
     }
 
     public addSubcommand(command: SlashCommandSubcommand) {
-        this._subcommands.push(command);
-        this._.addSubcommand(command.onlyBuilder());
+        if (!this.getSubcommand(command.name)) {
+            this._subcommands.push(command);
+            this._.addSubcommand(command.onlyBuilder());
+        }
 
         return this;
     }
 
     public addSubcommands(...commands: SlashCommandSubcommand[]) {
         for (const command of commands) {
-            if (!this.getSubcommand(command.name)) this._subcommands.push(command);
+            if (!this.getSubcommand(command.name)) {
+                this._.addSubcommand(command.onlyBuilder());
+                this._subcommands.push(command);
+            }
         }
 
         return this;
     }
 
     public addSubcommandGroup(group: SlashCommandSubcommandGroup) {
-        this._subcommand_groups.push(group);
-        this._.addSubcommandGroup(group.onlyBuilder());
+        if (!this.getGroup(group.name)) {
+            this._subcommand_groups.push(group);
+            this._.addSubcommandGroup(group.onlyBuilder());
+        }
 
         return this;
     }
 
     public addSubcommandGroups(...groups: SlashCommandSubcommandGroup[]) {
         for (const group of groups) {
-            if (!this.getSubcommand(group.name)) this._subcommand_groups.push(group);
+            if (!this.getGroup(group.name)) {
+                this._subcommand_groups.push(group);
+                this._.addSubcommandGroup(group.onlyBuilder());
+            }
         }
 
         return this;

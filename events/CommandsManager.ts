@@ -38,7 +38,11 @@ export class CommandsManager {
         if (!this.axer.application) return this.logger.printError("Invalid application!");
 
         for (const command of AxerCommands) {
-            APICommands.push(...command.toJSONWithAliases());
+            try {
+                APICommands.push(...command.toJSONWithAliases());
+            } catch (e) {
+                console.error(e, command);
+            }
         }
 
         await this.axer.application.commands.set(APICommands);

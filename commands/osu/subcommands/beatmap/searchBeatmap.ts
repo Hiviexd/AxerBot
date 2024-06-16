@@ -23,7 +23,6 @@ const searchBeatmap = new SlashCommandSubcommand()
             .setName("query")
             .setDescription("Beatmap title, artist, creator or something...")
             .setRequired(true),
-
         new SlashCommandStringOption()
             .setName("star_rating")
             .setDescription("Filter by stars using operators like: <2, >3, <32"),

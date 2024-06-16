@@ -9,7 +9,7 @@ import osuApi from "../../../../modules/osu/fetcher/osuApi";
 const mapperTrackerRemoveTracker = new SlashCommandSubcommand()
     .setName("remove")
     .setDescription("remove a mapper tracker from a channel")
-    .setPermissions("ManageChannels", "ManageMessages");
+    .setPermissions("ManageChannels");
 
 mapperTrackerRemoveTracker.setExecutable(async (command) => {
     if (!command.guild) return;

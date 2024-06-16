@@ -1,6 +1,5 @@
 import {
     EmbedBuilder,
-    PermissionFlagsBits,
     Role,
     APIRole,
     SlashCommandStringOption,
