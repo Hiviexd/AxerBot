@@ -20,3 +20,5 @@ beatmapsets
 temp/ratechange/
 temp/temp.json
 .env2
+
+config.json
