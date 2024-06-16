@@ -3,6 +3,8 @@ import {
     ChannelType,
     GuildChannelResolvable,
     PermissionFlagsBits,
+    SlashCommandChannelOption,
+    SlashCommandStringOption,
     StringSelectMenuBuilder,
 } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
@@ -18,24 +20,23 @@ import { BeatmapsetEventType } from "../../../../types/beatmap";
 import { UserRecentEventType } from "../../../../types/user";
 import { generateConfirmEmbedWithChoices } from "../../../../helpers/commands/generateConfirmEmbedWithChoices";
 
-const mapperTrackerNewTracker = new SlashCommandSubcommand(
-    "new",
-    "Create a new mapper tracker",
-    undefined,
-    [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages]
-);
-
-mapperTrackerNewTracker.builder
-    .addStringOption((o) => o.setName("mapper").setDescription("Mapper username").setRequired(true))
-    .addChannelOption((o) =>
-        o
+const mapperTrackerNewTracker = new SlashCommandSubcommand()
+    .setName("new")
+    .setDescription("Create a new mapper tracker")
+    .setPermissions("ManageChannels", "ManageMessages")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("mapper")
+            .setDescription("Mapper username")
+            .setRequired(true),
+        new SlashCommandChannelOption()
             .setName("channel")
             .setDescription("Channel to announce the system")
             .setRequired(true)
             .addChannelTypes(ChannelType.GuildText)
     );
 
-mapperTrackerNewTracker.setExecuteFunction(async (command) => {
+mapperTrackerNewTracker.setExecutable(async (command) => {
     if (!command.guild) return;
 
     const mapperUsername = command.options.getString("mapper", true);
@@ -260,4 +261,4 @@ mapperTrackerNewTracker.setExecuteFunction(async (command) => {
     }
 });
 
-export default mapperTrackerNewTracker;
+export { mapperTrackerNewTracker };

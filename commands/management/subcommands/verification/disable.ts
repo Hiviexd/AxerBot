@@ -1,17 +1,14 @@
-import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetDisabled = new SlashCommandSubcommand(
-    "disable",
-    "Disable the verification system",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationSetDisabled = new SlashCommandSubcommand()
+    .setName("disable")
+    .setDescription("Disable this system")
+    .setPermissions("ManageGuild");
 
-verificationSetDisabled.setExecuteFunction(async (command) => {
+verificationSetDisabled.setExecutable(async (command) => {
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({
@@ -31,4 +28,4 @@ verificationSetDisabled.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationSetDisabled;
+export { verificationSetDisabled };

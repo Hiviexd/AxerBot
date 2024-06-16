@@ -32,16 +32,15 @@ export interface IMapperRole {
     max: number;
 }
 
-const verificationAddMapperRole = new SlashCommandSubcommand(
-    "mapperrole",
-    "Sets roles based on the amount of a user's Ranked/Loved/Unranked beatmaps",
-    {
-        important: "Guest difficulty beatmaps are not counted",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationAddMapperRole = new SlashCommandSubcommand()
+    .setName("mapperrole")
+    .setDescription("Set roles based at how many beatmaps an user has")
+    .setHelp({
+        important: "Guest difficulty beatmaps are not included",
+    })
+    .setPermissions("ModerateMembers");
 
-verificationAddMapperRole.setExecuteFunction(async (command) => {
+verificationAddMapperRole.setExecutable(async (command) => {
     if (!command.guild) return;
 
     let guild = await guilds.findById(command.guild.id);
@@ -53,9 +52,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
 
     if (guild.verification.mapper_roles.length == 25)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("You can't add more than 25 mapper roles!"),
-            ],
+            embeds: [generateErrorEmbed("You can't add more than 25 mapper roles!")],
         });
 
     const mapperTitles: { [key: string]: string } = {
@@ -226,9 +223,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                 },
                 {
                     name: "Roles",
-                    value: entry.roles
-                        .map((r, i) => `**#${i + 1} |** <@&${r}>`)
-                        .join("\n"),
+                    value: entry.roles.map((r, i) => `**#${i + 1} |** <@&${r}>`).join("\n"),
                 },
                 {
                     name: "Game Modes",
@@ -279,9 +274,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
         ).catch((e) => {
             if (e.reason == "timeout")
                 return command.editReply({
-                    embeds: [
-                        generateErrorEmbed("Timed out, please try again!"),
-                    ],
+                    embeds: [generateErrorEmbed("Timed out, please try again!")],
                 });
 
             console.error(e);
@@ -297,12 +290,8 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
 
         function selectMin() {
             const embed = new EmbedBuilder()
-                .setTitle(
-                    `Minimum amount of ${beatmapTitles[entry.target]} beatmaps`
-                )
-                .setDescription(
-                    "Send a message with the minimum amount of beatmaps you want"
-                )
+                .setTitle(`Minimum amount of ${beatmapTitles[entry.target]} beatmaps`)
+                .setDescription("Send a message with the minimum amount of beatmaps you want")
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",
@@ -333,18 +322,14 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                             if (e.reason == "timeout")
                                 return command.editReply({
                                     embeds: [
-                                        generateErrorEmbed(
-                                            "Don't leave me waiting too much!"
-                                        ),
+                                        generateErrorEmbed("Don't leave me waiting too much!"),
                                     ],
                                 });
 
                             console.error(e);
 
                             command.editReply({
-                                embeds: [
-                                    generateErrorEmbed("Something went wrong!"),
-                                ],
+                                embeds: [generateErrorEmbed("Something went wrong!")],
                             });
                         });
                 });
@@ -352,12 +337,8 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
 
         function selectMax() {
             const embed = new EmbedBuilder()
-                .setTitle(
-                    `Max amount of ${beatmapTitles[entry.target]} beatmaps`
-                )
-                .setDescription(
-                    "Send a message with the maximum amount of beatmaps you want"
-                )
+                .setTitle(`Max amount of ${beatmapTitles[entry.target]} beatmaps`)
+                .setDescription("Send a message with the maximum amount of beatmaps you want")
                 .setColor(colors.yellow)
                 .setFooter({
                     text: "You have 1 minute to send!",
@@ -389,19 +370,13 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
                         .catch((e) => {
                             if (e.reason == "timeout")
                                 return command.editReply({
-                                    embeds: [
-                                        generateErrorEmbed(
-                                            "Timed out, please try again!"
-                                        ),
-                                    ],
+                                    embeds: [generateErrorEmbed("Timed out, please try again!")],
                                 });
 
                             console.error(e);
 
                             command.editReply({
-                                embeds: [
-                                    generateErrorEmbed("Something went wrong!"),
-                                ],
+                                embeds: [generateErrorEmbed("Something went wrong!")],
                             });
                         });
                 });
@@ -422,11 +397,7 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
     function save() {
         if (!guild) return;
 
-        if (
-            guild.verification.mapper_roles.find(
-                (r: typeof entry) => r == entry
-            )
-        )
+        if (guild.verification.mapper_roles.find((r: typeof entry) => r == entry))
             return sendEmbed();
 
         guild.verification.mapper_roles.push(entry);
@@ -458,4 +429,4 @@ verificationAddMapperRole.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationAddMapperRole;
+export { verificationAddMapperRole };

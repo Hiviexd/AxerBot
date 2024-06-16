@@ -1,9 +1,4 @@
-import {
-    ActionRowBuilder,
-    PermissionFlagsBits,
-    StringSelectMenuBuilder,
-} from "discord.js";
-
+import { StringSelectMenuBuilder } from "discord.js";
 import { guilds } from "../../../../database";
 import createNewGuild from "../../../../database/utils/createNewGuild";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
@@ -13,14 +8,12 @@ import { generateStepEmbedWithChoices } from "../../../../helpers/commands/gener
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
-const verificationRemoveMapperRole = new SlashCommandSubcommand(
-    "mapperrole",
-    "Remove a mapper role",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationRemoveMapperRole = new SlashCommandSubcommand()
+    .setName("mapperrole")
+    .setDescription("Remove a mapper role")
+    .setPermissions("ModerateMembers");
 
-verificationRemoveMapperRole.setExecuteFunction(async (command) => {
+verificationRemoveMapperRole.setExecutable(async (command) => {
     if (!command.guild) return;
 
     let guild = await guilds.findById(command.guild.id);
@@ -76,12 +69,10 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
 
             for (const role of roles) {
                 if (guild)
-                    guild.verification.mapper_roles =
-                        guild.verification.mapper_roles.filter(
-                            (r: IMapperRole, i: number) =>
-                                roles.indexOf(role) ==
-                                guild?.verification.mapper_roles.indexOf(role)
-                        );
+                    guild.verification.mapper_roles = guild.verification.mapper_roles.filter(
+                        (r: IMapperRole, i: number) =>
+                            roles.indexOf(role) == guild?.verification.mapper_roles.indexOf(role)
+                    );
             }
 
             roles.forEach((r) => {
@@ -94,9 +85,7 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
         .catch((e) => {
             if (e.reason == "timeout")
                 return command.editReply({
-                    embeds: [
-                        generateErrorEmbed("Timed out, please try again!"),
-                    ],
+                    embeds: [generateErrorEmbed("Timed out, please try again!")],
                 });
 
             console.error(e);
@@ -134,4 +123,4 @@ verificationRemoveMapperRole.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationRemoveMapperRole;
+export { verificationRemoveMapperRole };

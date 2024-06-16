@@ -4,27 +4,29 @@ import ffmpeg from "fluent-ffmpeg";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { unlinkSync, readFileSync, mkdirSync, existsSync } from "fs";
 import crypto from "crypto";
-import { AttachmentBuilder, EmbedBuilder } from "discord.js";
+import {
+    AttachmentBuilder,
+    EmbedBuilder,
+    SlashCommandAttachmentOption,
+    SlashCommandStringOption,
+} from "discord.js";
 import axios from "axios";
 import colors from "../../constants/colors";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const debloat = new SlashCommand(
-    ["debloat", "reencode"],
-    "Re-encode an mp3 with a different bitrate",
-    "Tools",
-    true
-);
-
-debloat.builder
-    .addAttachmentOption((o) =>
-        o
+const debloat = new SlashCommand()
+    .setName("debloat")
+    .setNameAliases("reencode")
+    .setDescription("Re-encode an mp3 with a different bitrate")
+    .setCategory(CommandCategory.Tools)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandAttachmentOption()
             .setName("audio")
             .setDescription("Audio file to re-encode")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("target_bitrate")
             .setDescription("Target bitrate")
             .setRequired(true)
@@ -48,7 +50,7 @@ debloat.builder
             )
     );
 
-debloat.setExecuteFunction(async (command) => {
+debloat.setExecutable(async (command) => {
     const attachment = command.options.getAttachment("audio", true);
     const bitrate = command.options.getString("target_bitrate", true);
 
@@ -58,16 +60,9 @@ debloat.setExecuteFunction(async (command) => {
         "audio/mpeg": "mp3",
     };
 
-    if (
-        !mimes.includes(attachment.contentType || "") ||
-        !attachment.contentType
-    )
+    if (!mimes.includes(attachment.contentType || "") || !attachment.contentType)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    `Invalid audio type! Audio type must be \`mp3\``
-                ),
-            ],
+            embeds: [generateErrorEmbed(`Invalid audio type! Audio type must be \`mp3\``)],
         });
 
     if (attachment.size > 1.5e7)
@@ -95,19 +90,17 @@ debloat.setExecuteFunction(async (command) => {
         const filename = `${fileId}.${mimeNames[attachment.contentType]}`;
 
         const f = ffmpeg(audioFile.data);
+
         if (process.platform == "win32") {
             f.setFfmpegPath(path.resolve("./bin/ffmpeg.exe"));
         }
-        f.audioBitrate(bitrate).saveToFile(
-            path.resolve(`./temp/debloater/${filename}`)
-        );
+
+        f.audioBitrate(bitrate).saveToFile(path.resolve(`./temp/debloater/${filename}`));
 
         f.on("end", () => {
             if (!attachment.contentType) return;
 
-            const file = readFileSync(
-                path.resolve(`./temp/debloater/${filename}`)
-            );
+            const file = readFileSync(path.resolve(`./temp/debloater/${filename}`));
 
             const result = new AttachmentBuilder(file, {
                 name: `${attachment.name}`,
@@ -115,11 +108,7 @@ debloat.setExecuteFunction(async (command) => {
 
             command
                 .editReply({
-                    embeds: [
-                        generateSuccessEmbed(
-                            `Audio re-encoded to \`${bitrate}bps\`!`
-                        ),
-                    ],
+                    embeds: [generateSuccessEmbed(`Audio re-encoded to \`${bitrate}bps\`!`)],
                     files: [result],
                 })
                 .then(() => {
@@ -134,4 +123,4 @@ debloat.setExecuteFunction(async (command) => {
     }
 });
 
-export default debloat;
+export { debloat };

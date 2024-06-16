@@ -1,8 +1,6 @@
 import { randomBytes } from "crypto";
-import colors from "../../../../constants/colors";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import {
-    PermissionFlagsBits,
     TextInputBuilder,
     ActionRowBuilder,
     TextInputStyle,
@@ -10,33 +8,25 @@ import {
     EmbedBuilder,
     ColorResolvable,
     RoleSelectMenuBuilder,
-    ChannelSelectMenuBuilder,
     ChannelType,
-    TextBasedChannel,
     StringSelectMenuBuilder,
-    ComponentType,
-    APIEmbed,
+    SlashCommandStringOption,
 } from "discord.js";
 import { generateStepEmbedWithChoices } from "../../../../helpers/commands/generateStepEmbedWithChoices";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
-import { integerToHex } from "../../../../modules/bancho/helpers/integerToHex";
 import { selectRoles } from "../../../../database";
 
-const editRoleSelector = new SlashCommandSubcommand(
-    "edit",
-    "Edit a select menu",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageRoles],
-    true
-);
-
-editRoleSelector.builder.addStringOption((o) =>
-    o
-        .setName("message_url")
-        .setDescription("Message permalink")
-        .setRequired(true)
-);
+const editRoleSelector = new SlashCommandSubcommand()
+    .setName("edit")
+    .setDescription("Edit a role select menu")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("message_url")
+            .setDescription("Message permalink")
+            .setRequired(true)
+    )
+    .setPermissions("ManageRoles", "ModerateMembers");
 
 function parseMessagePermalink(messageUrl: string) {
     try {
@@ -49,11 +39,7 @@ function parseMessagePermalink(messageUrl: string) {
 
         if (paths[0] != "channels") return null;
 
-        if (
-            isNaN(Number(paths[1])) ||
-            isNaN(Number(paths[2])) ||
-            isNaN(Number(paths[3]))
-        )
+        if (isNaN(Number(paths[1])) || isNaN(Number(paths[2])) || isNaN(Number(paths[3])))
             return null;
 
         return {
@@ -66,7 +52,7 @@ function parseMessagePermalink(messageUrl: string) {
     }
 }
 
-editRoleSelector.setExecuteFunction(async (command) => {
+editRoleSelector.setExecutable(async (command) => {
     const messageUrl = command.options.getString("message_url", true);
 
     const messagePermalinkData = parseMessagePermalink(messageUrl);
@@ -84,68 +70,60 @@ editRoleSelector.setExecuteFunction(async (command) => {
 
     if (!selectRolesMessageData)
         return command.reply({
-            embeds: [
-                generateErrorEmbed("This isn't a valid set roles message!"),
-            ],
+            embeds: [generateErrorEmbed("This isn't a valid set roles message!")],
         });
 
     // Text inputs
-    const modalEmbedTitleInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Title")
-                .setStyle(TextInputStyle.Short)
-                .setValue(selectRolesMessageData.embed.title || "")
-                .setCustomId("title")
-                .setPlaceholder("(optional)")
-        );
+    const modalEmbedTitleInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Title")
+            .setStyle(TextInputStyle.Short)
+            .setValue(selectRolesMessageData.embed.title || "")
+            .setCustomId("title")
+            .setPlaceholder("(optional)")
+    );
 
-    const modalEmbedDescriptionInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Content")
-                .setStyle(TextInputStyle.Paragraph)
-                .setValue(selectRolesMessageData.embed.description || "")
-                .setRequired(true)
-                .setCustomId("description")
-        );
+    const modalEmbedDescriptionInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Content")
+            .setStyle(TextInputStyle.Paragraph)
+            .setValue(selectRolesMessageData.embed.description || "")
+            .setRequired(true)
+            .setCustomId("description")
+    );
 
-    const modalEmbedColorInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Color")
-                .setStyle(TextInputStyle.Short)
-                .setValue(`${selectRolesMessageData.embed.color}`)
-                .setCustomId("color")
-                .setRequired(false)
-                .setPlaceholder("HEX format (optional)")
-        );
+    const modalEmbedColorInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Color")
+            .setStyle(TextInputStyle.Short)
+            .setValue(`${selectRolesMessageData.embed.color}`)
+            .setCustomId("color")
+            .setRequired(false)
+            .setPlaceholder("HEX format (optional)")
+    );
 
     // Image inputs
-    const modalEmbedImageInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Image")
-                .setStyle(TextInputStyle.Short)
-                .setCustomId("image")
-                .setRequired(false)
-                .setValue(selectRolesMessageData.embed.image || "")
-                .setPlaceholder("URL (optional)")
-        );
+    const modalEmbedImageInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Image")
+            .setStyle(TextInputStyle.Short)
+            .setCustomId("image")
+            .setRequired(false)
+            .setValue(selectRolesMessageData.embed.image || "")
+            .setPlaceholder("URL (optional)")
+    );
 
-    const modalEmbedThumbnailInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Thumbnail")
-                .setStyle(TextInputStyle.Short)
-                .setCustomId("thumbnail")
-                .setRequired(false)
-                .setValue(selectRolesMessageData.embed.thumbnail || "")
-                .setPlaceholder("URL (optional)")
-        );
+    const modalEmbedThumbnailInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Thumbnail")
+            .setStyle(TextInputStyle.Short)
+            .setCustomId("thumbnail")
+            .setRequired(false)
+            .setValue(selectRolesMessageData.embed.thumbnail || "")
+            .setPlaceholder("URL (optional)")
+    );
 
-    const embedInfoModalHandshakeInteractionId =
-        randomBytes(10).toString("hex");
+    const embedInfoModalHandshakeInteractionId = randomBytes(10).toString("hex");
     const embedInfoModal = new ModalBuilder()
         .setTitle("Edit Role Selector Embed")
         .setCustomId(embedInfoModalHandshakeInteractionId)
@@ -165,16 +143,12 @@ editRoleSelector.setExecuteFunction(async (command) => {
     embedInfoModalResponse.deferUpdate();
 
     const embedTitle = embedInfoModalResponse.fields.getTextInputValue("title");
-    const embedDescription =
-        embedInfoModalResponse.fields.getTextInputValue("description");
+    const embedDescription = embedInfoModalResponse.fields.getTextInputValue("description");
     const embedColor = embedInfoModalResponse.fields.getTextInputValue("color");
-    const embedThumbnail =
-        embedInfoModalResponse.fields.getTextInputValue("thumbnail");
+    const embedThumbnail = embedInfoModalResponse.fields.getTextInputValue("thumbnail");
     const embedImage = embedInfoModalResponse.fields.getTextInputValue("image");
 
-    const embedData = new EmbedBuilder()
-        .setTitle(embedTitle)
-        .setDescription(embedDescription);
+    const embedData = new EmbedBuilder().setTitle(embedTitle).setDescription(embedDescription);
 
     // Check if the input is a valid hex color input
     const hexValueRegExp = /^#([0-9a-f]{3}){1,2}$/i;
@@ -321,4 +295,4 @@ editRoleSelector.setExecuteFunction(async (command) => {
     }
 });
 
-export default editRoleSelector;
+export { editRoleSelector };

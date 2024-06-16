@@ -1,26 +1,14 @@
-import { PermissionFlagsBits } from "discord.js";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import userlogAddLog from "./subcommands/userLog/addLog";
-import userlogList from "./subcommands/userLog/list";
-import userlogRemoveLog from "./subcommands/userLog/remove";
+import { userlogAddLog } from "./subcommands/userLog/addLog";
+import { userlogList } from "./subcommands/userLog/list";
+import { userlogRemoveLog } from "./subcommands/userLog/remove";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const userlog = new SlashCommand(
-    "userlog",
-    "logs info about a user",
-    "Management",
-    false,
-    {
-        description: "logs info about a user",
-        syntax: "/userlog `<add/remove/list>` `<user>` `<reason>`",
-        example: "/userlog `add` `@user` `reason`",
-        options: ["`add`", "`remove`", "`list`"],
-    },
-    [PermissionFlagsBits.ModerateMembers]
-);
+const userlog = new SlashCommand()
+    .setName("userlog")
+    .setDescription("Logs info about an user")
+    .setCategory(CommandCategory.Management)
+    .setPermissions("ModerateMembers")
+    .addSubcommands(userlogAddLog, userlogRemoveLog, userlogList);
 
-userlog
-    .addSubcommand(userlogAddLog)
-    .addSubcommand(userlogRemoveLog)
-    .addSubcommand(userlogList);
-
-export default userlog;
+export { userlog };

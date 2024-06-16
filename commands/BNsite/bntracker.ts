@@ -1,22 +1,19 @@
-import removeTrack from "./subcommands/tracker/removeTrack";
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import { PermissionFlagsBits } from "discord-api-types/v9";
-import addTracker from "./subcommands/tracker/addTrack";
-import info from "./subcommands/tracker/info";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
+import { bntrackerAddTracker } from "./subcommands/tracker/bntrackerAddTracker";
+import { bntrackerListTrackers } from "./subcommands/tracker/bntrackerListTrackers";
+import { bntrackerRemoveTracker } from "./subcommands/tracker/bntrackerRemoveTracker";
 
-const bntracker = new SlashCommand(
-    "bntracker",
-    "Track nominators' request status from the BN website",
-    "BN website",
-    true,
-    {
+const bntracker = new SlashCommand()
+    .setName("bntracker")
+    .setDescription("Track nominators' request status from the BN website")
+    .setPermissions("ManageChannels")
+    .setCategory(CommandCategory.BNSite)
+    .setHelp({
         syntax: "/bntrack <add|remove|status>",
-    },
-    [PermissionFlagsBits.ManageChannels]
-);
+    })
+    .addSubcommand(bntrackerAddTracker)
+    .addSubcommand(bntrackerRemoveTracker)
+    .addSubcommand(bntrackerListTrackers);
 
-bntracker.addSubcommand(removeTrack);
-bntracker.addSubcommand(addTracker);
-bntracker.addSubcommand(info);
-
-export default bntracker;
+export { bntracker };

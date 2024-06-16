@@ -1,3 +1,4 @@
+import { SlashCommandStringOption } from "discord.js";
 import qatApi from "../../../../helpers/qat/fetcher/qatApi";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
@@ -6,19 +7,12 @@ import UserNotFound from "../../../../responses/embeds/UserNotFound";
 import BNEmbed from "../../../../responses/qat/BNEmbed";
 import UserNotBNorNAT from "../../../../responses/qat/UserNotBNorNAT";
 
-const bnInfo = new SlashCommandSubcommand(
-    "info",
-    "Displays nominator data of a BN/NAT from the last 90 days",
-    {
-        note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-    }
-);
+const bnInfo = new SlashCommandSubcommand()
+    .setName("info")
+    .setDescription("Displays nominator data of a BN/NAT from the last 90 days")
+    .addOptions(new SlashCommandStringOption().setName("username").setDescription("osu! username"));
 
-bnInfo.builder.addStringOption((o) => o.setName("username").setDescription("osu! username"));
-
-bnInfo.setExecuteFunction(async (command) => {
-    // ? prevent errors
-
+bnInfo.setExecutable(async (command) => {
     let { playerName, status } = await checkCommandPlayers(command);
 
     if (status != 200) return;
@@ -56,4 +50,4 @@ bnInfo.setExecuteFunction(async (command) => {
     BNEmbed.reply(osuUser, qatUser, qatUserActivity, command);
 });
 
-export default bnInfo;
+export { bnInfo };

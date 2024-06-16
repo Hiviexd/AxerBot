@@ -3,30 +3,23 @@ import config from "./../../config.json";
 import MissingPermissions from "../../responses/embeds/MissingPermissions";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { StatusManager } from "../../modules/status/StatusManager";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const shutdown = new SlashCommand(
-    "shutdown",
-    "Shutdown axer",
-    "Developers",
-    true
-);
+const shutdown = new SlashCommand()
+    .setName("shutdown")
+    .setDescription("Shutdown axer zzz")
+    .setCategory(CommandCategory.Developers);
 
-shutdown.builder.addStringOption((o) =>
-    o.setName("reason").setDescription("reason to shutdown").setRequired(false)
-);
-
-shutdown.setExecuteFunction(async (command) => {
+shutdown.setExecutable(async (command) => {
     if (!config.owners.includes(command.user.id))
         return command.editReply({
             embeds: [MissingPermissions],
         });
 
-    const reason = command.options.getString("reason") || undefined;
-
     const status = new StatusManager();
 
     status
-        .sendOutageMessage(reason, command.user)
+        .sendOutageMessage("Shutdown", command.user)
         .then(() => {
             command
                 .editReply({

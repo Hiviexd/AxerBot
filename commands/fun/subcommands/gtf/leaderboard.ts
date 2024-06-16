@@ -5,12 +5,11 @@ import { guilds } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const gtfLeaderboard = new SlashCommandSubcommand(
-    "leaderboard",
-    "Display server top 10 games"
-);
+const gtfLeaderboard = new SlashCommandSubcommand()
+    .setName("leaderboard")
+    .setDescription("Display server top 10 games");
 
-gtfLeaderboard.setExecuteFunction(async (command) => {
+gtfLeaderboard.setExecutable(async (command) => {
     if (!command.guild)
         return command.editReply({
             embeds: [generateErrorEmbed("You can't run this command here!")],
@@ -35,9 +34,9 @@ gtfLeaderboard.setExecuteFunction(async (command) => {
                     : leaderboard
                           .map(
                               (game, index) =>
-                                  `**#${index + 1} |** <@${
-                                      game.userId
-                                  }> **|** \`${game.score}\` points`
+                                  `**#${index + 1} |** <@${game.userId}> **|** \`${
+                                      game.score
+                                  }\` points`
                           )
                           .join("\n")
             }`
@@ -48,4 +47,4 @@ gtfLeaderboard.setExecuteFunction(async (command) => {
     });
 });
 
-export default gtfLeaderboard;
+export { gtfLeaderboard };

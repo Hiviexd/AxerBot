@@ -1,33 +1,42 @@
 import { Canvas, createCanvas, loadImage } from "canvas";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-import { AttachmentBuilder } from "discord.js";
+import {
+    AttachmentBuilder,
+    SlashCommandAttachmentOption,
+    SlashCommandStringOption,
+} from "discord.js";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const speechbubble = new SlashCommand(
-    ["speechbubble", "textbubble"],
-    "Generate a speech bubble meme with the given image",
-    "Fun",
-    true
-);
+// TODO: Fix images
 
-speechbubble.builder
-    .addAttachmentOption((o) =>
-        o.setName("image").setDescription("Source image").setRequired(true)
-    )
-    .addStringOption((o) =>
-        o.setName("template").setDescription("Meme template type").addChoices(
-            {
-                name: "White speech bubble",
-                value: "default",
-            },
-            {
-                name: "Crop/Transparent",
-                value: "crop",
-            }
-        )
+const speechbubble = new SlashCommand()
+    .setName("speechbubble")
+    .setNameAliases(["textbubble"])
+    .setDescription("Generate a speech bubble meme with the given image")
+    .setCategory(CommandCategory.Fun)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandAttachmentOption()
+            .setName("image")
+            .setDescription("Source image")
+            .setRequired(true),
+        new SlashCommandStringOption()
+            .setName("template")
+            .setDescription("Bubble image type")
+            .setChoices(
+                {
+                    name: "White speech bubble",
+                    value: "default",
+                },
+                {
+                    name: "Crop/Transparent",
+                    value: "crop",
+                }
+            )
     );
 
-speechbubble.setExecuteFunction(async (command) => {
+speechbubble.setExecutable(async (command) => {
     const attachment = command.options.getAttachment("image", true);
     const type = command.options.getString("template") || "default";
 
@@ -49,6 +58,15 @@ speechbubble.setExecuteFunction(async (command) => {
             ],
         });
 
+    function getImageSize(width: number, height: number, canvas: Canvas) {
+        const r = Math.min(canvas.width / width, canvas.height / height);
+
+        return {
+            width: width * r + 5,
+            height: height * r,
+        };
+    }
+
     const sizing: { [key: string]: { width: number; height: number } } = {
         crop: {
             width: attachment.width || 100,
@@ -58,11 +76,7 @@ speechbubble.setExecuteFunction(async (command) => {
             width: attachment.width || 100,
             height:
                 (attachment.height || 100) +
-                160 *
-                    Math.min(
-                        (attachment.width || 100) / 490,
-                        (attachment.height || 100) / 160
-                    ),
+                160 * Math.min((attachment.width || 100) / 490, (attachment.height || 100) / 160),
         },
     };
 
@@ -77,11 +91,7 @@ speechbubble.setExecuteFunction(async (command) => {
             "https://media.discordapp.net/attachments/959908232736952420/1095157593468579951/bubble.png"
         );
 
-        const maskSize = getImageSize(
-            maskImage.width,
-            maskImage.height,
-            canvas
-        );
+        const maskSize = getImageSize(maskImage.width, maskImage.height, canvas);
         ctx.drawImage(
             maskImage,
             (canvas.width - maskSize.width) / 2,
@@ -96,11 +106,7 @@ speechbubble.setExecuteFunction(async (command) => {
             "https://media.discordapp.net/attachments/959908232736952420/1095408128041943141/goofy_bubble.png"
         );
 
-        const sizing = getImageSize(
-            goofyImage.width,
-            goofyImage.height,
-            canvas
-        );
+        const sizing = getImageSize(goofyImage.width, goofyImage.height, canvas);
 
         ctx.drawImage(goofyImage, 0, 0, canvas.width, sizing.height);
         ctx.drawImage(baseImage, 0, sizing.height);
@@ -115,13 +121,4 @@ speechbubble.setExecuteFunction(async (command) => {
     });
 });
 
-function getImageSize(width: number, height: number, canvas: Canvas) {
-    const r = Math.min(canvas.width / width, canvas.height / height);
-
-    return {
-        width: width * r + 5,
-        height: height * r,
-    };
-}
-
-export default speechbubble;
+export { speechbubble };

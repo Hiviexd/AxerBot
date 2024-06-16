@@ -1,24 +1,16 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
-import listReminders from "./subcommands/reminder/listReminders";
-import createReminder from "./subcommands/reminder/createReminder";
-import removeReminder from "./subcommands/reminder/removeReminder";
+import { listReminders } from "./subcommands/reminder/listReminders";
+import { createReminder } from "./subcommands/reminder/createReminder";
+import { removeReminder } from "./subcommands/reminder/removeReminder";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const reminder = new SlashCommand(
-    "reminder",
-    "Sets a reminder",
-    "General",
-    true,
-    {
-        syntax: "/reminder `<time>`\n/reminder `<time>` `<message>`",
-        "time format": "`s`: seconds, `m`: minutes, `h`: hours, `d`: days",
-        example: "/reminder `30m` `Remind me to do something`\n/reminder `1d`",
-    }
-);
+const reminder = new SlashCommand()
+    .setName("reminder")
+    .setDescription("I will remind you about something")
+    .setCategory(CommandCategory.General)
+    .setDMPermission(true)
+    .addSubcommand(createReminder)
+    .addSubcommand(listReminders)
+    .addSubcommand(removeReminder);
 
-reminder.addSubcommand(listReminders);
-reminder.addSubcommand(createReminder);
-reminder.addSubcommand(removeReminder);
-
-reminder.setExecuteFunction(async (command) => {});
-
-export default reminder;
+export { reminder };

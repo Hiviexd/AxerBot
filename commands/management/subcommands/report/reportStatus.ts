@@ -3,16 +3,13 @@ import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommand
 import colors from "../../../../constants/colors";
 import { guilds } from "../../../../database";
 
-const reportStatus = new SlashCommandSubcommand(
-    "status",
-    "Display all parameters of this module",
-    {},
-    [PermissionFlagsBits.ManageGuild]
-);
+const reportStatus = new SlashCommandSubcommand()
+    .setName("status")
+    .setDescription("Display module configuration")
+    .setPermissions("ManageGuild");
 
-reportStatus.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
-        return;
+reportStatus.setExecutable(async (command) => {
+    if (!command.member || typeof command.member.permissions == "string") return;
 
     let guild = await guilds.findById(command.guildId);
     if (!guild) return;
@@ -26,10 +23,7 @@ reportStatus.setExecuteFunction(async (command) => {
             },
             {
                 name: "Channel",
-                value:
-                    guild.reports.channel == ""
-                        ? "🔴 None"
-                        : `<#${guild.reports.channel}>`,
+                value: guild.reports.channel == "" ? "🔴 None" : `<#${guild.reports.channel}>`,
             },
             {
                 name: "Pings",
@@ -47,4 +41,4 @@ reportStatus.setExecuteFunction(async (command) => {
     });
 });
 
-export default reportStatus;
+export { reportStatus };

@@ -1,26 +1,23 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { SlashCommandSubcommandGroup } from "../../models/commands/SlashCommandSubcommandGroup";
-import calculateBeatmap from "./subcommands/beatmap/calculateBeatmap";
-// import randomBeatmap from "./subcommands/beatmap/randomBeatmap";
-import searchBeatmap from "./subcommands/beatmap/searchBeatmap";
-import checkArtistPermissionsBeatmap from "./subcommands/beatmap/checkArtistPermissionsBeatmap";
+import { calculateBeatmap } from "./subcommands/beatmap/calculateBeatmap";
+import { searchBeatmap } from "./subcommands/beatmap/searchBeatmap";
+import { checkArtistPermissionsBeatmap } from "./subcommands/beatmap/checkArtistPermissionsBeatmap";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
+const beatmap = new SlashCommand()
+    .setName("beatmap")
+    .setDescription("Collection of beatmap related commands")
+    .setCategory(CommandCategory.Osu)
+    .setDMPermission(true)
+    .addSubcommand(searchBeatmap)
+    .addSubcommand(calculateBeatmap);
 
-const beatmap = new SlashCommand(
-    "beatmap",
-    "Collection of beatmap commands",
-    "osu!",
-    true
-);
-
-beatmap.addSubcommand(searchBeatmap);
-beatmap.addSubcommand(calculateBeatmap);
-// beatmap.addSubcommand(randomBeatmap);
-
-const commandGroupCHECK = new SlashCommandSubcommandGroup("check", "Perform a check on a beatmap");
-
-commandGroupCHECK.addCommand(checkArtistPermissionsBeatmap);
+const commandGroupCHECK = new SlashCommandSubcommandGroup()
+    .setName("check")
+    .setDescription("Perform some checks in the map")
+    .addCommands(checkArtistPermissionsBeatmap);
 
 beatmap.addSubcommandGroup(commandGroupCHECK);
 
-export default beatmap;
+export { beatmap };

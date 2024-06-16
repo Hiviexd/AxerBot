@@ -1,44 +1,37 @@
-import { PermissionFlagsBits } from "discord.js";
+import { PermissionFlagsBits, SlashCommandRoleOption, SlashCommandStringOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationRemoveGroupRole = new SlashCommandSubcommand(
-    "grouprole",
-    "Remove a group role from the system",
-    {
-        syntax: "/verification `remove grouprole` `group:<Group Name>` `role:<Role>` `[mode:<modes>]`",
-        "how it works":
-            "To remove a role, you need to provide all info about that role, including the role mention and usergroup with mode",
+const verificationRemoveGroupRole = new SlashCommandSubcommand()
+    .setName("grouprole")
+    .setDescription("Add discord roles for users that has roles on osu!")
+    .setHelp({
         groups: [
             "`DEV`: osu!dev",
             "`SPT`: Support Team",
             "`NAT`: Nomination Assessment Team",
             "`BN`: Beatmap Nominators",
-            "`PBN`: (Probation BNs)",
+            "`PBN`: Probationary BNs",
             "`GMT`: Global Moderation Team",
             "`LVD`: Project Loved",
             "`ALM`: Alumni",
-            "`BSC`: Beatmap Spotlight Curators",
         ],
         modes: [
-            "`osu`: osu!standard",
+            "`osu`: osu!",
             "`taiko`: osu!taiko",
             "`fruits`: osu!catch",
             "`mania`: osu!mania",
-            "`none`: This is for groups without modes, like LVD",
+            "`No Modes`: This is for groups without modes, like GMT",
         ],
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
-
-verificationRemoveGroupRole.builder
-    .addRoleOption((o) =>
-        o.setName("role").setDescription("Target role").setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+    })
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("role")
+            .setDescription("Target role")
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("group")
             .setDescription("Role usergroup")
             .addChoices(
@@ -79,10 +72,8 @@ verificationRemoveGroupRole.builder
                     value: "BSC",
                 }
             )
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("mode")
             .setDescription("Game Mode of the role")
             .addChoices(
@@ -91,7 +82,7 @@ verificationRemoveGroupRole.builder
                     value: "all",
                 },
                 {
-                    name: "None (Like loved captains)",
+                    name: "No Modes",
                     value: "none",
                 },
                 {
@@ -112,9 +103,10 @@ verificationRemoveGroupRole.builder
                 }
             )
             .setRequired(true)
-    );
+    )
+    .setPermissions("ManageGuild");
 
-verificationRemoveGroupRole.setExecuteFunction(async (command) => {
+verificationRemoveGroupRole.setExecutable(async (command) => {
     const group = command.options.getString("group", true);
     const role = command.options.getRole("role", true);
     const mode = command.options.getString("mode", true);
@@ -156,13 +148,12 @@ verificationRemoveGroupRole.setExecuteFunction(async (command) => {
             embeds: [generateErrorEmbed("Role not found.")],
         });
 
-    guild.verification.targets.group_roles =
-        guild.verification.targets.group_roles.filter(
-            (r: any) =>
-                r.id != targetRole.id &&
-                r.group != targetRole.group &&
-                r.modes.join(",") != targetRole.modes.join(",")
-        );
+    guild.verification.targets.group_roles = guild.verification.targets.group_roles.filter(
+        (r: any) =>
+            r.id != targetRole.id &&
+            r.group != targetRole.group &&
+            r.modes.join(",") != targetRole.modes.join(",")
+    );
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
@@ -171,4 +162,4 @@ verificationRemoveGroupRole.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationRemoveGroupRole;
+export { verificationRemoveGroupRole };

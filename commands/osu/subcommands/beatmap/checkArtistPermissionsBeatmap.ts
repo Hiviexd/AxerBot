@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandStringOption } from "discord.js";
 
 import colors from "../../../../constants/colors";
 import osuApi from "../../../../modules/osu/fetcher/osuApi";
@@ -6,16 +6,17 @@ import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generat
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import truncateString from "../../../../helpers/text/truncateString";
 
-const checkArtistPermissionsBeatmap = new SlashCommandSubcommand(
-    "artistpermissions",
-    "Check if a beatmap complies with content usage permissions"
-);
+const checkArtistPermissionsBeatmap = new SlashCommandSubcommand()
+    .setName("artistpermissions")
+    .setDescription("Check if a beatmap complies with content usage permissions")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("link")
+            .setDescription("The beatmap to check")
+            .setRequired(true)
+    );
 
-checkArtistPermissionsBeatmap.builder.addStringOption((o) =>
-    o.setName("link").setDescription("The beatmap to check").setRequired(true)
-);
-
-checkArtistPermissionsBeatmap.setExecuteFunction(async (command) => {
+checkArtistPermissionsBeatmap.setExecutable(async (command) => {
     const link = command.options.getString("link");
 
     if (!link) {
@@ -164,7 +165,9 @@ checkArtistPermissionsBeatmap.setExecuteFunction(async (command) => {
         embed.addFields(
             {
                 name: "Artist",
-                value: artistInfo?.artist.id ? `[${artistInfo?.artist.name}](https://osu.ppy.sh/beatmaps/artists/${artistInfo?.artist.id})` : artistInfo?.artist.name || "Unknown",
+                value: artistInfo?.artist.id
+                    ? `[${artistInfo?.artist.name}](https://osu.ppy.sh/beatmaps/artists/${artistInfo?.artist.id})`
+                    : artistInfo?.artist.name || "Unknown",
                 inline: true,
             },
             {
@@ -253,4 +256,4 @@ function getStatusDecorations(status: string) {
     }
 }
 
-export default checkArtistPermissionsBeatmap;
+export { checkArtistPermissionsBeatmap };

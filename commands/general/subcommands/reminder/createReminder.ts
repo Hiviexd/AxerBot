@@ -1,30 +1,26 @@
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { reminders } from "../../../../database/";
-import { ChannelType, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandStringOption } from "discord.js";
 import colors from "../../../../constants/colors";
 import generateErrorEmbedWithTitle from "../../../../helpers/text/embeds/generateErrorEmbedWithTitle";
 import { consoleCheck } from "../../../../helpers/core/logger";
 import { randomBytes } from "crypto";
-export const createReminder = new SlashCommandSubcommand(
-    "new",
-    "create a new reminder"
-);
 
-createReminder.builder
-    .addStringOption((option) =>
-        option
+const createReminder = new SlashCommandSubcommand()
+    .setName("new")
+    .setDescription("Create a new reminder")
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("time")
             .setDescription("Time of the reminder")
-            .setRequired(true)
-    )
-    .addStringOption((option) =>
-        option
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("content")
             .setDescription("Content of the reminder")
             .setRequired(true)
     );
 
-createReminder.setExecuteFunction(async (command) => {
+createReminder.setExecutable(async (command) => {
     // ? prevent errors
 
     const userReminders = await reminders.find({
@@ -66,10 +62,7 @@ createReminder.setExecuteFunction(async (command) => {
             },
         });
 
-    const measure = timeInput.substring(
-        timeInput.toString().length - 1,
-        timeInput.length
-    );
+    const measure = timeInput.substring(timeInput.toString().length - 1, timeInput.length);
 
     let time = Number(timeInput.substring(0, timeInput.length - 1));
 
@@ -152,9 +145,7 @@ createReminder.setExecuteFunction(async (command) => {
         .addFields(
             {
                 name: "Time",
-                value: `${normalizedTime} (<t:${Math.trunc(
-                    reminderSendDate / 1000
-                )}:R>)`,
+                value: `${normalizedTime} (<t:${Math.trunc(reminderSendDate / 1000)}:R>)`,
             },
             {
                 name: "Message",
@@ -172,10 +163,8 @@ createReminder.setExecuteFunction(async (command) => {
 
     consoleCheck(
         "reminder.ts",
-        `${command.user.tag} set a reminder in ${
-            command.guild?.name || "Private Messages"
-        }`
+        `${command.user.tag} set a reminder in ${command.guild?.name || "Private Messages"}`
     );
 });
 
-export default createReminder;
+export { createReminder };

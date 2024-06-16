@@ -1,4 +1,10 @@
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import {
+    ActionRowBuilder,
+    AttachmentBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    SlashCommandStringOption,
+} from "discord.js";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import { MapperCard } from "../../models/images/MapperCard";
@@ -6,16 +12,19 @@ import osuApi from "../../modules/osu/fetcher/osuApi";
 import checkCommandPlayers from "../../modules/osu/player/checkCommandPlayers";
 import UserNotFound from "../../responses/embeds/UserNotFound";
 import UserNotMapper from "../../responses/embeds/UserNotMapper";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const mapper = new SlashCommand("mapper", "Displays mapper statistics of a user", "osu!", true, {
-    syntax: "/mapper `<user>`",
-    example: "/mapper `Hivie`\n /mapper <@341321481390784512>\n /mapper `HEAVENLY MOON`",
-    note: "You won't need to specify your username if you set yourself up with this command:\n`/osuset user <username>`",
-});
+const mapper = new SlashCommand()
+    .setName("mapper")
+    .setNameAliases("card")
+    .setDescription("Generate a card including mapping statistics of an user")
+    .setCategory(CommandCategory.Osu)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandStringOption().setName("username").setDescription("Mapper username")
+    );
 
-mapper.builder.addStringOption((o) => o.setName("username").setDescription("Mapper username"));
-
-mapper.setExecuteFunction(async (command) => {
+mapper.setExecutable(async (command) => {
     let { playerName, status } = await checkCommandPlayers(command);
 
     if (status != 200) return;
@@ -78,4 +87,4 @@ mapper.setExecuteFunction(async (command) => {
         });
 });
 
-export default mapper;
+export { mapper };

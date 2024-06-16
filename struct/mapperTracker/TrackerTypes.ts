@@ -1,0 +1,16 @@
+export enum MapperTrackerType {
+    Nominate = "nominate",
+    Qualify = "qualify",
+    Disqualify = "disqualify",
+    NominationReset = "nomination_reset",
+    NominationResetRecive = "nomination_reset_received",
+    Rank = "rank",
+    GenreEdit = "genre_edit",
+    LanguageEdit = "language_edit",
+    OffsetEdit = "offset_edit",
+    TagsEdit = "tags_edit",
+    OwnerChange = "beatmap_owner_change",
+    Revive = "beatmapsetRevive",
+    Upload = "beatmapsetUpload",
+    Update = "beatmapsetUpdate",
+}

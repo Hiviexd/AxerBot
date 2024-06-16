@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, SlashCommandStringOption } from "discord.js";
 import moment from "moment";
 import colors from "../../../../constants/colors";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -6,19 +6,19 @@ import truncateString from "../../../../helpers/text/truncateString";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { guilds } from "../../../../database";
 
-const userlogList = new SlashCommandSubcommand(
-    "list",
-    "List all logs from a user",
-    undefined
-);
+const userlogList = new SlashCommandSubcommand()
+    .setName("list")
+    .setDescription("List all logs from an user")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("username")
+            .setDescription("User to get logs")
+            .setRequired(true)
+    )
+    .setPermissions("ModerateMembers");
 
-userlogList.builder.addStringOption((o) =>
-    o.setName("username").setDescription("User to get logs").setRequired(true)
-);
-
-userlogList.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
-        return;
+userlogList.setExecutable(async (command) => {
+    if (!command.member || typeof command.member.permissions == "string") return;
 
     let guild = await guilds.findById(command.guildId);
     if (!guild) return;
@@ -36,8 +36,7 @@ userlogList.setExecuteFunction(async (command) => {
         //sort userlogs by date from newest to oldest
         userLogs.logs.sort((a, b) => {
             return (
-                new Date(b.date || new Date()).valueOf() -
-                new Date(a.date || new Date()).valueOf()
+                new Date(b.date || new Date()).valueOf() - new Date(a.date || new Date()).valueOf()
             );
         });
     }
@@ -64,4 +63,4 @@ userlogList.setExecuteFunction(async (command) => {
     await command.editReply({ embeds: [embed] });
 });
 
-export default userlogList;
+export { userlogList };

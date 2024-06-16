@@ -1,244 +1,246 @@
-import {
-    Client,
-    ChatInputCommandInteraction,
-    AttachmentBuilder,
-    ActionRowBuilder,
-    StringSelectMenuBuilder,
-} from "discord.js";
-import axios from "axios";
+// TODO: REWRITE ENTIRE SYSTEM
 
-import { heardles } from "../../database";
-import { Beatmapset } from "../../types/beatmap";
-import osuApi from "../../modules/osu/fetcher/osuApi";
-import crypto from "crypto";
-import truncateString from "../../helpers/text/truncateString";
-import { consoleLog, consoleCheck } from "../../helpers/core/logger";
-import { SlashCommand } from "../../models/commands/SlashCommand";
+// import {
+//     Client,
+//     ChatInputCommandInteraction,
+//     AttachmentBuilder,
+//     ActionRowBuilder,
+//     StringSelectMenuBuilder,
+// } from "discord.js";
+// import axios from "axios";
 
-const heardle = new SlashCommand("heardle", "Guess the song!", "Fun", false);
+// import { heardles } from "../../database";
+// import { Beatmapset } from "../../types/beatmap";
+// import osuApi from "../../modules/osu/fetcher/osuApi";
+// import crypto from "crypto";
+// import truncateString from "../../helpers/text/truncateString";
+// import { consoleLog, consoleCheck } from "../../helpers/core/logger";
+// import { SlashCommand } from "../../models/commands/SlashCommand";
 
-heardle.builder
-    .addStringOption((o) =>
-        o
-            .setName("action")
-            .setDescription("Start or stop the current section")
-            .addChoices(
-                {
-                    name: "start",
-                    value: "start",
-                },
-                {
-                    name: "stop",
-                    value: "stop",
-                }
-            )
-            .setRequired(true)
-    )
-    .addIntegerOption((o) =>
-        o
-            .setName("difficulty")
-            .setDescription("Game difficulty")
-            .setMinValue(1)
-            .setMaxValue(100)
-    );
+// const heardle = new SlashCommand("heardle", "Guess the song!", "Fun", false);
 
-heardle.setExecuteFunction(async (command) => {
-    const action = command.options.get("action", true)
-        ? command.options.get("action", true)?.value
-        : "play_count";
+// heardle.builder
+//     .addStringOption((o) =>
+//         o
+//             .setName("action")
+//             .setDescription("Start or stop the current section")
+//             .addChoices(
+//                 {
+//                     name: "start",
+//                     value: "start",
+//                 },
+//                 {
+//                     name: "stop",
+//                     value: "stop",
+//                 }
+//             )
+//             .setRequired(true)
+//     )
+//     .addIntegerOption((o) =>
+//         o
+//             .setName("difficulty")
+//             .setDescription("Game difficulty")
+//             .setMinValue(1)
+//             .setMaxValue(100)
+//     );
 
-    const _heardle = await heardles.findOne({ owner: command.user.id });
+// heardle.setExecuteFunction(async (command) => {
+//     const action = command.options.get("action", true)
+//         ? command.options.get("action", true)?.value
+//         : "play_count";
 
-    if (!command.channel) return;
+//     const _heardle = await heardles.findOne({ owner: command.user.id });
 
-    function getID() {
-        return crypto.randomBytes(30).toString("hex");
-    }
+//     if (!command.channel) return;
 
-    if (action == "start") {
-        if (_heardle)
-            return command.editReply(
-                `You already have another heardle session running on <#${_heardle.channel}>! Please, stop the session and try again.`
-            );
+//     function getID() {
+//         return crypto.randomBytes(30).toString("hex");
+//     }
 
-        startHeardle();
-    }
+//     if (action == "start") {
+//         if (_heardle)
+//             return command.editReply(
+//                 `You already have another heardle session running on <#${_heardle.channel}>! Please, stop the session and try again.`
+//             );
 
-    if (action == "stop") {
-        if (!_heardle)
-            return await command.editReply(
-                ":x: Wait... You don't have a heardle session running! Use `/heardle action:start` to start a session."
-            );
+//         startHeardle();
+//     }
 
-        await heardles.deleteMany({ owner: command.user.id });
+//     if (action == "stop") {
+//         if (!_heardle)
+//             return await command.editReply(
+//                 ":x: Wait... You don't have a heardle session running! Use `/heardle action:start` to start a session."
+//             );
 
-        await command.editReply(
-            ":white_check_mark: Done! Use `/heardle action:start` to start another session."
-        );
-    }
+//         await heardles.deleteMany({ owner: command.user.id });
 
-    async function startHeardle() {
-        let difficulty = command.options.getInteger("difficulty") || 1;
+//         await command.editReply(
+//             ":white_check_mark: Done! Use `/heardle action:start` to start another session."
+//         );
+//     }
 
-        consoleLog(
-            `heardle`,
-            `Starting a new heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty}`
-        );
+//     async function startHeardle() {
+//         let difficulty = command.options.getInteger("difficulty") || 1;
 
-        const playedBeatmaps: number[] = [];
-        let validIndexes: number[] = [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23, 24,
-        ];
+//         consoleLog(
+//             `heardle`,
+//             `Starting a new heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty}`
+//         );
 
-        let answer = "";
-        let beatmaps: Beatmapset[] = [];
-        let answerIndex = -1;
-        let size = 1;
-        let actionRow = new ActionRowBuilder<StringSelectMenuBuilder>();
-        let attachment = new AttachmentBuilder(new Buffer(""), {
-            name: "Cant_Load.mp3",
-        });
-        const heardleId = `heardle|${getID()}`;
+//         const playedBeatmaps: number[] = [];
+//         let validIndexes: number[] = [
+//             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+//             19, 20, 21, 22, 23, 24,
+//         ];
 
-        const sortedMaps = await updateHeardle();
+//         let answer = "";
+//         let beatmaps: Beatmapset[] = [];
+//         let answerIndex = -1;
+//         let size = 1;
+//         let actionRow = new ActionRowBuilder<StringSelectMenuBuilder>();
+//         let attachment = new AttachmentBuilder(new Buffer(""), {
+//             name: "Cant_Load.mp3",
+//         });
+//         const heardleId = `heardle|${getID()}`;
 
-        const heardle = new heardles({
-            _id: heardleId,
-            owner: command.user.id,
-            difficulty,
-            indexes: validIndexes.filter((i) => i != answerIndex),
-            created_at: new Date(),
-            played: 1,
-            message: command.id,
-            beatmaps: beatmaps.map((b) => {
-                const _map = {};
+//         const sortedMaps = await updateHeardle();
 
-                Object.assign(_map, {
-                    id: b.id,
-                    title: b.title,
-                    artist: b.artist,
-                    covers: b.covers,
-                });
+//         const heardle = new heardles({
+//             _id: heardleId,
+//             owner: command.user.id,
+//             difficulty,
+//             indexes: validIndexes.filter((i) => i != answerIndex),
+//             created_at: new Date(),
+//             played: 1,
+//             message: command.id,
+//             beatmaps: beatmaps.map((b) => {
+//                 const _map = {};
 
-                return _map;
-            }),
-            date: new Date(),
-            map: sortedMaps[answerIndex],
-            channel: command.channel?.id,
-            guild: command.guildId,
-            answer,
-        });
+//                 Object.assign(_map, {
+//                     id: b.id,
+//                     title: b.title,
+//                     artist: b.artist,
+//                     covers: b.covers,
+//                 });
 
-        await heardle.save();
+//                 return _map;
+//             }),
+//             date: new Date(),
+//             map: sortedMaps[answerIndex],
+//             channel: command.channel?.id,
+//             guild: command.guildId,
+//             answer,
+//         });
 
-        await command.editReply({
-            content: `**Song**: ${heardle.played}/25\n**Level**: ${difficulty}`,
-            components: [actionRow],
-            files: [attachment],
-        });
+//         await heardle.save();
 
-        consoleCheck(
-            `heardle`,
-            `Heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty} | Started!`
-        );
+//         await command.editReply({
+//             content: `**Song**: ${heardle.played}/25\n**Level**: ${difficulty}`,
+//             components: [actionRow],
+//             files: [attachment],
+//         });
 
-        async function updateHeardle(): Promise<any> {
-            const b = await osuApi.fetch.featuredBeatmapsets(difficulty);
+//         consoleCheck(
+//             `heardle`,
+//             `Heardle for ${command.user.tag} (${command.user.id}) on ${command.guild?.name} (${command.guildId}) with level ${difficulty} | Started!`
+//         );
 
-            if (b.status != 200 || !b.data) {
-                validIndexes = [
-                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                    17, 18, 19, 20, 21, 22, 23, 24,
-                ];
+//         async function updateHeardle(): Promise<any> {
+//             const b = await osuApi.fetch.featuredBeatmapsets(difficulty);
 
-                updateHeardle();
-                return [];
-            }
+//             if (b.status != 200 || !b.data) {
+//                 validIndexes = [
+//                     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+//                     17, 18, 19, 20, 21, 22, 23, 24,
+//                 ];
 
-            b.data.beatmapsets.splice(25, 999);
+//                 updateHeardle();
+//                 return [];
+//             }
 
-            beatmaps = b.data.beatmapsets;
+//             b.data.beatmapsets.splice(25, 999);
 
-            const beatmapTitleSelection =
-                new StringSelectMenuBuilder().setCustomId(heardleId);
+//             beatmaps = b.data.beatmapsets;
 
-            const sortedBeatmaps = getBeatmapNames(beatmapTitleSelection);
+//             const beatmapTitleSelection =
+//                 new StringSelectMenuBuilder().setCustomId(heardleId);
 
-            answerIndex =
-                validIndexes[Math.floor(Math.random() * validIndexes.length)];
+//             const sortedBeatmaps = getBeatmapNames(beatmapTitleSelection);
 
-            if (!sortedBeatmaps[answerIndex]) answerIndex = validIndexes[0];
+//             answerIndex =
+//                 validIndexes[Math.floor(Math.random() * validIndexes.length)];
 
-            answer = sortedBeatmaps[answerIndex].title;
-            playedBeatmaps.push(sortedBeatmaps[answerIndex].id);
+//             if (!sortedBeatmaps[answerIndex]) answerIndex = validIndexes[0];
 
-            actionRow =
-                new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-                    beatmapTitleSelection
-                );
+//             answer = sortedBeatmaps[answerIndex].title;
+//             playedBeatmaps.push(sortedBeatmaps[answerIndex].id);
 
-            attachment = await getAudio(sortedBeatmaps[answerIndex].id);
+//             actionRow =
+//                 new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+//                     beatmapTitleSelection
+//                 );
 
-            return sortedBeatmaps;
-        }
+//             attachment = await getAudio(sortedBeatmaps[answerIndex].id);
 
-        async function getAudio(id: number) {
-            try {
-                const buffer = await axios(
-                    `https://b.ppy.sh/preview/${id}.mp3`,
-                    {
-                        responseType: "arraybuffer",
-                        headers: {
-                            accept: "audio/mp3",
-                        },
-                    }
-                );
+//             return sortedBeatmaps;
+//         }
 
-                const attachment = new AttachmentBuilder(
-                    Buffer.from(buffer.data),
-                    {
-                        name: "Heardle.mp3",
-                    }
-                );
+//         async function getAudio(id: number) {
+//             try {
+//                 const buffer = await axios(
+//                     `https://b.ppy.sh/preview/${id}.mp3`,
+//                     {
+//                         responseType: "arraybuffer",
+//                         headers: {
+//                             accept: "audio/mp3",
+//                         },
+//                     }
+//                 );
 
-                return attachment;
-            } catch (e) {
-                command.editReply(
-                    "osu! website sucks, i can't load the beatmap preview. Please, start a new section."
-                );
+//                 const attachment = new AttachmentBuilder(
+//                     Buffer.from(buffer.data),
+//                     {
+//                         name: "Heardle.mp3",
+//                     }
+//                 );
 
-                return new AttachmentBuilder(".", {
-                    name: "osu_website_response.mp3",
-                });
-            }
-        }
+//                 return attachment;
+//             } catch (e) {
+//                 command.editReply(
+//                     "osu! website sucks, i can't load the beatmap preview. Please, start a new section."
+//                 );
 
-        function getBeatmapNames(menu: StringSelectMenuBuilder) {
-            const sortedMaps = beatmaps;
+//                 return new AttachmentBuilder(".", {
+//                     name: "osu_website_response.mp3",
+//                 });
+//             }
+//         }
 
-            sortedMaps.sort((a, b) => {
-                if (a.title.toLowerCase() < b.title.toLowerCase()) {
-                    return -1;
-                }
-                if (a.title.toLowerCase() > b.title.toLowerCase()) {
-                    return 1;
-                }
+//         function getBeatmapNames(menu: StringSelectMenuBuilder) {
+//             const sortedMaps = beatmaps;
 
-                return 0;
-            });
+//             sortedMaps.sort((a, b) => {
+//                 if (a.title.toLowerCase() < b.title.toLowerCase()) {
+//                     return -1;
+//                 }
+//                 if (a.title.toLowerCase() > b.title.toLowerCase()) {
+//                     return 1;
+//                 }
 
-            menu.setOptions();
-            sortedMaps.forEach((map) => {
-                menu.addOptions({
-                    label: truncateString(`${map.title} - ${map.artist}`, 100),
-                    value: map.title,
-                });
-            });
+//                 return 0;
+//             });
 
-            return sortedMaps;
-        }
-    }
-});
+//             menu.setOptions();
+//             sortedMaps.forEach((map) => {
+//                 menu.addOptions({
+//                     label: truncateString(`${map.title} - ${map.artist}`, 100),
+//                     value: map.title,
+//                 });
+//             });
 
-export default heardle;
+//             return sortedMaps;
+//         }
+//     }
+// });
+
+// export default heardle;

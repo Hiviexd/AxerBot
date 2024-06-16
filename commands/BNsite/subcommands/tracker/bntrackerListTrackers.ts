@@ -1,17 +1,15 @@
-import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import colors from "../../../../constants/colors";
 import { tracks } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 
-const info = new SlashCommandSubcommand(
-    "info",
-    "List all active trackers in the server",
-    undefined,
-    [PermissionFlagsBits.ManageChannels]
-);
+const bntrackerListTrackers = new SlashCommandSubcommand()
+    .setName("list")
+    .setDescription("List of all active trackers in this server")
+    .setPermissions("ManageChannels");
 
-info.setExecuteFunction(async (command) => {
+bntrackerListTrackers.setExecutable(async (command) => {
     if (!command.member) return;
 
     const guildTrackers = await tracks.find({
@@ -44,9 +42,7 @@ info.setExecuteFunction(async (command) => {
         .setDescription(
             `${guildTrackers
                 .map((t) => {
-                    return `<#${t.channel}> [${t.targets.modes.join(
-                        ","
-                    )}] (${getStatus(t)})`;
+                    return `<#${t.channel}> [${t.targets.modes.join(",")}] (${getStatus(t)})`;
                 })
                 .join("\n")}`
         )
@@ -61,4 +57,4 @@ info.setExecuteFunction(async (command) => {
     });
 });
 
-export default info;
+export { bntrackerListTrackers };

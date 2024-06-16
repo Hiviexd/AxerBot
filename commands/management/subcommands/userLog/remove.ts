@@ -1,28 +1,21 @@
-import {
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    PermissionFlagsBits,
-} from "discord.js";
+import { EmbedBuilder, SlashCommandIntegerOption, SlashCommandStringOption } from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const userlogRemoveLog = new SlashCommandSubcommand(
-    "remove",
-    "Remove a member log",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers]
-);
-
-userlogRemoveLog.builder
-    .addStringOption((o) =>
-        o.setName("username").setDescription("Target user").setRequired(true)
+const userlogRemoveLog = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("Remove a member log")
+    .addOptions(
+        new SlashCommandStringOption()
+            .setName("username")
+            .setDescription("Target user")
+            .setRequired(true),
+        new SlashCommandIntegerOption().setName("logid").setDescription("Log id").setRequired(true)
     )
-    .addIntegerOption((o) =>
-        o.setName("logid").setDescription("Log id").setRequired(true)
-    );
+    .setPermissions("ModerateMembers");
 
-userlogRemoveLog.setExecuteFunction(async (command) => {
+userlogRemoveLog.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const user = command.options.getString("username", true);
@@ -81,4 +74,4 @@ userlogRemoveLog.setExecuteFunction(async (command) => {
     });
 });
 
-export default userlogRemoveLog;
+export { userlogRemoveLog };

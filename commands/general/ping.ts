@@ -1,9 +1,13 @@
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const ping = new SlashCommand("ping", "Pong?", "General", true);
+const ping = new SlashCommand()
+    .setName("ping")
+    .setDescription("Pong?")
+    .setCategory(CommandCategory.General);
 
-ping.setExecuteFunction(async (command) => {
+ping.setExecutable(async (command) => {
     return command.editReply("`" + command.client.ws.ping + " ms`");
 });
 
-export default ping;
+export { ping };

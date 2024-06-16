@@ -1,29 +1,22 @@
-import {
-    ChannelType,
-    ChatInputCommandInteraction,
-    PermissionFlagsBits,
-} from "discord.js";
+import { ChannelType, SlashCommandChannelOption } from "discord.js";
 import { tracks } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const removeTracker = new SlashCommandSubcommand(
-    "remove",
-    "Remove a tracker for a channel",
-    {
-        syntax: `/bntracker remove <#channel>`,
-    },
-    [PermissionFlagsBits.ManageChannels]
-);
+const bntrackerRemoveTracker = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("Remove a tracker for a channel")
+    .setPermissions("ManageChannels")
+    .addOptions(
+        new SlashCommandChannelOption()
+            .setName("channel")
+            .setDescription("Tracker channel")
+            .setRequired(true)
+    );
 
-removeTracker.builder.addChannelOption((o) =>
-    o.setName("channel").setDescription("Tracker channel").setRequired(true)
-);
-
-removeTracker.setExecuteFunction(async (command) => {
-    if (!command.member || typeof command.member.permissions == "string")
-        return;
+bntrackerRemoveTracker.setExecutable(async (command) => {
+    if (!command.member || typeof command.member.permissions == "string") return;
 
     const channel = command.options.getChannel("channel", true);
 
@@ -35,16 +28,12 @@ removeTracker.setExecuteFunction(async (command) => {
 
     if (actualTrack.length == 0)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("This channel doesn't have a tracker."),
-            ],
+            embeds: [generateErrorEmbed("This channel doesn't have a tracker.")],
         });
 
     if (channel.type != ChannelType.GuildText)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed("You need to provide a valid text channel."),
-            ],
+            embeds: [generateErrorEmbed("You need to provide a valid text channel.")],
         });
 
     await tracks.deleteMany({
@@ -58,4 +47,4 @@ removeTracker.setExecuteFunction(async (command) => {
     });
 });
 
-export default removeTracker;
+export { bntrackerRemoveTracker };

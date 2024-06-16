@@ -2,23 +2,20 @@ import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
-import { PermissionFlagsBits } from "discord.js";
+import { SlashCommandRoleOption } from "discord.js";
 
-const verificationRemoveRole = new SlashCommandSubcommand(
-    "role",
-    "Removes a role from the default verification role(s) of the server",
-    {
-        syntax: "/verification `remove role` `target_role:<Role Id|Role Mention>`",
-        example: "/verification `remove role` `target_role:@Verified`",
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
+const verificationRemoveRole = new SlashCommandSubcommand()
+    .setName("role")
+    .setDescription("Remove a role from default verification roles")
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("target_role")
+            .setDescription("Role to remove")
+            .setRequired(true)
+    )
+    .setPermissions("ModerateMembers");
 
-verificationRemoveRole.builder.addRoleOption((o) =>
-    o.setName("target_role").setDescription("Role to remove").setRequired(true)
-);
-
-verificationRemoveRole.setExecuteFunction(async (command) => {
+verificationRemoveRole.setExecutable(async (command) => {
     if (!command.guild || !command.client.user) return;
 
     const role = command.options.getRole("target_role", true);
@@ -33,9 +30,7 @@ verificationRemoveRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    const botAsMember = await command.guild.members.fetch(
-        command.client.user.id
-    );
+    const botAsMember = await command.guild.members.fetch(command.client.user.id);
 
     if (role.position >= botAsMember.roles.highest.position)
         return command.editReply({
@@ -46,23 +41,16 @@ verificationRemoveRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    const target = guild.verification.targets.default_roles.find(
-        (r: any) => r == role.id
-    );
+    const target = guild.verification.targets.default_roles.find((r: any) => r == role.id);
 
     if (!target)
         return command.editReply({
-            embeds: [
-                generateErrorEmbed(
-                    "I can't find a role with these parameters."
-                ),
-            ],
+            embeds: [generateErrorEmbed("I can't find a role with these parameters.")],
         });
 
-    guild.verification.targets.default_roles =
-        guild.verification.targets.default_roles.filter(
-            (r: any) => r != role.id
-        );
+    guild.verification.targets.default_roles = guild.verification.targets.default_roles.filter(
+        (r: any) => r != role.id
+    );
 
     await guilds.findByIdAndUpdate(command.guildId, guild);
 
@@ -71,4 +59,4 @@ verificationRemoveRole.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationRemoveRole;
+export { verificationRemoveRole };

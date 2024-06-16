@@ -1,32 +1,33 @@
-import { EmbedBuilder, GuildMember, PermissionFlagsBits, Role } from "discord.js";
+import {
+    EmbedBuilder,
+    GuildMember,
+    Role,
+    SlashCommandStringOption,
+    SlashCommandUserOption,
+} from "discord.js";
 import * as database from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
-import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import colors from "../../../../constants/colors";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const setRolesAdd = new SlashCommandSubcommand(
-    "apply",
-    "applies a role preset to a user or more",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers]
-);
+// TODO: Add autocomplete to presets
 
-setRolesAdd.builder
-    .addStringOption((o) =>
-        o
+const setRolesApply = new SlashCommandSubcommand()
+    .setName("apply")
+    .setDescription("Applies a role preset to an user or more")
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("preset")
             .setDescription("Role preset to apply")
-            .setRequired(true)
-    )
-    .addUserOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandUserOption()
             .setName("user")
             .setDescription("User to apply the roles on")
             .setRequired(true)
-    );
+    )
+    .setPermissions("ModerateMembers");
 
-setRolesAdd.setExecuteFunction(async (command) => {
+setRolesApply.setExecutable(async (command) => {
     if (!command.guild || !command.member) return;
 
     const preset = command.options.getString("preset", true);
@@ -86,24 +87,25 @@ setRolesAdd.setExecuteFunction(async (command) => {
             {
                 name: "Preset",
                 value: rolePreset.name || "*No name*",
-                inline: true
+                inline: true,
             },
             {
                 name: "Applied on",
-                value: `${member.nickname ? `${member.nickname} (${member.user.tag})` : member.user.tag}` || "*No member*",
-                inline: true
+                value:
+                    `${
+                        member.nickname
+                            ? `${member.nickname} (${member.user.tag})`
+                            : member.user.tag
+                    }` || "*No member*",
+                inline: true,
             },
             {
                 name: "Roles added",
-                value:
-                    rolePreset.roles_add.map((r) => `<@&${r}>`).join(", ") ||
-                    "*None*",
+                value: rolePreset.roles_add.map((r) => `<@&${r}>`).join(", ") || "*None*",
             },
             {
                 name: "Roles removed",
-                value:
-                    rolePreset.roles_remove.map((r) => `<@&${r}>`).join(", ") ||
-                    "*None*",
+                value: rolePreset.roles_remove.map((r) => `<@&${r}>`).join(", ") || "*None*",
             }
         );
 
@@ -112,4 +114,4 @@ setRolesAdd.setExecuteFunction(async (command) => {
     });
 });
 
-export default setRolesAdd;
+export { setRolesApply };

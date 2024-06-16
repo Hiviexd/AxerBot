@@ -4,14 +4,12 @@ import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSucces
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const reportSetNoPing = new SlashCommandSubcommand(
-    "ping",
-    "Disable the ping when a report is sent",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const reportSetNoPing = new SlashCommandSubcommand()
+    .setName("pingrole")
+    .setDescription("Disable role mention when a report is sent")
+    .setPermissions("ManageGuild");
 
-reportSetNoPing.setExecuteFunction(async (command) => {
+reportSetNoPing.setExecutable(async (command) => {
     if (!command.guild) return;
 
     let guild = await guilds.findById(command.guildId);
@@ -33,4 +31,4 @@ reportSetNoPing.setExecuteFunction(async (command) => {
     });
 });
 
-export default reportSetNoPing;
+export { reportSetNoPing };

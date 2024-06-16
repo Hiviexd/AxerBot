@@ -2,32 +2,38 @@ import axios from "axios";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import getColors from "get-image-colors";
 import { createCanvas, registerFont } from "canvas";
-import { AttachmentBuilder, ColorResolvable, EmbedBuilder } from "discord.js";
+import {
+    AttachmentBuilder,
+    ColorResolvable,
+    EmbedBuilder,
+    SlashCommandAttachmentOption,
+    SlashCommandIntegerOption,
+} from "discord.js";
 import { mustUseDarkText } from "../../helpers/images/mustUseDarkText";
 import path from "path";
 import generateErrorEmbed from "../../helpers/text/embeds/generateErrorEmbed";
-import colorconver, { rgb } from "color-convert";
+import colorconver from "color-convert";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const imagecolors = new SlashCommand(
-    ["combocolors", "imagecolors"],
-    "Extract colors from a given image",
-    "Tools",
-    true
-);
-
-imagecolors.builder
-    .addAttachmentOption((o) =>
-        o.setName("image").setRequired(true).setDescription("Image to get colors")
-    )
-    .addIntegerOption((o) =>
-        o
+const imagecolors = new SlashCommand()
+    .setName("imagecolors")
+    .setNameAliases("combocolors")
+    .setDescription("Extract colors from a given image")
+    .setCategory(CommandCategory.Tools)
+    .setDMPermission(true)
+    .addOptions(
+        new SlashCommandAttachmentOption()
+            .setName("image")
+            .setRequired(true)
+            .setDescription("Image to get colors"),
+        new SlashCommandIntegerOption()
             .setName("count")
             .setDescription("Size of the color palette (Max is 10)")
             .setMaxValue(10)
             .setMinValue(1)
     );
 
-imagecolors.setExecuteFunction(async (command) => {
+imagecolors.setExecutable(async (command) => {
     const attachment = command.options.getAttachment("image", true);
     const count = command.options.getInteger("count") || 5;
     const allowedMimes = ["image/jpg", "image/jpeg", "image/jfif", "image/png"];
@@ -158,4 +164,4 @@ imagecolors.setExecuteFunction(async (command) => {
     });
 });
 
-export default imagecolors;
+export { imagecolors };

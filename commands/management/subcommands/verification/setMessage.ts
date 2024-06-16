@@ -18,19 +18,13 @@ import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmb
 import crypto from "crypto";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationSetMessage = new SlashCommandSubcommand(
-    "message",
-    "Set the message that will be sent on the system channel (will open a popup that takes text input)",
-    {
-        syntax: "/verification `set message`",
-        placeholders: "`{member}` - a ping of the member that will be verified",
-        "example message": "Hello {member} and welcome to this server!",
-    },
-    [PermissionFlagsBits.ManageGuild],
-    true
-);
+const verificationSetMessage = new SlashCommandSubcommand()
+    .setName("message")
+    .setDescription("Set the message that will be sent on the system channel")
+    .setModal(true)
+    .setPermissions("ModerateMembers");
 
-verificationSetMessage.setExecuteFunction(async (command) => {
+verificationSetMessage.setExecutable(async (command) => {
     if (!command.member) return;
 
     let guild = await guilds.findById(command.guildId);
@@ -95,4 +89,4 @@ verificationSetMessage.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationSetMessage;
+export { verificationSetMessage };

@@ -13,7 +13,6 @@ import {
     ChannelSelectMenuBuilder,
     ChannelType,
     TextBasedChannel,
-    StringSelectMenuBuilder,
     ButtonBuilder,
     ButtonStyle,
 } from "discord.js";
@@ -22,70 +21,61 @@ import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmb
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { selectRoles } from "../../../../database";
 
-const createRoleSelector = new SlashCommandSubcommand(
-    "new",
-    "Create a new select menu",
-    undefined,
-    [PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageRoles],
-    true
-);
+const createRoleSelector = new SlashCommandSubcommand()
+    .setName("new")
+    .setDescription("Create a new role select menu")
+    .setPermissions("ModerateMembers", "ManageRoles");
 
-createRoleSelector.setExecuteFunction(async (command) => {
+createRoleSelector.setExecutable(async (command) => {
     // Text inputs
-    const modalEmbedTitleInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Title")
-                .setStyle(TextInputStyle.Short)
-                .setValue("📝 Select your roles")
-                .setCustomId("title")
-                .setPlaceholder("(optional)")
-        );
+    const modalEmbedTitleInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Title")
+            .setStyle(TextInputStyle.Short)
+            .setValue("📝 Select your roles")
+            .setCustomId("title")
+            .setPlaceholder("(optional)")
+    );
 
-    const modalEmbedDescriptionInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Content")
-                .setStyle(TextInputStyle.Paragraph)
-                .setValue("Use the menu below to select your roles.")
-                .setRequired(true)
-                .setCustomId("description")
-        );
+    const modalEmbedDescriptionInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Content")
+            .setStyle(TextInputStyle.Paragraph)
+            .setValue("Use the menu below to select your roles.")
+            .setRequired(true)
+            .setCustomId("description")
+    );
 
-    const modalEmbedColorInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Color")
-                .setStyle(TextInputStyle.Short)
-                .setValue(colors.pink as string)
-                .setCustomId("color")
-                .setRequired(false)
-                .setPlaceholder("HEX format (optional)")
-        );
+    const modalEmbedColorInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Color")
+            .setStyle(TextInputStyle.Short)
+            .setValue(colors.pink as string)
+            .setCustomId("color")
+            .setRequired(false)
+            .setPlaceholder("HEX format (optional)")
+    );
 
     // Image inputs
-    const modalEmbedImageInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Image")
-                .setStyle(TextInputStyle.Short)
-                .setCustomId("image")
-                .setRequired(false)
-                .setPlaceholder("URL (optional)")
-        );
+    const modalEmbedImageInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Image")
+            .setStyle(TextInputStyle.Short)
+            .setCustomId("image")
+            .setRequired(false)
+            .setPlaceholder("URL (optional)")
+    );
 
-    const modalEmbedThumbnailInput =
-        new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-                .setLabel("Embed Thumbnail")
-                .setStyle(TextInputStyle.Short)
-                .setCustomId("thumbnail")
-                .setRequired(false)
-                .setPlaceholder("URL (optional)")
-        );
+    const modalEmbedThumbnailInput = new ActionRowBuilder<TextInputBuilder>().setComponents(
+        new TextInputBuilder()
+            .setLabel("Embed Thumbnail")
+            .setStyle(TextInputStyle.Short)
+            .setCustomId("thumbnail")
+            .setRequired(false)
+            .setPlaceholder("URL (optional)")
+    );
 
-    const embedInfoModalHandshakeInteractionId =
-        randomBytes(10).toString("hex");
+    const embedInfoModalHandshakeInteractionId = randomBytes(10).toString("hex");
     const embedInfoModal = new ModalBuilder()
         .setTitle("New Role Selector")
         .setCustomId(embedInfoModalHandshakeInteractionId)
@@ -105,16 +95,12 @@ createRoleSelector.setExecuteFunction(async (command) => {
     embedInfoModalResponse.deferUpdate();
 
     const embedTitle = embedInfoModalResponse.fields.getTextInputValue("title");
-    const embedDescription =
-        embedInfoModalResponse.fields.getTextInputValue("description");
+    const embedDescription = embedInfoModalResponse.fields.getTextInputValue("description");
     const embedColor = embedInfoModalResponse.fields.getTextInputValue("color");
-    const embedThumbnail =
-        embedInfoModalResponse.fields.getTextInputValue("thumbnail");
+    const embedThumbnail = embedInfoModalResponse.fields.getTextInputValue("thumbnail");
     const embedImage = embedInfoModalResponse.fields.getTextInputValue("image");
 
-    const embedData = new EmbedBuilder()
-        .setTitle(embedTitle)
-        .setDescription(embedDescription);
+    const embedData = new EmbedBuilder().setTitle(embedTitle).setDescription(embedDescription);
 
     // Check if the input is a valid hex color input
     const hexValueRegExp = /^#([0-9a-f]{3}){1,2}$/i;
@@ -150,9 +136,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
     };
 
     function requestRolesInput() {
-        const selectMenu = new RoleSelectMenuBuilder()
-            .setMaxValues(25)
-            .setMinValues(1);
+        const selectMenu = new RoleSelectMenuBuilder().setMaxValues(25).setMinValues(1);
 
         generateStepEmbedWithChoices(
             command,
@@ -237,9 +221,7 @@ createRoleSelector.setExecuteFunction(async (command) => {
                         new ButtonBuilder()
                             .setLabel("Select Roles")
                             .setStyle(ButtonStyle.Secondary)
-                            .setCustomId(
-                                `${randomBytes(10).toString("hex")},selectroles`
-                            )
+                            .setCustomId(`${randomBytes(10).toString("hex")},selectroles`)
                     ),
                 ],
             })
@@ -260,13 +242,11 @@ createRoleSelector.setExecuteFunction(async (command) => {
 
                 command.followUp({
                     embeds: [
-                        generateSuccessEmbed(
-                            "Message sent! Use `/selectroles edit` to edit it."
-                        ),
+                        generateSuccessEmbed("Message sent! Use `/selectroles edit` to edit it."),
                     ],
                 });
             });
     }
 });
 
-export default createRoleSelector;
+export { createRoleSelector };

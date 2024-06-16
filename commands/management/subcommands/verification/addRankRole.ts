@@ -1,39 +1,36 @@
-import { PermissionFlagsBits } from "discord.js";
+import {
+    PermissionFlagsBits,
+    SlashCommandIntegerOption,
+    SlashCommandRoleOption,
+    SlashCommandStringOption,
+} from "discord.js";
 
 import { guilds } from "../../../../database";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const verificationAddRankRole = new SlashCommandSubcommand(
-    "rankrole",
-    "Add roles to users in a rank range",
-    {
-        syntax: "/verification `add rankrole` `role: @role` `min_rank:number` `max_rank:number` `gamemode: <Gamemode>` `rank_type: <Rank Type>`",
+const verificationAddRankRole = new SlashCommandSubcommand()
+    .setName("rankrole")
+    .setDescription("Add roles to users in a rank range")
+    .setHelp({
         gamemode: ["`osu!`", "`osu!taiko`", "`osu!catch`", "`osu!mania`"],
         "rank types": ["`country`", "`global`"],
-    },
-    [PermissionFlagsBits.ManageGuild]
-);
-
-verificationAddRankRole.builder
-    .addRoleOption((o) =>
-        o.setName("role").setDescription("Target role").setRequired(true)
-    )
-    .addIntegerOption((o) =>
-        o
+    })
+    .addOptions(
+        new SlashCommandRoleOption()
+            .setName("role")
+            .setDescription("Target role")
+            .setRequired(true),
+        new SlashCommandIntegerOption()
             .setName("min_rank")
             .setDescription("Min rank of the role")
-            .setRequired(true)
-    )
-    .addIntegerOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandIntegerOption()
             .setName("max_rank")
             .setDescription("Max rank of the role")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("gamemode")
             .setDescription("Game Mode of the role")
             .setRequired(true)
@@ -54,10 +51,8 @@ verificationAddRankRole.builder
                     name: "osu!mania",
                     value: "mania",
                 }
-            )
-    )
-    .addStringOption((o) =>
-        o
+            ),
+        new SlashCommandStringOption()
             .setName("rank_type")
             .setDescription("Game Mode of the role")
             .setRequired(true)
@@ -71,9 +66,10 @@ verificationAddRankRole.builder
                     value: "country",
                 }
             )
-    );
+    )
+    .setPermissions("ModerateMembers");
 
-verificationAddRankRole.setExecuteFunction(async (command) => {
+verificationAddRankRole.setExecutable(async (command) => {
     if (!command.guild) return;
 
     const minRank = command.options.getInteger("min_rank", true);
@@ -92,9 +88,7 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
             ],
         });
 
-    const botAsMember = await command.guild.members.fetch(
-        command.client.user.id
-    );
+    const botAsMember = await command.guild.members.fetch(command.client.user.id);
 
     if (role.position >= botAsMember.roles.highest.position)
         return command.editReply({
@@ -118,8 +112,7 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
         max_rank: maxRank,
     };
 
-    if (!guild.verification.targets.rank_roles)
-        guild.verification.targets.rank_roles = [];
+    if (!guild.verification.targets.rank_roles) guild.verification.targets.rank_roles = [];
 
     if (guild.verification.targets.rank_roles.length >= 25)
         return command.editReply({
@@ -135,4 +128,4 @@ verificationAddRankRole.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationAddRankRole;
+export { verificationAddRankRole };

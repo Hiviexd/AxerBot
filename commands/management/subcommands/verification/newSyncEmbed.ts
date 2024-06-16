@@ -9,37 +9,34 @@ import {
     GuildTextBasedChannel,
     ModalBuilder,
     PermissionFlagsBits,
+    SlashCommandChannelOption,
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
-import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import colors from "../../../../constants/colors";
 import { randomBytes } from "crypto";
 
-const verificationNewSyncEmbed = new SlashCommandSubcommand(
-    "syncembed",
-    "Send a new sync embed on the given channel",
-    undefined,
-    [PermissionFlagsBits.ManageGuild],
-    true
-);
+const verificationNewSyncEmbed = new SlashCommandSubcommand()
+    .setName("syncembed")
+    .setDescription("Send a new sync embed to the given channel")
+    .setPermissions("ModerateMembers")
+    .addOptions(
+        new SlashCommandChannelOption()
+            .setName("target_channel")
+            .setDescription("Channel to send the embed")
+            .setRequired(true)
+            .addChannelTypes(
+                ChannelType.GuildAnnouncement,
+                ChannelType.GuildForum,
+                ChannelType.GuildText
+            )
+    )
+    .setModal(true);
 
-verificationNewSyncEmbed.builder.addChannelOption((o) =>
-    o
-        .setName("target_channel")
-        .setDescription("Channel to send the embed")
-        .setRequired(true)
-        .addChannelTypes(
-            ChannelType.GuildAnnouncement,
-            ChannelType.GuildForum,
-            ChannelType.GuildText
-        )
-);
-
-verificationNewSyncEmbed.setExecuteFunction(async (command) => {
+verificationNewSyncEmbed.setExecutable(async (command) => {
     const targetChannel = command.options.getChannel("target_channel", true);
 
     if (!command.guild) return;
@@ -55,9 +52,7 @@ verificationNewSyncEmbed.setExecuteFunction(async (command) => {
     )
         return command.reply({
             embeds: [
-                generateErrorEmbed(
-                    "I don't have permissions to send messages on that channel!"
-                ),
+                generateErrorEmbed("I don't have permissions to send messages on that channel!"),
             ],
         });
 
@@ -123,11 +118,7 @@ verificationNewSyncEmbed.setExecuteFunction(async (command) => {
 
     await (targetChannel as GuildTextBasedChannel).send({
         embeds: [embedData],
-        components: [
-            new ActionRowBuilder<ButtonBuilder>().setComponents(
-                syncProfileButton
-            ),
-        ],
+        components: [new ActionRowBuilder<ButtonBuilder>().setComponents(syncProfileButton)],
     });
 
     command.followUp({
@@ -135,4 +126,4 @@ verificationNewSyncEmbed.setExecuteFunction(async (command) => {
     });
 });
 
-export default verificationNewSyncEmbed;
+export { verificationNewSyncEmbed };

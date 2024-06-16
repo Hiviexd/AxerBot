@@ -1,27 +1,27 @@
-import { EmbedBuilder, Guild, GuildMember, PermissionFlagsBits } from "discord.js";
+import { EmbedBuilder, Guild, GuildMember, SlashCommandNumberOption } from "discord.js";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 import { generateConfirmEmbedWithChoices } from "../../../../helpers/commands/generateConfirmEmbedWithChoices";
 import { guildUserAccountBans } from "../../../../database";
-import { randomUUID } from "crypto";
 import colors from "../../../../constants/colors";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import logRestrictionRemove from "../../../../modules/loggers/logRestrictionRemove";
 
-const verificationUnbanUser = new SlashCommandSubcommand(
-    "remove",
-    "Unban an osu account from the server",
-    {
+const verificationUnbanUser = new SlashCommandSubcommand()
+    .setName("remove")
+    .setDescription("Unban an osu account from the server")
+    .setHelp({
         "What is it?":
             "A banned account can't pass into verification system and is automatically kicked from the server if the user tries to verify again",
-    },
-    [PermissionFlagsBits.BanMembers]
-);
+    })
+    .addOptions(
+        new SlashCommandNumberOption()
+            .setName("osu_account_id")
+            .setDescription("Account id to ban")
+            .setRequired(true)
+    )
+    .setPermissions("BanMembers");
 
-verificationUnbanUser.builder.addNumberOption((o) =>
-    o.setName("osu_account_id").setDescription("Account id to ban").setRequired(true)
-);
-
-verificationUnbanUser.setExecuteFunction(async (command) => {
+verificationUnbanUser.setExecutable(async (command) => {
     const accountId = Math.round(command.options.getNumber("osu_account_id", true));
 
     const currentBanHere = await guildUserAccountBans.findOne({
@@ -74,4 +74,4 @@ verificationUnbanUser.setExecuteFunction(async (command) => {
     }
 });
 
-export default verificationUnbanUser;
+export { verificationUnbanUser };

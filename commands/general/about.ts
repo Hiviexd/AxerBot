@@ -3,15 +3,16 @@ import colors from "../../constants/colors";
 import getWebsiteStatus from "./../../helpers/general/getWebsiteStatus";
 import { SlashCommand } from "../../models/commands/SlashCommand";
 import axios from "axios";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const about = new SlashCommand(
-    ["about", "info", "status"],
-    "Get information about the bot.",
-    "General",
-    true
-);
+const about = new SlashCommand()
+    .setName("botinfo")
+    .setNameAliases(["status"])
+    .setDescription("Get information about the me")
+    .setCategory(CommandCategory.General)
+    .setDMPermission(true);
 
-about.setExecuteFunction(async (command) => {
+about.setExecutable(async (command) => {
     const info = {
         bot: {
             invite: "https://discord.com/api/oauth2/authorize?client_id=937807478429745213&permissions=1256748215504&scope=bot%20applications.commands",
@@ -68,4 +69,4 @@ about.setExecuteFunction(async (command) => {
     });
 });
 
-export default about;
+export { about };

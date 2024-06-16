@@ -1,15 +1,14 @@
 import { numberToEmoji } from "../../helpers/text/numberToEmoji";
 import * as database from "./../../database";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-const revolver = new SlashCommand(
-    "revolver",
-    "Russian Roulette, but with bigger numbers!",
-    "Fun",
-    false
-);
+const revolver = new SlashCommand()
+    .setName("revolver")
+    .setDescription("Russian Roulette, but with bigger numbers!")
+    .setCategory(CommandCategory.Fun);
 
-revolver.setExecuteFunction(async (command) => {
+revolver.setExecutable(async (command) => {
     const guild = await database.guilds.findOne({ _id: command.guildId });
     if (!guild) return;
 
@@ -30,4 +29,4 @@ revolver.setExecuteFunction(async (command) => {
     }
 });
 
-export default revolver;
+export { revolver };

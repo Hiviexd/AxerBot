@@ -1,203 +1,245 @@
 import {
+    ApplicationCommandOptionType,
     ChatInputCommandInteraction,
-    GuildMember,
-    InteractionType,
     PermissionResolvable,
+    PermissionsBitField,
+    RESTPostAPIChatInputApplicationCommandsJSONBody,
+    SlashCommandAttachmentOption,
+    SlashCommandBooleanOption,
     SlashCommandBuilder,
+    SlashCommandChannelOption,
+    SlashCommandIntegerOption,
+    SlashCommandMentionableOption,
+    SlashCommandNumberOption,
+    SlashCommandRoleOption,
+    SlashCommandStringOption,
+    SlashCommandUserOption,
 } from "discord.js";
 import { SlashCommandSubcommand } from "./SlashCommandSubcommand";
 import { SlashCommandSubcommandGroup } from "./SlashCommandSubcommandGroup";
-import { checkMemberPermissions } from "../../helpers/core/slashCommandHandler";
-import MissingPermissions from "../../responses/embeds/MissingPermissions";
-import { consoleLog } from "../../helpers/core/logger";
-import { ContextMenuCommand } from "./ContextMenuCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
 
-export type ISlashCommandExecuteFunction = (interaction: ChatInputCommandInteraction) => any;
-
-export type PartialSubcommandExecutionParam = {
-    name: string;
-    group?: string | null | undefined;
-};
+export type SlashCommandMainFunction = (command: ChatInputCommandInteraction) => void;
 
 export class SlashCommand {
-    private _executeFunction!: ISlashCommandExecuteFunction;
-    private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
+    private _ = new SlashCommandBuilder();
+    private _permissions = new PermissionsBitField();
+    private _ephemeral = false;
+    private _hasModal = false;
     private _subcommands: SlashCommandSubcommand[] = [];
-    public permissions: PermissionResolvable[] = [];
-    public category = "General";
-    public help: { [key: string]: string | string[] } = {};
-    public allowDM = false;
-    public ephemeral: boolean = false;
-    public names: string[] = [];
-    public hasModal = false;
-    public builder = new SlashCommandBuilder();
+    private _subcommand_groups: SlashCommandSubcommandGroup[] = [];
+    private _main: SlashCommandMainFunction = (command: ChatInputCommandInteraction) => void {};
+    private _aliases: string[] = [];
+    private _helpFields = {} as { [key: string]: string | string[] };
+    private _category = CommandCategory.General;
 
-    constructor(
-        name: string[] | string,
-        description: string,
-        category: string,
-        allowDM: boolean,
-        help?: { [key: string | number]: string | string[] },
-        permissions?: PermissionResolvable[],
-        hasModal?: boolean,
-        ephemeral?: boolean
+    constructor() {}
+
+    public setName(name: string) {
+        this._.setName(name.toLowerCase().trim());
+        return this;
+    }
+
+    public setDescription(description: string) {
+        this._.setDescription(description);
+        return this;
+    }
+
+    public setDMPermission(allow: boolean) {
+        this._.setDMPermission(allow);
+        return this;
+    }
+
+    public setPermissions(...permissions: PermissionResolvable[]) {
+        this._permissions.add(permissions);
+        this._.setDefaultMemberPermissions(this.permissions.bitfield);
+        return this;
+    }
+
+    public setEphemeral(isEphemeral: boolean) {
+        this._ephemeral = isEphemeral;
+        return this;
+    }
+
+    public setModal(hasModal: boolean) {
+        this._hasModal = hasModal;
+        return this;
+    }
+
+    public addOptions(
+        ...options: (
+            | SlashCommandAttachmentOption
+            | SlashCommandStringOption
+            | SlashCommandRoleOption
+            | SlashCommandUserOption
+            | SlashCommandUserOption
+            | SlashCommandNumberOption
+            | SlashCommandBooleanOption
+            | SlashCommandChannelOption
+            | SlashCommandIntegerOption
+            | SlashCommandMentionableOption
+        )[]
     ) {
-        this.builder.setDescription(description);
-
-        if (typeof name != "string") {
-            this.builder.setName(name[0]);
-            this.names = name as string[];
-        } else {
-            this.builder.setName(name as string);
-            this.names = [name as string];
+        for (const option of options) {
+            if (option.type == ApplicationCommandOptionType.Attachment)
+                this._.addAttachmentOption(option);
+            if (option.type == ApplicationCommandOptionType.Boolean)
+                this._.addBooleanOption(option);
+            if (option.type == ApplicationCommandOptionType.Channel)
+                this._.addChannelOption(option);
+            if (option.type == ApplicationCommandOptionType.Integer)
+                this._.addIntegerOption(option);
+            if (option.type == ApplicationCommandOptionType.Mentionable)
+                this._.addMentionableOption(option);
+            if (option.type == ApplicationCommandOptionType.Number) this._.addNumberOption(option);
+            if (option.type == ApplicationCommandOptionType.Role) this._.addRoleOption(option);
+            if (option.type == ApplicationCommandOptionType.String) this._.addStringOption(option);
+            if (option.type == ApplicationCommandOptionType.User) this._.addUserOption(option);
         }
 
-        this.ephemeral = ephemeral || false;
+        return this;
+    }
 
-        this.help = Object.assign({ description: description }, help);
+    public setExecutable(f: SlashCommandMainFunction) {
+        this._main = f;
 
-        if (permissions) {
-            this.permissions = permissions;
+        return this;
+    }
+
+    public execute(command: ChatInputCommandInteraction) {
+        this._main(command);
+
+        return this;
+    }
+
+    public getGroup(groupName: string) {
+        return this._subcommand_groups.find(
+            (g) => g.name.trim().toLowerCase() == groupName.toLowerCase().trim()
+        );
+    }
+
+    public getSubcommand(commandName: string) {
+        return this._subcommands.find(
+            (g) => g.name.trim().toLowerCase() == commandName.toLowerCase().trim()
+        );
+    }
+
+    public addSubcommand(command: SlashCommandSubcommand) {
+        this._subcommands.push(command);
+        this._.addSubcommand(command.onlyBuilder());
+
+        return this;
+    }
+
+    public addSubcommands(...commands: SlashCommandSubcommand[]) {
+        for (const command of commands) {
+            if (!this.getSubcommand(command.name)) this._subcommands.push(command);
         }
 
-        this.category = category;
-
-        this.hasModal = hasModal || false;
-
-        this.allowDM = allowDM;
-        this.builder.setDMPermission(this.allowDM);
+        return this;
     }
 
-    setHelp(help: { [key: string | number]: string | string[] }) {
-        this.help = help;
+    public addSubcommandGroup(group: SlashCommandSubcommandGroup) {
+        this._subcommand_groups.push(group);
+        this._.addSubcommandGroup(group.onlyBuilder());
+
+        return this;
     }
 
-    get subcommands() {
+    public addSubcommandGroups(...groups: SlashCommandSubcommandGroup[]) {
+        for (const group of groups) {
+            if (!this.getSubcommand(group.name)) this._subcommand_groups.push(group);
+        }
+
+        return this;
+    }
+
+    public setNameAliases(aliases: string[] | string) {
+        if (typeof aliases == "string") aliases = [aliases]; // Transform string into an array
+
+        for (let name of aliases) {
+            name = name.toLocaleLowerCase().trim();
+
+            if (!this._aliases.includes(name)) this._aliases.push(name);
+        }
+
+        return this;
+    }
+
+    public setHelp(helpFields: { [key: string]: string | string[] }) {
+        this._helpFields = helpFields;
+
+        return this;
+    }
+
+    public setCategory(category: CommandCategory) {
+        this._category = category;
+
+        return this;
+    }
+
+    public get category() {
+        return this._category;
+    }
+
+    public get permissions() {
+        return this._permissions;
+    }
+
+    public get isEphemeral() {
+        return this._ephemeral;
+    }
+
+    public get hasModal() {
+        return this._hasModal;
+    }
+
+    public get name() {
+        return this._.name;
+    }
+
+    public get description() {
+        return this._.description;
+    }
+
+    public get dmPermission() {
+        return this._.dm_permission;
+    }
+
+    public get nameAliases() {
+        return this._aliases;
+    }
+
+    public get allNames() {
+        return this._aliases.concat(this.name);
+    }
+
+    public get helpFields() {
+        return this._helpFields;
+    }
+
+    public get subcommands() {
         return this._subcommands;
     }
 
-    get subcommandGroups() {
+    public get subcommandGroups() {
         return this._subcommand_groups;
     }
 
-    /**
-     * You need to add commands to the group first!
-     * This will be automated run by the handler.
-     */
-    addSubcommandGroup(group: SlashCommandSubcommandGroup) {
-        this._subcommand_groups.push(group);
-        this.builder.addSubcommandGroup(group.builder);
-        return this;
-    }
+    public toJSONWithAliases() {
+        const result: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [this.toJSON()];
 
-    addSubcommand(subcommand: SlashCommandSubcommand) {
-        this._subcommands.push(subcommand);
-        this.builder.addSubcommand(subcommand.builder);
-        return this;
-    }
+        for (const name of this._aliases) {
+            let partial = this.toJSON();
+            partial.name = name;
 
-    setExecuteFunction(fn: ISlashCommandExecuteFunction) {
-        this._executeFunction = fn;
-
-        return this;
-    }
-
-    hasGroup(name: string) {
-        if (!this._subcommand_groups.find((g) => g.builder.name.includes(name)))
-            return {
-                result: false,
-                group: undefined,
-            };
-
-        return {
-            result: true,
-            group: this._subcommand_groups.find((g) => g.builder.name.includes(name)),
-        };
-    }
-
-    hasSubcommand(name: string) {
-        if (!this._subcommands.find((c) => c.builder.name.includes(name)))
-            return {
-                result: false,
-                command: undefined,
-            };
-
-        return {
-            result: true,
-            command: this._subcommands.find((c) => c.builder.name.includes(name)),
-        };
-    }
-
-    runSubcommand(
-        interaction: ChatInputCommandInteraction,
-        subcommand?: PartialSubcommandExecutionParam
-    ) {
-        if (subcommand && subcommand.group)
-            return this.executeSubcommandWithGroup(interaction, subcommand);
-
-        const target = this._subcommands.find(
-            (c) => c.builder.name == subcommand?.name ?? interaction.options.getSubcommand()
-        );
-
-        if (!target) return;
-
-        consoleLog(
-            "CommandHandler",
-            `Executing command ${interaction.commandName} ${target.builder.name}`
-        );
-
-        target.run(interaction);
-    }
-
-    private executeSubcommandWithGroup(
-        interaction: ChatInputCommandInteraction,
-        subcommand: PartialSubcommandExecutionParam
-    ) {
-        if (!subcommand.group)
-            return new Error(
-                `Invalid subcommand group provided! Need to specify group name to run command ${JSON.stringify(
-                    subcommand
-                )}`
-            );
-
-        const targetGroup = this._subcommand_groups.find((g) => g.builder.name == subcommand.group);
-
-        if (!targetGroup)
-            return new Error(
-                `You didn't append this group to this command! ${JSON.stringify(subcommand)}`
-            );
-
-        targetGroup.runCommand(interaction, interaction.options.getSubcommand());
-    }
-
-    isContextMenu(): this is ContextMenuCommand<any> {
-        return this instanceof ContextMenuCommand;
-    }
-
-    isSlashCommand(): this is SlashCommand {
-        return this instanceof SlashCommand;
-    }
-
-    async run(interaction: ChatInputCommandInteraction) {
-        consoleLog("CommandHandler", `Executing command ${interaction.commandName}`);
-
-        if (!this.hasModal) await interaction.deferReply({ ephemeral: this.ephemeral });
-
-        if (
-            this.permissions.length != 0 &&
-            !checkMemberPermissions(interaction.member as GuildMember, this.permissions)
-        ) {
-            return interaction.editReply({
-                embeds: [MissingPermissions],
-            });
+            result.push(partial);
         }
 
-        // if (!this._executeFunction) return;
-
-        this._executeFunction(interaction);
+        return result;
     }
 
-    toJSON() {
-        return this.builder.toJSON();
+    public toJSON() {
+        return this._.toJSON();
     }
 }

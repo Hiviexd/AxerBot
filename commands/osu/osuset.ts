@@ -2,33 +2,26 @@ import createNewUser from "../../database/utils/createNewUser";
 import * as database from "../../database";
 import generateSuccessEmbed from "../../helpers/text/embeds/generateSuccessEmbed";
 import { SlashCommand } from "../../models/commands/SlashCommand";
+import { CommandCategory } from "../../struct/commands/CommandCategory";
+import { SlashCommandStringOption } from "discord.js";
 
-const osuset = new SlashCommand(
-    ["osuset", "link"],
-    "Link your osu! account",
-    "osu!",
-    true,
-    {
-        description: "Sets your credentials so the bot recognizes you.",
-        syntax: "/osuset `<field>` `<value>`",
-        example:
-            "/osuset `user` `Hivie`\n /osuset `user` `HEAVENLY MOON`\n /osuset `embed` `mapper`\n /osuset `embed` `player`",
-    }
-);
-
-osuset.builder
-    .addStringOption((o) =>
-        o
+const osuset = new SlashCommand()
+    .setName("osuset")
+    .setNameAliases(["linkprofile"])
+    .setDescription("Connect your osu! account")
+    .setCategory(CommandCategory.Osu)
+    .setHelp({
+        syntax: "/osuset username:Profile_Username embed:<Player|Mapper>",
+        example: "/osuset `username:Sebola embed:player`",
+    })
+    .addOptions(
+        new SlashCommandStringOption()
             .setName("username")
             .setDescription("Your osu! account username")
-            .setRequired(true)
-    )
-    .addStringOption((o) =>
-        o
+            .setRequired(true),
+        new SlashCommandStringOption()
             .setName("embed")
-            .setDescription(
-                "Which embed should I send when I detect your profile URL?"
-            )
+            .setDescription("Which embed should I send when I detect your profile URL?")
             .addChoices(
                 {
                     name: "Player",
@@ -42,7 +35,7 @@ osuset.builder
             .setRequired(true)
     );
 
-osuset.setExecuteFunction(async (command) => {
+osuset.setExecutable(async (command) => {
     let user = await database.users.findOne({ _id: command.user.id });
 
     if (user == null) await createNewUser(command.user);
@@ -68,4 +61,4 @@ osuset.setExecuteFunction(async (command) => {
     });
 });
 
-export default osuset;
+export { osuset };

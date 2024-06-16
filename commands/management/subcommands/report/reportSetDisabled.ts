@@ -1,17 +1,13 @@
-import { PermissionFlagsBits } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
 import { SlashCommandSubcommand } from "../../../../models/commands/SlashCommandSubcommand";
 
-const reportSetDisabled = new SlashCommandSubcommand(
-    "disable",
-    "Disable the report system",
-    undefined,
-    [PermissionFlagsBits.ManageGuild]
-);
+const reportSetDisabled = new SlashCommandSubcommand()
+    .setName("disabled")
+    .setDescription("Disable report system");
 
-reportSetDisabled.setExecuteFunction(async (command) => {
+reportSetDisabled.setExecutable(async (command) => {
     let guild = await guilds.findById(command.guildId);
     if (!guild)
         return command.editReply({
@@ -31,4 +27,4 @@ reportSetDisabled.setExecuteFunction(async (command) => {
     });
 });
 
-export default reportSetDisabled;
+export { reportSetDisabled };
