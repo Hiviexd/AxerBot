@@ -29,6 +29,7 @@ import { logging } from "./management/logging";
 import setRoles from "./management/setRoles";
 import { selectroles } from "./management/selectroles";
 import { report } from "./management/report";
+import { silence } from "./management/silence";
 
 // ? osu!
 import { mapper } from "./osu/mapper";
@@ -43,6 +44,7 @@ import { beatmap } from "./osu/beatmap";
 import { bntracker } from "./BNsite/bntracker";
 import { bn } from "./BNsite/bn";
 import { openbns } from "./BNsite/openbns";
+
 //? tools
 import { resizebg } from "./tools/resizebg";
 import { spectrogram } from "./tools/spectro";
@@ -90,6 +92,7 @@ export const AxerCommands = [
     setRoles,
     selectroles,
     report,
+    silence,
 
     // ? osu!
     mapperTracker,
