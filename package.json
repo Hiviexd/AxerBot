@@ -1,7 +1,7 @@
 {
 	"name": "axerbot",
-	"version": "1.0.0",
-	"description": "general-purpose bot that doubles down as a retard",
+	"version": "0.0.0",
+	"description": "general-purpose TypeScript Discord bot with osu! features related to mapping & modding",
 	"main": "index.ts",
 	"dependencies": {
 		"@jimp/plugin-shadow": "^0.22.4",
