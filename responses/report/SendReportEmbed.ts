@@ -45,15 +45,11 @@ export async function SendReportEmbed({
                 ephemeral: true,
             });
 
-        const channel = guild.reports.channel;
+        const channel: any = guild.reports.channel;
 
         if (!channel)
             return command.followUp({
-                embeds: [
-                    generateErrorEmbed(
-                        "The reports system in this server isn't active."
-                    ),
-                ],
+                embeds: [generateErrorEmbed("The reports system in this server isn't active.")],
                 ephemeral: true,
             });
 
@@ -61,15 +57,10 @@ export async function SendReportEmbed({
             .setTitle(messageContent ? "⚠️ Message Report" : "⚠️ User Report")
             .setColor(messageContent ? colors.yellow : colors.yellowBright)
             .setAuthor({
-                name: reporter.nickname
-                    ? reporter.nickname
-                    : command.user.username,
+                name: reporter.nickname ? reporter.nickname : command.user.username,
                 iconURL: command.user.displayAvatarURL(),
             })
-            .setDescription(
-                `Reported user ${reportedUser} in ${command.channel}`
-            )
-            .setTimestamp();
+            .setDescription(`Reported user ${reportedUser} in ${command.channel}`);
 
         if (image) embed.setImage(image.url);
 
@@ -87,43 +78,49 @@ export async function SendReportEmbed({
             {
                 name: "Reported",
                 value: reportedUser.nickname
-                    ? `${reportedUser.nickname} (${reportedUser.user.tag})`
-                    : reportedUser.user.tag,
+                    ? `${reportedUser.nickname} (${reportedUser.user.username})`
+                    : reportedUser.user.username,
                 inline: true,
             },
             {
                 name: "Reporter",
                 value: reporter.nickname
-                    ? `${reporter.nickname} (${command.user.tag})`
-                    : command.user.tag,
+                    ? `${reporter.nickname} (${command.user.username})`
+                    : command.user.username,
                 inline: true,
             },
             {
                 name: "Channel",
                 value: `#${(command.channel as GuildChannel).name}`,
                 inline: true,
-            },
-            {
-                name: "Reported ID",
-                value: reportedUser.id,
-                inline: true,
-            },
-            {
-                name: "Reporter ID",
-                value: reporter.id,
-                inline: true,
             }
         );
 
-        if (messageContent)
+        if (messageContent) {
             embed.addFields({
                 name: "Message Link",
-                value: `${
-                    (command as MessageContextMenuCommandInteraction)
-                        .targetMessage.url
-                }`,
+                value: `${(command as MessageContextMenuCommandInteraction).targetMessage.url}`,
                 inline: true,
             });
+        }
+
+        // Log the last 5 messages of the reported user in the reported channel
+        const messages = await (command.channel as GuildTextBasedChannel).messages.fetch({
+            limit: 100,
+        });
+
+        const userMessages = messages.filter((msg) => msg.author.id === reportedUser.id);
+
+        const lastFiveUserMessages = Array.from(userMessages.values())
+            .sort((a, b) => a.createdTimestamp - b.createdTimestamp)
+            .slice(-5);
+
+        lastFiveUserMessages.forEach((msg) => {
+            embed.addFields({
+                name: `<t:${Math.floor(msg.createdTimestamp / 1000)}:R>:`,
+                value: truncateString(msg.content, 1024),
+            });
+        });
 
         const reportsChannel = await command.client.channels.fetch(channel);
 
@@ -148,7 +145,7 @@ export async function SendReportEmbed({
                 command.followUp({
                     embeds: [
                         generateErrorEmbed(
-                            `I can't send your report!\n**Reason:** ${error.message}`
+                            `Error sending the report!\n**Reason:** ${error.message}`
                         ),
                     ],
                     ephemeral: true,
