@@ -17,6 +17,7 @@ import getEmoji from "../../helpers/text/getEmoji";
 import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { QatUserResponse, UserActivityResponse } from "../../types/qat";
 import { UserResponse } from "../../types/user";
+import truncateString from "../../helpers/text/truncateString";
 
 /**
  * empty embed field
@@ -175,10 +176,8 @@ export default {
                 // step 4: replace ![](link) with "(image)"
                 nomMessage = nomMessage.replace(/!\[\]\(https?:\/\/[^\s]+\)/g, "(image)");
 
-                // step 5: truncate manually
-                if (nomMessage.length > 60) {
-                    nomMessage = nomMessage.substring(0, 57) + "...";
-                }
+                // step 5: truncate
+                nomMessage = truncateString(nomMessage, 60, true);
 
                 e.setFooter({
                     text: `${osuUser.data.username} "${nomMessage}"`,
