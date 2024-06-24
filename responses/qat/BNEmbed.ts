@@ -18,8 +18,15 @@ import parseUsergroup from "../../modules/osu/player/getHighestUsergroup";
 import { QatUserResponse, UserActivityResponse } from "../../types/qat";
 import { UserResponse } from "../../types/user";
 
-//! if you're re-adding QA info, check other warning comments and remove the regular /* */ comments
-// TODO: add BN finder count IF you're re-adding QA info
+/**
+ * empty embed field
+{
+	// https://stackoverflow.com/a/66487097/16164887
+	name: "\u200b",
+	value: "\u200b",
+	nline: true,
+},
+*/
 
 export default {
     reply: async (
@@ -28,7 +35,8 @@ export default {
         activity: UserActivityResponse,
         command: ChatInputCommandInteraction
     ) => {
-        const usergroup = parseUsergroup(osuUser.data); // ? Get the highest usergroup
+        // get highest usergroup
+        const usergroup = parseUsergroup(osuUser.data);
 
         const latestNom =
             activity.data.uniqueNominations[activity.data.uniqueNominations.length - 1];
@@ -107,16 +115,10 @@ export default {
             },
             {
                 name: "Nominations",
-                value: `💭 ${activity.data.uniqueNominations.length.toString()} (90d)
-                💭 ${osuUser.data.nominated_beatmapset_count} (all)`,
+                value: `💭 ${activity.data.uniqueNominations.length} (90d)
+                💭 ${Math.max(osuUser.data.nominated_beatmapset_count, activity.data.uniqueNominations.length)} (all)`,
                 inline: true,
             },
-            /*{
-				// https://stackoverflow.com/a/66487097/16164887
-				name: "\u200b",
-				value: "\u200b",
-				inline: true,
-			},*/
             {
                 name: "Resets Received",
                 value: `${parseResets(
@@ -130,26 +132,6 @@ export default {
                 value: `${parseResets(activity.data.disqualifications, activity.data.pops)}`,
                 inline: true,
             },
-            /*{
-				name: "\u200b",
-				value: "\u200b",
-				inline: true,
-			},
-			{
-				name: "QA Checks",
-				value: `${activity.data.qualityAssuranceChecks.length}`,
-				inline: true,
-			},
-			{
-				name: "DQ'd QA Checks",
-				value: `${activity.data.disqualifiedQualityAssuranceChecks.length}`,
-				inline: true,
-			},
-			{
-				name: "\u200b",
-				value: "\u200b",
-				inline: true,
-			},*/
             {
                 name: "Top Mappers",
                 value: `${getTop3Mappers(activity).toString()}`,
@@ -168,12 +150,6 @@ export default {
         );
 
         if (latestNom) {
-            let nomMessage = latestNom.content ? latestNom.content.replace(/\r?\n|\r/g, " ") : "";
-            //truncate nomMessage
-            if (nomMessage.length > 60) {
-                nomMessage = nomMessage.substring(0, 57) + "...";
-            }
-
             e.addFields({
                 name: "Latest Nomination",
                 value: `[${latestNom.artistTitle}](https://osu.ppy.sh/beatmapsets/${latestNom.beatmapsetId})`,
@@ -184,6 +160,26 @@ export default {
 
             // only load footer when there's a nom message
             if (latestNom.content) {
+                let nomMessage = latestNom.content;
+
+                // sanitize nom message
+                // step 1: change consecutive newlines to single newline
+                nomMessage = nomMessage.replace(/\n+/g, "\n");
+
+                // step 2: change newlines to spaces
+                nomMessage = nomMessage.replace(/\r?\n|\r/g, " ");
+
+                // step 3: replace [text](link) with the text portion only
+                nomMessage = nomMessage.replace(/\[([^\]]+)\]\(https?:\/\/[^\s]+\)/g, "$1");
+
+                // step 4: replace ![](link) with "(image)"
+                nomMessage = nomMessage.replace(/!\[\]\(https?:\/\/[^\s]+\)/g, "(image)");
+
+                // step 5: truncate manually
+                if (nomMessage.length > 60) {
+                    nomMessage = nomMessage.substring(0, 57) + "...";
+                }
+
                 e.setFooter({
                     text: `${osuUser.data.username} "${nomMessage}"`,
                     iconURL: osuUser.data.avatar_url,
