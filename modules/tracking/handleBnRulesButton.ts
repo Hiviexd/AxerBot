@@ -20,8 +20,8 @@ export async function handleBnRulesButton(button: ButtonInteraction) {
         return button.editReply("This user doesn't has rules set.");
 
     const embed = new EmbedBuilder()
-        .setTitle(`📃 Request rules`)
-        .setColor(colors.pink)
+        .setTitle(`📃 BN request rules`)
+        .setColor(colors.blue)
         .setDescription(truncateString(user.data.requestInfo, 4080))
         .setThumbnail(`https://a.ppy.sh/${userId}`);
 
