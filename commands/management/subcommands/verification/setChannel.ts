@@ -1,4 +1,4 @@
-import { ChannelType, PermissionFlagsBits, SlashCommandStringOption } from "discord.js";
+import { ChannelType, SlashCommandChannelOption } from "discord.js";
 import { guilds } from "../../../../database";
 import generateSuccessEmbed from "../../../../helpers/text/embeds/generateSuccessEmbed";
 import generateErrorEmbed from "../../../../helpers/text/embeds/generateErrorEmbed";
@@ -8,7 +8,7 @@ const verificationSetChannel = new SlashCommandSubcommand()
     .setName("channel")
     .setDescription("Change system's channel")
     .addOptions(
-        new SlashCommandStringOption()
+        new SlashCommandChannelOption()
             .setName("channel")
             .setDescription("System channel")
             .setRequired(true)
