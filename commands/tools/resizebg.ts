@@ -9,6 +9,7 @@ import {
     SlashCommandStringOption,
 } from "discord.js";
 import { CommandCategory } from "../../struct/commands/CommandCategory";
+import path from "path";
 
 const resizebg = new SlashCommand()
     .setName("resizebg")
@@ -162,9 +163,7 @@ resizebg.setExecutable(async (command) => {
         canvas.height / 2 - jimpBg.getHeight() / 2
     );
 
-    const backgroundBrightnessOverlay = await Jimp.read(
-        "https://cdn.discordapp.com/attachments/950107895754784908/1077605204175892480/iu.png"
-    );
+    const backgroundBrightnessOverlay = await Jimp.read(path.resolve("./assets/images/iu.png"));
 
     backgroundBrightnessOverlay.resize(sizing[0], sizing[1]);
 
@@ -173,9 +172,7 @@ resizebg.setExecutable(async (command) => {
 
     jimpOverlay.scaleToFit(canvas.width * percentage, canvas.height * percentage);
 
-    const shadowMask = await Jimp.read(
-        "https://cdn.discordapp.com/attachments/950107895754784908/1077594060627390575/BLANK_ICON.png"
-    );
+    const shadowMask = await Jimp.read(path.resolve("./assets/images/BLANK_ICON.png"));
     shadowMask.resize(jimpOverlay.getWidth() * 1.2, jimpOverlay.getHeight() * 1.2);
     shadowMask.composite(
         jimpOverlay,
