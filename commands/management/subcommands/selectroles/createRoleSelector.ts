@@ -24,7 +24,8 @@ import { selectRoles } from "../../../../database";
 const createRoleSelector = new SlashCommandSubcommand()
     .setName("new")
     .setDescription("Create a new role select menu")
-    .setPermissions("ModerateMembers", "ManageRoles");
+    .setPermissions("ModerateMembers", "ManageRoles")
+    .setModal(true);
 
 createRoleSelector.setExecutable(async (command) => {
     // Text inputs
