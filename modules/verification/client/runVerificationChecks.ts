@@ -104,11 +104,11 @@ export async function runVerificationChecks(guild: Guild, user: User, member: Gu
     const probationaryRoles = ["PBN"];
     if (user.groups) {
         for (const group of user.groups) {
-            addRole(group.short_name, group, group.is_probationary);
+            addUsergroupRole(group.short_name, group, group.is_probationary);
         }
     }
 
-    async function addRole(role: string, usergroup: UserGroup, probationary: boolean) {
+    async function addUsergroupRole(role: string, usergroup: UserGroup, probationary: boolean) {
         if (!guild_db) return;
 
         console.log(`adding ${role}`);

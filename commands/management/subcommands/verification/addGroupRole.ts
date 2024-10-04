@@ -22,6 +22,7 @@ const verificationAddGroupRole = new SlashCommandSubcommand()
             "`PBN`: Probationary BNs",
             "`GMT`: Global Moderation Team",
             "`LVD`: Project Loved",
+            "`FA`: Featured Artist",
             "`ALM`: Alumni",
         ],
         modes: [
@@ -72,6 +73,10 @@ const verificationAddGroupRole = new SlashCommandSubcommand()
                 {
                     name: "Alumni",
                     value: "ALM",
+                },
+                {
+                    name: "FA",
+                    value: "FA",
                 },
                 {
                     name: "Beatmap Spotlight Curators",
