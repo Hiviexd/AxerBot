@@ -2,7 +2,7 @@ import { Client, ClientOptions } from "discord.js";
 import { LoggerClient } from "./LoggerClient";
 import { DiscussionEventsListener } from "./DiscussionEventsListener";
 import { existsSync, mkdirSync } from "fs";
-import { startAvatarListener } from "../../modules/avatar/avatarManager";
+// import { startAvatarListener } from "../../modules/avatar/avatarManager";
 import { handleDiscussionEvent } from "../../modules/osu/events/handleDiscussionEvent";
 import { UserEventsListener } from "./UserEventsListener";
 import { handleMapperTrackerUserEvent } from "../../modules/tracking/mapperTracker";
@@ -45,7 +45,9 @@ export class AxerBot extends Client {
             this.EventManager.initialize();
             this.EventManager.CommandsManager.initializeCommands();
 
-            startAvatarListener(this);
+            // ? temp disabled as it seems broken for now
+            // startAvatarListener(this);
+
             this.Reminders.start();
 
             this.QatTracker.listen();
