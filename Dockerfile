@@ -21,22 +21,17 @@ RUN apk add --no-cache \
     # canvas dependencies
     pixman-dev cairo-dev pango-dev
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
-# into this layer.
+# Install production-only dependencies
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/root/.yarn \
     yarn install --production --frozen-lockfile
 
-
 ################################################################################
 # Create a stage for building the application.
 FROM deps as build
 
-# Download additional development dependencies before building, as some projects require
-# "devDependencies" to be installed to build. If you don't need this, remove this step.
+# Download devlopment dependencies for build stage
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/root/.yarn \
@@ -44,6 +39,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+
 # Run the build script.
 RUN yarn run build
 
@@ -57,9 +53,6 @@ RUN apk add cairo pango
 
 # Use production node environment by default.
 ENV NODE_ENV production
-
-# Run the application as a non-root user.
-USER node
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
