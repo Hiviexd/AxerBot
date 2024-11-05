@@ -41,7 +41,7 @@
 		"discord.js-minesweeper": "^1.1.0",
 		"discord.js-pagination": "^1.0.3",
 		"dot-prop": "^6.0.1",
-		"dotenv": "^16.0.0",
+		"dotenv": "^16.4.5",
 		"express": "^4.17.2",
 		"fft.js": "^4.0.4",
 		"fluent-ffmpeg": "^2.1.2",
@@ -114,5 +114,6 @@
 		"@types/numeral": "^2.0.2",
 		"@types/statuses": "^2.0.1",
 		"@types/when": "^2.4.34"
-	}
+	},
+	"packageManager": "yarn@1.22.22"
 }
