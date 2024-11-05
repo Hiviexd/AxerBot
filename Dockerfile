@@ -20,6 +20,8 @@ RUN apk add --no-cache \
     pkgconfig \
     # canvas dependencies
     pixman-dev cairo-dev pango-dev
+    # axerbot dependencies
+    ffmpeg
 
 # Install production-only dependencies
 RUN --mount=type=bind,source=package.json,target=package.json \
