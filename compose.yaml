@@ -1,0 +1,14 @@
+services:
+  # for development purposes
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  server:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
