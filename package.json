@@ -90,7 +90,7 @@
 	},
 	"scripts": {
 		"test": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn --ignore-watch node_modules",
-		"start": "cross-env NODE_ENV=production node index.js",
+		"start": "cross-env NODE_ENV=production node dist/index.js",
 		"build": "tsc",
 		"dev": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn --ignore-watch node_modules ./index.ts"
 	},
