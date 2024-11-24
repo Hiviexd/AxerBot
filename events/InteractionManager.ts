@@ -14,6 +14,7 @@ import { handleSelectRoles } from "../modules/selectroles/handleSelectRoles";
 import { handleBnRulesButton } from "../modules/tracking/handleBnRulesButton";
 import { handleSyncButton } from "../modules/verification/interactions/handleSyncButton";
 import previewVerificationMessage from "../modules/verification/message/previewVerificationMessage";
+import BeatmapsetEmbed from "../responses/osu/BeatmapsetEmbed";
 
 export class InteractionManager {
     public readonly EventManager: EventManager;
@@ -47,6 +48,7 @@ export class InteractionManager {
         handleSelectRoles(button);
         handleSyncButton(button);
         handleBnRulesButton(button);
+        BeatmapsetEmbed.delete(button);
     }
 
     private handleAutocompleteInteraction(autocomplete: AutocompleteInteraction) {

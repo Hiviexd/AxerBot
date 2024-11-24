@@ -25,10 +25,7 @@ import generateWaitEmbed from "../../helpers/text/embeds/generateWaitEmbed";
 import getBeatmapEmbedFields from "../../helpers/text/embeds/getBeatmapEmbedFields";
 import generateColoredModeIcon from "../../helpers/text/generateColoredModeIcon";
 import timeString from "../../helpers/text/timeString";
-import {
-    IBeatmapVideo,
-    generateBeatmapVideo,
-} from "../../helpers/video/generateBeatmapVideo";
+import { IBeatmapVideo, generateBeatmapVideo } from "../../helpers/video/generateBeatmapVideo";
 import osuApi from "../../modules/osu/fetcher/osuApi";
 import {
     BeatmapCalculationResult,
@@ -84,6 +81,20 @@ function getModeInt(mode: string) {
 }
 
 export default {
+    delete: async (button: ButtonInteraction) => {
+        const handshakeId = button.customId.split("|")[0];
+        const senderUserId = button.customId.split("|")[1];
+        const type = button.customId.split("|")[2];
+
+        if (type != "deleteBeatmapEmbed" || senderUserId != button.user.id) return;
+
+        button.message
+            .delete()
+            .then((msg) => {})
+            .catch((e) => {
+                console.error(e);
+            });
+    },
     send: async (
         beatmapset: Beatmapset,
         beatmap_id: string | null,
@@ -98,9 +109,7 @@ export default {
             const handshakeId = crypto.randomUUID();
             let isWaitingVideo = false;
             let video: IBeatmapVideo | undefined | null;
-            const extraButtonRow = new ActionRowBuilder<
-                typeof extraMenu | any
-            >();
+            const extraButtonRow = new ActionRowBuilder<typeof extraMenu | any>();
 
             if (extraMenu) extraButtonRow.addComponents(extraMenu);
 
@@ -117,9 +126,7 @@ export default {
                     video = null;
                 });
 
-            beatmapset.beatmaps.sort(
-                (a, b) => a.difficulty_rating - b.difficulty_rating
-            );
+            beatmapset.beatmaps.sort((a, b) => a.difficulty_rating - b.difficulty_rating);
 
             const backToDataEmbedButton = new ButtonBuilder()
                 .setLabel("◀️ Back")
@@ -131,16 +138,17 @@ export default {
                 .setStyle(ButtonStyle.Secondary)
                 .setCustomId(`${handshakeId}|goToVideo|handlerIgnore`);
 
-            function sendWaitingVideo() {
-                const actionRow =
-                    new ActionRowBuilder<ButtonBuilder>().setComponents(
-                        backToDataEmbedButton
-                    );
+            const deleteEmbedButton = new ButtonBuilder()
+                .setLabel("🗑 Delete")
+                .setStyle(ButtonStyle.Danger)
+                .setCustomId(`${handshakeId}|${target.member?.user.id}|deleteBeatmapEmbed`);
 
-                const embed = generateWaitEmbed(
-                    "Hold on!",
-                    "We're working on this preview"
+            function sendWaitingVideo() {
+                const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
+                    backToDataEmbedButton
                 );
+
+                const embed = generateWaitEmbed("Hold on!", "We're working on this preview");
 
                 if ((target as ChatInputCommandInteraction).commandId) {
                     (target as ChatInputCommandInteraction)
@@ -170,17 +178,13 @@ export default {
             function sendVideo() {
                 if (!video) return sendWaitingVideo();
 
-                const attachment = new AttachmentBuilder(
-                    path.resolve(video.filePath),
-                    {
-                        name: "Preview.mp4",
-                    }
-                );
+                const attachment = new AttachmentBuilder(path.resolve(video.filePath), {
+                    name: "Preview.mp4",
+                });
 
-                const actionRow =
-                    new ActionRowBuilder<ButtonBuilder>().setComponents(
-                        backToDataEmbedButton
-                    );
+                const actionRow = new ActionRowBuilder<ButtonBuilder>().setComponents(
+                    backToDataEmbedButton
+                );
 
                 if ((target as ChatInputCommandInteraction).commandId) {
                     (target as ChatInputCommandInteraction)
@@ -211,9 +215,7 @@ export default {
 
             let selectedDifficultyIndex = beatmap_id
                 ? validateArrayIndex(
-                      beatmapset.beatmaps.findIndex(
-                          (d) => d.id.toString() == beatmap_id
-                      )
+                      beatmapset.beatmaps.findIndex((d) => d.id.toString() == beatmap_id)
                   )
                 : 0;
 
@@ -223,19 +225,13 @@ export default {
             if (!mode) mode = beatmapset.beatmaps[selectedDifficultyIndex].mode;
 
             const embed = new EmbedBuilder();
-            let modsSelector =
-                new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-                    getModsSelector(handshakeId, mods)
-                );
+            let modsSelector = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                getModsSelector(handshakeId, mods)
+            );
 
             let beatmapDifficulty = calculateBeatmap(
-                (
-                    await osuApi.fetch.osuFile(
-                        beatmapset.beatmaps[selectedDifficultyIndex].id
-                    )
-                ).data,
-                getModeInt(mode) ??
-                    beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
+                (await osuApi.fetch.osuFile(beatmapset.beatmaps[selectedDifficultyIndex].id)).data,
+                getModeInt(mode) ?? beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
                 mods.join("")
             );
 
@@ -260,31 +256,25 @@ export default {
                 name: `${beatmapset.status} beatmapset`,
                 iconURL: status_icons[beatmapset.status],
             }),
-                embed.setThumbnail(
-                    `https://b.ppy.sh/thumb/${beatmapset.id}l.jpg`
-                );
+                embed.setThumbnail(`https://b.ppy.sh/thumb/${beatmapset.id}l.jpg`);
             embed.setDescription(
                 `⭐ **SR**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
                     2
                 )}\` | 🕒 **Duration**: \`${timeString(
                     beatmapset.beatmaps[selectedDifficultyIndex].total_length
-                )}\` | 🎵 **BPM**: \`${getBPMString(
-                    beatmapDifficulty
-                )}\` | **Mods**: ${
+                )}\` | 🎵 **BPM**: \`${getBPMString(beatmapDifficulty)}\` | **Mods**: ${
                     mods.includes("NM") ? "None" : getModsEmojis(mods)
                 }`
             );
             embed.setFields(
                 {
                     name: `${generateColoredModeIcon(
-                        mode ??
-                            beatmapset.beatmaps[selectedDifficultyIndex].mode,
+                        mode ?? beatmapset.beatmaps[selectedDifficultyIndex].mode,
                         beatmapDifficulty.difficulty.starRating
                     )} ${beatmapset.beatmaps[selectedDifficultyIndex].version}`,
                     value: getBeatmapEmbedFields(
                         beatmapset.beatmaps[selectedDifficultyIndex],
-                        (mode as GameModeName) ??
-                            beatmapset.beatmaps[selectedDifficultyIndex].mode,
+                        (mode as GameModeName) ?? beatmapset.beatmaps[selectedDifficultyIndex].mode,
                         beatmapDifficulty.beatmap,
                         beatmapDifficulty.difficulty
                     ),
@@ -301,18 +291,14 @@ export default {
             embed.setFooter({
                 text: `Mapped by ${await getDifficultyMapperName(
                     selectedDifficultyIndex
-                )} | Last updated at ${moment(
-                    beatmapset.last_updated
-                ).fromNow()}`,
+                )} | Last updated at ${moment(beatmapset.last_updated).fromNow()}`,
                 iconURL: `https://a.ppy.sh/${beatmapset.beatmaps[selectedDifficultyIndex].user_id}`,
             });
 
             async function getDifficultyMapperName(index: number) {
                 if (!beatmapset.beatmaps) return "Deleted User";
 
-                const r = await osuApi.fetch.user(
-                    beatmapset.beatmaps[index].user_id.toString()
-                );
+                const r = await osuApi.fetch.user(beatmapset.beatmaps[index].user_id.toString());
 
                 if (r.status != 200 || !r.data) return "Deleted User";
 
@@ -325,9 +311,7 @@ export default {
             const staticMapperProfileButton = new ButtonBuilder()
                 .setLabel("Mapper profile")
                 .setStyle(ButtonStyle.Link)
-                .setURL(
-                    `https://osu.ppy.sh/users/${encodeURI(beatmapset.creator)}`
-                );
+                .setURL(`https://osu.ppy.sh/users/${encodeURI(beatmapset.creator)}`);
 
             const staticOsuDirectButton = new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
@@ -336,18 +320,18 @@ export default {
                     `https://axer-url.vercel.app/api/direct?map=${beatmapset.beatmaps[selectedDifficultyIndex].id}`
                 );
 
-            const staticQuickDownloadButton = new ButtonBuilder({
-                style: ButtonStyle.Secondary,
-                customId: `beatmap_download|${beatmapset.id}`,
-                label: "Download",
-                emoji: "1070892493333344297",
-            });
+            // const staticQuickDownloadButton = new ButtonBuilder({
+            //     style: ButtonStyle.Secondary,
+            //     customId: `beatmap_download|${beatmapset.id}`,
+            //     label: "Download",
+            //     emoji: "1070892493333344297",
+            // });
 
             staticButtonsRow.addComponents(
                 staticMapperProfileButton,
                 staticOsuDirectButton,
-                staticQuickDownloadButton,
-                goToPreviewButton
+                goToPreviewButton,
+                deleteEmbedButton
             );
 
             let embedBackButton = new ButtonBuilder()
@@ -359,25 +343,15 @@ export default {
             let embedIndicatorButton = new ButtonBuilder()
                 .setStyle(ButtonStyle.Primary)
                 .setCustomId(`${handshakeId}|decorator`)
-                .setLabel(
-                    `${selectedDifficultyIndex + 1} of ${
-                        beatmapset.beatmaps.length
-                    }`
-                );
+                .setLabel(`${selectedDifficultyIndex + 1} of ${beatmapset.beatmaps.length}`);
 
             let embedSkipButton = new ButtonBuilder()
                 .setLabel("▶️")
                 .setStyle(ButtonStyle.Primary)
                 .setCustomId(`${handshakeId}|skip|handlerIgnore`)
-                .setDisabled(
-                    selectedDifficultyIndex + 1 == beatmapset.beatmaps.length
-                );
+                .setDisabled(selectedDifficultyIndex + 1 == beatmapset.beatmaps.length);
 
-            embedButtonsRow.setComponents(
-                embedBackButton,
-                embedIndicatorButton,
-                embedSkipButton
-            );
+            embedButtonsRow.setComponents(embedBackButton, embedIndicatorButton, embedSkipButton);
 
             function getBPMString(difficulty: BeatmapCalculationResult) {
                 if (difficulty.beatmap.bpmMin == difficulty.beatmap.bpmMax)
@@ -391,15 +365,14 @@ export default {
                         return Math.round(value);
                     }
 
-                    if (value.toString().split(".").length != 0)
-                        return value.toFixed(0);
+                    if (value.toString().split(".").length != 0) return value.toFixed(0);
 
                     return value;
                 }
 
-                return `${parseFloatError(
-                    difficulty.beatmap.bpmMin
-                )}/${parseFloatError(difficulty.beatmap.bpmMax)}`;
+                return `${parseFloatError(difficulty.beatmap.bpmMin)}/${parseFloatError(
+                    difficulty.beatmap.bpmMax
+                )}`;
             }
 
             /**
@@ -419,35 +392,24 @@ export default {
                 if (!beatmapset.beatmaps) return;
 
                 if (!refresh) {
-                    sum
-                        ? (selectedDifficultyIndex += 1)
-                        : (selectedDifficultyIndex -= 1);
+                    sum ? (selectedDifficultyIndex += 1) : (selectedDifficultyIndex -= 1);
                 }
 
                 beatmapDifficulty = calculateBeatmap(
-                    (
-                        await osuApi.fetch.osuFile(
-                            beatmapset.beatmaps[selectedDifficultyIndex].id
-                        )
-                    ).data,
-                    getModeInt(mode) ??
-                        beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
+                    (await osuApi.fetch.osuFile(beatmapset.beatmaps[selectedDifficultyIndex].id))
+                        .data,
+                    getModeInt(mode) ?? beatmapset.beatmaps[selectedDifficultyIndex].mode_int,
                     mods.join("")
                 );
 
-                new ActionRowBuilder().setComponents(
-                    getModsSelector(handshakeId, mods)
-                );
+                new ActionRowBuilder().setComponents(getModsSelector(handshakeId, mods));
 
                 embed.setDescription(
                     `⭐ **SR**: \`${beatmapDifficulty.difficulty.starRating.toFixed(
                         2
                     )}\` | 🕒 **Duration**: \`${timeString(
-                        beatmapset.beatmaps[selectedDifficultyIndex]
-                            .total_length
-                    )}\` | 🎵 **BPM**: \`${getBPMString(
-                        beatmapDifficulty
-                    )}\` | **Mods**: ${
+                        beatmapset.beatmaps[selectedDifficultyIndex].total_length
+                    )}\` | 🎵 **BPM**: \`${getBPMString(beatmapDifficulty)}\` | **Mods**: ${
                         mods.includes("NM") ? "None" : getModsEmojis(mods)
                     }`
                 );
@@ -455,18 +417,13 @@ export default {
                 embed.setFields(
                     {
                         name: `${generateColoredModeIcon(
-                            mode ??
-                                beatmapset.beatmaps[selectedDifficultyIndex]
-                                    .mode,
+                            mode ?? beatmapset.beatmaps[selectedDifficultyIndex].mode,
                             beatmapDifficulty.difficulty.starRating
-                        )} ${
-                            beatmapset.beatmaps[selectedDifficultyIndex].version
-                        }`,
+                        )} ${beatmapset.beatmaps[selectedDifficultyIndex].version}`,
                         value: getBeatmapEmbedFields(
                             beatmapset.beatmaps[selectedDifficultyIndex],
                             (mode as GameModeName) ??
-                                beatmapset.beatmaps[selectedDifficultyIndex]
-                                    .mode,
+                                beatmapset.beatmaps[selectedDifficultyIndex].mode,
                             beatmapDifficulty.beatmap,
                             beatmapDifficulty.difficulty
                         ),
@@ -483,39 +440,26 @@ export default {
                 embed.setFooter({
                     text: `Mapped by ${await getDifficultyMapperName(
                         selectedDifficultyIndex
-                    )} | Last updated at ${moment(
-                        beatmapset.last_updated
-                    ).fromNow()}`,
+                    )} | Last updated at ${moment(beatmapset.last_updated).fromNow()}`,
                     iconURL: `https://a.ppy.sh/${beatmapset.beatmaps[selectedDifficultyIndex].user_id}`,
                 });
 
                 embedBackButton = new ButtonBuilder()
                     .setLabel("◀️")
                     .setStyle(ButtonStyle.Primary)
-                    .setCustomId(
-                        `${handshakeId}|back|${crypto.randomUUID()}|handlerIgnore`
-                    )
+                    .setCustomId(`${handshakeId}|back|${crypto.randomUUID()}|handlerIgnore`)
                     .setDisabled(selectedDifficultyIndex == 0);
 
                 embedIndicatorButton = new ButtonBuilder()
                     .setStyle(ButtonStyle.Primary)
                     .setCustomId(`${handshakeId}|decorator`)
-                    .setLabel(
-                        `${selectedDifficultyIndex + 1} of ${
-                            beatmapset.beatmaps.length
-                        }`
-                    );
+                    .setLabel(`${selectedDifficultyIndex + 1} of ${beatmapset.beatmaps.length}`);
 
                 embedSkipButton = new ButtonBuilder()
                     .setLabel("▶️")
                     .setStyle(ButtonStyle.Primary)
-                    .setCustomId(
-                        `${handshakeId}|skip|${crypto.randomUUID()}|handlerIgnore`
-                    )
-                    .setDisabled(
-                        selectedDifficultyIndex + 1 ==
-                            beatmapset.beatmaps.length
-                    );
+                    .setCustomId(`${handshakeId}|skip|${crypto.randomUUID()}|handlerIgnore`)
+                    .setDisabled(selectedDifficultyIndex + 1 == beatmapset.beatmaps.length);
 
                 embedButtonsRow.setComponents(
                     embedBackButton,
@@ -532,16 +476,8 @@ export default {
                         files: [],
                         components:
                             extraButtonRow.components.length > 0
-                                ? [
-                                      extraButtonRow,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ]
-                                : [
-                                      modsSelector,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ],
+                                ? [extraButtonRow, staticButtonsRow, embedButtonsRow]
+                                : [modsSelector, staticButtonsRow, embedButtonsRow],
                         allowedMentions: {
                             repliedUser: false,
                         },
@@ -549,15 +485,12 @@ export default {
                 }
             }
 
-            const interactionCollector = new InteractionCollector(
-                target.client,
-                {
-                    channel: target.channel as TextBasedChannelResolvable,
-                    time: 300000,
-                    filter: (i: ButtonInteraction | SelectMenuInteraction) =>
-                        i.user.id == getUserId(target),
-                }
-            );
+            const interactionCollector = new InteractionCollector(target.client, {
+                channel: target.channel as TextBasedChannelResolvable,
+                time: 300000,
+                filter: (i: ButtonInteraction | SelectMenuInteraction) =>
+                    i.user.id == getUserId(target),
+            });
 
             interactionCollector.on("end", () => {
                 if (!video) return;
@@ -613,15 +546,11 @@ export default {
                         void {};
                     }
 
-                    mods =
-                        interaction.values.length == 0
-                            ? ["NM"]
-                            : interaction.values;
+                    mods = interaction.values.length == 0 ? ["NM"] : interaction.values;
 
-                    modsSelector =
-                        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-                            getModsSelector(handshakeId, interaction.values)
-                        );
+                    modsSelector = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+                        getModsSelector(handshakeId, interaction.values)
+                    );
 
                     selectDifficulty(true, interaction, true);
                 }
@@ -635,16 +564,8 @@ export default {
                         files: [],
                         components:
                             extraButtonRow.components.length > 0
-                                ? [
-                                      extraButtonRow,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ]
-                                : [
-                                      modsSelector,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ],
+                                ? [extraButtonRow, staticButtonsRow, embedButtonsRow]
+                                : [modsSelector, staticButtonsRow, embedButtonsRow],
                         allowedMentions: {
                             repliedUser: false,
                         },
@@ -658,16 +579,8 @@ export default {
                         content: "",
                         components:
                             extraButtonRow.components.length > 0
-                                ? [
-                                      extraButtonRow,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ]
-                                : [
-                                      modsSelector,
-                                      staticButtonsRow,
-                                      embedButtonsRow,
-                                  ],
+                                ? [extraButtonRow, staticButtonsRow, embedButtonsRow]
+                                : [modsSelector, staticButtonsRow, embedButtonsRow],
                         allowedMentions: {
                             repliedUser: false,
                         },
