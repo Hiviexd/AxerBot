@@ -56,13 +56,20 @@ export async function handleSelectRoles(button: ButtonInteraction) {
             .setMaxValues(selectRolesMessageData.roles.length)
             .setCustomId(idFields[0]);
 
-        button.followUp({
+        const currentRolesMenuEmbed = new EmbedBuilder()
+            .setTitle("🔧 Select roles")
+            .setDescription(
+                `Hey <@${button.user.id}>, Select the roles you want to add or remove from yourself.`
+            )
+            .setColor(colors.pink);
+
+        const response = await button.followUp({
+            embeds: [currentRolesMenuEmbed],
             components: [
                 new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
                     currentRolesMenu
                 ),
             ],
-            ephemeral: true,
         });
 
         const collector = new InteractionCollector(button.client, {
@@ -71,9 +78,7 @@ export async function handleSelectRoles(button: ButtonInteraction) {
             time: 300000,
         });
 
-        collector.on("collect", handleCollect);
-
-        async function handleCollect(menu: StringSelectMenuInteraction) {
+        collector.on("collect", async (menu: StringSelectMenuInteraction) => {
             if (!selectRolesMessageData) return;
 
             await menu.deferUpdate();
@@ -136,16 +141,24 @@ export async function handleSelectRoles(button: ButtonInteraction) {
                 )
                 .setColor(colors.pink)
                 .setFooter({
-                    text: `Dismiss the messages above in order to re-use the role selector`,
+                    text: `This message will be dismissed in 3 seconds...`,
                 });
 
-            collector.stop();
-
-            button.followUp({
+            await menu.editReply({
                 embeds: [embed],
-                ephemeral: true,
+                components: [],
             });
-        }
+
+            // Cleanup
+            setTimeout(async () => {
+                try {
+                    await response.delete();
+                    collector.stop();
+                } catch (error) {
+                    console.error("Failed to delete roles menu:", error);
+                }
+            }, 3000);
+        });
     } catch (error) {
         console.error(error);
 
