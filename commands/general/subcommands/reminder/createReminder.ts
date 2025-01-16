@@ -141,7 +141,7 @@ createReminder.setExecutable(async (command) => {
     });
 
     const successEmbed = new EmbedBuilder()
-        .setTitle("✅ Reminder Set!")
+        .setTitle("✅ Reminder set!")
         .addFields(
             {
                 name: "Time",
