@@ -23,45 +23,45 @@ jobs:
                   script: |
                       echo "Checking dependencies..."
                       echo "========================"
-                      
+
                       # Check Node.js
                       if ! command -v node &> /dev/null; then
                           echo "Installing Node.js..."
                           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
                           sudo apt-get install -y nodejs
                       fi
-                      
+
                       # Check Yarn
                       if ! command -v yarn &> /dev/null; then
                           echo "Installing Yarn..."
                           npm install -g yarn
                       fi
-                      
+
                       # Check PM2
                       if ! command -v pm2 &> /dev/null; then
                           echo "Installing PM2..."
                           npm install -g pm2
                       fi
-                      
+
                       # Check FFmpeg (required for audio processing)
                       if ! command -v ffmpeg &> /dev/null; then
                           echo "Installing FFmpeg..."
                           sudo apt-get update
                           sudo apt-get install -y ffmpeg
                       fi
-                      
+
                       # Check Python (needed for some node-gyp builds)
                       if ! command -v python3 &> /dev/null; then
                           echo "Installing Python3..."
                           sudo apt-get install -y python3
                       fi
-                      
+
                       # Check build tools
                       if ! command -v make &> /dev/null; then
                           echo "Installing build tools..."
                           sudo apt-get install -y build-essential
                       fi
-                      
+
                       # Check Canvas dependencies
                       dpkg -l | grep -qw libcairo2-dev || sudo apt-get install -y libcairo2-dev
                       dpkg -l | grep -qw libpango1.0-dev || sudo apt-get install -y libpango1.0-dev
@@ -119,3 +119,19 @@ jobs:
                       echo "Success! Showing logs in 3 seconds..."
                       sleep 3
                       pm2 logs axerbot --lines 50
+    notify:
+        needs: deploy
+        runs-on: ubuntu-latest
+        if: always()
+        steps:
+            - name: Send Discord Notification
+              uses: sarisia/actions-status-discord@v1
+              if: always()
+              with:
+                  webhook: ${{ secrets.DISCORD_WEBHOOK }}
+                  status: ${{ needs.deploy.result }}
+                  title: "Deployment Status"
+                  description: |
+                      Deployment ${{ needs.deploy.result }}
+                      Reason: ${{ github.event.inputs.reason || 'No reason provided' }}
+                  color: ${{ needs.deploy.result == 'success' && '0x1df27d' || '0xff5050' }}
