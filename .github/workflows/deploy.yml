@@ -116,16 +116,9 @@ jobs:
                       sleep 2
                       pm2 start axerbot
 
-                      echo "Success! Waiting for bot to come online..."
+                      echo "Success! Showing startup logs for 1 minute..."
                       sleep 3
-                      
-                      # Wait for "AxerBot is online" message in logs
-                      timeout 60 bash -c '
-                        until pm2 logs axerbot --lines 50 | grep -q "AxerBot is online!"; do
-                          sleep 1
-                        done
-                        pm2 logs axerbot --lines 50 | grep -B 50 "AxerBot is online!"
-                      '
+                      timeout 60 pm2 logs axerbot --lines 50
     notify:
         needs: deploy
         runs-on: ubuntu-latest
