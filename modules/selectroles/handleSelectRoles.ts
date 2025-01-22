@@ -61,7 +61,8 @@ export async function handleSelectRoles(button: ButtonInteraction) {
             .setDescription(
                 `Hey <@${button.user.id}>, Select the roles you want to add or remove from yourself.`
             )
-            .setColor(colors.pink);
+            .setColor(colors.pink)
+            .setFooter({ text: "This message will be dismissed after 10 seconds of inactivity" });
 
         const response = await button.followUp({
             embeds: [currentRolesMenuEmbed],
@@ -72,6 +73,14 @@ export async function handleSelectRoles(button: ButtonInteraction) {
             ],
         });
 
+        const messageTimeout = setTimeout(async () => {
+            try {
+                await response.delete();
+            } catch (error) {
+                console.error("Failed to delete roles menu:", error);
+            }
+        }, 10000); // 10 seconds
+
         const collector = new InteractionCollector(button.client, {
             filter: (i) =>
                 i.user.id == button.user.id && i.customId == idFields[0],
@@ -79,9 +88,10 @@ export async function handleSelectRoles(button: ButtonInteraction) {
         });
 
         collector.on("collect", async (menu: StringSelectMenuInteraction) => {
-            if (!selectRolesMessageData) return;
-
             await menu.deferUpdate();
+            clearTimeout(messageTimeout);
+
+            if (!selectRolesMessageData) return;
 
             const rolesToAdd = menu.values;
             const rolesToRemove = selectRolesMessageData.roles.filter(
