@@ -121,10 +121,10 @@ jobs:
                       
                       # Wait for "AxerBot is online" message in logs
                       timeout 60 bash -c '
-                        until pm2 logs axerbot --lines 50 | grep -q "AxerBot is online"; do
+                        until pm2 logs axerbot --lines 50 | grep -q "AxerBot is online!"; do
                           sleep 1
                         done
-                        pm2 logs axerbot --lines 50 | grep -B 50 "AxerBot is online"
+                        pm2 logs axerbot --lines 50 | grep -B 50 "AxerBot is online!"
                       '
     notify:
         needs: deploy
