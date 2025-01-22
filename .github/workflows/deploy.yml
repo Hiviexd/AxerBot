@@ -101,6 +101,9 @@ jobs:
                       cd ~/projects/axerbot || { echo "Directory not found"; exit 1; }
                       git pull
 
+                      echo "Installing dependencies..."
+                      yarn
+
                       echo "Building..."
                       npx tsc
 
