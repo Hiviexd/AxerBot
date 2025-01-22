@@ -116,9 +116,10 @@ jobs:
                       sleep 2
                       pm2 start axerbot
 
-                      echo "Success! Showing startup logs for 1 minute..."
+                      echo "Success! Showing startup logs for 30 seconds..."
                       sleep 3
-                      timeout 60 pm2 logs axerbot --lines 50
+                      timeout 30 pm2 logs axerbot --lines 50 || true
+                      exit 0
     notify:
         needs: deploy
         runs-on: ubuntu-latest
