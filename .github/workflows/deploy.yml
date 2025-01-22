@@ -1,0 +1,62 @@
+name: Deploy to Production
+
+on:
+    workflow_dispatch:
+        inputs:
+            reason:
+                description: "Reason for deployment"
+                required: false
+                type: string
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment: production
+
+        steps:
+            - name: SSH and Deploy
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      # Install system dependencies if not present
+                      if ! command -v node &> /dev/null; then
+                        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+                        sudo apt-get install -y nodejs
+                      fi
+
+                      if ! command -v pm2 &> /dev/null; then
+                        sudo npm install -g pm2
+                      fi
+
+                      # Install ffmpeg if not present
+                      if ! command -v ffmpeg &> /dev/null; then
+                        sudo apt-get update
+                        sudo apt-get install -y ffmpeg
+                      fi
+
+                      # Deploy application
+                      cd ~/projects/axerbot
+
+                      # Show current PM2 processes
+                      pm2 ls
+
+                      # Stop the bot
+                      pm2 stop axerbot || true
+
+                      # Pull latest changes
+                      git pull origin main
+
+                      # Install dependencies
+                      yarn install --frozen-lockfile
+
+                      # Build TypeScript
+                      yarn build
+
+                      # Start the bot
+                      pm2 start dist/index.js --name axerbot
+
+                      # Show logs
+                      pm2 logs axerbot --lines 50
