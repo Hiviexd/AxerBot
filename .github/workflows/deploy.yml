@@ -14,49 +14,108 @@ jobs:
         environment: production
 
         steps:
-            - name: SSH and Deploy
+            - name: Check Dependencies
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.SERVER_HOST }}
                   username: ${{ secrets.SERVER_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      # Install system dependencies if not present
+                      echo "Checking dependencies..."
+                      echo "========================"
+                      
+                      # Check Node.js
                       if ! command -v node &> /dev/null; then
-                        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-                        sudo apt-get install -y nodejs
+                          echo "Installing Node.js..."
+                          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+                          sudo apt-get install -y nodejs
                       fi
-
+                      
+                      # Check Yarn
+                      if ! command -v yarn &> /dev/null; then
+                          echo "Installing Yarn..."
+                          npm install -g yarn
+                      fi
+                      
+                      # Check PM2
                       if ! command -v pm2 &> /dev/null; then
-                        sudo npm install -g pm2
+                          echo "Installing PM2..."
+                          npm install -g pm2
                       fi
-
-                      # Install ffmpeg if not present
+                      
+                      # Check FFmpeg (required for audio processing)
                       if ! command -v ffmpeg &> /dev/null; then
-                        sudo apt-get update
-                        sudo apt-get install -y ffmpeg
+                          echo "Installing FFmpeg..."
+                          sudo apt-get update
+                          sudo apt-get install -y ffmpeg
                       fi
+                      
+                      # Check Python (needed for some node-gyp builds)
+                      if ! command -v python3 &> /dev/null; then
+                          echo "Installing Python3..."
+                          sudo apt-get install -y python3
+                      fi
+                      
+                      # Check build tools
+                      if ! command -v make &> /dev/null; then
+                          echo "Installing build tools..."
+                          sudo apt-get install -y build-essential
+                      fi
+                      
+                      # Check Canvas dependencies
+                      dpkg -l | grep -qw libcairo2-dev || sudo apt-get install -y libcairo2-dev
+                      dpkg -l | grep -qw libpango1.0-dev || sudo apt-get install -y libpango1.0-dev
+                      dpkg -l | grep -qw libjpeg-dev || sudo apt-get install -y libjpeg-dev
+                      dpkg -l | grep -qw libgif-dev || sudo apt-get install -y libgif-dev
+                      dpkg -l | grep -qw librsvg2-dev || sudo apt-get install -y librsvg2-dev
 
-                      # Deploy application
-                      cd ~/projects/axerbot
-
-                      # Show current PM2 processes
+            - name: List Current PM2 Processes
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      echo "List of current pm2 processes:"
+                      echo "==============================="
                       pm2 ls
 
-                      # Stop the bot
+            - name: Stop AxerBot
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      echo "Stopping axerbot..."
                       pm2 stop axerbot || true
 
-                      # Pull latest changes
-                      git pull origin main
+            - name: Pull Changes & Build
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      echo "Pulling the latest changes..."
+                      cd ~/projects/axerbot || { echo "Directory not found"; exit 1; }
+                      git pull
 
-                      # Install dependencies
-                      yarn install --frozen-lockfile
+                      echo "Building..."
+                      npx tsc
 
-                      # Build TypeScript
-                      yarn build
+            - name: Start & Verify
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      cd ~/projects/axerbot
+                      echo "Starting axerbot..."
+                      sleep 2
+                      pm2 start axerbot
 
-                      # Start the bot
-                      pm2 start dist/index.js --name axerbot
-
-                      # Show logs
+                      echo "Success! Showing logs in 3 seconds..."
+                      sleep 3
                       pm2 logs axerbot --lines 50
