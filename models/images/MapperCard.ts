@@ -1,12 +1,5 @@
 import axios from "axios";
-import {
-    Canvas,
-    CanvasRenderingContext2D,
-    createCanvas,
-    Image,
-    loadImage,
-    registerFont,
-} from "canvas";
+import { Canvas, CanvasRenderingContext2D, createCanvas, Image, loadImage, registerFont } from "canvas";
 import path, { resolve } from "path";
 import parseDate from "../../helpers/text/parseDate";
 import { truncateCanvasText } from "../../helpers/transform/truncateCanvasText";
@@ -70,13 +63,13 @@ export class MapperCard {
         return {
             PPY: {
                 index: 0,
-                name: "peppy",
+                name: "ppy",
                 icon: readFileSync(resolve("./assets/icons/ppy.png")),
                 colour: "#0066FF",
             },
             SPT: {
                 index: 1,
-                name: "Support Team",
+                name: "Technical Support Team",
                 icon: readFileSync(resolve("./assets/icons/spt.png")),
                 colour: "#ebd047",
             },
@@ -84,7 +77,7 @@ export class MapperCard {
                 index: 2,
                 name: "Developer",
                 icon: readFileSync(resolve("./assets/icons/dev.png")),
-                colour: "#eb47d0",
+                colour: "#E45678",
             },
             GMT: {
                 index: 3,
@@ -96,16 +89,22 @@ export class MapperCard {
                 index: 4,
                 name: "Nomination Assessment Team",
                 icon: readFileSync(resolve("./assets/icons/nat.png")),
-                colour: "#eb8c47",
+                colour: "#fa3703",
+            },
+            TC: {
+                index: 5,
+                name: "Tournament Committee",
+                icon: readFileSync(resolve("./assets/icons/tc.png")),
+                colour: "#FFB969",
             },
             FA: {
-                index: 5,
+                index: 6,
                 name: "Featured Artist",
                 colour: "#00ffff",
                 icon: readFileSync(resolve("./assets/icons/fa.png")),
             },
             BN: {
-                index: 6,
+                index: 7,
                 name: "Beatmap Nominator",
                 icon: readFileSync(resolve("./assets/icons/bn.png")),
                 probationary: {
@@ -116,29 +115,29 @@ export class MapperCard {
                 elite: {
                     name: "Elite Nominator",
                     icon: readFileSync(resolve("./assets/icons/bn-elite.png")),
-                    colour: "#ffc05b",
+                    colour: "#FFAB23",
                 },
             },
             ALM: {
-                index: 7,
-                name: "Alumni",
+                index: 8,
+                name: "osu! Alumni",
                 icon: readFileSync(resolve("./assets/icons/alm.png")),
                 colour: "#999999",
             },
             LVD: {
-                index: 8,
+                index: 9,
                 name: "Project Loved",
                 icon: readFileSync(resolve("./assets/icons/lvd.png")),
                 colour: "#ffd1dc",
             },
             BSC: {
-                index: 9,
+                index: 10,
                 name: "Beatmap Spotlight Curator",
                 icon: readFileSync(resolve("./assets/icons/bsc.png")),
                 colour: "#76AEBC",
             },
             BOT: {
-                index: 10,
+                index: 11,
                 name: "BOT",
                 colour: "#ffffff",
                 icon: readFileSync(resolve("./assets/icons/bot.png")),
@@ -190,10 +189,7 @@ export class MapperCard {
     }
 
     private hasRankedOrLoved() {
-        return (
-            this.mapper.ranked_and_approved_beatmapset_count != 0 ||
-            this.mapper.loved_beatmapset_count != 0
-        );
+        return this.mapper.ranked_and_approved_beatmapset_count != 0 || this.mapper.loved_beatmapset_count != 0;
     }
 
     private hasPending() {
@@ -222,10 +218,7 @@ export class MapperCard {
             overlapY?: boolean;
         }
     ) {
-        const scale = Math.max(
-            (width || this.canvas.width) / img.width,
-            (height || this.canvas.height) / img.height
-        );
+        const scale = Math.max((width || this.canvas.width) / img.width, (height || this.canvas.height) / img.height);
 
         const finalX = (width || this.canvas.width) / 2 - (img.width / 2) * scale;
         const finalY = (height || this.canvas.height) / 2 - (img.height / 2) * scale;
@@ -258,8 +251,7 @@ export class MapperCard {
         fallbackImage: string | Buffer
     ): Promise<Image> {
         return new Promise(async (resolve) => {
-            if (!imageUrl && fallbackImage instanceof Buffer)
-                return resolve(loadImage(fallbackImage));
+            if (!imageUrl && fallbackImage instanceof Buffer) return resolve(loadImage(fallbackImage));
 
             try {
                 const coverImage = await axios(imageUrl || "", {
@@ -279,14 +271,7 @@ export class MapperCard {
         });
     }
 
-    private drawRoundedImage(
-        image: Image,
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-        radius: number
-    ) {
+    private drawRoundedImage(image: Image, x: number, y: number, w: number, h: number, radius: number) {
         this.ctx.save();
 
         this.ctx.beginPath();
@@ -321,10 +306,7 @@ export class MapperCard {
     private async renderCover() {
         const sizing = [480, 185];
 
-        const coverImage = await this.fetchImageOrFallbackTo(
-            this.mapper.cover.custom_url,
-            this.defaultCover
-        );
+        const coverImage = await this.fetchImageOrFallbackTo(this.mapper.cover.custom_url, this.defaultCover);
 
         this.renderAndCenterImageX(coverImage, 0, sizing[1]);
 
@@ -340,8 +322,7 @@ export class MapperCard {
         const positions = [0, 0];
         const sizing = [5, 185];
 
-        this.ctx.fillStyle =
-            this.mapper.profile_colour || (parseUsergroup(this.mapper).colour as string);
+        this.ctx.fillStyle = this.mapper.profile_colour || (parseUsergroup(this.mapper).colour as string);
 
         this.ctx.fillRect(positions[0], positions[1], sizing[0], sizing[1]);
 
@@ -352,19 +333,9 @@ export class MapperCard {
         const avatarSizing = [100, 100];
         const avatarPosition = [30, 38];
 
-        const avatarImage = await this.fetchImageOrFallbackTo(
-            this.mapper.avatar_url,
-            this.defaultAvatar
-        );
+        const avatarImage = await this.fetchImageOrFallbackTo(this.mapper.avatar_url, this.defaultAvatar);
 
-        this.drawRoundedImage(
-            avatarImage,
-            avatarPosition[0],
-            avatarPosition[1],
-            avatarSizing[0],
-            avatarSizing[1],
-            10
-        );
+        this.drawRoundedImage(avatarImage, avatarPosition[0], avatarPosition[1], avatarSizing[0], avatarSizing[1], 10);
 
         const usernameSizing = ["30px"];
         const usernamePosition = [150, 50];
@@ -398,12 +369,7 @@ export class MapperCard {
             this.ctx.font = `500 ${userTitleSizing} Quicksand, sans-serif`;
 
             this.ctx.fillText(
-                truncateCanvasText(
-                    this.ctx,
-                    this.mapper.title,
-                    userTitleMaxWidth,
-                    userTitleSizing[0]
-                ),
+                truncateCanvasText(this.ctx, this.mapper.title, userTitleMaxWidth, userTitleSizing[0]),
                 userTitlePosition[0],
                 userTitlePosition[1]
             );
@@ -426,24 +392,12 @@ export class MapperCard {
             countryNamePosition[1] = 115;
         }
 
-        this.drawRoundedImage(
-            countryFlag,
-            flagPosition[0],
-            flagPosition[1],
-            flagSizing[0],
-            flagSizing[1],
-            5
-        );
+        this.drawRoundedImage(countryFlag, flagPosition[0], flagPosition[1], flagSizing[0], flagSizing[1], 5);
 
         this.ctx.fillStyle = "#ffffff";
         this.ctx.font = `300 ${countryNameSizing} Quicksand, sans-serif`;
         this.ctx.fillText(
-            truncateCanvasText(
-                this.ctx,
-                this.mapper.country.name,
-                countryNameMaxWidth,
-                countryNameSizing[0]
-            ),
+            truncateCanvasText(this.ctx, this.mapper.country.name, countryNameMaxWidth, countryNameSizing[0]),
             countryNamePosition[0],
             countryNamePosition[1]
         );
@@ -498,11 +452,7 @@ export class MapperCard {
             const icon = await loadImage(iconsData[i].icon);
             this.ctx.drawImage(icon, iconsPosition[0][i], iconsPosition[1][i]);
 
-            this.ctx.fillText(
-                iconsData[i].data.toString(),
-                textPositions[0][i],
-                textPositions[1][i]
-            );
+            this.ctx.fillText(iconsData[i].data.toString(), textPositions[0][i], textPositions[1][i]);
         }
 
         if (this.mapper.groups) {
@@ -540,9 +490,7 @@ export class MapperCard {
         const oldestBeatmap = await fetchOldestBeatmap(this.mapper);
 
         const age = oldestBeatmap
-            ? parseDate(
-                  new Date(new Date().getTime() - new Date(oldestBeatmap.submitted_date).getTime())
-              )
+            ? parseDate(new Date(new Date().getTime() - new Date(oldestBeatmap.submitted_date).getTime()))
             : "0 days";
 
         const baseText = "mapping for";
@@ -594,21 +542,11 @@ export class MapperCard {
             this.ctx.beginPath();
             this.ctx.fillStyle = this.brownMedium;
 
-            this.ctx.roundRect(
-                squaresPosition[0][i],
-                squaresPosition[1][i],
-                squaresSize[0],
-                squaresSize[1],
-                5
-            );
+            this.ctx.roundRect(squaresPosition[0][i], squaresPosition[1][i], squaresSize[0], squaresSize[1], 5);
             this.ctx.fill();
             this.ctx.closePath();
 
-            this.ctx.drawImage(
-                squareImages[i],
-                squareImagesPosition[0][i],
-                squareImagesPosition[1][i]
-            );
+            this.ctx.drawImage(squareImages[i], squareImagesPosition[0][i], squareImagesPosition[1][i]);
 
             this.ctx.fillStyle = this.white;
 
@@ -672,9 +610,7 @@ export class MapperCard {
             const lastQualifiedBeatmap = this.beatmaps.data.sets
                 .filter((map) => map.ranked_date)
                 .sort(
-                    (a, b) =>
-                        new Date(b.ranked_date as string).valueOf() -
-                        new Date(a.ranked_date as string).valueOf()
+                    (a, b) => new Date(b.ranked_date as string).valueOf() - new Date(a.ranked_date as string).valueOf()
                 );
 
             await this.renderBeatmapDisplayerAt(
@@ -714,10 +650,7 @@ export class MapperCard {
         radius: number,
         beatmap: Beatmapset
     ) {
-        const beatmapCover = await this.fetchImageOrFallbackTo(
-            beatmap.covers["slimcover@2x"],
-            this.defaultCover
-        );
+        const beatmapCover = await this.fetchImageOrFallbackTo(beatmap.covers["slimcover@2x"], this.defaultCover);
 
         this.drawRoundedImage(beatmapCover, x, y, w, h, radius);
 
@@ -729,18 +662,10 @@ export class MapperCard {
 
         this.ctx.fillStyle = this.white;
         this.ctx.font = "600 15px Quicksand, sans-serif";
-        this.ctx.fillText(
-            truncateCanvasText(this.ctx, beatmap.title, w - 10, this.ctx.font),
-            x + 10,
-            y + 7.5
-        );
+        this.ctx.fillText(truncateCanvasText(this.ctx, beatmap.title, w - 10, this.ctx.font), x + 10, y + 7.5);
 
         this.ctx.font = "400 15px Quicksand, sans-serif";
-        this.ctx.fillText(
-            truncateCanvasText(this.ctx, beatmap.artist, w - 10, this.ctx.font),
-            x + 10,
-            y + 25
-        );
+        this.ctx.fillText(truncateCanvasText(this.ctx, beatmap.artist, w - 10, this.ctx.font), x + 10, y + 25);
 
         return true;
     }
